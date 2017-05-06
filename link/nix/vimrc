@@ -1,0 +1,35 @@
+execute pathogen#infect()
+syntax on
+
+filetype indent plugin on
+
+set encoding=utf-8
+set termencoding=utf-8
+
+set autoindent
+set background=dark
+set expandtab
+set fillchars+=stl:\ ,stlnc:\
+set laststatus=2
+set nocompatible
+set smarttab
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+set t_Co=256
+
+colorscheme solarized
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list            = 1
+let g:syntastic_check_on_open            = 1
+let g:syntastic_check_on_wq              = 0
+let g:syntastic_enable_signs             = 1
+let g:syntastic_ruby_checkers            = ['rubocop']
+let g:syntastic_quiet_messages           = {'level': 'warnings'}
+let g:vim_markdown_folding_disabled      = 1
+
+python from powerline.vim import setup as powerline_setup
+python powerline_setup()
+python del powerline_setup
+
