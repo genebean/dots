@@ -51,7 +51,7 @@ COMPLETION_WAITING_DOTS="false"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(brew gem git git-flow history osx python vagrant)
+plugins=(brew bundler gem git git-flow history osx python vagrant)
 
 source $ZSH/oh-my-zsh.sh
 
