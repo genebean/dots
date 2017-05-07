@@ -2,7 +2,34 @@
 
 My dot files and a tool to deploy them to various OS's
 
-## _Dragons Ahead!_
+## The Plan
 
-This is very much a work in progress... proceed with caution.
+* files in [link/](link) get symlinked to `~/.{filename}`
+* files in [copy/](copy) get copied to `~/.{filename}`
+  * this process should default to not clobbering existing files
+* [bin/dots.py](bin/dots.py) is what users will interact with
+  * it should bootstrap based on the OS it is being run on
+  * it should run Puppet and associated tools such as r10k via bundler
+  * it should not utilize Git submodules; it should instead use [vcsrepo](https://forge.puppet.com/puppetlabs/vcsrepo)
+    * the destination of each repo may well need to be added to the parent's `.gitignore`
+  * it should configure [iTerm2](https://www.iterm2.com/) on Mac
+  * it should configure [Atom](https://atom.io/) on all platforms
+  * it should offer a choice to skip steps related to GUI programs
+  * it should permit host-specific settings / options
+    * this will likely be done via entries in a hiera node file
+* create a Docker image with all tools preinstaleld and set to mount the current user's home directory as a volume.
+  * use [gosu](https://github.com/tianon/gosu) so ownership is correct.
+    * this may not work on Windows... 
+
+### Notes thus far
+
+1. Install ruby >= 2.0 (testing with 2.4.1)
+2. Install bundler
+
+```bash
+git clone git@github.com:genebean/dots.git ~/.dotfiles
+cd ~/.dotfiles/bin/puppet
+bundle install
+bundle exec r10k puppetfile install --moduledir vendor/puppet_modules --puppetfile Puppetfile -v
+```
 
