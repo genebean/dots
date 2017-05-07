@@ -1,11 +1,13 @@
 # vim:ft=ruby
 source 'https://rubygems.org'
 
+# rubocop:disable ConditionalAssignment
 if ENV.key?('PUPPET_VERSION')
-  puppetversion = "#{ENV['PUPPET_VERSION']}"
+  puppetversion = ENV['PUPPET_VERSION'].to_s
 else
   puppetversion = ['~> 4.0']
 end
+# rubocop:enable ConditionalAssignment
 
 group :production do
   gem 'os',     '~> 1.0'
@@ -20,6 +22,7 @@ group :development, :unit_tests do
   gem 'metadata-json-lint',                               '~> 1.0'
   gem 'puppetlabs_spec_helper',                           '~> 1.1'
   gem 'rspec-puppet',                                     '~> 2.5'
+  gem 'rubocop',                                          '~> 0.48'
   gem 'yamllint',                                         '~> 0.0.9'
 
   # puppet-lint and plugins

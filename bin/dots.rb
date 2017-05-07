@@ -12,7 +12,8 @@ if OS.mac?
   elsif Integer(stdout.strip.split('.')[0]) < 10
     puts "Wow... you're sure running an old os (#{stdout.strip} to be exact)"
   else
-    abort("It seems you are on a Mac but I don't know what to do on v#{stdout.strip}")
+    abort("It seems you are on a Mac but I don't know what to do on \
+      v#{stdout.strip}")
   end
 elsif OS.liux?
   puts 'It seems you are on Linux'
