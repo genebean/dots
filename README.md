@@ -19,12 +19,14 @@ My dot files and a tool to deploy them to various OS's
     * this will likely be done via entries in a hiera node file
 * create a Docker image with all tools preinstaleld and set to mount the current user's home directory as a volume.
   * use [gosu](https://github.com/tianon/gosu) so ownership is correct.
-    * this may not work on Windows... 
+    * this may not work on Windows...
 
 ### Notes thus far
 
-1. Install ruby >= 2.0 (testing with 2.4.1)
-2. Install bundler
+1. Install Homebrew
+2. Install ruby >= 2.0 (testing with 2.4.1)
+3. Install bundler
+4. Install cmake and pkg-config
 
 ```bash
 git clone git@github.com:genebean/dots.git ~/.dotfiles
@@ -32,4 +34,3 @@ cd ~/.dotfiles/bin/puppet
 bundle install
 bundle exec r10k puppetfile install --moduledir vendor/puppet_modules --puppetfile Puppetfile -v
 ```
-
