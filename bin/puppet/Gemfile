@@ -19,6 +19,7 @@ group :development, :unit_tests do
   gem 'metadata-json-lint',      '~> 1.0'
   gem 'puppet',                  puppetversion
   gem 'puppetlabs_spec_helper',  '~> 1.1'
+  gem 'r10k',                    '~> 2.3'
   gem 'rspec-puppet',            '~> 2.5'
   gem 'yamllint',                '~> 0.0.9'
 
