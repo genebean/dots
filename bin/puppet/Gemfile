@@ -8,19 +8,15 @@ else
 end
 
 group :development, :unit_tests do
-  if RUBY_VERSION < '2.0'
-    gem 'json',                  '1.8.3'
-    gem 'json_pure',             '1.8.3'
-  else
-    gem 'json',                  '>= 2.0.2'
-    gem 'json_pure',             '>= 2.0.2'
-  end
 
+  gem 'json',                    '>= 2.0.2'
+  gem 'json_pure',               '>= 2.0.2'
   gem 'metadata-json-lint',      '~> 1.0'
   gem 'puppet',                  puppetversion
   gem 'puppetlabs_spec_helper',  '~> 1.1'
   gem 'r10k',                    '~> 2.3'
   gem 'rspec-puppet',            '~> 2.5'
+  gem 'rugged',                  '~> 0.24'
   gem 'yamllint',                '~> 0.0.9'
 
   # puppet-lint and plugins
@@ -36,4 +32,3 @@ group :development, :unit_tests do
   gem 'puppet-lint-unquoted_string-check',                '~> 0.3'
   gem 'puppet-lint-variable_contains_upcase',             '~> 1.1'
 end
-

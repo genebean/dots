@@ -97,6 +97,7 @@ GEM
     rspec-puppet (2.5.0)
       rspec
     rspec-support (3.6.0)
+    rugged (0.25.1.1)
     semantic_puppet (0.1.4)
       gettext-setup (>= 0.3)
     spdx-licenses (1.1.0)
@@ -127,6 +128,7 @@ DEPENDENCIES
   puppetlabs_spec_helper (~> 1.1)
   r10k (~> 2.3)
   rspec-puppet (~> 2.5)
+  rugged (~> 0.24)
   yamllint (~> 0.0.9)
 
 BUNDLED WITH
