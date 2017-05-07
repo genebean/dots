@@ -21,7 +21,8 @@ task :validate do
     sh "puppet parser validate --noop #{manifest}"
   end
   Dir['bin/**/*.rb', 'spec/**/*.rb'].each do |ruby_file|
-    sh "ruby -c #{ruby_file}" unless ruby_file.match? %r{spec\/fixtures}
+    # sh "ruby -c #{ruby_file}" unless ruby_file.match? %r{spec\/fixtures}
+    sh "ruby -c #{ruby_file}" unless ruby_file =~ /spec\/fixtures/
   end
   Dir['puppet/site/*/templates/**/*.erb'].each do |template|
     sh "erb -P -x -T '-' #{template} | ruby -c"
