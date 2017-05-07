@@ -1,8 +1,6 @@
 # vim:ft=ruby
 source 'https://rubygems.org'
 
-ruby '>= 2.0.0'
-
 if ENV.key?('PUPPET_VERSION')
   puppetversion = "#{ENV['PUPPET_VERSION']}"
 else
