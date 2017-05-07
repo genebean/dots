@@ -7,7 +7,7 @@ My dot files and a tool to deploy them to various OS's
 * files in [link/](link) get symlinked to `~/.{filename}`
 * files in [copy/](copy) get copied to `~/.{filename}`
   * this process should default to not clobbering existing files
-* [bin/dots.py](bin/dots.py) is what users will interact with
+* [bin/dots.rb](bin/dots.rb) is what users will interact with
   * it should bootstrap based on the OS it is being run on
   * it should run Puppet and associated tools such as r10k via bundler
   * it should not utilize Git submodules; it should instead use [vcsrepo](https://forge.puppet.com/puppetlabs/vcsrepo)
@@ -30,7 +30,7 @@ My dot files and a tool to deploy them to various OS's
 
 ```bash
 git clone git@github.com:genebean/dots.git ~/.dotfiles
-cd ~/.dotfiles/bin/puppet
+cd ~/.dotfiles
 bundle install
-bundle exec r10k puppetfile install --moduledir vendor/puppet_modules --puppetfile Puppetfile -v
+bundle exec r10k puppetfile install --moduledir vendor/puppet_modules --puppetfile puppet/Puppetfile -v
 ```

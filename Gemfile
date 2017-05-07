@@ -1,23 +1,28 @@
 # vim:ft=ruby
 source 'https://rubygems.org'
 
+ruby '>= 2.0.0'
+
 if ENV.key?('PUPPET_VERSION')
   puppetversion = "#{ENV['PUPPET_VERSION']}"
 else
   puppetversion = ['~> 4.0']
 end
 
-group :development, :unit_tests do
+group :production do
+  gem 'os',     '~> 1.0'
+  gem 'puppet', puppetversion
+  gem 'r10k',   '~> 2.3'
+  gem 'rugged', '~> 0.24'
+end
 
-  gem 'json',                    '>= 2.0.2'
-  gem 'json_pure',               '>= 2.0.2'
-  gem 'metadata-json-lint',      '~> 1.0'
-  gem 'puppet',                  puppetversion
-  gem 'puppetlabs_spec_helper',  '~> 1.1'
-  gem 'r10k',                    '~> 2.3'
-  gem 'rspec-puppet',            '~> 2.5'
-  gem 'rugged',                  '~> 0.24'
-  gem 'yamllint',                '~> 0.0.9'
+group :development, :unit_tests do
+  gem 'json',                                             '>= 2.0.2'
+  gem 'json_pure',                                        '>= 2.0.2'
+  gem 'metadata-json-lint',                               '~> 1.0'
+  gem 'puppetlabs_spec_helper',                           '~> 1.1'
+  gem 'rspec-puppet',                                     '~> 2.5'
+  gem 'yamllint',                                         '~> 0.0.9'
 
   # puppet-lint and plugins
   gem 'puppet-lint',                                      '~> 1.1'
