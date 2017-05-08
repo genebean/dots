@@ -4,7 +4,7 @@ require 'tty-command'
 require 'tty-file'
 require 'tty-prompt'
 
-# cmd    = TTY::Command.new
+cmd    = TTY::Command.new
 prompt = TTY::Prompt.new(help_color: :magenta)
 
 @home       = File.expand_path('~')
@@ -44,7 +44,7 @@ else
   abort("I'm not sure what to do with this OS...")
 end
 
-task = prompt.select('What would you like to do?', %w[copy link])
+task = prompt.select('What would you like to do?', %w[copy link install])
 case task
 when 'copy'
   if prompt.yes?('Are you sure you want to copy these files?')
@@ -66,5 +66,11 @@ when 'link'
     end
   else
     puts 'no linking'
+  end
+
+when 'install'
+  if prompt.yes?('Are you sure you want to install your base packages?')
+    puts 'Here is where Puppet should be run.'
+    cmd.run('bundle exec puppet --version')
   end
 end
