@@ -48,8 +48,6 @@ task = prompt.select('What would you like to do?', %w[copy link])
 case task
 when 'copy'
   if prompt.yes?('Are you sure you want to copy these files?')
-    puts 'Copying files...'
-
     @files_copy.each do |file|
       unless @excludes.include?(File.basename(file))
         puts "Copying #{file} to #{@home}/.#{File.basename(file)}"
@@ -61,8 +59,6 @@ when 'copy'
 
 when 'link'
   if prompt.yes?('Shall we continue?')
-    puts 'Creating symlinks...'
-
     @files_link.each do |file|
       unless @excludes.include?(File.basename(file))
         puts "Linking #{@home}/.#{File.basename(file)} to #{file}"
