@@ -58,7 +58,7 @@ when 'copy'
   end
 
 when 'link'
-  if prompt.yes?('Shall we continue?')
+  if prompt.yes?('Are you sure you want to link your dot files?')
     @files_link.each do |file|
       unless @excludes.include?(File.basename(file))
         puts "Linking #{@home}/.#{File.basename(file)} to #{file}"
