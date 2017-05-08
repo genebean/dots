@@ -23,6 +23,9 @@ group :development, :unit_tests do
   gem 'puppetlabs_spec_helper',                           '~> 1.1'
   gem 'rspec-puppet',                                     '~> 2.5'
   gem 'rubocop',                                          '~> 0.48'
+  gem 'tty-command',                                      '~> 0.4'
+  gem 'tty-file',                                         '~> 0.3'
+  gem 'tty-prompt',                                       '~> 0.12'
   gem 'yamllint',                                         '~> 0.0.9'
 
   # puppet-lint and plugins
