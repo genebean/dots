@@ -28,35 +28,39 @@ else
   abort("I'm not sure what to do with this OS...")
 end
 
-@home    = File.expand_path('~')
-@dotroot = File.dirname(File.dirname(File.expand_path($PROGRAM_NAME)))
+@home     = File.expand_path('~')
+@dotroot  = File.dirname(File.dirname(File.expand_path($PROGRAM_NAME)))
+@excludes = %w[mac nix]
 
 task = prompt.select('What would you like to do?', %w[copy link])
 case task
 when 'copy'
   files = Dir.glob("#{@dotroot}/copy/*")
 
-  puts 'The following symlinks will be made:'
-  files.each do |file|
-    puts "#{@home}/.#{File.basename(file)} -> #{file}"
+  if prompt.yes?('Are you sure you want to copy these files?')
+    puts 'Copying files...'
+
+    files.each do |file|
+      unless @excludes.include?(File.basename(file))
+        puts "Copying #{file} to #{@home}/.#{File.basename(file)}"
+      end
+    end
+  else
+    puts 'not copying'
   end
 
-  if prompt.yes?('Shall we continue?')
-    puts 'yes'
-  else
-    puts 'no'
-  end
 when 'link'
   files = Dir.glob("#{@dotroot}/link/*")
 
-  puts 'The following symlinks will be made:'
-  files.each do |file|
-    puts "#{@home}/.#{File.basename(file)} -> #{file}"
-  end
-
   if prompt.yes?('Shall we continue?')
-    puts 'yes'
+    puts 'Creating symlinks...'
+
+    files.each do |file|
+      unless @excludes.include?(File.basename(file))
+        puts "Linking #{@home}/.#{File.basename(file)} to #{file}"
+      end
+    end
   else
-    puts 'no'
+    puts 'no linking'
   end
 end
