@@ -51,7 +51,7 @@ COMPLETION_WAITING_DOTS="false"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(brew bundler gem git git-flow history osx python vagrant)
+plugins=(brew bundler gem git git-flow gpg-agent history osx python vagrant)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -71,7 +71,9 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #alias ll='ls -G -l'
 #alias ls='ls -G'
+alias sal='ssh-add -L'
 alias sz='source ~/.zshrc'
+alias ykey='pkill gpg-agent && source ~/.zshrc && ssh-add -L'
 
 export EDITOR='vim'
 export POWERLINE_CONFIG_COMMAND='/usr/local/bin/powerline-config'
@@ -82,3 +84,4 @@ export PATH=$PATH:/Applications/Araxis\ Merge.app/Contents/Utilities
 
 # added by travis gem
 [ -f /Users/gliverma/.travis/travis.sh ] && source /Users/gliverma/.travis/travis.sh
+
