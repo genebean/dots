@@ -13,7 +13,15 @@ prompt = TTY::Prompt.new(help_color: :magenta)
 @files_copy = Dir.glob("#{@dotroot}/copy/*")
 @files_link = Dir.glob("#{@dotroot}/link/*")
 
-if OS.mac?
+if OS.posix?
+  @files_copy.concat Dir.glob("#{@dotroot}/copy/nix/*")
+  @files_link.concat Dir.glob("#{@dotroot}/link/nix/*")
+end
+
+if OS.windows?
+  puts 'It seems you are on Windows'
+
+elsif OS.mac?
   stdout, _stderr, _status = Open3.capture3('sw_vers -productVersion')
   if Integer(stdout.strip.split('.')[0]) == 10
     if Integer(stdout.strip.split('.')[1]) >= 12
@@ -34,14 +42,9 @@ if OS.mac?
 
 elsif OS.liux?
   puts 'It seems you are on Linux'
-  @files_copy.concat Dir.glob("#{@dotroot}/copy/nix/*")
-  @files_link.concat Dir.glob("#{@dotroot}/link/nix/*")
-
-elsif OS.windows?
-  puts 'It seems you are on Windows'
 
 else
-  abort("I'm not sure what to do with this OS...")
+  abort("I'm not sure what to do with this OS...") unless OS.posix?
 end
 
 task = prompt.select('What would you like to do?', %w[copy link install])
