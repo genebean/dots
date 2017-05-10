@@ -35,6 +35,11 @@ bundle install
 bundle exec r10k puppetfile install --moduledir vendor/puppet_modules --puppetfile puppet/Puppetfile -v
 ```
 
+#### Installed Homebrew packages
+
+To see what has been installed (not the deps) run `brew leaves`
+
+
 ### Packages to install on Mac's
 
 #### Powerline
