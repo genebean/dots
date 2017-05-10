@@ -34,3 +34,25 @@ cd ~/.dotfiles
 bundle install
 bundle exec r10k puppetfile install --moduledir vendor/puppet_modules --puppetfile puppet/Puppetfile -v
 ```
+
+### Packages to install on Mac's
+
+#### Powerline
+
+```bash
+brew install coreutils python socat
+pip install psutil powerline-status
+git clone https://github.com/powerline/fonts.git ~/repos/powerline-fonts
+cd ~/repos/powerline-fonts
+./install.sh
+```
+
+##### Thoughts on installing with Puppet:
+
+* install packages using a provider for homebrew
+* install packages using the pip provider
+* use vcsrepo to clone the fonts
+* create a refresh-only exec that runs the install script
+* add a notify to the vcsrepo resource that triggers the exec
+  * this will also take care of bringing in new fonts or updates
+
