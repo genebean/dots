@@ -1,8 +1,8 @@
 # rubocop:disable FileName
 forge 'http://forge.puppetlabs.com'
 
-#moduledir '~/.dotfiles/vendor/puppet_modules'
-moduledir "#{File.dirname(File.dirname(__FILE__))}/vendor/puppet_modules"
+# The next line translates to '../../vendor/puppet_modules' aka ~/.dotfiles/vendor/puppet_modules
+moduledir "#{File.dirname(File.dirname(File.dirname(__FILE__)))}/vendor/puppet_modules"
 
 mod 'homebrew',
   :git => 'https://github.com/boxen/puppet-homebrew.git'

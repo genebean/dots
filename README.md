@@ -32,7 +32,7 @@ My dot files and a tool to deploy them to various OS's
 git clone git@github.com:genebean/dots.git ~/.dotfiles
 cd ~/.dotfiles
 bundle install
-bundle exec r10k puppetfile install --moduledir vendor/puppet_modules --puppetfile puppet/Puppetfile -v
+bundle exec r10k puppetfile install --puppetfile ~/.dotfiles/production/puppet/Puppetfile -v
 ```
 
 #### Installed Homebrew packages
