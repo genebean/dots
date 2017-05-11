@@ -1,7 +1,36 @@
-execute pathogen#infect()
-syntax on
+set nocompatible              " be iMproved, required
+filetype off                  " required
 
-filetype indent plugin on
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'ekalinin/Dockerfile.vim'
+Plugin 'garbas/vim-snipmate'
+Plugin 'godlygeek/tabular'
+Plugin 'honza/vim-snippets'
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'rodjek/vim-puppet'
+Plugin 'tomtom/tlib_vim'
+Plugin 'vim-syntastic/syntastic'
+
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+syntax on
 
 set encoding=utf-8
 set termencoding=utf-8
@@ -11,7 +40,6 @@ set background=dark
 set expandtab
 set fillchars+=stl:\ ,stlnc:\
 set laststatus=2
-set nocompatible
 set smarttab
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
