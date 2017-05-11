@@ -2,6 +2,7 @@ require 'rubocop/rake_task'
 require 'rubygems'
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet-lint/tasks/puppet-lint'
+require 'tty-command'
 require 'yamllint/rake_task'
 
 exclude_paths = [
@@ -62,4 +63,23 @@ task :tests do
   Rake::Task[:validate].invoke
   Rake::Task[:rubocop].invoke
   Rake::Task[:spec].invoke
+end
+
+namespace 'dots' do
+  cmd = TTY::Command.new
+
+  desc 'Run r10k'
+  task :run_r10k do
+    command = 'bundle exec r10k puppetfile install \
+      --puppetfile ~/.dotfiles/puppet/production/Puppetfile -v'
+    cmd.run(command)
+  end
+
+  desc 'Run Puppet'
+  task :run_puppet do
+    command = 'bundle exec puppet apply \
+      --environmentpath ~/.dotfiles/puppet \
+      ~/.dotfiles/puppet/production/manifests/site.pp'
+    cmd.run(command)
+  end
 end
