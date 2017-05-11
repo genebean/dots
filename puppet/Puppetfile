@@ -1,4 +1,0 @@
-# rubocop:disable FileName
-forge 'http://forge.puppetlabs.com'
-
-mod 'puppetlabs-vcsrepo', '1.5.0'

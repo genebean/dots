@@ -8,7 +8,5 @@
 # specified in the via an ENC for that node.
 
 node default {
-  # This is where you can declare classes for all nodes.
-  # Example:
-  #   class { 'my_class': }
+  notify{'This is from the default node.':}
 }
