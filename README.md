@@ -35,6 +35,12 @@ bundle install
 bundle exec r10k puppetfile install --puppetfile ~/.dotfiles/production/puppet/Puppetfile -v
 ```
 
+#### Running Puppet
+
+```bash
+bundle exec puppet apply --environmentpath ~/.dotfiles/puppet ~/.dotfiles/puppet/production/manifests/site.pp
+```
+
 #### Installed Homebrew packages
 
 To see what has been installed (not the deps) run `brew leaves`
@@ -68,5 +74,3 @@ cd ~/repos/powerline-fonts
 * create a refresh-only exec that runs the install script
 * add a notify to the vcsrepo resource that triggers the exec
   * this will also take care of bringing in new fonts or updates
-
-
