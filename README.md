@@ -42,10 +42,18 @@ To see what has been installed (not the deps) run `brew leaves`
 
 ### Packages to install on Mac's
 
+#### Vundle & Vim
+
+Install via Puppet:
+
+1. link `vimrc`
+2. vcsrepo: https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+3. exec `vim +PluginInstall +qall`
+
 #### Powerline
 
 ```bash
-brew install coreutils python socat
+brew install coreutils python socat tmux
 pip install psutil powerline-status
 git clone https://github.com/powerline/fonts.git ~/repos/powerline-fonts
 cd ~/repos/powerline-fonts
@@ -60,4 +68,5 @@ cd ~/repos/powerline-fonts
 * create a refresh-only exec that runs the install script
 * add a notify to the vcsrepo resource that triggers the exec
   * this will also take care of bringing in new fonts or updates
+
 
