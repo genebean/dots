@@ -57,7 +57,7 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
-[ -f ~/.private-env ] && source ~/.private-env
+[ -f ~/.private-env ] && source ~/.private-env || echo '~/.private-env is missing'
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -73,7 +73,7 @@ source $ZSH/oh-my-zsh.sh
 #alias ls='ls -G'
 alias sal='ssh-add -L'
 alias sz='source ~/.zshrc'
-alias ykey='pkill gpg-agent && source ~/.zshrc && ssh-add -L'
+alias ykey='pkill gpg-agent && source ~/.zshrc; ssh-add -L'
 
 export EDITOR='vim'
 export POWERLINE_CONFIG_COMMAND='/usr/local/bin/powerline-config'
@@ -83,5 +83,5 @@ export PATH=$PATH:/Applications/Araxis\ Merge.app/Contents/Utilities
 
 
 # added by travis gem
-[ -f /Users/gliverma/.travis/travis.sh ] && source /Users/gliverma/.travis/travis.sh
+[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
 
