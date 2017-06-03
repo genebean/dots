@@ -1,9 +1,12 @@
 # rubocop:disable FileName
 forge 'http://forge.puppetlabs.com'
 
+# rubocop:disable Metrics/LineLength
 # The next line translates to '../../vendor/puppet_modules' aka ~/.dotfiles/vendor/puppet_modules
 moduledir "#{File.dirname(File.dirname(File.dirname(__FILE__)))}/vendor/puppet_modules"
+# rubocop:enable Metrics/LineLength
 
-mod 'homebrew',
-  :git => 'https://github.com/boxen/puppet-homebrew.git'
 mod 'puppetlabs-vcsrepo', '1.5.0'
+mod 'thekevjames-homebrew',
+    git:    'https://github.com/genebean/puppet-homebrew.git',
+    branch: 'non-root-and-bundler'

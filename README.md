@@ -31,13 +31,21 @@ My dot files and a tool to deploy them to various OS's
 ```bash
 git clone git@github.com:genebean/dots.git ~/.dotfiles
 cd ~/.dotfiles
-bundle install
-bundle exec r10k puppetfile install --puppetfile ~/.dotfiles/production/puppet/Puppetfile -v
+bin/bootstrap.sh
+This script takes care of getting dots ready to use
+Enter the number of the task you want to perform:
+1) Mac setup
+2) EL setup
+3) Quit
+Task:
 ```
 
 #### Running Puppet
 
 ```bash
+# Any of these will work:
+bundle exec rake dots:run_puppet
+bundle exec rake dots:run_puppet_noop
 bundle exec puppet apply --environmentpath ~/.dotfiles/puppet ~/.dotfiles/puppet/production/manifests/site.pp
 ```
 
@@ -68,9 +76,9 @@ cd ~/repos/powerline-fonts
 
 ##### Thoughts on installing with Puppet:
 
-* install packages using a provider for homebrew
-* install packages using the pip provider
-* use vcsrepo to clone the fonts
-* create a refresh-only exec that runs the install script
-* add a notify to the vcsrepo resource that triggers the exec
+* [x] install packages using a provider for homebrew
+* [ ] install packages using the pip provider
+* [ ] use vcsrepo to clone the fonts
+* [ ] create a refresh-only exec that runs the install script
+* [ ] add a notify to the vcsrepo resource that triggers the exec
   * this will also take care of bringing in new fonts or updates

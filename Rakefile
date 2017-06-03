@@ -65,6 +65,11 @@ task :tests do
   Rake::Task[:spec].invoke
 end
 
+desc 'Run dots'
+task :dots do
+  ruby 'bin/dots.rb'
+end
+
 namespace 'dots' do
   cmd = TTY::Command.new
 
@@ -80,6 +85,14 @@ namespace 'dots' do
     command = 'bundle exec puppet apply \
       --environmentpath ~/.dotfiles/puppet \
       ~/.dotfiles/puppet/production/manifests/site.pp'
+    cmd.run(command)
+  end
+
+  desc 'Run Puppet (noop)'
+  task :run_puppet_noop do
+    command = 'bundle exec puppet apply \
+      --environmentpath ~/.dotfiles/puppet \
+      ~/.dotfiles/puppet/production/manifests/site.pp --noop'
     cmd.run(command)
   end
 end
