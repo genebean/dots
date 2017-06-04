@@ -3,15 +3,17 @@ require 'os'
 require 'tty-command'
 require 'tty-file'
 require 'tty-prompt'
+require_relative 'dotutils.rb'
 
-cmd    = TTY::Command.new
-prompt = TTY::Prompt.new(help_color: :magenta)
+cmd     = TTY::Command.new
+@prompt = TTY::Prompt.new(help_color: :magenta)
 
 @home       = File.expand_path('~')
 @dotroot    = File.dirname(File.dirname(File.expand_path($PROGRAM_NAME)))
-@excludes   = %w[mac nix]
+@excludes   = %w[mac nix ssh]
 @files_copy = Dir.glob("#{@dotroot}/copy/*")
 @files_link = Dir.glob("#{@dotroot}/link/*")
+@ssh_link   = Dir.glob("#{@dotroot}/link/ssh/*")
 
 if OS.posix?
   @files_copy.concat Dir.glob("#{@dotroot}/copy/nix/*")
@@ -47,10 +49,10 @@ else
   abort("I'm not sure what to do with this OS...") unless OS.posix?
 end
 
-task = prompt.select('What would you like to do?', %w[copy link install])
+task = @prompt.select('What would you like to do?', %w[copy link install])
 case task
 when 'copy'
-  if prompt.yes?('Are you sure you want to copy these files?')
+  if @prompt.yes?('Are you sure you want to copy these files?')
     @files_copy.each do |file|
       unless @excludes.include?(File.basename(file))
         puts "Copying #{file} to #{@home}/.#{File.basename(file)}"
@@ -61,18 +63,26 @@ when 'copy'
   end
 
 when 'link'
-  if prompt.yes?('Are you sure you want to link your dot files?')
+  if @prompt.yes?('Are you sure you want to link your dot files?')
     @files_link.each do |file|
       unless @excludes.include?(File.basename(file))
-        puts "Linking #{@home}/.#{File.basename(file)} to #{file}"
+        # puts "Linking #{@home}/.#{File.basename(file)} to #{file}"
+        link_file(file, "#{@home}/.#{File.basename(file)}")
       end
+    end
+
+    # rubocop:disable Style/NumericLiteralPrefix
+    Dir.mkdir("#{@home}/.ssh", 0700) unless File.directory?("#{@home}/.ssh")
+    # rubocop:enable Style/NumericLiteralPrefix
+    @ssh_link.each do |file|
+      link_file(file, "#{@home}/.ssh/#{File.basename(file)}")
     end
   else
     puts 'no linking'
   end
 
 when 'install'
-  if prompt.yes?('Are you sure you want to install your base packages?')
+  if @prompt.yes?('Are you sure you want to install your base packages?')
     puts 'Here is where Puppet should be run.'
     cmd.run('bundle exec puppet --version')
   end
