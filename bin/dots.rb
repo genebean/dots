@@ -24,20 +24,7 @@ if OS.windows?
   puts 'It seems you are on Windows'
 
 elsif OS.mac?
-  stdout, _stderr, _status = Open3.capture3('sw_vers -productVersion')
-  if Integer(stdout.strip.split('.')[0]) == 10
-    if Integer(stdout.strip.split('.')[1]) >= 12
-      puts "It seems you are on macOS #{stdout.strip}"
-    else
-      puts "It seems you are on OX X #{stdout.strip}"
-    end
-
-  elsif Integer(stdout.strip.split('.')[0]) < 10
-    puts "Wow... you're sure running an old os (#{stdout.strip} to be exact)"
-  else
-    abort("It seems you are on a Mac but I don't know what to do on \
-      v#{stdout.strip}")
-  end
+  mac_vers
 
   @files_copy.concat Dir.glob("#{@dotroot}/copy/mac/*")
   @files_link.concat Dir.glob("#{@dotroot}/link/mac/*")
@@ -56,6 +43,7 @@ when 'copy'
     @files_copy.each do |file|
       unless @excludes.include?(File.basename(file))
         puts "Copying #{file} to #{@home}/.#{File.basename(file)}"
+        copy_file(file, "#{@home}/.#{File.basename(file)}")
       end
     end
   else
@@ -78,12 +66,11 @@ when 'link'
       link_file(file, "#{@home}/.ssh/#{File.basename(file)}")
     end
   else
-    puts 'no linking'
+    puts 'not linking'
   end
 
 when 'install'
   if @prompt.yes?('Are you sure you want to install your base packages?')
-    puts 'Here is where Puppet should be run.'
-    cmd.run('bundle exec puppet --version')
+    cmd.run('bundle exec rake dots:run_puppet')
   end
 end

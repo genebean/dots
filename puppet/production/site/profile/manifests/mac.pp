@@ -8,6 +8,8 @@ class profile::mac {
   #   creates => '/usr/local/bin/brew',
   # }
 
+  $homedir = lookup('homedir')
+
   #Package { provider => 'homebrew' }
   $homebrew_packages = [
     'bash-completion',
@@ -40,7 +42,12 @@ class profile::mac {
   ]
 
   package { $homebrew_packages:
-    ensure   => installed,
+    ensure   => 'installed',
     provider => 'brew',
+  }
+
+  vcsrepo { "${homedir}/.vim/bundle/Vundle.vim":
+    ensure   => 'present',
+    provider => 'git',
   }
 }
