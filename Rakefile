@@ -94,4 +94,10 @@ namespace 'dots' do
       ~/.dotfiles/puppet/production/manifests/site.pp --noop'
     cmd.run(command)
   end
+
+  desc 'Install Vundle Plugins'
+  task :vim_plugins do
+    command = 'vim +PluginInstall +qall'
+    cmd.run(command)
+  end
 end

@@ -11,6 +11,6 @@ node default {
   notify{'This is from the default node.':}
 }
 
-node 'dawns-macbook-pro.local' {
-  include ::profile::mac
+node 'dawns-macbook-pro' {
+  include ::role::workstation
 }

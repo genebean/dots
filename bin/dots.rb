@@ -72,5 +72,6 @@ when 'link'
 when 'install'
   if @prompt.yes?('Are you sure you want to install your base packages?')
     cmd.run('bundle exec rake dots:run_puppet')
+    cmd.run('bundle exec rake dots:vim_plugins')
   end
 end

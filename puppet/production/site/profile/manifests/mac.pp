@@ -42,12 +42,33 @@ class profile::mac {
   ]
 
   package { $homebrew_packages:
-    ensure   => 'installed',
+    ensure   => 'latest',
     provider => 'brew',
   }
 
+  file { "${homedir}/repos":
+    ensure => 'directory',
+  }
+
   vcsrepo { "${homedir}/.vim/bundle/Vundle.vim":
-    ensure   => 'present',
+    ensure   => 'latest',
     provider => 'git',
+    source   => 'https://github.com/VundleVim/Vundle.vim.git',
+  }
+
+  vcsrepo { "${homedir}/repos/powerline-fonts":
+    ensure   => 'latest',
+    provider => 'git',
+    source   => 'https://github.com/powerline/fonts.git',
+    require  => File["${homedir}/repos"],
+    notify   => Exec['update-fonts'],
+  }
+
+  exec { 'update-fonts':
+    command     => "${homedir}/repos/powerline-fonts/install.sh",
+    cwd         => "${homedir}/repos/powerline-fonts",
+    logoutput   => true,
+    environment => "HOME=${homedir}",
+    refreshonly => true,
   }
 }

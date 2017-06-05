@@ -6,6 +6,6 @@ defaults:                # Used for any hierarchy level that omits these keys.
 
 hierarchy:
   - name: "Per-node data"
-    path: "nodes/%{trusted.certname}.yaml"
+    path: "nodes/%{hostname}.yaml"
   - name: "Common data"
     path: "common.yaml"

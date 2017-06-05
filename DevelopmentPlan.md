@@ -21,38 +21,6 @@ My dot files and a tool to deploy them to various OS's
   * use [gosu](https://github.com/tianon/gosu) so ownership is correct.
     * this may not work on Windows...
 
-### Notes thus far
-
-1. Install Homebrew
-2. Install ruby >= 2.0 (testing with 2.4.1)
-3. Install bundler
-4. Install cmake and pkg-config
-
-```bash
-git clone git@github.com:genebean/dots.git ~/.dotfiles
-cd ~/.dotfiles
-bin/bootstrap.sh
-This script takes care of getting dots ready to use
-Enter the number of the task you want to perform:
-1) Mac setup
-2) EL setup
-3) Quit
-Task:
-```
-
-#### Running Puppet
-
-```bash
-# Any of these will work:
-bundle exec rake dots:run_puppet
-bundle exec rake dots:run_puppet_noop
-bundle exec puppet apply --environmentpath ~/.dotfiles/puppet ~/.dotfiles/puppet/production/manifests/site.pp
-```
-
-#### Installed Homebrew packages
-
-To see what has been installed (not the deps) run `brew leaves`
-
 
 ### Packages to install on Mac's
 
@@ -77,8 +45,8 @@ cd ~/repos/powerline-fonts
 ##### Thoughts on installing with Puppet:
 
 * [x] install packages using a provider for homebrew
-* [ ] install packages using the pip provider
-* [ ] use vcsrepo to clone the fonts
-* [ ] create a refresh-only exec that runs the install script
-* [ ] add a notify to the vcsrepo resource that triggers the exec
+* [x] install packages using the pip provider
+* [x] use vcsrepo to clone the fonts
+* [x] create a refresh-only exec that runs the install script
+* [x] add a notify to the vcsrepo resource that triggers the exec
   * this will also take care of bringing in new fonts or updates
