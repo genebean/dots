@@ -44,8 +44,20 @@ home directory. On a Mac this is generally in `/Users/` or `/home/` on Linux.
 
 ## Running dots
 
-There are primary way to interact with dots is via `bundle exec rake dots`.
-This will run an interactive cli program. Additional tasks are available in the
+The primary way to interact with dots is via `bundle exec rake dots`.
+This will run an interactive cli program like so:
+
+```
+$ bundle exec rake dots
+/usr/local/Cellar/ruby/2.4.1_1/bin/ruby bin/dots.rb
+It seems you are on macOS 10.12.5
+What would you like to do? (Use arrow keys, press Enter to select)
+‣ copy
+  link
+  install
+```
+
+Additional tasks are available in the
 dots namespace. You can see all the available tasks via
 `bundle exec rake -T`.
 
