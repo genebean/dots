@@ -1,4 +1,4 @@
-# rubocop:disable FileName
+# rubocop:disable Lint/UnneededDisable, Style/FileName
 forge 'http://forge.puppetlabs.com'
 
 # rubocop:disable Metrics/LineLength

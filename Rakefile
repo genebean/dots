@@ -11,7 +11,6 @@ exclude_paths = [
   'spec/**/*'
 ]
 
-RuboCop::RakeTask.new
 RuboCop::RakeTask.new(:rubocop) do |task|
   # task.patterns = ['lib/**/*.rb']
   # only show the files with failures
@@ -20,10 +19,10 @@ RuboCop::RakeTask.new(:rubocop) do |task|
   # task.fail_on_error = false
 end
 
-PuppetLint.configuration.fail_on_warnings = true
-PuppetLint.configuration.ignore_paths = exclude_paths
-PuppetLint.configuration.log_format =
-  '%{path}:%{linenumber}:%{check}:%{KIND}:%{message}'
+PuppetLint::RakeTask.new :lint do |config|
+  config.fail_on_warnings = true
+  config.ignore_paths     = exclude_paths
+end
 
 PuppetSyntax.exclude_paths = exclude_paths
 
