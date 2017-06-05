@@ -36,7 +36,7 @@ else
   abort("I'm not sure what to do with this OS...") unless OS.posix?
 end
 
-task = @prompt.select('What would you like to do?', %w[copy link install])
+task = @prompt.select('What would you like to do?', %w[copy link install exit])
 case task
 when 'copy'
   if @prompt.yes?('Are you sure you want to copy these files?')
@@ -74,4 +74,7 @@ when 'install'
     cmd.run('bundle exec rake dots:run_puppet')
     cmd.run('bundle exec rake dots:vim_plugins')
   end
-end
+
+when 'exit'
+  exit
+end # end of the case statement
