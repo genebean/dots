@@ -3,7 +3,7 @@ cache: bundler
 
 os:
   - linux
-  - osx
+#  - osx
 
 rvm:
   - 2.4.1
