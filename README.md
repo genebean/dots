@@ -96,7 +96,7 @@ To see what has been installed (not the deps) run `brew leaves`
 * `link/mac/`: files in here get symlinked on all Macs
 * `link/nix/`: files in here get symlinked on all Posix systems
 * `link/ssh/`: these files get symlinked under `~/.ssh/` on all Posix systems
-* `puppet/`: this is basically a control repo modified to suite this setup
+* `puppet/`: this is basically a control repo modified to suit this setup
 * `puppet/production/`: items from an environment's branch in a control repo
   * this setup assumes Puppet 4 and Hiera 5. Hiera's config is parsed as part of
     the environment rather than from a global config file.
