@@ -32,8 +32,9 @@ namespace 'dots' do
 
   desc 'Install Vundle Plugins'
   task :vim_plugins do
-    command = 'vim +PluginInstall +qall'
-    cmd.run(command)
+    # running this command from bundler refuses to work
+    command = 'vim +PluginInstall! +qall'
+    puts "Run '#{command}' to get your Vundle plugins installed and/or updated"
   end
 end
 # rubocop:enable Metrics/BlockLength
