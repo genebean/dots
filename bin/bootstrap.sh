@@ -7,10 +7,10 @@ select TASK in 'Mac setup' 'EL setup' 'Quit';
 do
   case $TASK in
     'Mac setup' )
-      ~/.dotfile/bin/bootstrap/bootstrap_mac.sh now
+      ~/.dotfiles/bin/bootstrap/bootstrap_mac.sh now
       ;;
     'EL setup' )
-      ~/.dotfile/bin/bootstrap/bootstrap_el.sh now
+      ~/.dotfiles/bin/bootstrap/bootstrap_el.sh now
       ;;
     'Quit' )
       echo 'Exiting'
