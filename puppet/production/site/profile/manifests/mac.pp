@@ -42,7 +42,7 @@ class profile::mac {
   ]
 
   package { $homebrew_packages:
-    ensure   => 'latest',
+    ensure   => 'installed',
     provider => 'brew',
   }
 
