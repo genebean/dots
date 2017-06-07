@@ -14,3 +14,8 @@ node default {
 node 'dawns-macbook-pro' {
   include ::role::workstation
 }
+
+node 'gene' {
+  include ::role::workstation
+}
+
