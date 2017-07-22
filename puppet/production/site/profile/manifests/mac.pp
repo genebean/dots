@@ -25,6 +25,7 @@ class profile::mac {
     'gnu-tar',
     'hub',
     'iftop',
+    'kompose',
     'mutt',
     'packer',
     'python',
