@@ -29,7 +29,7 @@ elsif OS.mac?
   @files_copy.concat Dir.glob("#{@dotroot}/copy/mac/*")
   @files_link.concat Dir.glob("#{@dotroot}/link/mac/*")
 
-elsif OS.liux?
+elsif OS.linux?
   puts 'It seems you are on Linux'
 
 else
