@@ -79,8 +79,12 @@ export EDITOR='vim'
 export POWERLINE_CONFIG_COMMAND='/usr/local/bin/powerline-config'
 
 export PATH=$PATH:~/.nexustools
-export PATH=$PATH:/Applications/Araxis\ Merge.app/Contents/Utilities
-export PATH=$PATH:/usr/local/opt/node@6/bin
+
+if [[ `uname` == 'Darwin' ]]; then
+  export PATH=$PATH:/Applications/Araxis\ Merge.app/Contents/Utilities
+  export PATH="/usr/local/opt/python/libexec/bin:$PATH"
+  export PATH=$PATH:/usr/local/opt/node@6/bin
+fi
 
 
 # added by travis gem
