@@ -1,3 +1,6 @@
 /.vagrant/
 /vendor/
 
+# Config files that are not suitable to add to version control:
+link/nix/config/hub
+
