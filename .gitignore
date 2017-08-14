@@ -2,5 +2,8 @@
 /vendor/
 
 # Config files that are not suitable to add to version control:
+link/nix/config/configstore/update-notifier-npm.json
 link/nix/config/hub
+link/nix/config/NuGet/nuget.config
+link/nix/config/powershell/powershellget/
 
