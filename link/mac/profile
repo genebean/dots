@@ -5,6 +5,7 @@ export EDITOR='vim'
 
 export PATH=$PATH:~/.nexustools
 export PATH=$PATH:/Applications/Araxis\ Merge.app/Contents/Utilities
+export PATH="/usr/local/opt/python/libexec/bin:$PATH"
 
 #export PS1='\u:☕️  \W \$ '
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
