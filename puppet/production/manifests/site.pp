@@ -11,7 +11,7 @@ node default {
   notify{'This is from the default node.':}
 }
 
-node 'dawns-macbook-pro' {
+node 'yellowbadger' {
   include ::role::workstation
 }
 
