@@ -9,5 +9,3 @@
 [user]
 	name = Gene Liverman
 	email = gene@technicalissues.us
-[commit]
-	template = /Users/geneliverman/.stCommitMsg
