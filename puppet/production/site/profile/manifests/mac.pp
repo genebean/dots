@@ -47,6 +47,27 @@ class profile::mac {
     provider => 'brew',
   }
 
+  $homebrew_casks = [
+    '1password',
+    'adium',
+    'araxis-merge',
+    'atom',
+    'caffeine',
+    'docker',
+    'firefox',
+    'fliqlo',
+    'google-chrome',
+    'iterm2',
+    'slack',
+    'sourcetree',
+    'visual-studio-code',
+  ]
+
+  package { $homebrew_casks:
+    ensure   => 'installed',
+    provider => 'brewcask',
+  }
+
   file { "${homedir}/repos":
     ensure => 'directory',
   }
@@ -71,5 +92,17 @@ class profile::mac {
     logoutput   => true,
     environment => "HOME=${homedir}",
     refreshonly => true,
+  }
+
+  vcsrepo { "${homedir}/.oh-my-zsh":
+    ensure   => 'present',
+    provider => 'git',
+    source   => 'https://github.com/robbyrussell/oh-my-zsh.git',
+  }
+
+  vcsrepo { "${homedir}/.oh-my-zsh/custom/themes":
+    ensure   => 'latest',
+    provider => 'git',
+    source   => 'git@github.com:genebean/my-oh-zsh-themes.git',
   }
 }
