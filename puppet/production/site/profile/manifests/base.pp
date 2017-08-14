@@ -8,5 +8,6 @@ class profile::base {
   package { $pip_packages:
     ensure   => 'latest',
     provider => 'pip',
+    require  => Package['python'],
   }
 }
