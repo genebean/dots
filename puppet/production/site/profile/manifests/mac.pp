@@ -57,6 +57,7 @@ class profile::mac {
     'firefox',
     'fliqlo',
     'google-chrome',
+    'hipchat',
     'iterm2',
     'slack',
     'sourcetree',
