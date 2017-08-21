@@ -50,6 +50,8 @@ class profile::mac {
   $homebrew_casks = [
     '1password',
     'adium',
+    'android-file-transfer',
+    'android-platform-tools',
     'araxis-merge',
     'atom',
     'caffeine',
