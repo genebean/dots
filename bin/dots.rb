@@ -10,7 +10,7 @@ cmd     = TTY::Command.new
 
 @home       = File.expand_path('~')
 @dotroot    = File.dirname(File.dirname(File.expand_path($PROGRAM_NAME)))
-@excludes   = %w[mac nix ssh]
+@excludes   = %w[linux mac nix ssh]
 @files_copy = Dir.glob("#{@dotroot}/copy/*")
 @files_link = Dir.glob("#{@dotroot}/link/*")
 @ssh_link   = Dir.glob("#{@dotroot}/link/ssh/*")
@@ -30,7 +30,7 @@ elsif OS.mac?
   @files_link.concat Dir.glob("#{@dotroot}/link/mac/*")
 
 elsif OS.linux?
-  puts 'It seems you are on Linux'
+  @files_link.concat Dir.glob("#{@dotroot}/link/linux/*")
 
 else
   abort("I'm not sure what to do with this OS...") unless OS.posix?

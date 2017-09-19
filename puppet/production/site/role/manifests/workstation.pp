@@ -6,6 +6,9 @@ class role::workstation {
     'Darwin': {
       include ::profile::mac
     }
+    'Linux': {
+      include ::profile::linux
+    }
     default: {
       fail("${facts['kernel']} hasn't been setup in the workstation role yet.")
     }

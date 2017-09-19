@@ -57,7 +57,4 @@ let g:syntastic_ruby_checkers            = ['rubocop']
 let g:syntastic_quiet_messages           = {'level': 'warnings'}
 let g:vim_markdown_folding_disabled      = 1
 
-python from powerline.vim import setup as powerline_setup
-python powerline_setup()
-python del powerline_setup
-
+source ~/.vimrc_os_specific
