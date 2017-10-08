@@ -54,13 +54,18 @@ COMPLETION_WAITING_DOTS="false"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(brew bundler gem git git-flow gpg-agent history osx python vagrant)
+plugins=(brew bundler gem git git-flow history osx pip python terraform vagrant)
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
 [ -f ~/.private-env ] && source ~/.private-env || echo '~/.private-env is missing'
+
+# Start GPG agent
+export GPG_TTY=$(tty)
+gpg-connect-agent /bye
+export SSH_AUTH_SOCK=~/.gnupg/S.gpg-agent.ssh
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
