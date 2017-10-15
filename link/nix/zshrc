@@ -69,11 +69,6 @@ export SSH_AUTH_SOCK=~/.gnupg/S.gpg-agent.ssh
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
-# Start GPG agent
-export GPG_TTY=$(tty)
-gpg-connect-agent /bye
-export SSH_AUTH_SOCK=~/.gnupg/S.gpg-agent.ssh
-
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
