@@ -100,8 +100,8 @@ if [[ `uname` == 'Darwin' ]]; then
     source /Applications/google-cloud-sdk/completion.zsh.inc
     source /Applications/google-cloud-sdk/path.zsh.inc
   fi
-fi
 
   # added by travis gem
   [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
 fi
+
