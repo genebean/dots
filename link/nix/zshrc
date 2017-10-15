@@ -81,6 +81,7 @@ export SSH_AUTH_SOCK=~/.gnupg/S.gpg-agent.ssh
 #alias ls='ls -G'
 alias sal='ssh-add -L'
 alias sz='source ~/.zshrc'
+alias st='/Applications/SourceTree.app/Contents/MacOS/SourceTree &'
 alias ykey='pkill gpg-agent && source ~/.zshrc; ssh-add -L'
 
 export EDITOR='vim'
@@ -92,10 +93,15 @@ if [[ `uname` == 'Darwin' ]]; then
   export PATH=$PATH:/usr/local/sbin
   export PATH=$PATH:/Applications/Araxis\ Merge.app/Contents/Utilities
   export PATH="/usr/local/opt/python/libexec/bin:$PATH"
+  eval '/usr/libexec/path_helper -s' > /dev/null
   export PATH=$PATH:/usr/local/opt/node@6/bin
+
+  if [[ -f '/Applications/google-cloud-sdk' ]]; then
+    source /Applications/google-cloud-sdk/completion.zsh.inc
+    source /Applications/google-cloud-sdk/path.zsh.inc
+  fi
+fi
 
   # added by travis gem
   [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
 fi
-
-
