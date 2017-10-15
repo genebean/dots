@@ -94,6 +94,7 @@ export POWERLINE_CONFIG_COMMAND='/usr/local/bin/powerline-config'
 export PATH=$PATH:~/.nexustools
 
 if [[ `uname` == 'Darwin' ]]; then
+  export PATH=$PATH:/usr/local/sbin
   export PATH=$PATH:/Applications/Araxis\ Merge.app/Contents/Utilities
   export PATH="/usr/local/opt/python/libexec/bin:$PATH"
   export PATH=$PATH:/usr/local/opt/node@6/bin
