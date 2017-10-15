@@ -83,7 +83,6 @@ class profile::mac {
     require  => Package['python'],
   }
 
-
   file { "${homedir}/repos":
     ensure => 'directory',
   }

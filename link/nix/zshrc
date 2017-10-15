@@ -93,9 +93,9 @@ if [[ `uname` == 'Darwin' ]]; then
   export PATH=$PATH:/Applications/Araxis\ Merge.app/Contents/Utilities
   export PATH="/usr/local/opt/python/libexec/bin:$PATH"
   export PATH=$PATH:/usr/local/opt/node@6/bin
+
+  # added by travis gem
+  [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
 fi
 
-
-# added by travis gem
-[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
 
