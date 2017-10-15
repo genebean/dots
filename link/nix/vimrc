@@ -46,6 +46,7 @@ set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 set t_Co=256
 
+let g:solarized_termtrans = 1 " This gets rid of the grey background
 colorscheme solarized
 
 let g:syntastic_always_populate_loc_list = 1
