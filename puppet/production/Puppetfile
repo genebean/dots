@@ -9,6 +9,4 @@ moduledir "#{File.dirname(File.dirname(File.dirname(__FILE__)))}/vendor/puppet_m
 mod 'puppetlabs-apt', '4.1.0'
 mod 'puppetlabs-stdlib', '4.20.0'
 mod 'puppetlabs-vcsrepo', '2.0.0'
-mod 'thekevjames-homebrew',
-    git:    'https://github.com/genebean/puppet-homebrew.git',
-    branch: 'non-root-and-bundler'
+mod 'thekevjames-homebrew', '1.7.1'
