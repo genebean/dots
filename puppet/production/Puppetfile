@@ -1,4 +1,4 @@
-# rubocop:disable Lint/UnneededDisable, Style/FileName
+# rubocop:disable Lint/UnneededDisable, Naming
 forge 'http://forge.puppetlabs.com'
 
 # rubocop:disable Metrics/LineLength
@@ -6,6 +6,8 @@ forge 'http://forge.puppetlabs.com'
 moduledir "#{File.dirname(File.dirname(File.dirname(__FILE__)))}/vendor/puppet_modules"
 # rubocop:enable Metrics/LineLength
 
+mod 'puppetlabs-apt', '4.1.0'
+mod 'puppetlabs-stdlib', '4.20.0'
 mod 'puppetlabs-vcsrepo', '2.0.0'
 mod 'thekevjames-homebrew',
     git:    'https://github.com/genebean/puppet-homebrew.git',

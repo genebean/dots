@@ -4,10 +4,13 @@ export ZSH=~/.oh-my-zsh
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-#ZSH_THEME="af-magic"
-#ZSH_THEME="pygmalion"
-#ZSH_THEME="muse"
-ZSH_THEME="beanbag"
+if [[ `uname` == 'Linux' ]]; then
+  ZSH_THEME="af-magic"
+else
+  ZSH_THEME="beanbag"
+  #ZSH_THEME="pygmalion"
+  #ZSH_THEME="muse"
+fi
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"

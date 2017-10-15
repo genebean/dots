@@ -72,6 +72,18 @@ class profile::mac {
     provider => 'brewcask',
   }
 
+  $pip_packages = [
+    'psutil',
+    'powerline-status',
+  ]
+
+  package { $pip_packages:
+    ensure   => 'latest',
+    provider => 'pip',
+    require  => Package['python'],
+  }
+
+
   file { "${homedir}/repos":
     ensure => 'directory',
   }

@@ -11,11 +11,15 @@ node default {
   notify{'This is from the default node.':}
 }
 
-node 'yellowbadger' {
+node 'gene' {
   include ::role::workstation
 }
 
-node 'gene' {
+node 'mintstring' {
+  include ::role::workstation
+}
+
+node 'yellowbadger' {
   include ::role::workstation
 }
 
