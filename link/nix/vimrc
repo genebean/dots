@@ -37,6 +37,7 @@ set termencoding=utf-8
 
 set autoindent
 set background=dark
+set backspace=2
 set expandtab
 set fillchars+=stl:\ ,stlnc:\
 set laststatus=2
