@@ -14,9 +14,10 @@ as self-contained as possible. Installation of programs and management of git
 repositories is handled by way of the
 [Puppet gem](https://rubygems.org/gems/puppet).
 
-Everything about dots assumes you are running it as a normal user, not as root.
-Strange and unexpected things could well happen if you run any part of it as
-root or via sudo.
+Everything about dots macOS assumes you are running it as a normal user,
+not as root. Strange and unexpected things could well happen if you run any part
+of it as root or via sudo while on macOS. That said, sudo is required on Debian
+due to there not being an equivalent to homebrew as you need sudo to use apt.
 
 
 ## Initial Setup
@@ -29,7 +30,8 @@ This script takes care of getting dots ready to use
 Enter the number of the task you want to perform:
 1) Mac setup
 2) EL setup
-3) Quit
+3) Mint setup
+4) Quit
 Task:
 ```
 
@@ -62,6 +64,12 @@ What would you like to do? (Use arrow keys, press Enter to select)
   install
 ```
 
+If not on macOS then you will need to use sudo for the install step:
+
+```
+$ sudo bundle exec rake dots
+```
+
 Additional tasks are available in the
 dots namespace. You can see all the available tasks via
 `bundle exec rake -T`.
@@ -78,6 +86,8 @@ bundle exec rake dots:run_puppet_noop
 bundle exec puppet apply --environmentpath ~/.dotfiles/puppet ~/.dotfiles/puppet/production/manifests/site.pp
 ```
 
+As mentioned above, when not on macOS you will need to prefix bundle with sudo.
+
 
 #### Installed Homebrew packages
 
@@ -93,6 +103,7 @@ To see what has been installed (not the deps) run `brew leaves`
 * `copy/nix/`: files in here get copied to all Posix systems
 * `link/`: files directly in this directory are symlinked on all hosts.
   * all symlinks are prefixed with a dot. Ex: `link/gemrc` becomes `~/.gemrc`
+* `link/linux/`: files in here get symlinked on all Linux distros
 * `link/mac/`: files in here get symlinked on all Macs
 * `link/nix/`: files in here get symlinked on all Posix systems
 * `link/ssh/`: these files get symlinked under `~/.ssh/` on all Posix systems
