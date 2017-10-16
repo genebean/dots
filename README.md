@@ -20,6 +20,12 @@ of it as root or via sudo while on macOS. That said, sudo is required on Debian
 due to there not being an equivalent to homebrew as you need sudo to use apt.
 
 
+## Currently Supported OS's
+
+* macOS
+* Linux Mint 18.2
+
+
 ## Initial Setup
 
 ```bash
@@ -112,3 +118,44 @@ To see what has been installed (not the deps) run `brew leaves`
   * this setup assumes Puppet 4 and Hiera 5. Hiera's config is parsed as part of
     the environment rather than from a global config file.
 * `spec/`: unit tests go here
+
+
+## Adding Packages
+
+To add additional pacakages to be installed and managed by dots you will need to
+edit the associated Puppet manifest. Currently, this consists of the following:
+
+```bash
+puppet/production/site/profile/manifests/
+├── base.pp
+├── linux
+│   └── debian.pp
+├── linux.pp
+└── mac.pp
+```
+
+On macOS you can easily install packages and casks from homebrew or Python
+modules from pip. On Linux Mint you can easily use any package provider
+that supports Debian or Ubuntu since all installs are done via sudo. On both
+platforms you can also use custom exec's to to work around limitations. For
+example, an exec is used on Mint to set the shell to zsh and on both platforms
+to install or update the powerline fonts.
+
+
+## Puppet Customizations
+
+This repo also contains some custom facts and functions under
+`puppet/production/site/custom_libs`:
+
+### Facts
+
+* `os_release`: this creates a structured fact out of the contents of
+  /etc/os-release on Linux systems. This info is needed on Mint to determine
+  what version of Ubuntu it is based on.
+
+### Functions
+
+* `find_group`: returns the owning group's GID as a string for the file or
+  folder at a given path
+* `find_owner`: returns the owning user's UID as a string for the file or
+  folder at a given path
