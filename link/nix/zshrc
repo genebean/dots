@@ -79,6 +79,7 @@ export SSH_AUTH_SOCK=~/.gnupg/S.gpg-agent.ssh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #alias ll='ls -G -l'
 #alias ls='ls -G'
+alias biv='bundle install --path=vendor/bundle'
 alias sal='ssh-add -L'
 alias sz='source ~/.zshrc'
 alias st='/Applications/SourceTree.app/Contents/MacOS/SourceTree &'
