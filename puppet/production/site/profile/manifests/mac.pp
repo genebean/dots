@@ -16,6 +16,7 @@ class profile::mac {
     'bundler-completion',
     'cmake',
     'coreutils',
+    'csshx',
     'docker-completion',
     'elixir',
     'erlang',
@@ -25,13 +26,17 @@ class profile::mac {
     'gnu-tar',
     'hub',
     'iftop',
+    'jq',
     'kompose',
     'mutt',
+    'ncftp',
+    'openssh',
     'packer',
     'python',
     'ruby',
     'sl',
     'socat',
+    'terraform',
     'tmux',
     'tree',
     'unrar',
@@ -48,29 +53,29 @@ class profile::mac {
     provider => 'brew',
   }
 
-  $homebrew_casks = [
-    '1password',
-    'adium',
-    'android-file-transfer',
-    'android-platform-tools',
-    'araxis-merge',
-    'atom',
-    'caffeine',
-    'docker',
-    'firefox',
-    'fliqlo',
-    'google-chrome',
-    'hipchat',
-    'iterm2',
-    'slack',
-    'sourcetree',
-    'visual-studio-code',
-  ]
-
-  package { $homebrew_casks:
-    ensure   => 'installed',
-    provider => 'brewcask',
-  }
+  # $homebrew_casks = [
+  #   '1password',
+  #   'adium',
+  #   'android-file-transfer',
+  #   'android-platform-tools',
+  #   'araxis-merge',
+  #   'atom',
+  #   'caffeine',
+  #   'docker',
+  #   'firefox',
+  #   'fliqlo',
+  #   'google-chrome',
+  #   'hipchat',
+  #   'iterm2',
+  #   'slack',
+  #   'sourcetree',
+  #   'visual-studio-code',
+  # ]
+  #
+  # package { $homebrew_casks:
+  #   ensure   => 'installed',
+  #   provider => 'brewcask',
+  # }
 
   $pip_packages = [
     'psutil',
