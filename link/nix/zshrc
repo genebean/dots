@@ -85,6 +85,13 @@ alias sz='source ~/.zshrc'
 alias st='/Applications/SourceTree.app/Contents/MacOS/SourceTree &'
 alias ykey='pkill gpg-agent && source ~/.zshrc; ssh-add -L'
 
+function otpon() {
+        osascript -e 'tell application "yubiswitch" to KeyOn'
+}
+function otpoff() {
+        osascript -e 'tell application "yubiswitch" to KeyOff'
+}
+
 export EDITOR='vim'
 export POWERLINE_CONFIG_COMMAND='/usr/local/bin/powerline-config'
 
