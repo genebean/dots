@@ -103,7 +103,6 @@ if [[ `uname` == 'Darwin' ]]; then
   export PATH=$PATH:/Applications/Araxis\ Merge.app/Contents/Utilities
   export PATH="/usr/local/opt/python/libexec/bin:$PATH"
   eval '/usr/libexec/path_helper -s' > /dev/null
-  export PATH=$PATH:/usr/local/opt/node@6/bin
 
   if [[ -f '/Applications/google-cloud-sdk' ]]; then
     source /Applications/google-cloud-sdk/completion.zsh.inc
