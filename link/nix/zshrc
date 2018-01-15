@@ -104,6 +104,9 @@ if [[ `uname` == 'Darwin' ]]; then
   export PATH="/usr/local/opt/python/libexec/bin:$PATH"
   eval '/usr/libexec/path_helper -s' > /dev/null
 
+  # optional additions from homebrew
+  [ -d /usr/local/opt/qt/bin ] && export PATH=$PATH:/usr/local/opt/qt/bin
+
   if [[ -f '/Applications/google-cloud-sdk' ]]; then
     source /Applications/google-cloud-sdk/completion.zsh.inc
     source /Applications/google-cloud-sdk/path.zsh.inc
