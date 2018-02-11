@@ -2,17 +2,21 @@
 
 if [[ $1 == 'now' ]]; then
   # Install dot's dependencies
-  yum install -y centos-release-scl-rh.noarch
-  yum install rh-ruby24 rh-ruby24-ruby-devel rh-ruby24-rubygem-bundler rh-ruby24-rubygem-rake cmake
+  sudo yum install -y centos-release-scl-rh.noarch
+  sudo yum install rh-ruby24 rh-ruby24-ruby-devel rh-ruby24-rubygem-bundler rh-ruby24-rubygem-rake cmake gcc
 
   # Make dot usable
   cd ~/.dotfiles
-  /bin/scl enable rh-ruby24 'bundle install'
+  cat bin/sclbundle|sudo tee /usr/local/bin/dotbundle > /dev/null
+  sudo chmod a+x /usr/local/bin/dotbundle
+  cat bin/sclruby|sudo tee /usr/local/bin/dotruby > /dev/null
+  sudo chmod a+x /usr/local/bin/dotruby
+  /usr/local/bin/dotbundle install
 
   # Install Puppet modules
-  /bin/scl enable rh-ruby24 'bundle exec rake dots:run_r10k'
+  /usr/local/bin/dotbundle exec rake dots:run_r10k
 
   # Display tasks that can be run
   echo 'These are the task that can now be executed:'
-  /bin/scl enable rh-ruby24 'bundle exec rake -T' |grep --color=never 'rake dots'
+  /usr/local/bin/dotbundle exec rake -T |grep --color=never 'rake dots'
 fi
