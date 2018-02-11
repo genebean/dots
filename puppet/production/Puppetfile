@@ -7,6 +7,6 @@ moduledir "#{File.dirname(File.dirname(File.dirname(__FILE__)))}/vendor/puppet_m
 # rubocop:enable Metrics/LineLength
 
 mod 'puppetlabs-apt', '4.1.0'
-mod 'puppetlabs-stdlib', '4.20.0'
-mod 'puppetlabs-vcsrepo', '2.0.0'
+mod 'puppetlabs-stdlib', '4.24.0'
+mod 'puppetlabs-vcsrepo', '2.3.0'
 mod 'thekevjames-homebrew', '1.7.1'
