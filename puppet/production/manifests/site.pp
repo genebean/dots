@@ -11,6 +11,10 @@ node default {
   notify{'This is from the default node.':}
 }
 
+node 'bowl' {
+  include ::role::workstation
+}
+
 node 'gene' {
   include ::role::workstation
 }
