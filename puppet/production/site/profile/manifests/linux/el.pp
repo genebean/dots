@@ -60,6 +60,14 @@ class profile::linux::el {
     group  => $gid,
   }
 
+  # Unlike on Mint, powerline is pulled from pip.
+  # This makes it so that the line in .tmux.conf works on both.
+  file { '/usr/share/powerline':
+    ensure  => 'link',
+    target  => '/usr/lib/python2.7/site-packages/powerline',
+    require => Package[$python_pacakges],
+  }
+
   vcsrepo {
     default:
       ensure   => 'latest',
