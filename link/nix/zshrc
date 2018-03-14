@@ -101,7 +101,6 @@ export PATH=$PATH:~/.nexustools
 if [[ `uname` == 'Darwin' ]]; then
   export PATH=$PATH:/usr/local/sbin
   export PATH=$PATH:/Applications/Araxis\ Merge.app/Contents/Utilities
-  export PATH="/usr/local/opt/python/libexec/bin:$PATH"
   eval '/usr/libexec/path_helper -s' > /dev/null
 
   # optional additions from homebrew
