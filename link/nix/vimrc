@@ -40,7 +40,8 @@ set background=dark
 set backspace=2
 set expandtab
 set fillchars+=stl:\ ,stlnc:\
-set laststatus=2
+set laststatus=2 " Always display the statusline in all windows
+set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 set smarttab
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
