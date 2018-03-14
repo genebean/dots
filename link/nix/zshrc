@@ -85,6 +85,9 @@ alias sz='source ~/.zshrc'
 alias st='/Applications/SourceTree.app/Contents/MacOS/SourceTree &'
 alias ykey='pkill gpg-agent && source ~/.zshrc; ssh-add -L'
 
+# this makes grv from homebrew work
+unalias grv
+
 function otpon() {
         osascript -e 'tell application "yubiswitch" to KeyOn'
 }
