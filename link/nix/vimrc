@@ -51,6 +51,10 @@ set t_Co=256
 let g:solarized_termtrans = 1 " This gets rid of the grey background
 colorscheme solarized
 
+" This has to come after colorscheme to not be masked
+highlight ColorColumn ctermbg=232
+let &colorcolumn=join(range(81,999),",")
+
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list            = 1
 let g:syntastic_check_on_open            = 1
