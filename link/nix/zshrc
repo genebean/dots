@@ -80,6 +80,7 @@ export SSH_AUTH_SOCK=~/.gnupg/S.gpg-agent.ssh
 #alias ll='ls -G -l'
 #alias ls='ls -G'
 alias biv='bundle install --path=vendor/bundle'
+alias gbc='git branch --merged | command grep -vE "^(\*|\s*(master|develop|production)\s*$)" | command xargs -n 1 git branch -d'
 alias sal='ssh-add -L'
 alias sz='source ~/.zshrc'
 alias st='/Applications/SourceTree.app/Contents/MacOS/SourceTree &'
