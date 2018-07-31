@@ -5,6 +5,7 @@
 link/nix/config/configstore/update-notifier-npm.json
 link/nix/config/filezilla
 link/nix/config/grv/
+link/nix/config/gtk-2.0/
 link/nix/config/hub
 link/nix/config/NuGet/nuget.config
 link/nix/config/powershell/powershellget/
