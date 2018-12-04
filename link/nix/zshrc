@@ -54,7 +54,7 @@ COMPLETION_WAITING_DOTS="false"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(brew bundler gem git git-flow history osx pip python terraform vagrant)
+plugins=(brew bundler gem git git-flow github history osx pip python terraform vagrant)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -109,6 +109,9 @@ if [[ `uname` == 'Darwin' ]]; then
 
   # optional additions from homebrew
   [ -d /usr/local/opt/qt/bin ] && export PATH=$PATH:/usr/local/opt/qt/bin
+
+  # use homebrew's ruby
+  #export PATH="/usr/local/opt/ruby/bin:$PATH"
 
   if [[ -f '/Applications/google-cloud-sdk' ]]; then
     source /Applications/google-cloud-sdk/completion.zsh.inc
