@@ -54,7 +54,7 @@ COMPLETION_WAITING_DOTS="false"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(brew bundler gem git git-flow github history osx pip python terraform vagrant)
+plugins=(aws brew bundler gem git git-flow github history kubectl osx pip python terraform vagrant)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -96,6 +96,13 @@ function otpoff() {
         osascript -e 'tell application "yubiswitch" to KeyOff'
 }
 
+# helper for aws and assume-role
+function awsrole() {
+        echo "Enter MFA token:"
+        read mfatoken
+        eval $(assume-role $1 $AWS_HELPER_USERNAME $mfatoken)
+}
+
 export EDITOR='vim'
 export POWERLINE_CONFIG_COMMAND='/usr/local/bin/powerline-config'
 export VAGRANT_DEFAULT_PROVIDER='virtualbox'
@@ -111,7 +118,7 @@ if [[ `uname` == 'Darwin' ]]; then
   [ -d /usr/local/opt/qt/bin ] && export PATH=$PATH:/usr/local/opt/qt/bin
 
   # use homebrew's ruby
-  #export PATH="/usr/local/opt/ruby/bin:$PATH"
+  [ -d /usr/local/opt/ruby/bin ] && export PATH=/usr/local/opt/ruby/bin:$PATH
 
   if [[ -f '/Applications/google-cloud-sdk' ]]; then
     source /Applications/google-cloud-sdk/completion.zsh.inc
@@ -122,3 +129,8 @@ if [[ `uname` == 'Darwin' ]]; then
   [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
 fi
 
+function aws_account_info {
+[ "$AWS_ACCOUNT_NAME" ] && [ "$AWS_ACCOUNT_ROLE" ] && echo "%{$reset_color%}%{$fg[blue]%}aws:(%{$reset_color%}%{$fg[red]%}$AWS_ACCOUNT_NAME:$AWS_ACCOUNT_ROLE%{$fg[blue]%})%{$reset_color%}"
+}
+# )ofni_tnuocca_swa($ is $(aws_account_info) backwards
+#PROMPT=`echo $PROMPT | rev | sed 's/ / )ofni_tnuocca_swa($ /'| rev`
