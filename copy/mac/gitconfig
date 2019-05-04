@@ -1,8 +1,12 @@
 [core]
 	excludesfile = /Users/gliverma/.gitignore_global
+[diff]
+        tool = araxis
 [difftool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/araxiscompare-w.sh -2 \"$LOCAL\" \"$REMOTE\"
 	path = 
+[merge]
+        tool = araxis
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/araxisgitmerge-w.sh \"$REMOTE\" \"$BASE\" \"$LOCAL\" \"$MERGED\"
 	trustExitCode = true
