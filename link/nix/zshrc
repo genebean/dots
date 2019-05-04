@@ -118,7 +118,12 @@ export PATH=$PATH:~/.nexustools
 
 if [[ `uname` == 'Darwin' ]]; then
   export PATH=$PATH:/usr/local/sbin
-  export PATH=$PATH:/Applications/Araxis\ Merge.app/Contents/Utilities
+
+  # Araxis needs to come first so that its tools don't get stomped
+  # by ones Homebrew installs to /usr/local/bin. In particular, compare
+  # from ImageMagick breaks using git difftool.
+  export PATH=/Applications/Araxis\ Merge.app/Contents/Utilities:$PATH
+
   eval '/usr/libexec/path_helper -s' > /dev/null
 
   # optional additions from homebrew
