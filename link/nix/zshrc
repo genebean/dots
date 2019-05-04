@@ -104,6 +104,12 @@ function awsrole() {
         eval $(assume-role $1 $AWS_HELPER_USERNAME $mfatoken)
 }
 
+function aws_account_info {
+[ "$AWS_ACCOUNT_NAME" ] && [ "$AWS_ACCOUNT_ROLE" ] && echo "%{$reset_color%}%{$fg[blue]%}aws:(%{$reset_color%}%{$fg[red]%}$AWS_ACCOUNT_NAME:$AWS_ACCOUNT_ROLE%{$fg[blue]%})%{$reset_color%}"
+}
+# )ofni_tnuocca_swa($ is $(aws_account_info) backwards
+#PROMPT=`echo $PROMPT | rev | sed 's/ / )ofni_tnuocca_swa($ /'| rev`
+
 export EDITOR='vim'
 export POWERLINE_CONFIG_COMMAND='/usr/local/bin/powerline-config'
 export VAGRANT_DEFAULT_PROVIDER='virtualbox'
@@ -129,9 +135,3 @@ if [[ `uname` == 'Darwin' ]]; then
   # added by travis gem
   [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
 fi
-
-function aws_account_info {
-[ "$AWS_ACCOUNT_NAME" ] && [ "$AWS_ACCOUNT_ROLE" ] && echo "%{$reset_color%}%{$fg[blue]%}aws:(%{$reset_color%}%{$fg[red]%}$AWS_ACCOUNT_NAME:$AWS_ACCOUNT_ROLE%{$fg[blue]%})%{$reset_color%}"
-}
-# )ofni_tnuocca_swa($ is $(aws_account_info) backwards
-#PROMPT=`echo $PROMPT | rev | sed 's/ / )ofni_tnuocca_swa($ /'| rev`
