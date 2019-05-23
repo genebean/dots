@@ -7,18 +7,18 @@ call vundle#begin()
 " let Vundle manage Vundle, required for Vundle to work right
 Plugin 'VundleVim/Vundle.vim'
 
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'ekalinin/Dockerfile.vim'
-Plugin 'elzr/vim-json'
-Plugin 'garbas/vim-snipmate'
-Plugin 'godlygeek/tabular'
-Plugin 'honza/vim-snippets'
-Plugin 'MarcWeber/vim-addon-mw-utils'
-Plugin 'mrk21/yaml-vim'
-Plugin 'rodjek/vim-puppet'
-Plugin 'tomtom/tlib_vim'
-Plugin 'vim-ruby/vim-ruby'
-Plugin 'vim-syntastic/syntastic'
+Plugin 'altercation/vim-colors-solarized' " privides solorized color scheme
+Plugin 'ekalinin/Dockerfile.vim'          " provides syntax highlighting for Dockerfiles
+Plugin 'elzr/vim-json'                    " provides syntax highlighting for JSON files
+Plugin 'garbas/vim-snipmate'              " provides code snippets
+Plugin 'godlygeek/tabular'                " provides a method for lining things up
+Plugin 'honza/vim-snippets'               " provides snippets for use with vim-snipmate
+Plugin 'MarcWeber/vim-addon-mw-utils'     " a utility used by vim-snipmate
+Plugin 'mrk21/yaml-vim'                   " provides  indentaion and syntax highlighting for yaml
+Plugin 'rodjek/vim-puppet'                " provides several niceties for working with Puppet
+Plugin 'tomtom/tlib_vim'                  " a utility used by vim-snipmate
+Plugin 'vim-ruby/vim-ruby'                " provides syntax hightlighting for ruby files
+Plugin 'vim-syntastic/syntastic'          " provides syntax checking
 
 " All of your Plugins must be added before the following line
 call vundle#end()
