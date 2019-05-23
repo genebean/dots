@@ -1,16 +1,11 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
+filetype off " required by Vundle. filetype is reenabled after Vundle starts
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-" let Vundle manage Vundle, required
+" let Vundle manage Vundle, required for Vundle to work right
 Plugin 'VundleVim/Vundle.vim'
-
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
 
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'ekalinin/Dockerfile.vim'
@@ -24,6 +19,10 @@ Plugin 'rodjek/vim-puppet'
 Plugin 'tomtom/tlib_vim'
 Plugin 'vim-ruby/vim-ruby'
 Plugin 'vim-syntastic/syntastic'
+
+" All of your Plugins must be added before the following line
+call vundle#end()
+filetype plugin indent on    " required for plugins to be able to adjust indent
 
 " Brief help
 " :PluginList       - lists configured plugins
