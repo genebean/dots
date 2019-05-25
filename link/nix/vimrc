@@ -7,17 +7,17 @@ call vundle#begin()
 " let Vundle manage Vundle, required for Vundle to work right
 Plugin 'VundleVim/Vundle.vim'
 
-Plugin 'altercation/vim-colors-solarized' " privides solorized color scheme
+Plugin 'altercation/vim-colors-solarized' " provides solorized color scheme
 Plugin 'ekalinin/Dockerfile.vim'          " provides syntax highlighting for Dockerfiles
 Plugin 'elzr/vim-json'                    " provides syntax highlighting for JSON files
 Plugin 'garbas/vim-snipmate'              " provides code snippets
 Plugin 'godlygeek/tabular'                " provides a method for lining things up
 Plugin 'honza/vim-snippets'               " provides snippets for use with vim-snipmate
 Plugin 'MarcWeber/vim-addon-mw-utils'     " a utility used by vim-snipmate
-Plugin 'mrk21/yaml-vim'                   " provides  indentaion and syntax highlighting for yaml
+Plugin 'mrk21/yaml-vim'                   " provides indentation and syntax highlighting for yaml
 Plugin 'rodjek/vim-puppet'                " provides several niceties for working with Puppet
 Plugin 'tomtom/tlib_vim'                  " a utility used by vim-snipmate
-Plugin 'vim-ruby/vim-ruby'                " provides syntax hightlighting for ruby files
+Plugin 'vim-ruby/vim-ruby'                " provides syntax highlighting for ruby files
 Plugin 'vim-syntastic/syntastic'          " provides syntax checking
 
 " All of your Plugins must be added before the following line
@@ -32,31 +32,32 @@ filetype plugin indent on    " required for plugins to be able to adjust indent
 "
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
-syntax on
+syntax on                      " enable syntax highlighting
 
 set encoding=utf-8
 set termencoding=utf-8
 
-set autoindent
-set background=dark
-set backspace=2
-set expandtab
-set fillchars+=stl:\ ,stlnc:\
-set laststatus=2 " Always display the statusline in all windows
-set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
-set smarttab
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-set t_Co=256
+set autoindent                                " automatically indent new lines
+set background=dark                           " tell vim your terminal has a dark background
+set backspace=2                               " make backspace work like most other programs
+set expandtab                                 " converts tabs to spaces
+set fillchars+=stl:\ ,stlnc:\                 " fix added per powerline troubleshooting docs
+set laststatus=2                              " Always display the status line in all windows
+set noshowmode                                " Hide the default mode text (e.g. -- INSERT -- below the status line)
+set smarttab                                  " helps with expanding tabs to spaces (I think)
+set statusline+=%#warningmsg#                 " recommended setting from syntastic plugin
+set statusline+=%{SyntasticStatuslineFlag()}  " recommended setting from syntastic plugin
+set statusline+=%*                            " recommended setting from syntastic plugin
+set t_Co=256                                  " tell vim we have 256 colors to work with
 
-let g:solarized_termtrans = 1 " This gets rid of the grey background
-colorscheme solarized
+let g:solarized_termtrans = 1                 " This gets rid of the grey background
+colorscheme solarized                         " use the solorized set of colors
 
 " This has to come after colorscheme to not be masked
-highlight ColorColumn ctermbg=232
-let &colorcolumn=join(range(81,999),",")
+highlight ColorColumn ctermbg=232             " set the color to be used for guidelines
+let &colorcolumn=join(range(81,999),",")      " change the background color of everything beyond 80 characters
 
+" settings for the syntastic plugin
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list            = 1
 let g:syntastic_check_on_open            = 1
@@ -64,6 +65,9 @@ let g:syntastic_check_on_wq              = 0
 let g:syntastic_enable_signs             = 1
 let g:syntastic_ruby_checkers            = ['rubocop']
 let g:syntastic_quiet_messages           = {'level': 'warnings'}
+
+" don't wrap text in markdown files
 let g:vim_markdown_folding_disabled      = 1
 
+" import settings that are OS specific
 source ~/.vimrc_os_specific
