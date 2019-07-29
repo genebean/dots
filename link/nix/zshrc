@@ -140,6 +140,10 @@ if [[ `uname` == 'Darwin' ]]; then
   # use homebrew's ruby
   [ -d /usr/local/opt/ruby/bin ] && export PATH=/usr/local/opt/ruby/bin:$PATH
 
+  # add gems to path
+  GEMBIN="$(gem environment gemdir)/bin"
+  export PATH=$PATH:$GEMBIN
+
   if [[ -f '/Applications/google-cloud-sdk' ]]; then
     source /Applications/google-cloud-sdk/completion.zsh.inc
     source /Applications/google-cloud-sdk/path.zsh.inc
