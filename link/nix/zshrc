@@ -61,6 +61,9 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
+# make tab completions work right
+autoload -Uz compinit && compinit
+
 [ -f ~/.private-env ] && source ~/.private-env || echo '~/.private-env is missing'
 
 # Start GPG agent
