@@ -130,7 +130,11 @@ if [[ `uname` == 'Darwin' ]]; then
 
   eval '/usr/libexec/path_helper -s' > /dev/null
 
+  # Add OVFTool to PATH if it is installed
+  [ -d '/Applications/VMware OVF Tool' ] && export PATH=$PATH:'/Applications/VMware OVF Tool'
+
   # optional additions from homebrew
+  [ -d "/usr/local/opt/node@10/bin" ] &&  export PATH="/usr/local/opt/node@10/bin:$PATH"
   [ -d /usr/local/opt/qt/bin ] && export PATH=$PATH:/usr/local/opt/qt/bin
 
   # use homebrew's ruby
