@@ -144,10 +144,8 @@ if [[ `uname` == 'Darwin' ]]; then
   GEMBIN="$(gem environment gemdir)/bin"
   export PATH=$PATH:$GEMBIN
 
-  if [[ -f '/Applications/google-cloud-sdk' ]]; then
-    source /Applications/google-cloud-sdk/completion.zsh.inc
-    source /Applications/google-cloud-sdk/path.zsh.inc
-  fi
+  gcloud_zsh_completions='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc'
+  [ -f $gcloud_zsh_completions ] && source $gcloud_zsh_completions
 
   # added by travis gem
   [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
@@ -159,3 +157,4 @@ if [[ `uname` == 'Darwin' ]]; then
   KUBE_PS1_COLOR_CONTEXT="%{$fg[yellow]%}"
   KUBE_PS1_ENABLED=false
 fi
+
