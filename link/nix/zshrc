@@ -68,8 +68,8 @@ autoload -Uz compinit && compinit
 
 # Start GPG agent
 export GPG_TTY=$(tty)
-gpg-connect-agent /bye
 export SSH_AUTH_SOCK=~/.gnupg/S.gpg-agent.ssh
+gpg-connect-agent updatestartuptty /bye >/dev/null
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
