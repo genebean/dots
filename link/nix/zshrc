@@ -55,7 +55,7 @@ ZSH_CUSTOM=~/repos/customized-oh-my-zsh
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(aws brew bundler gem git git-flow github history kubectl osx pip python terraform vagrant)
+plugins=(brew bundler gem git git-flow github history kube-ps1 kubectl osx pip python terraform vagrant)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -151,4 +151,11 @@ if [[ `uname` == 'Darwin' ]]; then
 
   # added by travis gem
   [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
+
+  function get_cluster_short() {
+    echo "$1" |rev |cut -d _ -f1 |rev
+  }
+  KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
+  KUBE_PS1_COLOR_CONTEXT="%{$fg[yellow]%}"
+  KUBE_PS1_ENABLED=false
 fi
