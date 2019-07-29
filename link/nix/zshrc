@@ -49,23 +49,27 @@ COMPLETION_WAITING_DOTS="false"
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
+ZSH_CUSTOM=~/repos/customized-oh-my-zsh
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(aws brew bundler gem git git-flow github history kubectl osx pip python terraform vagrant)
+plugins=(brew bundler gem git git-flow github history kube-ps1 kubectl osx pip python terraform vagrant)
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
+# make tab completions work right
+autoload -Uz compinit && compinit
+
 [ -f ~/.private-env ] && source ~/.private-env || echo '~/.private-env is missing'
 
 # Start GPG agent
 export GPG_TTY=$(tty)
-gpg-connect-agent /bye
 export SSH_AUTH_SOCK=~/.gnupg/S.gpg-agent.ssh
+gpg-connect-agent updatestartuptty /bye >/dev/null
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -126,11 +130,19 @@ if [[ `uname` == 'Darwin' ]]; then
 
   eval '/usr/libexec/path_helper -s' > /dev/null
 
+  # Add OVFTool to PATH if it is installed
+  [ -d '/Applications/VMware OVF Tool' ] && export PATH=$PATH:'/Applications/VMware OVF Tool'
+
   # optional additions from homebrew
+  [ -d "/usr/local/opt/node@10/bin" ] &&  export PATH="/usr/local/opt/node@10/bin:$PATH"
   [ -d /usr/local/opt/qt/bin ] && export PATH=$PATH:/usr/local/opt/qt/bin
 
   # use homebrew's ruby
   [ -d /usr/local/opt/ruby/bin ] && export PATH=/usr/local/opt/ruby/bin:$PATH
+
+  # add gems to path
+  GEMBIN="$(gem environment gemdir)/bin"
+  export PATH=$PATH:$GEMBIN
 
   if [[ -f '/Applications/google-cloud-sdk' ]]; then
     source /Applications/google-cloud-sdk/completion.zsh.inc
@@ -139,4 +151,11 @@ if [[ `uname` == 'Darwin' ]]; then
 
   # added by travis gem
   [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
+
+  function get_cluster_short() {
+    echo "$1" |rev |cut -d _ -f1 |rev
+  }
+  KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
+  KUBE_PS1_COLOR_CONTEXT="%{$fg[yellow]%}"
+  KUBE_PS1_ENABLED=false
 fi
