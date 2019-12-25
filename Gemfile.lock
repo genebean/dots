@@ -71,7 +71,7 @@ GEM
       puppet-lint (>= 1.0, < 3.0)
     puppet-lint-leading_zero-check (0.1.1)
       puppet-lint (>= 1.0, < 3.0)
-    puppet-lint-resource_reference_syntax (1.0.10)
+    puppet-lint-resource_reference_syntax (1.0.14)
       puppet-lint (>= 1.0, < 3.0)
     puppet-lint-spaceship_operator_without_tag-check (0.1.1)
       puppet-lint (>= 1.0, < 3.0)
