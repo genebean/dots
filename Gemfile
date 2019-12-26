@@ -20,7 +20,7 @@ end
 group :development, :unit_tests do
   gem 'json',                                             '>= 2.0.2'
   gem 'metadata-json-lint',                               '~> 2.0'
-  gem 'puppetlabs_spec_helper',                           '~> 2.3'
+  gem 'puppetlabs_spec_helper',                           '~> 2.14'
   gem 'rspec-puppet',                                     '~> 2.6'
   gem 'rubocop',                                          '~> 0.50'
   gem 'tty-command',                                      '~> 0.6'
