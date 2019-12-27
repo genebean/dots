@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # vim:ft=ruby
 source 'https://rubygems.org'
 
@@ -22,7 +24,7 @@ group :development, :unit_tests do
   gem 'metadata-json-lint',                               '~> 2.0'
   gem 'puppetlabs_spec_helper',                           '~> 2.3'
   gem 'rspec-puppet',                                     '~> 2.6'
-  gem 'rubocop',                                          '~> 0.50'
+  gem 'rubocop',                                          '~> 0.78'
   gem 'tty-command',                                      '~> 0.6'
   gem 'tty-file',                                         '~> 0.4'
   gem 'tty-prompt',                                       '~> 0.13'

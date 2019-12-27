@@ -181,7 +181,7 @@ DEPENDENCIES
   puppetlabs_spec_helper (~> 2.3)
   r10k (~> 2.5)
   rspec-puppet (~> 2.6)
-  rubocop (~> 0.50)
+  rubocop (~> 0.78)
   rugged (~> 0.26)
   tty-command (~> 0.6)
   tty-file (~> 0.4)
