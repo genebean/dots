@@ -86,9 +86,9 @@ gpg-connect-agent updatestartuptty /bye >/dev/null
 alias biv='bundle install --path=vendor/bundle'
 alias gbc='git branch --merged | command grep -vE "^(\*|\s*(master|develop|production)\s*$)" | command xargs -n 1 git branch -d'
 alias sal='ssh-add -L'
-alias ogk='/Applications/GitKraken.app/Contents/MacOS/GitKraken &'
+alias ogk='open -a GitKraken'
 alias sz='source ~/.zshrc'
-alias st='/Applications/SourceTree.app/Contents/MacOS/SourceTree &'
+alias st='open -a SourceTree'
 alias ykey='pkill gpg-agent && source ~/.zshrc; ssh-add -L'
 
 # this makes grv from homebrew work
@@ -122,6 +122,8 @@ export PATH=$PATH:~/.nexustools
 
 if [[ `uname` == 'Darwin' ]]; then
   export PATH=$PATH:/usr/local/sbin
+
+  alias flushdns='sudo killall -HUP mDNSResponder'
 
   # Araxis needs to come first so that its tools don't get stomped
   # by ones Homebrew installs to /usr/local/bin. In particular, compare
