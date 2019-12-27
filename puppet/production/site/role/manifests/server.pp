@@ -3,5 +3,5 @@
 # are not standing in front of the system and / or there is no graphical
 # interface.
 class role::server {
-  include ::profile::base
+  include profile::base
 }

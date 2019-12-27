@@ -12,18 +12,18 @@ node default {
 }
 
 node 'bowl' {
-  include ::role::workstation
+  include role::workstation
 }
 
 node 'gene' {
-  include ::role::workstation
+  include role::workstation
 }
 
 node 'mintstring' {
-  include ::role::workstation
+  include role::workstation
 }
 
 node 'yellowbadger' {
-  include ::role::workstation
+  include role::workstation
 }
 

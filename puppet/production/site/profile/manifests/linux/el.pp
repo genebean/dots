@@ -5,7 +5,7 @@ class profile::linux::el {
   $gid = find_group($homedir)
   $user = homedir_to_user($homedir)
 
-  include ::profile::linux::el::docker_repos
+  include profile::linux::el::docker_repos
   Yumrepo <| |> -> Package <| |> # lint:ignore:spaceship_operator_without_tag
 
   $yum_packages = [
