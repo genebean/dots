@@ -32,7 +32,7 @@ group :development, :unit_tests do
 
   # puppet-lint and plugins
   gem 'puppet-lint',                                      '~> 2.3'
-  gem 'puppet-lint-absolute_classname-check',             '~> 0.2'
+  gem 'puppet-lint-absolute_classname-check',             '~> 2.0'
   gem 'puppet-lint-absolute_template_path',               '~> 1.0'
   gem 'puppet-lint-empty_string-check',                   '~> 0.2'
   gem 'puppet-lint-leading_zero-check',                   '~> 0.1'

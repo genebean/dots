@@ -1,13 +1,13 @@
 # Includes all the profiles needed for a workstation
 class role::workstation {
-  include ::profile::base
+  include profile::base
 
   case $facts['kernel'] {
     'Darwin': {
-      include ::profile::mac
+      include profile::mac
     }
     'Linux': {
-      include ::profile::linux
+      include profile::linux
     }
     default: {
       fail("${facts['kernel']} hasn't been setup in the workstation role yet.")

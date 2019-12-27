@@ -1,8 +1,8 @@
 # Select a profile based on the OS family
 class profile::linux {
   case $facts['os']['family'] {
-    'Debian': { include ::profile::linux::debian }
-    'RedHat': { include ::profile::linux::el }
+    'Debian': { include profile::linux::debian }
+    'RedHat': { include profile::linux::el }
     default:  { fail("${facts['os']['family']} isn't supported yet") }
   }
 
