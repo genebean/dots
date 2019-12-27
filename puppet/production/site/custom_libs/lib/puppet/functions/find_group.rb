@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Puppet::Functions.create_function(:find_group) do
   dispatch :find_group do
     param 'String', :some_path

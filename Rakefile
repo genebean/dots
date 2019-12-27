@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rubocop/rake_task'
 require 'rubygems'
 require 'puppetlabs_spec_helper/rake_tasks'

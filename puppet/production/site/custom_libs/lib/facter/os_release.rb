@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Facter.add(:os_release) do
   confine kernel: 'Linux'
 
@@ -7,12 +9,12 @@ Facter.add(:os_release) do
       os_release_hash = {}
       File.open(file_path, 'r') do |file|
         file.each_line do |line|
-          unless line.nil? or line.strip.length.eql? 0
-            line_data = line.split('=')
-            key = line_data[0].downcase
-            value = line_data[1].strip.gsub(/(^\")|(\"$)/, '')
-            os_release_hash[key] = value
-          end
+          next if line.nil? || line.strip.length.eql?(0)
+
+          line_data = line.split('=')
+          key = line_data[0].downcase
+          value = line_data[1].strip.gsub(/(^\")|(\"$)/, '')
+          os_release_hash[key] = value
         end
       end
       os_release_hash
