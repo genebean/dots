@@ -2,4 +2,7 @@ AllCops:
   Exclude:
     - 'vendor/**/*'
     - 'spec/fixtures/**/*'
-  TargetRubyVersion: 2.0
+  TargetRubyVersion: 2.5
+Style/CommentedKeyword:
+  Enabled: false
+

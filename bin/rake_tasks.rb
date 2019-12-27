@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 desc 'Run dots'
 task :dots do
   ruby 'bin/dots.rb'

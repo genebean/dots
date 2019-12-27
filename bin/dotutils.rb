@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 def existing_symlink(source, destination)
   return if File.readlink(destination).eql?(source)
+
   # rubocop:disable Metrics/LineLength
   if @prompt.yes?("#{destination} currently points to #{File.readlink(destination)}, do you want point it at #{source}?")
     File.unlink(destination)

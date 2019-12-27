@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Puppet::Functions.create_function(:find_owner) do
   dispatch :find_owner do
     param 'String', :some_path
