@@ -123,6 +123,8 @@ export PATH=$PATH:~/.nexustools
 if [[ `uname` == 'Darwin' ]]; then
   export PATH=$PATH:/usr/local/sbin
 
+  alias flushdns='sudo killall -HUP mDNSResponder'
+
   # Araxis needs to come first so that its tools don't get stomped
   # by ones Homebrew installs to /usr/local/bin. In particular, compare
   # from ImageMagick breaks using git difftool.
