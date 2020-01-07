@@ -1,9 +1,8 @@
-[![Build Status](https://travis-ci.org/genebean/dots.svg?branch=master)](https://travis-ci.org/genebean/dots)
+# dots
+
+[![Build Status](https://travis-ci.com/genebean/dots.svg?branch=master)](https://travis-ci.com/genebean/dots)
 [![Dependency Status](https://gemnasium.com/badges/github.com/genebean/dots.svg)](https://gemnasium.com/github.com/genebean/dots)
 [![security](https://hakiri.io/github/genebean/dots/master.svg)](https://hakiri.io/github/genebean/dots/master)
-
-
-# dots
 
 My dot files and a tool to deploy them, and the programs that use them, to
 various OS's. Some additional tools that I consider part of my baseline setup
