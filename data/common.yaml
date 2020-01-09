@@ -1,2 +1,4 @@
 ---
-foo: bar
+# by default, let's assume a node is a workstation
+classes:
+  - 'role::workstation'

@@ -1,5 +1,14 @@
-# this contains the mac specific stuff
-class profile::mac {
+# @summary Contains the mac specific configuration
+#
+# Contains the mac specific configuration. This includes packages pulled in via
+# Homebrew.
+#
+# @param [Stdlib::Unixpath] homedir
+#   The fully qualified path to my home directory
+#
+class profile::mac (
+  Stdlib::Unixpath $homedir = lookup('homedir'),
+) {
   # $path = '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin'
   # notify{'This is from the mac profile.':}
   # exec { 'install homebrew':
@@ -7,8 +16,6 @@ class profile::mac {
   #   path    => $path,
   #   creates => '/usr/local/bin/brew',
   # }
-
-  $homedir = lookup('homedir')
 
   #Package { provider => 'homebrew' }
   $homebrew_packages = [
@@ -86,43 +93,5 @@ class profile::mac {
     ensure   => 'latest',
     provider => 'pip',
     require  => Package['python'],
-  }
-
-  file { "${homedir}/repos":
-    ensure => 'directory',
-  }
-
-  vcsrepo { "${homedir}/.vim/bundle/Vundle.vim":
-    ensure   => 'latest',
-    provider => 'git',
-    source   => 'https://github.com/VundleVim/Vundle.vim.git',
-  }
-
-  vcsrepo { "${homedir}/repos/powerline-fonts":
-    ensure   => 'latest',
-    provider => 'git',
-    source   => 'https://github.com/powerline/fonts.git',
-    require  => File["${homedir}/repos"],
-    notify   => Exec['update-fonts'],
-  }
-
-  exec { 'update-fonts':
-    command     => "${homedir}/repos/powerline-fonts/install.sh",
-    cwd         => "${homedir}/repos/powerline-fonts",
-    logoutput   => true,
-    environment => "HOME=${homedir}",
-    refreshonly => true,
-  }
-
-  vcsrepo { "${homedir}/.oh-my-zsh":
-    ensure   => 'present',
-    provider => 'git',
-    source   => 'https://github.com/robbyrussell/oh-my-zsh.git',
-  }
-
-  vcsrepo { "${homedir}/.oh-my-zsh/custom/themes":
-    ensure   => 'latest',
-    provider => 'git',
-    source   => 'git@github.com:genebean/my-oh-zsh-themes.git',
   }
 }

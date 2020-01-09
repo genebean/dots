@@ -1,32 +1,25 @@
+<% | Optional[String[1]] $zsh_theme = undef,
+| -%>
 # Path to your oh-my-zsh installation.
 export ZSH=~/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-if [[ `uname` == 'Linux' ]]; then
-  ZSH_THEME="af-magic"
-else
+# Alternate themes I've used:
+# - af-magic
+# - muse
+# - pygmalion
+<% if $zsh_theme { -%>
+  ZSH_THEME=<%= $zsh_theme %>
+<% } elsif $facts['kernel'] == 'Linux' { -%>
+  ZSH_THEME="agnoster"
+<% } else { -%>
   ZSH_THEME="beanbag"
-  #ZSH_THEME="pygmalion"
-  #ZSH_THEME="muse"
-fi
+<% } -%>
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
 # DISABLE_AUTO_TITLE="true"
@@ -120,43 +113,44 @@ export VAGRANT_DEFAULT_PROVIDER='virtualbox'
 
 export PATH=$PATH:~/.nexustools
 
-if [[ `uname` == 'Darwin' ]]; then
-  export PATH=$PATH:/usr/local/sbin
+<% if $facts['kernel'] == 'Darwin' { -%>
+# Mac-only stuff
+export PATH=$PATH:/usr/local/sbin
 
-  alias flushdns='sudo killall -HUP mDNSResponder'
+alias flushdns='sudo killall -HUP mDNSResponder'
 
-  # Araxis needs to come first so that its tools don't get stomped
-  # by ones Homebrew installs to /usr/local/bin. In particular, compare
-  # from ImageMagick breaks using git difftool.
-  export PATH=/Applications/Araxis\ Merge.app/Contents/Utilities:$PATH
+# Araxis needs to come first so that its tools don't get stomped
+# by ones Homebrew installs to /usr/local/bin. In particular, compare
+# from ImageMagick breaks using git difftool.
+export PATH=/Applications/Araxis\ Merge.app/Contents/Utilities:$PATH
 
-  eval '/usr/libexec/path_helper -s' > /dev/null
+eval '/usr/libexec/path_helper -s' > /dev/null
 
-  # Add OVFTool to PATH if it is installed
-  [ -d '/Applications/VMware OVF Tool' ] && export PATH=$PATH:'/Applications/VMware OVF Tool'
+# Add OVFTool to PATH if it is installed
+[ -d '/Applications/VMware OVF Tool' ] && export PATH=$PATH:'/Applications/VMware OVF Tool'
 
-  # optional additions from homebrew
-  [ -d "/usr/local/opt/node@10/bin" ] &&  export PATH="/usr/local/opt/node@10/bin:$PATH"
-  [ -d /usr/local/opt/qt/bin ] && export PATH=$PATH:/usr/local/opt/qt/bin
+# optional additions from homebrew
+[ -d "/usr/local/opt/node@10/bin" ] &&  export PATH="/usr/local/opt/node@10/bin:$PATH"
+[ -d /usr/local/opt/qt/bin ] && export PATH=$PATH:/usr/local/opt/qt/bin
 
-  # use homebrew's ruby
-  [ -d /usr/local/opt/ruby/bin ] && export PATH=/usr/local/opt/ruby/bin:$PATH
+# use homebrew's ruby
+[ -d /usr/local/opt/ruby/bin ] && export PATH=/usr/local/opt/ruby/bin:$PATH
 
-  # add gems to path
-  GEMBIN="$(gem environment gemdir)/bin"
-  export PATH=$PATH:$GEMBIN
+# add gems to path
+GEMBIN="$(gem environment gemdir)/bin"
+export PATH=$PATH:$GEMBIN
 
-  gcloud_zsh_completions='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc'
-  [ -f $gcloud_zsh_completions ] && source $gcloud_zsh_completions
+gcloud_zsh_completions='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc'
+[ -f $gcloud_zsh_completions ] && source $gcloud_zsh_completions
 
-  # added by travis gem
-  [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
+# added by travis gem
+[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
 
-  function get_cluster_short() {
-    echo "$1" |rev |cut -d _ -f1 |rev
-  }
-  KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
-  KUBE_PS1_COLOR_CONTEXT="%{$fg[yellow]%}"
-  KUBE_PS1_ENABLED=false
-fi
+function get_cluster_short() {
+  echo "$1" |rev |cut -d _ -f1 |rev
+}
+KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
+KUBE_PS1_COLOR_CONTEXT="%{$fg[yellow]%}"
+KUBE_PS1_ENABLED=false
+<% } -%>
 

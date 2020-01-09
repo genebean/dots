@@ -45,53 +45,12 @@ class profile::linux::el {
     ;
   }
 
-  $dirs = [
-    "${homedir}/.local",
-    "${homedir}/.local/share",
-    "${homedir}/.local/share/fonts",
-    "${homedir}/.vim",
-    "${homedir}/.vim/bundle",
-    "${homedir}/repos",
-  ]
-
-  file { $dirs:
-    ensure => 'directory',
-    owner  => $uid,
-    group  => $gid,
-  }
-
   # Unlike on Mint, powerline is pulled from pip.
   # This makes it so that the line in .tmux.conf works on both.
   file { '/usr/share/powerline':
     ensure  => 'link',
     target  => '/usr/lib/python2.7/site-packages/powerline',
     require => Package[$python_pacakges],
-  }
-
-  vcsrepo {
-    default:
-      ensure   => 'latest',
-      user     => $user,
-      owner    => $uid,
-      group    => $gid,
-      provider => 'git',
-    ;
-    "${homedir}/.oh-my-zsh":
-      ensure => 'present',
-      source => 'https://github.com/robbyrussell/oh-my-zsh.git',
-    ;
-    "${homedir}/.oh-my-zsh/custom/themes":
-      source => 'git@github.com:genebean/my-oh-zsh-themes.git',
-    ;
-    "${homedir}/.vim/bundle/Vundle.vim":
-      source  => 'https://github.com/VundleVim/Vundle.vim.git',
-      require => File[$dirs],
-    ;
-    "${homedir}/repos/powerline-fonts":
-      source  => 'https://github.com/powerline/fonts.git',
-      require => File[$dirs],
-      notify  => Exec['update-fonts'],
-    ;
   }
 
   exec {
@@ -109,17 +68,6 @@ class profile::linux::el {
       cwd     => $homedir,
       unless  => "grep '${uid}:${gid}' /etc/passwd | grep '/usr/bin/zsh'",
       require => Package['zsh'],
-    ;
-    'update-fonts':
-      command => "${homedir}/repos/powerline-fonts/install.sh",
-      cwd     => "${homedir}/repos/powerline-fonts",
-      notify  => Exec['set-font-ownership'],
-    ;
-    'set-font-ownership':
-      path    => '/bin:/usr/bin',
-      command => "chown -R ${uid}:${gid} ${homedir}/.local/share/fonts/*",
-      cwd     => $homedir,
-      require => Exec['update-fonts'],
     ;
   }
 }

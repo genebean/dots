@@ -1,4 +1,6 @@
+/.resource_types/
 /.vagrant/
+/modules/
 /vendor/
 
 # Config files that are not suitable to add to version control:
