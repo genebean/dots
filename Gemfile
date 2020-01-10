@@ -14,7 +14,7 @@ end
 group :production do
   gem 'os',     '~> 1.0'
   gem 'puppet', puppetversion
-  gem 'r10k',   '~> 3.3'
+  gem 'r10k',   '~> 3.4'
   gem 'rugged', '~> 0.26'
   gem 'xmlrpc', '~> 0.3.0' if RUBY_VERSION >= '2.3'
 end
