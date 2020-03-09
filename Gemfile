@@ -27,7 +27,7 @@ group :development, :unit_tests do
   gem 'rubocop',                                          '~> 0.79'
   gem 'tty-command',                                      '~> 0.6'
   gem 'tty-file',                                         '~> 0.4'
-  gem 'tty-prompt',                                       '~> 0.13'
+  gem 'tty-prompt',                                       '~> 0.21'
   gem 'yamllint',                                         '~> 0.0.9'
 
   # puppet-lint and plugins
