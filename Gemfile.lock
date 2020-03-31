@@ -39,7 +39,7 @@ GEM
     multi_json (1.14.1)
     multipart-post (2.1.1)
     necromancer (0.5.1)
-    os (1.0.1)
+    os (1.1.0)
     parallel (1.19.1)
     parser (2.7.0.1)
       ast (~> 2.4.0)
@@ -166,7 +166,7 @@ PLATFORMS
 DEPENDENCIES
   json (>= 2.0.2)
   metadata-json-lint (~> 2.0)
-  os (~> 1.0)
+  os (~> 1.1)
   puppet (>= 5, < 6)
   puppet-lint (~> 2.3)
   puppet-lint-absolute_classname-check (~> 2.0)
