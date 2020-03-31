@@ -12,7 +12,7 @@ end
 # rubocop:enable ConditionalAssignment
 
 group :production do
-  gem 'os',     '~> 1.0'
+  gem 'os',     '~> 1.1'
   gem 'puppet', puppetversion
   gem 'r10k',   '~> 3.4'
   gem 'rugged', '~> 0.99'
