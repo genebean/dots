@@ -96,7 +96,7 @@ GEM
       puppet-lint (~> 2.0)
       puppet-syntax (~> 2.0)
       rspec-puppet (~> 2.0)
-    r10k (3.5.0)
+    r10k (3.5.1)
       colored2 (= 3.1.2)
       cri (>= 2.15.10, < 3.0.0)
       fast_gettext (~> 1.1.0)
