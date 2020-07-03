@@ -85,10 +85,11 @@ gpg-connect-agent updatestartuptty /bye >/dev/null
 #alias ls='ls -G'
 alias biv='bundle install --path=vendor/bundle'
 alias gbc='git branch --merged | command grep -vE "^(\*|\s*(master|develop|production)\s*$)" | command xargs -n 1 git branch -d'
-alias sal='ssh-add -L'
+alias gitextract='git log --pretty=email --patch-with-stat --reverse --full-index --binary --'
 alias ogk='open -a GitKraken'
-alias sz='source ~/.zshrc'
+alias sal='ssh-add -L'
 alias st='open -a SourceTree'
+alias sz='source ~/.zshrc'
 alias ykey='pkill gpg-agent && source ~/.zshrc; ssh-add -L'
 
 # this makes grv from homebrew work
@@ -152,11 +153,16 @@ if [[ `uname` == 'Darwin' ]]; then
   # added by travis gem
   [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
 
+  # added to make pipx work
+  [ -d /Users/gene/.local/bin ] && export PATH=$PATH:/Users/gene/.local/bin
+
   function get_cluster_short() {
     echo "$1" |rev |cut -d _ -f1 |rev
   }
   KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
   KUBE_PS1_COLOR_CONTEXT="%{$fg[yellow]%}"
   KUBE_PS1_ENABLED=false
+
+  export OPENFAAS_PREFIX="genebean"
 fi
 

@@ -4,6 +4,8 @@
 # Config files that are not suitable to add to version control:
 link/nix/config/.mono/
 link/nix/config/asciinema/
+link/nix/config/configstore/nodemon.json
+link/nix/config/configstore/update-notifier-nodemon.json
 link/nix/config/configstore/update-notifier-npm.json
 link/nix/config/configstore/update-notifier-yo.json
 link/nix/config/filezilla
