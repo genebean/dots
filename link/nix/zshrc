@@ -142,6 +142,9 @@ if [[ `uname` == 'Darwin' ]]; then
   # use homebrew's ruby
   [ -d /usr/local/opt/ruby/bin ] && export PATH=/usr/local/opt/ruby/bin:$PATH
 
+  # hide ruby 2.7's extra output
+  export RUBYOPT='-W:no-deprecated -W:no-experimental'
+
   # add gems to path
   GEMBIN="$(gem environment gemdir)/bin"
   export PATH=$PATH:$GEMBIN

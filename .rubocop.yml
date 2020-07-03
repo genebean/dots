@@ -3,6 +3,7 @@ AllCops:
     - 'vendor/**/*'
     - 'spec/fixtures/**/*'
   TargetRubyVersion: 2.5
+  NewCops: enable
 Style/CommentedKeyword:
   Enabled: false
 

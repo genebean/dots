@@ -3,13 +3,13 @@
 # vim:ft=ruby
 source 'https://rubygems.org'
 
-# rubocop:disable ConditionalAssignment
+# rubocop:disable Style/ConditionalAssignment
 if ENV.key?('PUPPET_VERSION')
   puppetversion = ENV['PUPPET_VERSION'].to_s
 else
-  puppetversion = ['>= 5', '< 6']
+  puppetversion = ['>= 6', '< 7']
 end
-# rubocop:enable ConditionalAssignment
+# rubocop:enable Style/ConditionalAssignment
 
 group :production do
   gem 'os',     '~> 1.1'

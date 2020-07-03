@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
 forge 'http://forge.puppetlabs.com'
-
-# rubocop:disable Metrics/LineLength
 # The next line translates to '../../vendor/puppet_modules' aka ~/.dotfiles/vendor/puppet_modules
 moduledir "#{File.dirname(File.dirname(File.dirname(__FILE__)))}/vendor/puppet_modules"
-# rubocop:enable Metrics/LineLength
 
 mod 'puppetlabs-apt', '7.3.0'
 mod 'puppetlabs-stdlib', '4.25.1'
