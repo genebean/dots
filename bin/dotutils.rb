@@ -3,7 +3,7 @@
 def existing_symlink(source, destination)
   return if File.readlink(destination).eql?(source)
 
-  # rubocop:disable Metrics/LineLength
+  # rubocop:disable Layout/LineLength
   if @prompt.yes?("#{destination} currently points to #{File.readlink(destination)}, do you want point it at #{source}?")
     File.unlink(destination)
     puts "Linking #{destination} to #{source}"
@@ -12,7 +12,7 @@ def existing_symlink(source, destination)
   else
     puts "#{destination} is unchanged"
   end
-  # rubocop:enable Metrics/LineLength
+  # rubocop:enable Layout/LineLength
 end
 
 # rubocop:disable Metrics/MethodLength
