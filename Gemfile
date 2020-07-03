@@ -3,13 +3,13 @@
 # vim:ft=ruby
 source 'https://rubygems.org'
 
-# rubocop:disable ConditionalAssignment
+# rubocop:disable Style/ConditionalAssignment
 if ENV.key?('PUPPET_VERSION')
   puppetversion = ENV['PUPPET_VERSION'].to_s
 else
-  puppetversion = ['>= 5', '< 6']
+  puppetversion = ['>= 6', '< 7']
 end
-# rubocop:enable ConditionalAssignment
+# rubocop:enable Style/ConditionalAssignment
 
 group :production do
   gem 'os',     '~> 1.1'
@@ -24,7 +24,7 @@ group :development, :unit_tests do
   gem 'metadata-json-lint',                               '~> 2.4'
   gem 'puppetlabs_spec_helper',                           '~> 2.15'
   gem 'rspec-puppet',                                     '~> 2.6'
-  gem 'rubocop',                                          '~> 0.79'
+  gem 'rubocop',                                          '~> 0.86'
   gem 'tty-command',                                      '~> 0.6'
   gem 'tty-file',                                         '~> 0.9'
   gem 'tty-prompt',                                       '~> 0.21'

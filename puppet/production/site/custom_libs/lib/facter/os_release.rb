@@ -13,7 +13,7 @@ Facter.add(:os_release) do
 
           line_data = line.split('=')
           key = line_data[0].downcase
-          value = line_data[1].strip.gsub(/(^\")|(\"$)/, '')
+          value = line_data[1].strip.gsub(/(^")|("$)/, '')
           os_release_hash[key] = value
         end
       end

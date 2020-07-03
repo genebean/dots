@@ -14,13 +14,8 @@ exclude_paths = [
   'spec/**/*'
 ]
 
-RuboCop::RakeTask.new(:rubocop) do |task|
-  # task.patterns = ['lib/**/*.rb']
-  # only show the files with failures
-  # task.formatters = ['files']
-  # don't abort rake on failure
-  # task.fail_on_error = false
-end
+# https://docs.rubocop.org/rubocop/0.86/integration_with_other_tools.html#rake-integration
+RuboCop::RakeTask.new
 
 PuppetLint::RakeTask.new :lint do |config|
   config.fail_on_warnings = true
@@ -37,9 +32,9 @@ task :validate do
   end
   Dir['bin/**/*.rb',
       'spec/**/*.rb'].each do |ruby_file|
-    # rubocop:disable RegexpLiteral
+    # rubocop:disable Style/RegexpLiteral
     sh "ruby -c #{ruby_file}" unless ruby_file =~ /spec\/fixtures/
-    # rubocop:enable RegexpLiteral
+    # rubocop:enable Style/RegexpLiteral
   end
   Dir['puppet/site/*/templates/**/*.erb'].each do |template|
     sh "erb -P -x -T '-' #{template} | ruby -c"
