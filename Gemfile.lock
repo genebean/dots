@@ -140,7 +140,7 @@ GEM
     rspec-puppet (2.7.8)
       rspec
     rspec-support (3.9.3)
-    rubocop (0.87.0)
+    rubocop (0.88.0)
       parallel (~> 1.10)
       parser (>= 2.7.1.1)
       rainbow (>= 2.2.2, < 4.0)
@@ -205,7 +205,7 @@ DEPENDENCIES
   puppetlabs_spec_helper (~> 2.15)
   r10k (~> 3.5)
   rspec-puppet (~> 2.6)
-  rubocop (~> 0.87)
+  rubocop (~> 0.88)
   rugged (~> 1.0)
   tty-command (~> 0.6)
   tty-file (~> 0.9)
