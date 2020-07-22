@@ -87,6 +87,7 @@ alias biv='bundle install --path=vendor/bundle'
 alias gbc='git branch --merged | command grep -vE "^(\*|\s*(master|develop|production)\s*$)" | command xargs -n 1 git branch -d'
 alias gitextract='git log --pretty=email --patch-with-stat --reverse --full-index --binary --'
 alias ogk='open -a GitKraken'
+alias prstatus="gh pr status |grep --color=never -A2 'Current branch'"
 alias sal='ssh-add -L'
 alias st='open -a SourceTree'
 alias sz='source ~/.zshrc'
