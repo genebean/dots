@@ -55,16 +55,19 @@ ZSH_CUSTOM=~/repos/customized-oh-my-zsh
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(brew bundler gem git git-flow github history kube-ps1 kubectl osx pip python terraform vagrant)
+plugins=(brew bundler gem git git-flow github history kube-ps1 kubectl osx pip python terraform vagrant vscode)
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
 # make tab completions work right
-autoload -Uz compinit && compinit
+#autoload -Uz compinit && compinit
 
 [ -f ~/.private-env ] && source ~/.private-env || echo '~/.private-env is missing'
+
+# Add GPG Suite binaries to the path:
+export PATH=/usr/local/MacGPG2/bin:$PATH
 
 # Start GPG agent
 export GPG_TTY=$(tty)
@@ -86,7 +89,9 @@ gpg-connect-agent updatestartuptty /bye >/dev/null
 alias biv='bundle install --path=vendor/bundle'
 alias gbc='git branch --merged | command grep -vE "^(\*|\s*(master|develop|production)\s*$)" | command xargs -n 1 git branch -d'
 alias gitextract='git log --pretty=email --patch-with-stat --reverse --full-index --binary --'
+alias hubpr='hub pull-request --push --browse'
 alias ogk='open -a GitKraken'
+alias pssh='ssh -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no"'
 alias sal='ssh-add -L'
 alias st='open -a SourceTree'
 alias sz='source ~/.zshrc'
@@ -137,7 +142,7 @@ if [[ `uname` == 'Darwin' ]]; then
   [ -d '/Applications/VMware OVF Tool' ] && export PATH=$PATH:'/Applications/VMware OVF Tool'
 
   # optional additions from homebrew
-  [ -d "/usr/local/opt/node@10/bin" ] &&  export PATH="/usr/local/opt/node@10/bin:$PATH"
+  [ -d "/usr/local/opt/node@12/bin" ] &&  export PATH="/usr/local/opt/node@12/bin:$PATH"
   [ -d /usr/local/opt/qt/bin ] && export PATH=$PATH:/usr/local/opt/qt/bin
 
   # use homebrew's ruby
@@ -149,6 +154,9 @@ if [[ `uname` == 'Darwin' ]]; then
   # add gems to path
   GEMBIN="$(gem environment gemdir)/bin"
   export PATH=$PATH:$GEMBIN
+
+  glcoud_zsh_path='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc'
+  [ -f $glcoud_zsh_path ] && source $glcoud_zsh_path
 
   gcloud_zsh_completions='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc'
   [ -f $gcloud_zsh_completions ] && source $gcloud_zsh_completions
@@ -168,4 +176,8 @@ if [[ `uname` == 'Darwin' ]]; then
 
   export OPENFAAS_PREFIX="genebean"
 fi
+
+
+# added by travis gem
+[ ! -s /Users/gene/.travis/travis.sh ] || source /Users/gene/.travis/travis.sh
 
