@@ -137,6 +137,8 @@ if [[ `uname` == 'Darwin' ]]; then
   export PATH=$PATH:/usr/local/sbin
 
   alias flushdns='sudo killall -HUP mDNSResponder'
+  alias localdns='sudo networksetup -setdnsservers Wi-Fi empty && sudo networksetup -setdnsservers Wi-Fi 127.0.0.1 ::1 && flushdns'
+  alias stockdns='sudo networksetup -setdnsservers Wi-Fi empty && flushdns'
 
   # Araxis needs to come first so that its tools don't get stomped
   # by ones Homebrew installs to /usr/local/bin. In particular, compare
@@ -188,3 +190,6 @@ fi
 # added by travis gem
 [ ! -s /Users/gene/.travis/travis.sh ] || source /Users/gene/.travis/travis.sh
 
+
+# krew path
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
