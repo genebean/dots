@@ -190,3 +190,6 @@ fi
 # added by travis gem
 [ ! -s /Users/gene/.travis/travis.sh ] || source /Users/gene/.travis/travis.sh
 
+
+# krew path
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
