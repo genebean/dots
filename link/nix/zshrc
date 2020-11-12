@@ -164,6 +164,9 @@ if [[ `uname` == 'Darwin' ]]; then
   GEMBIN="$(gem environment gemdir)/bin"
   export PATH=$PATH:$GEMBIN
 
+  # Force google-cloud-sdk to use python 3.8
+  export CLOUDSDK_PYTHON="/usr/local/opt/python@3.8/libexec/bin/python"
+
   glcoud_zsh_path='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc'
   [ -f $glcoud_zsh_path ] && source $glcoud_zsh_path
 
@@ -190,6 +193,6 @@ fi
 # added by travis gem
 [ ! -s /Users/gene/.travis/travis.sh ] || source /Users/gene/.travis/travis.sh
 
+# default kube-ps1 to off
+kubeoff
 
-# krew path
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
