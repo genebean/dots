@@ -177,7 +177,7 @@ GEM
     tty-screen (0.8.0)
     unicode-display_width (1.7.0)
     wisper (2.0.1)
-    xmlrpc (0.3.0)
+    xmlrpc (0.3.1)
     yamllint (0.0.9)
       trollop (~> 2)
 
@@ -210,7 +210,7 @@ DEPENDENCIES
   tty-command (~> 0.6)
   tty-file (~> 0.9)
   tty-prompt (~> 0.21)
-  xmlrpc (~> 0.3.0)
+  xmlrpc (~> 0.3.1)
   yamllint (~> 0.0.9)
 
 BUNDLED WITH
