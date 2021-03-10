@@ -93,12 +93,14 @@ gpg-connect-agent updatestartuptty /bye >/dev/null
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #alias ll='ls -G -l'
 #alias ls='ls -G'
+alias beo='bundle exec onceover run spec --trace --force'
 alias biv='bundle install --path=vendor/bundle'
-alias gbc='git branch --merged | command grep -vE "^(\*|\s*(master|develop|production)\s*$)" | command xargs -n 1 git branch -d'
+alias ce='code-exploration'
+alias gbc='git branch --merged | command grep -vE "^(\*|\s*(main|master|develop|production)\s*$)" | command xargs -n 1 git branch -d'
 alias gitextract='git log --pretty=email --patch-with-stat --reverse --full-index --binary --'
 alias hubpr='hub pull-request --push --browse'
 alias ogk='open -a GitKraken'
-alias pssh='ssh -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no"'
+alias pssh='ssh -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" -i ~/.ssh/id_rsa-acceptance'
 alias sal='ssh-add -L'
 alias st='open -a SourceTree'
 alias sz='source ~/.zshrc'
@@ -134,6 +136,43 @@ export VAGRANT_DEFAULT_PROVIDER='virtualbox'
 export PATH=$PATH:~/.nexustools
 
 if [[ `uname` == 'Darwin' ]]; then
+  if [[ `uname -p` == 'arm' ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+
+    glcoud_zsh_path='/usr/local/google-cloud-sdk/path.zsh.inc'
+    [ -f $glcoud_zsh_path ] && source $glcoud_zsh_path
+
+    gcloud_zsh_completions='/usr/local/google-cloud-sdk/completion.zsh.inc'
+    [ -f $gcloud_zsh_completions ] && source $gcloud_zsh_completions
+
+    # use homebrew's ruby
+    [ -d /opt/homebrew/opt/ruby@2.7/bin ] && export PATH=/opt/homebrew/opt/ruby@2.7/bin:$PATH
+
+    # hide ruby 2.7's extra output
+    export RUBYOPT='-W:no-deprecated -W:no-experimental'
+  else
+    eval "$(/usr/local/bin/brew shellenv)"
+
+    # optional additions from homebrew
+    [ -d "/usr/local/opt/node@12/bin" ] &&  export PATH="/usr/local/opt/node@12/bin:$PATH"
+    [ -d /usr/local/opt/qt/bin ] && export PATH=$PATH:/usr/local/opt/qt/bin
+
+    # use homebrew's ruby
+    [ -d /usr/local/opt/ruby/bin ] && export PATH=/usr/local/opt/ruby/bin:$PATH
+
+    # hide ruby 2.7's extra output
+    export RUBYOPT='-W:no-deprecated -W:no-experimental'
+
+
+    glcoud_zsh_path='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc'
+    [ -f $glcoud_zsh_path ] && source $glcoud_zsh_path
+
+    gcloud_zsh_completions='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc'
+    [ -f $gcloud_zsh_completions ] && source $gcloud_zsh_completions
+  fi
+
+  [ -d "$HOME/.krew" ] && export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+  
   export PATH=$PATH:/usr/local/sbin
 
   alias flushdns='sudo killall -HUP mDNSResponder'
@@ -150,28 +189,9 @@ if [[ `uname` == 'Darwin' ]]; then
   # Add OVFTool to PATH if it is installed
   [ -d '/Applications/VMware OVF Tool' ] && export PATH=$PATH:'/Applications/VMware OVF Tool'
 
-  # optional additions from homebrew
-  [ -d "/usr/local/opt/node@12/bin" ] &&  export PATH="/usr/local/opt/node@12/bin:$PATH"
-  [ -d /usr/local/opt/qt/bin ] && export PATH=$PATH:/usr/local/opt/qt/bin
-
-  # use homebrew's ruby
-  [ -d /usr/local/opt/ruby/bin ] && export PATH=/usr/local/opt/ruby/bin:$PATH
-
-  # hide ruby 2.7's extra output
-  export RUBYOPT='-W:no-deprecated -W:no-experimental'
-
   # add gems to path
   GEMBIN="$(gem environment gemdir)/bin"
   export PATH=$PATH:$GEMBIN
-
-  # Force google-cloud-sdk to use python 3.8
-  export CLOUDSDK_PYTHON="/usr/local/opt/python@3.8/libexec/bin/python"
-
-  glcoud_zsh_path='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc'
-  [ -f $glcoud_zsh_path ] && source $glcoud_zsh_path
-
-  gcloud_zsh_completions='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc'
-  [ -f $gcloud_zsh_completions ] && source $gcloud_zsh_completions
 
   # added by travis gem
   [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
@@ -189,10 +209,7 @@ if [[ `uname` == 'Darwin' ]]; then
   export OPENFAAS_PREFIX="genebean"
 fi
 
-
-# added by travis gem
-[ ! -s /Users/gene/.travis/travis.sh ] || source /Users/gene/.travis/travis.sh
-
 # default kube-ps1 to off
 kubeoff
 
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
