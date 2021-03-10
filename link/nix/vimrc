@@ -17,6 +17,8 @@ Plugin 'MarcWeber/vim-addon-mw-utils'     " a utility used by vim-snipmate
 Plugin 'mrk21/yaml-vim'                   " provides indentation and syntax highlighting for yaml
 Plugin 'rodjek/vim-puppet'                " provides several niceties for working with Puppet
 Plugin 'tomtom/tlib_vim'                  " a utility used by vim-snipmate
+Plugin 'vim-airline/vim-airline'          " status line alternative to powerline
+Plugin 'vim-airline/vim-airline-themes'   " themes for vim-airline
 Plugin 'vim-ruby/vim-ruby'                " provides syntax highlighting for ruby files
 Plugin 'vim-syntastic/syntastic'          " provides syntax checking
 
@@ -69,6 +71,8 @@ let g:syntastic_quiet_messages           = {'level': 'warnings'}
 " don't wrap text in markdown files
 let g:vim_markdown_folding_disabled      = 1
 
+" settings for vim-airline
+let g:airline_theme='powerlineish'
 " import settings that are OS specific
-source ~/.vimrc_os_specific
+" source ~/.vimrc_os_specific
 
