@@ -56,14 +56,11 @@ ZSH_CUSTOM=~/repos/customized-oh-my-zsh
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(brew bundler gem git git-flow github history kube-ps1 kubectl osx pip python terraform vagrant vscode)
+plugins=(brew bundler gem git git-flow github history kube-aliases kube-ps1 kubectl osx pip python terraform vagrant vscode)
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
-
-# make tab completions work right
-#autoload -Uz compinit && compinit
 
 [ -f ~/.private-env ] && source ~/.private-env || echo '~/.private-env is missing'
 
@@ -98,16 +95,13 @@ alias biv='bundle install --path=vendor/bundle'
 alias ce='code-exploration'
 alias gbc='git branch --merged | command grep -vE "^(\*|\s*(main|master|develop|production)\s*$)" | command xargs -n 1 git branch -d'
 alias gitextract='git log --pretty=email --patch-with-stat --reverse --full-index --binary --'
+alias gpge='gpg2 --encrypt --sign --armor -r '
 alias hubpr='hub pull-request --push --browse'
-alias ogk='open -a GitKraken'
 alias pssh='ssh -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" -i ~/.ssh/id_rsa-acceptance'
 alias sal='ssh-add -L'
 alias st='open -a SourceTree'
 alias sz='source ~/.zshrc'
 alias ykey='pkill gpg-agent && source ~/.zshrc; ssh-add -L'
-
-# this makes grv from homebrew work
-unalias grv
 
 function otpon() {
         osascript -e 'tell application "yubiswitch" to KeyOn'
@@ -130,64 +124,27 @@ function aws_account_info {
 #PROMPT=`echo $PROMPT | rev | sed 's/ / )ofni_tnuocca_swa($ /'| rev`
 
 export EDITOR='vim'
-export POWERLINE_CONFIG_COMMAND='/usr/local/bin/powerline-config'
-export VAGRANT_DEFAULT_PROVIDER='virtualbox'
-
-export PATH=$PATH:~/.nexustools
 
 if [[ `uname` == 'Darwin' ]]; then
-  if [[ `uname -p` == 'arm' ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-
-    glcoud_zsh_path='/usr/local/google-cloud-sdk/path.zsh.inc'
-    [ -f $glcoud_zsh_path ] && source $glcoud_zsh_path
-
-    gcloud_zsh_completions='/usr/local/google-cloud-sdk/completion.zsh.inc'
-    [ -f $gcloud_zsh_completions ] && source $gcloud_zsh_completions
-
-    # use homebrew's ruby
-    [ -d /opt/homebrew/opt/ruby@2.7/bin ] && export PATH=/opt/homebrew/opt/ruby@2.7/bin:$PATH
-
-    # hide ruby 2.7's extra output
-    export RUBYOPT='-W:no-deprecated -W:no-experimental'
-  else
-    eval "$(/usr/local/bin/brew shellenv)"
-
-    # optional additions from homebrew
-    [ -d "/usr/local/opt/node@12/bin" ] &&  export PATH="/usr/local/opt/node@12/bin:$PATH"
-    [ -d /usr/local/opt/qt/bin ] && export PATH=$PATH:/usr/local/opt/qt/bin
-
-    # use homebrew's ruby
-    [ -d /usr/local/opt/ruby/bin ] && export PATH=/usr/local/opt/ruby/bin:$PATH
-
-    # hide ruby 2.7's extra output
-    export RUBYOPT='-W:no-deprecated -W:no-experimental'
-
-
-    glcoud_zsh_path='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc'
-    [ -f $glcoud_zsh_path ] && source $glcoud_zsh_path
-
-    gcloud_zsh_completions='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc'
-    [ -f $gcloud_zsh_completions ] && source $gcloud_zsh_completions
-  fi
-
-  [ -d "$HOME/.krew" ] && export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-  
-  export PATH=$PATH:/usr/local/sbin
-
+  # Bits common to all macOS instances
   alias flushdns='sudo killall -HUP mDNSResponder'
   alias localdns='sudo networksetup -setdnsservers Wi-Fi empty && sudo networksetup -setdnsservers Wi-Fi 127.0.0.1 ::1 && flushdns'
+  alias ogk='open -a GitKraken'
   alias stockdns='sudo networksetup -setdnsservers Wi-Fi empty && flushdns'
+
+  if [ -d "$HOME/.krew" ]; then export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"; fi
+
+  export PATH=$PATH:/usr/local/sbin
 
   # Araxis needs to come first so that its tools don't get stomped
   # by ones Homebrew installs to /usr/local/bin. In particular, compare
   # from ImageMagick breaks using git difftool.
-  export PATH=/Applications/Araxis\ Merge.app/Contents/Utilities:$PATH
+  if [ -d "/Applications/Araxis Merge.app" ]; then export PATH='/Applications/Araxis Merge.app/Contents/Utilities':$PATH; fi
 
   eval '/usr/libexec/path_helper -s' > /dev/null
 
   # Add OVFTool to PATH if it is installed
-  [ -d '/Applications/VMware OVF Tool' ] && export PATH=$PATH:'/Applications/VMware OVF Tool'
+  if [ -d "/Applications/VMware OVF Tool" ]; then export PATH=$PATH:'/Applications/VMware OVF Tool'; fi
 
   # add gems to path
   GEMBIN="$(gem environment gemdir)/bin"
@@ -207,9 +164,45 @@ if [[ `uname` == 'Darwin' ]]; then
   KUBE_PS1_ENABLED=false
 
   export OPENFAAS_PREFIX="genebean"
+
+  [ -e "${HOME}/.iterm2_shell_integration.zsh" ] && source "${HOME}/.iterm2_shell_integration.zsh"
+
+  if [ "$(uname -p)" = 'i386' ] && [ ! -f '/opt/homebrew/bin/brew' ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+
+    # optional additions from homebrew
+    [ -d "/usr/local/opt/node@12/bin" ] &&  export PATH="/usr/local/opt/node@12/bin:$PATH"
+    [ -d /usr/local/opt/qt/bin ] && export PATH=$PATH:/usr/local/opt/qt/bin
+
+    # use homebrew's ruby
+    [ -d /usr/local/opt/ruby/bin ] && export PATH=/usr/local/opt/ruby/bin:$PATH
+
+    # hide ruby 2.7's extra output
+    export RUBYOPT='-W:no-deprecated -W:no-experimental'
+
+    export VAGRANT_DEFAULT_PROVIDER='virtualbox'
+
+    glcoud_zsh_path='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc'
+    [ -f $glcoud_zsh_path ] && source $glcoud_zsh_path
+
+    gcloud_zsh_completions='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc'
+    [ -f $gcloud_zsh_completions ] && source $gcloud_zsh_completions
+  else
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+
+    glcoud_zsh_path='/usr/local/google-cloud-sdk/path.zsh.inc'
+    if [ -f $glcoud_zsh_path ]; then source $glcoud_zsh_path; fi
+
+    gcloud_zsh_completions='/usr/local/google-cloud-sdk/completion.zsh.inc'
+    if [ -f $gcloud_zsh_completions ]; then source $gcloud_zsh_completions; fi
+
+    # use homebrew's ruby
+    [ -d "/opt/homebrew/opt/ruby@2.7/bin" ] && export PATH=/opt/homebrew/opt/ruby@2.7/bin:$PATH
+
+    # hide ruby 2.7's extra output
+    export RUBYOPT='-W:no-deprecated -W:no-experimental'
+  fi
 fi
 
 # default kube-ps1 to off
 kubeoff
-
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
