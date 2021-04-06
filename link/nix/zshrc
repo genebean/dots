@@ -56,7 +56,7 @@ ZSH_CUSTOM=~/repos/customized-oh-my-zsh
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(brew bundler gem git git-flow github history kube-ps1 kubectl osx pip python terraform vagrant vscode)
+plugins=(brew bundler gem git git-flow github history kube-aliases kube-ps1 kubectl osx pip python terraform vagrant vscode)
 
 source $ZSH/oh-my-zsh.sh
 
