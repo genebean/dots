@@ -1,3 +1,27 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Switch to Homebrew's ruby on macOS super early so plugins and such use the right one
+if [[ `uname` == 'Darwin' ]]; then
+  if [ "$(uname -p)" = 'i386' ] && [ ! -f '/opt/homebrew/bin/brew' ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+
+    # use homebrew's ruby
+    [ -d /usr/local/opt/ruby/bin ] && export PATH=/usr/local/opt/ruby/bin:$PATH
+  else
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+
+    # use homebrew's ruby
+    [ -d "/opt/homebrew/opt/ruby@2.7/bin" ] && export PATH='/opt/homebrew/opt/ruby@2.7/bin':$PATH
+  fi
+  # hide ruby 2.7's extra output
+  export RUBYOPT='-W:no-deprecated -W:no-experimental'
+fi
+
 # Path to your oh-my-zsh installation.
 export ZSH=~/.oh-my-zsh
 
@@ -8,7 +32,7 @@ if [[ `uname` == 'Linux' ]]; then
   ZSH_THEME="beanbag"
   #ZSH_THEME="af-magic"
 else
-  ZSH_THEME="beanbag"
+#  ZSH_THEME="beanbag"
   #ZSH_THEME="robbyrussell"
   #ZSH_THEME="pygmalion"
   #ZSH_THEME="muse"
@@ -57,7 +81,7 @@ ZSH_CUSTOM=~/repos/customized-oh-my-zsh
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(brew bundler gem git git-flow github history kube-aliases kube-ps1 kubectl osx pip python terraform vagrant vscode)
+plugins=(brew bundler gem git git-flow github history kube-aliases kube-ps1 kubectl osx pip python terraform vagrant vscode zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -169,17 +193,9 @@ if [[ `uname` == 'Darwin' ]]; then
   [ -e "${HOME}/.iterm2_shell_integration.zsh" ] && source "${HOME}/.iterm2_shell_integration.zsh"
 
   if [ "$(uname -p)" = 'i386' ] && [ ! -f '/opt/homebrew/bin/brew' ]; then
-    eval "$(/usr/local/bin/brew shellenv)"
-
     # optional additions from homebrew
     [ -d "/usr/local/opt/node@12/bin" ] &&  export PATH="/usr/local/opt/node@12/bin:$PATH"
     [ -d /usr/local/opt/qt/bin ] && export PATH=$PATH:/usr/local/opt/qt/bin
-
-    # use homebrew's ruby
-    [ -d /usr/local/opt/ruby/bin ] && export PATH=/usr/local/opt/ruby/bin:$PATH
-
-    # hide ruby 2.7's extra output
-    export RUBYOPT='-W:no-deprecated -W:no-experimental'
 
     export VAGRANT_DEFAULT_PROVIDER='virtualbox'
 
@@ -189,21 +205,17 @@ if [[ `uname` == 'Darwin' ]]; then
     gcloud_zsh_completions='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc'
     [ -f $gcloud_zsh_completions ] && source $gcloud_zsh_completions
   else
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-
     glcoud_zsh_path='/usr/local/google-cloud-sdk/path.zsh.inc'
     if [ -f $glcoud_zsh_path ]; then source $glcoud_zsh_path; fi
 
     gcloud_zsh_completions='/usr/local/google-cloud-sdk/completion.zsh.inc'
     if [ -f $gcloud_zsh_completions ]; then source $gcloud_zsh_completions; fi
-
-    # use homebrew's ruby
-    [ -d "/opt/homebrew/opt/ruby@2.7/bin" ] && export PATH='/opt/homebrew/opt/ruby@2.7/bin':$PATH
-
-    # hide ruby 2.7's extra output
-    export RUBYOPT='-W:no-deprecated -W:no-experimental'
   fi
 fi
 
 # default kube-ps1 to off
 kubeoff
+
+source $(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
