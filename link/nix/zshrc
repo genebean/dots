@@ -9,6 +9,7 @@ if [[ `uname` == 'Linux' ]]; then
   #ZSH_THEME="af-magic"
 else
   ZSH_THEME="beanbag"
+  #ZSH_THEME="robbyrussell"
   #ZSH_THEME="pygmalion"
   #ZSH_THEME="muse"
 fi
@@ -197,7 +198,7 @@ if [[ `uname` == 'Darwin' ]]; then
     if [ -f $gcloud_zsh_completions ]; then source $gcloud_zsh_completions; fi
 
     # use homebrew's ruby
-    [ -d "/opt/homebrew/opt/ruby@2.7/bin" ] && export PATH=/opt/homebrew/opt/ruby@2.7/bin:$PATH
+    [ -d "/opt/homebrew/opt/ruby@2.7/bin" ] && export PATH='/opt/homebrew/opt/ruby@2.7/bin':$PATH
 
     # hide ruby 2.7's extra output
     export RUBYOPT='-W:no-deprecated -W:no-experimental'
