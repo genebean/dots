@@ -3,7 +3,7 @@
 if [[ $1 == 'now' ]]; then
   # Install dot's dependencies
   sudo yum install -y centos-release-scl-rh.noarch
-  sudo yum install rh-ruby24 rh-ruby24-ruby-devel rh-ruby24-rubygem-bundler rh-ruby24-rubygem-rake cmake gcc
+  sudo yum install rh-ruby26 rh-ruby26-ruby-devel rh-ruby26-rubygem-bundler rh-ruby26-rubygem-rake cmake gcc
 
   # Make dot usable
   cd ~/.dotfiles

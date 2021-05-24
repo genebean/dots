@@ -5,7 +5,7 @@ if [[ $1 == 'now' ]]; then
   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
   # Install dot's dependencies
-  /usr/local/bin/brew install ruby cmake pkg-config
+  /usr/local/bin/brew install ruby@2.7 cmake pkg-config
   /usr/local/bin/gem install --no-ri --no-rdoc bundler
 
   # Make dot usable
