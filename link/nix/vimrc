@@ -59,6 +59,8 @@ colorscheme solarized                         " use the solorized set of colors
 highlight ColorColumn ctermbg=232             " set the color to be used for guidelines
 let &colorcolumn=join(range(81,999),",")      " change the background color of everything beyond 80 characters
 
+let g:snipMate = { 'snippet_version' : 1 }
+
 " settings for the syntastic plugin
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list            = 1
