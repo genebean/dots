@@ -7,7 +7,7 @@ source 'https://rubygems.org'
 if ENV.key?('PUPPET_VERSION')
   puppetversion = ENV['PUPPET_VERSION'].to_s
 else
-  puppetversion = ['>= 6', '< 7']
+  puppetversion = ['>= 7', '< 8']
 end
 # rubocop:enable Style/ConditionalAssignment
 
