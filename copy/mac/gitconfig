@@ -1,15 +1,21 @@
-[core]
-	excludesfile = /Users/gliverma/.gitignore_global
-[diff]
-        tool = araxis
-[difftool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/araxiscompare-w.sh -2 \"$LOCAL\" \"$REMOTE\"
-	path = 
-[merge]
-        tool = araxis
-[mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/araxisgitmerge-w.sh \"$REMOTE\" \"$BASE\" \"$LOCAL\" \"$MERGED\"
-	trustExitCode = true
 [user]
 	name = Gene Liverman
 	email = gene@technicalissues.us
+
+[commit]
+    gpgSign = true
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+[gpg]
+    program = gpg2
+[init]
+	defaultBranch = main
+[merge]
+	conflictStyle = diff3
+[pull]
+    rebase = false
+[alias]
+	kraken = !open "gitkraken://repo$(cd "${1:-.}" && git rev-parse --show-toplevel); :"

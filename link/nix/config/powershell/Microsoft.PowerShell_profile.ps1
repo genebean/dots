@@ -8,4 +8,4 @@ Import-Module posh-git
 # Install-Module -Name oh-my-posh
 Import-module oh-my-posh
 #Set-Theme Paradox
-Set-Theme beantest
+Set-PoshPrompt -Theme  ~/.oh-my-posh.omp.json
