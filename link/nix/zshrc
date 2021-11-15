@@ -13,6 +13,26 @@ else
   #ZSH_THEME="muse"
 fi
 
+# Get Homebrew into the path early so that plugins and such can use
+# programs installed by it
+if [[ $(uname) == 'Darwin' ]]; then
+  if [ "$(uname -p)" = 'i386' ] && [ ! -f '/opt/homebrew/bin/brew' ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  else
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+elif [[ $(uname) == 'Linux' ]]; then
+  if [[ -e /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  fi
+fi
+
+# Get Homebrew shell completion bits
+# https://docs.brew.sh/Shell-Completion
+if type brew &>/dev/null; then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
+
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
@@ -56,7 +76,7 @@ ZSH_CUSTOM=~/repos/customized-oh-my-zsh
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(brew bundler gem git git-flow github history kube-aliases kube-ps1 kubectl osx pip python terraform vagrant vscode)
+plugins=(brew bundler gem git git-flow github history kube-aliases kube-ps1 kubectl macos pip python terraform vagrant vscode)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -65,18 +85,15 @@ source $ZSH/oh-my-zsh.sh
 [ -f ~/.private-env ] && source ~/.private-env || echo '~/.private-env is missing'
 
 # Start GPG agent
-export GPG_TTY=$(tty)
-
-if [[ `uname` == 'Linux' ]]; then
-  export SSH_AUTH_SOCK="/run/user/$UID/gnupg/S.gpg-agent.ssh"
-else
+# Some tips from https://hedberg.io/yubikey-for-ssh/ helped simplify this:
+if [[ $(uname) == 'Darwin' ]]; then
   # Add GPG Suite binaries to the path:
   export PATH=/usr/local/MacGPG2/bin:$PATH
-
-  export SSH_AUTH_SOCK=~/.gnupg/S.gpg-agent.ssh
 fi
 
-gpg-connect-agent updatestartuptty /bye >/dev/null
+export GPG_TTY=$(tty)
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+gpgconf --launch gpg-agent
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -103,12 +120,22 @@ alias st='open -a SourceTree'
 alias sz='source ~/.zshrc'
 alias ykey='pkill gpg-agent && source ~/.zshrc; ssh-add -L'
 
-function otpon() {
-        osascript -e 'tell application "yubiswitch" to KeyOn'
-}
-function otpoff() {
-        osascript -e 'tell application "yubiswitch" to KeyOff'
-}
+## Linux-only aliases
+if [[ `uname` == 'Linux' ]]; then
+  alias pbcopy='xclip -selection clipboard'
+  alias pbpaste='xclip -selection clipboard -o'
+fi
+
+
+
+if [[ `uname` != 'Linux' ]]; then
+  function otpon() {
+          osascript -e 'tell application "yubiswitch" to KeyOn'
+  }
+  function otpoff() {
+          osascript -e 'tell application "yubiswitch" to KeyOff'
+  }
+fi
 
 # helper for aws and assume-role
 function awsrole() {
@@ -123,7 +150,16 @@ function aws_account_info {
 # )ofni_tnuocca_swa($ is $(aws_account_info) backwards
 #PROMPT=`echo $PROMPT | rev | sed 's/ / )ofni_tnuocca_swa($ /'| rev`
 
+function get_cluster_short() {
+  echo "$1" |rev |cut -d _ -f1 |rev
+}
+KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
+KUBE_PS1_COLOR_CONTEXT="%{$fg[yellow]%}"
+KUBE_PS1_ENABLED=false
+
 export EDITOR='vim'
+
+export GOPATH=$HOME/go
 
 if [[ `uname` == 'Darwin' ]]; then
   # Bits common to all macOS instances
@@ -156,19 +192,11 @@ if [[ `uname` == 'Darwin' ]]; then
   # added to make pipx work
   [ -d /Users/gene/.local/bin ] && export PATH=$PATH:/Users/gene/.local/bin
 
-  function get_cluster_short() {
-    echo "$1" |rev |cut -d _ -f1 |rev
-  }
-  KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
-  KUBE_PS1_COLOR_CONTEXT="%{$fg[yellow]%}"
-  KUBE_PS1_ENABLED=false
-
   export OPENFAAS_PREFIX="genebean"
 
   [ -e "${HOME}/.iterm2_shell_integration.zsh" ] && source "${HOME}/.iterm2_shell_integration.zsh"
 
   if [ "$(uname -p)" = 'i386' ] && [ ! -f '/opt/homebrew/bin/brew' ]; then
-    eval "$(/usr/local/bin/brew shellenv)"
 
     # optional additions from homebrew
     [ -d "/usr/local/opt/node@12/bin" ] &&  export PATH="/usr/local/opt/node@12/bin:$PATH"
@@ -188,8 +216,6 @@ if [[ `uname` == 'Darwin' ]]; then
     gcloud_zsh_completions='/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc'
     [ -f $gcloud_zsh_completions ] && source $gcloud_zsh_completions
   else
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-
     glcoud_zsh_path='/usr/local/google-cloud-sdk/path.zsh.inc'
     if [ -f $glcoud_zsh_path ]; then source $glcoud_zsh_path; fi
 
@@ -202,7 +228,19 @@ if [[ `uname` == 'Darwin' ]]; then
     # hide ruby 2.7's extra output
     export RUBYOPT='-W:no-deprecated -W:no-experimental'
   fi
+elif [[ `uname` == 'Linux' ]]; then
+  if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+  fi
+
+  export CLOUDSDK_PYTHON="/usr/bin/python2"
+
+fi
+
+if type floaty &>/dev/null; then
+  source $(floaty completion --shell zsh)
 fi
 
 # default kube-ps1 to off
 kubeoff
+

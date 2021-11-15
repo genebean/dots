@@ -1,15 +1,19 @@
 /.vagrant/
 /vendor/
 
+.dccache
+
 # Config files that are not suitable to add to version control:
 link/nix/config/.mono/
 link/nix/config/asciinema/
 link/nix/config/configstore/nodemon.json
+link/nix/config/configstore/snyk.json
 link/nix/config/configstore/update-notifier-nodemon.json
 link/nix/config/configstore/update-notifier-npm.json
 link/nix/config/configstore/update-notifier-yo.json
 link/nix/config/filezilla
 link/nix/config/fluidkeys/
+link/nix/config/fontforge/
 link/nix/config/gcloud/
 link/nix/config/grv/
 link/nix/config/gtk-2.0/
