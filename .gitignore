@@ -25,6 +25,7 @@ link/nix/config/NuGet/nuget.config
 link/nix/config/powershell/powershellget/
 link/nix/config/puppet/
 link/nix/config/QtProject/
+link/nix/config/rclone/
 link/nix/config/tmuxinator/
 link/nix/config/wireshark/
-
+link/nix/config/linode-cli
