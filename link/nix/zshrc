@@ -241,7 +241,13 @@ elif [[ `uname` == 'Linux' ]]; then
     PATH="$HOME/.local/bin:$PATH"
   fi
 
-  export CLOUDSDK_PYTHON="/usr/bin/python2"
+  if [ -d "$HOME/.local/share/gem/ruby/3.0.0/bin" ] ; then
+    PATH="$HOME/.local/share/gem/ruby/3.0.0/bin:$PATH"
+  fi
+
+  # export CLOUDSDK_PYTHON="/usr/bin/python2"
+  gcloud_zsh_completions='/snap/google-cloud-cli/current/completion.zsh.inc'
+  if [ -f $gcloud_zsh_completions ]; then source $gcloud_zsh_completions; fi
 
 fi
 
