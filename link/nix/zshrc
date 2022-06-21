@@ -119,15 +119,22 @@ alias pssh='ssh -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" 
 alias sal='ssh-add -L'
 alias st='open -a SourceTree'
 alias sz='source ~/.zshrc'
-alias ykey='pkill gpg-agent && source ~/.zshrc; ssh-add -L'
+
+# aliases whose command changes based on OS
+if [[ `uname` == 'Linux' ]]; then
+  alias ykey='sudo systemctl restart pcscd && sudo pkill -9 gpg-agent && source ~/.zshrc; ssh-add -L'
+else
+  alias ykey='pkill -9 gpg-agent && source ~/.zshrc; ssh-add -L'
+fi
 
 ## Linux-only aliases
 if [[ `uname` == 'Linux' ]]; then
+  alias enable-ruby-27='source ~/enable-ruby-27'
   alias pbcopy='xclip -selection clipboard'
   alias pbpaste='xclip -selection clipboard -o'
+  alias uwgroute='nmcli connection modify SecureWest ipv4.route-metric 20; nmcli radio wifi off; nmcli radio wifi on'
+  alias uwgforget='nmcli connection delete SecureWest'
 fi
-
-
 
 if [[ `uname` != 'Linux' ]]; then
   function otpon() {
