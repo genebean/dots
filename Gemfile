@@ -31,7 +31,7 @@ group :development, :unit_tests do
   gem 'yamllint',                                         '~> 0.0.9'
 
   # puppet-lint and plugins
-  gem 'puppet-lint',                                      '~> 2.3'
+  gem 'puppet-lint',                                      '~> 2.5'
   gem 'puppet-lint-absolute_classname-check',             '~> 3.0'
   gem 'puppet-lint-absolute_template_path',               '~> 1.0'
   gem 'puppet-lint-empty_string-check',                   '~> 1.0'
