@@ -34,7 +34,7 @@ group :development, :unit_tests do
   gem 'puppet-lint',                                      '~> 2.3'
   gem 'puppet-lint-absolute_classname-check',             '~> 3.0'
   gem 'puppet-lint-absolute_template_path',               '~> 1.0'
-  gem 'puppet-lint-empty_string-check',                   '~> 0.2'
+  gem 'puppet-lint-empty_string-check',                   '~> 1.0'
   gem 'puppet-lint-leading_zero-check',                   '~> 0.1'
   gem 'puppet-lint-resource_reference_syntax',            '~> 1.1'
   gem 'puppet-lint-spaceship_operator_without_tag-check', '~> 0.1'
