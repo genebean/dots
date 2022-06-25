@@ -1,0 +1,15 @@
+name: Ansible Lint
+on:
+  pull_request:
+
+jobs:
+  ansbile_linting:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run ansible-lint
+        uses: ansible-community/ansible-lint-action@main
+        with:
+          path: 'ansible/'
