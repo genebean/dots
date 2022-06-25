@@ -1,0 +1,16 @@
+---
+all:
+  hosts:
+    carbonbean:
+      ansible_connection: local
+  children:
+    servers:
+      vars:
+        ansible_connection: ssh
+      hosts:
+        cloud2.technicalissues.us:
+          ansible_user: gene
+        mail.alt.technicalissues.us:
+          ansible_user: gliverma
+        mini-watcher.local:
+          ansible_user: gene

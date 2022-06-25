@@ -1,0 +1,24 @@
+---
+- name: Install and configure zsh
+  hosts: servers
+  vars:
+    ansible_python_interpreter: '/usr/bin/python3'
+  tasks:
+
+    - name: Install zsh using default package manager
+      become: true
+      ansible.builtin.package:
+        state: present
+        name:
+          - git
+          - zsh
+
+    - name: Setup Oh My ZSH
+      include_role:
+        name: gantsign.oh-my-zsh
+      vars:
+        oh_my_zsh_theme: steeef
+        oh_my_zsh_plugins:
+          - git
+        users:
+          - username: "{{ ansible_user }}"
