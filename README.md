@@ -3,9 +3,9 @@
 [![Ansible Lint](https://github.com/genebean/dots/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/genebean/dots/actions/workflows/ansible-lint.yml)
 [![Ruby](https://github.com/genebean/dots/actions/workflows/ruby.yml/badge.svg)](https://github.com/genebean/dots/actions/workflows/ruby.yml)
 
-My dot files and a tool to deploy them, and the programs that use them, to
-various OS's. Some additional tools that I consider part of my baseline setup
-are also installed and, if possible, configured by dots.
+> **NOTICE:** this repo is undergoing a transformation. Historically it has been centered around using Puppet and r10k as ruby gems. I love Puppet for managing servers, but running it unprivledged as a gem has proven more than a little challenging in this specific use case. As a result, I am transitioning to using Ansible for the adhoc work that is needed here. Also, the `dots` tool and associated rake tasks will almost certainly be moved to Python 3 as it is universally available without some of the hastles of a bundler based setup.
+
+This repo contains my dot files and a tool to deploy them, and the programs that use them, to various OS's. Some additional tools that I consider part of my baseline setup are also installed and, if possible, configured by dots.
 
 Dots is written in ruby and utilizes bundler to keep all its dependancies
 as self-contained as possible. Installation of programs and management of git
