@@ -5,7 +5,7 @@ require 'os'
 require 'tty-command'
 require 'tty-file'
 require 'tty-prompt'
-require_relative 'dotutils.rb'
+require_relative 'dotutils'
 
 cmd     = TTY::Command.new
 @prompt = TTY::Prompt.new(help_color: :magenta)

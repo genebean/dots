@@ -19,10 +19,11 @@ end
 def rename_file(source, destination, action)
   puts "#{destination} exists, renaming to #{destination}.predots"
   File.rename(destination, "#{destination}.predots")
-  if action.eql?('link')
+  case action
+  when 'link'
     puts "Linking #{destination} to #{source}"
     File.symlink(source, destination)
-  elsif action.eql?('copy')
+  when 'copy'
     puts "Copying #{destination} to #{source}"
     FileUtils.cp_r(source, destination)
   else
