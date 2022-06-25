@@ -1,6 +1,7 @@
 # dots
 
 [![Ansible Lint](https://github.com/genebean/dots/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/genebean/dots/actions/workflows/ansible-lint.yml)
+[![Ruby](https://github.com/genebean/dots/actions/workflows/ruby.yml/badge.svg)](https://github.com/genebean/dots/actions/workflows/ruby.yml)
 
 My dot files and a tool to deploy them, and the programs that use them, to
 various OS's. Some additional tools that I consider part of my baseline setup

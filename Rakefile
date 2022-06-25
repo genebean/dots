@@ -6,7 +6,7 @@ require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet-lint/tasks/puppet-lint'
 require 'tty-command'
 require 'yamllint/rake_task'
-require_relative 'bin/rake_tasks.rb'
+require_relative 'bin/rake_tasks'
 
 exclude_paths = [
   'pkg/**/*',
