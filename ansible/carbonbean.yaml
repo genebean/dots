@@ -6,7 +6,7 @@
   tasks:
 
     - name: Add 1Password apt signing key
-      include_role:
+      ansible.builtin.include_role:
         name: jack1142.apt_signing_key
       vars:
         url: https://downloads.1password.com/linux/keys/1password.asc
@@ -21,8 +21,23 @@
         filename: 1password
         update_cache: false
 
+    - name: Add Google Cloud apt key
+      become: true
+      ansible.builtin.apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        keyring: /usr/share/keyrings/cloud.google.gpg
+        state: present
+
+    - name: Add Google apt repo
+      become: true
+      ansible.builtin.apt_repository:
+        repo: deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main
+        state: present
+        filename: google-cloud-sdk
+        update_cache: false
+
     - name: Add Okta ASA client apt signing key
-      include_role:
+      ansible.builtin.include_role:
         name: jack1142.apt_signing_key
       vars:
         url: https://dist.scaleft.com/pki/scaleft_deb_key.asc
@@ -52,7 +67,7 @@
         update_cache: false
 
     - name: Add Tailscale apt signing key
-      include_role:
+      ansible.builtin.include_role:
         name: jack1142.apt_signing_key
       vars:
         url: https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg
@@ -112,6 +127,8 @@
           - git
           - git-lfs
           - gnupg
+          - google-cloud-cli
+          - google-cloud-cli-gke-gcloud-auth-plugin
           - htop
           - httpie
           - hub
@@ -217,7 +234,6 @@
         classic: true
         name:
           - gitkraken # official version
-          - google-cloud-cli # official version
 
     - name: Cider from Snapcraft
       become: true
