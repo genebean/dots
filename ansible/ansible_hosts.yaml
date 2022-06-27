@@ -14,3 +14,5 @@ all:
           ansible_user: gliverma
         mini-watcher.local:
           ansible_user: gene
+        tart.local:
+          ansible_user: pi
