@@ -24,7 +24,7 @@ group :development, :unit_tests do
   gem 'metadata-json-lint',                               '~> 3.0'
   gem 'puppetlabs_spec_helper',                           '~> 4.0'
   gem 'rspec-puppet',                                     '~> 2.11'
-  gem 'rubocop',                                          '~> 1.30'
+  gem 'rubocop',                                          '~> 1.31'
   gem 'tty-command',                                      '~> 0.6'
   gem 'tty-file',                                         '~> 0.9'
   gem 'tty-prompt',                                       '~> 0.21'
