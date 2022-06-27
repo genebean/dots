@@ -121,6 +121,7 @@
           - libssl-dev
           - neofetch
           - packer
+          - pass
           - pcsc-tools
           - pcscd
           - pdk
@@ -144,6 +145,12 @@
           - xclip
           - yubikey-manager
           - zsh
+
+    - name: Install git-credential-manager deb package
+      become: true
+      ansible.builtin.apt:
+        state: present
+        deb: https://github.com/GitCredentialManager/git-credential-manager/releases/download/v2.0.696/gcmcore-linux_amd64.2.0.696.deb
 
     - name: Install Profile Switcher for Firefox deb package
       become: true
