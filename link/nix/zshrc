@@ -24,7 +24,14 @@ if [[ $(uname) == 'Darwin' ]]; then
   fi
 elif [[ $(uname) == 'Linux' ]]; then
   if [[ -e /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    # Don't use the eval so that it doesn't override system python
+    # eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
+    export HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar"
+    export HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew"
+    export PATH="${PATH}:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin"
+    export MANPATH="/home/linuxbrew/.linuxbrew/share/man${MANPATH+:$MANPATH}:"
+    export INFOPATH="/home/linuxbrew/.linuxbrew/share/info:${INFOPATH:-}"
   fi
 fi
 
@@ -237,9 +244,7 @@ if [[ `uname` == 'Darwin' ]]; then
     export RUBYOPT='-W:no-deprecated -W:no-experimental'
   fi
 elif [[ `uname` == 'Linux' ]]; then
-  if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
-  fi
+  PATH="$HOME/.local/bin:$PATH"
 
   if [ -d "$HOME/.local/share/gem/ruby/3.0.0/bin" ] ; then
     PATH="$HOME/.local/share/gem/ruby/3.0.0/bin:$PATH"

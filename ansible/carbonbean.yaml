@@ -99,7 +99,6 @@
         state: latest
         pkg:
           - 1password
-          - ansible-lint
           - bat
           - boinc-manager
           - boinctui
@@ -231,7 +230,10 @@
 
     - name: Python packages via pip
       ansible.builtin.pip:
+        state: latest
         name:
+          - ansible
+          - ansible-lint
           - flake8
 
     - name: Install packages from Homebrew
@@ -273,8 +275,21 @@
         dest: "{{ lookup('env', 'HOME') }}/.zshrc"
         state: link
 
-    - name: Set shell to zsh
+    - name: Set shell to zsh and add to groups
       become: true
       ansible.builtin.user:
         name: "{{ lookup('env', 'USER') }}"
         shell: /usr/bin/zsh
+        append: true
+        groups:
+          - dialout
+
+    - name: Add passwordless sudo entries
+      become: true
+      jonellis.sudoers.sudoers:
+        name: "{{ lookup('env', 'USER') }}-no-password"
+        user: "{{ lookup('env', 'USER') }}"
+        nopassword: true
+        command:
+          - /usr/bin/systemctl restart pcscd
+          - /usr/bin/pkill -9 gpg-agent
