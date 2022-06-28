@@ -6,7 +6,7 @@
   tasks:
 
     - name: Add 1Password apt signing key
-      include_role:
+      ansible.builtin.include_role:
         name: jack1142.apt_signing_key
       vars:
         url: https://downloads.1password.com/linux/keys/1password.asc
@@ -21,8 +21,23 @@
         filename: 1password
         update_cache: false
 
+    - name: Add Google Cloud apt key
+      become: true
+      ansible.builtin.apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        keyring: /usr/share/keyrings/cloud.google.gpg
+        state: present
+
+    - name: Add Google apt repo
+      become: true
+      ansible.builtin.apt_repository:
+        repo: deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main
+        state: present
+        filename: google-cloud-sdk
+        update_cache: false
+
     - name: Add Okta ASA client apt signing key
-      include_role:
+      ansible.builtin.include_role:
         name: jack1142.apt_signing_key
       vars:
         url: https://dist.scaleft.com/pki/scaleft_deb_key.asc
@@ -52,7 +67,7 @@
         update_cache: false
 
     - name: Add Tailscale apt signing key
-      include_role:
+      ansible.builtin.include_role:
         name: jack1142.apt_signing_key
       vars:
         url: https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg
@@ -99,7 +114,6 @@
         state: latest
         pkg:
           - 1password
-          - ansible-lint
           - bat
           - boinc-manager
           - boinctui
@@ -113,6 +127,8 @@
           - git
           - git-lfs
           - gnupg
+          - google-cloud-cli
+          - google-cloud-cli-gke-gcloud-auth-plugin
           - htop
           - httpie
           - hub
@@ -122,6 +138,7 @@
           - libssl-dev
           - neofetch
           - packer
+          - pass
           - pcsc-tools
           - pcscd
           - pdk
@@ -145,6 +162,12 @@
           - xclip
           - yubikey-manager
           - zsh
+
+    - name: Install git-credential-manager deb package
+      become: true
+      ansible.builtin.apt:
+        state: present
+        deb: https://github.com/GitCredentialManager/git-credential-manager/releases/download/v2.0.696/gcmcore-linux_amd64.2.0.696.deb
 
     - name: Install Profile Switcher for Firefox deb package
       become: true
@@ -211,7 +234,6 @@
         classic: true
         name:
           - gitkraken # official version
-          - google-cloud-cli # official version
 
     - name: Cider from Snapcraft
       become: true
@@ -231,7 +253,10 @@
 
     - name: Python packages via pip
       ansible.builtin.pip:
+        state: latest
         name:
+          - ansible
+          - ansible-lint
           - flake8
 
     - name: Install packages from Homebrew
@@ -273,8 +298,21 @@
         dest: "{{ lookup('env', 'HOME') }}/.zshrc"
         state: link
 
-    - name: Set shell to zsh
+    - name: Set shell to zsh and add to groups
       become: true
       ansible.builtin.user:
         name: "{{ lookup('env', 'USER') }}"
         shell: /usr/bin/zsh
+        append: true
+        groups:
+          - dialout
+
+    - name: Add passwordless sudo entries
+      become: true
+      jonellis.sudoers.sudoers:
+        name: "{{ lookup('env', 'USER') }}-no-password"
+        user: "{{ lookup('env', 'USER') }}"
+        nopassword: true
+        command:
+          - /usr/bin/systemctl restart pcscd
+          - /usr/bin/pkill -9 gpg-agent
