@@ -159,7 +159,7 @@ GEM
     rspec-puppet (2.11.1)
       rspec
     rspec-support (3.11.0)
-    rubocop (1.31.1)
+    rubocop (1.31.2)
       json (~> 2.3)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
