@@ -119,7 +119,7 @@
           - boinctui
           - bundler
           - cmake
-          - code
+          - code # provided by Pop OS repos
           - dconf-editor
           - dos2unix
           - exa
@@ -129,6 +129,7 @@
           - gnupg
           - google-cloud-cli
           - google-cloud-cli-gke-gcloud-auth-plugin
+          - gthumb
           - htop
           - httpie
           - hub
@@ -149,6 +150,7 @@
           - scdaemon
           - scaleft-client-tools
           - scaleft-url-handler
+          - slack-desktop # provided by Pop OS repos
           - snapd
           - tailscale
           - terraform
@@ -226,7 +228,6 @@
       community.general.snap:
         name:
           - cctv-viewer # only available here
-          - slack # official version
 
     - name: Snaps requiring classic mode
       become: true
@@ -309,10 +310,28 @@
 
     - name: Add passwordless sudo entries
       become: true
-      jonellis.sudoers.sudoers:
+      community.general.sudoers:
         name: "{{ lookup('env', 'USER') }}-no-password"
         user: "{{ lookup('env', 'USER') }}"
         nopassword: true
-        command:
+        commands:
           - /usr/bin/systemctl restart pcscd
           - /usr/bin/pkill -9 gpg-agent
+
+    - name: Disable britty so ESPHome flashing works
+      become: true
+      ansible.builtin.shell:
+        cmd: |
+          for f in /usr/lib/udev/rules.d/*brltty*.rules; do
+            if [ ! -L "/etc/udev/rules.d/$(basename "$f")" ]; then
+              ln -s /dev/null "/etc/udev/rules.d/$(basename "$f")"
+              udevadm control --reload-rules
+            fi
+          done
+
+    - name: Disable brltty service
+      become: true
+      ansible.builtin.service:
+        name: brltty.service
+        enabled: false
+        state: stopped
