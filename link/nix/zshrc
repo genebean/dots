@@ -246,6 +246,11 @@ if [[ `uname` == 'Darwin' ]]; then
 elif [[ `uname` == 'Linux' ]]; then
   PATH="$HOME/.local/bin:$PATH"
 
+  # add Pulumi to the PATH
+  if [ -d "$HOME/.pulumi/bin" ] ; then
+    PATH=$PATH:$HOME/.pulumi/bin
+  fi
+ 
   if [ -d "$HOME/.local/share/gem/ruby/3.0.0/bin" ] ; then
     PATH="$HOME/.local/share/gem/ruby/3.0.0/bin:$PATH"
   fi
@@ -262,4 +267,5 @@ fi
 
 # default kube-ps1 to off
 kubeoff
+
 
