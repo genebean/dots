@@ -101,6 +101,14 @@
         filename: virtualbox
         update_cache: false
 
+    - name: Add Microsoft Ubuntu 22.04 repo
+      become: true
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64,arm64,armhf] https://packages.microsoft.com/ubuntu/22.04/prod jammy main
+        state: present
+        filename: microsoft-prod
+        update_cache: false
+
     - name: Install puppet-tools repo via Focal (20.04) deb package
       become: true
       ansible.builtin.apt:
@@ -143,6 +151,7 @@
           - pcsc-tools
           - pcscd
           - pdk
+          - powershell
           - puppet-bolt
           - rake
           - ruby
@@ -182,6 +191,12 @@
       ansible.builtin.apt:
         state: present
         deb: https://pm.puppetlabs.com/pe-client-tools/2021.6.0/21.6.0/repos/deb/focal/PC1/pe-client-tools_21.6.0-1focal_amd64.deb
+
+    - name: Install Webex via deb package
+      become: true
+      ansible.builtin.apt:
+        state: present
+        deb: https://binaries.webex.com/WebexDesktop-Ubuntu-Official-Package/Webex.deb
 
     - name: Install Zoom via deb package
       become: true
