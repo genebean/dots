@@ -232,11 +232,14 @@
           - im.riot.Riot
           - info.mumble.Mumble
           - io.github.janbar.noson
+          - io.github.mimbrero.WhatsAppDesktop
           - net.cozic.joplin_desktop
           - org.fritzing.Fritzing
           - org.gnome.meld
+          - org.mozilla.Thunderbird
           - org.onlyoffice.desktopeditors
           - org.remmina.Remmina
+          - org.signal.Signal
 
     - name: Base packages from Snapcraft
       become: true
