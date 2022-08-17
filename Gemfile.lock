@@ -156,7 +156,7 @@ GEM
     rspec-mocks (3.11.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
-    rspec-puppet (2.11.1)
+    rspec-puppet (2.12.0)
       rspec
     rspec-support (3.11.0)
     rubocop (1.35.0)
@@ -226,7 +226,7 @@ DEPENDENCIES
   puppet-lint-variable_contains_upcase (~> 1.2)
   puppetlabs_spec_helper (~> 4.0)
   r10k (~> 3.15)
-  rspec-puppet (~> 2.11)
+  rspec-puppet (~> 2.12)
   rubocop (~> 1.35)
   rugged (~> 1.4)
   tty-command (~> 0.6)
