@@ -220,6 +220,7 @@
           - com.discordapp.Discord
           - com.emqx.MQTTX
           - com.feaneron.Boatswain
+          - flathub org.ferdium.Ferdium
           - com.github.bleakgrey.tootle
           - com.github.gijsgoudzwaard.image-optimizer
           - com.github.joseexposito.touche
