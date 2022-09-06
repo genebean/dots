@@ -234,6 +234,7 @@
           - io.github.janbar.noson
           - io.github.mimbrero.WhatsAppDesktop
           - net.cozic.joplin_desktop
+          - org.ferdium.Ferdium
           - org.fritzing.Fritzing
           - org.gnome.meld
           - org.mozilla.Thunderbird
