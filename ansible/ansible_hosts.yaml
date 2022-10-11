@@ -1,6 +1,8 @@
 ---
 all:
   hosts:
+    bigboy-wsl:
+      ansible_connection: local
     carbonbean:
       ansible_connection: local
   children:

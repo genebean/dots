@@ -101,13 +101,12 @@
         filename: virtualbox
         update_cache: false
 
-    - name: Add Microsoft Ubuntu 22.04 repo
+    - name: Install Microsoft keys and repo
       become: true
-      ansible.builtin.apt_repository:
-        repo: deb [arch=amd64,arm64,armhf] https://packages.microsoft.com/ubuntu/22.04/prod jammy main
+      ansible.builtin.apt:
         state: present
-        filename: microsoft-prod
-        update_cache: false
+        force: true
+        deb: https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
 
     - name: Install puppet-tools repo via Focal (20.04) deb package
       become: true
