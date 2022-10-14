@@ -27,9 +27,9 @@ Set-PSReadLineKeyHandler -Key Ctrl+u -Function BackwardDeleteLine
 Set-PSReadlineKeyHandler -Key Ctrl+d -Function DeleteCharOrExit
 
 # Aliases and functions used to simulate Linux shell aliases
-Function gsw { & "git switch ${args}" }
-Function gswc { & "git switch -c ${args}" }
-Function hubpr { & "hub pull-request --browse --push ${args}" }
+Function gsw { & "git" switch ${args} }
+Function gswc { & "git" switch -c ${args} }
+Function hubpr { & "hub" pull-request --browse --push ${args} }
 
 
 ### SSH autocompletion
