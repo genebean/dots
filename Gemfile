@@ -41,5 +41,5 @@ group :development, :unit_tests do
   gem 'puppet-lint-trailing_newline-check',               '~> 1.1'
   gem 'puppet-lint-undef_in_function-check',              '~> 0.2'
   gem 'puppet-lint-unquoted_string-check',                '~> 2.1'
-  gem 'puppet-lint-variable_contains_upcase',             '~> 1.2'
+  gem 'puppet-lint-variable_contains_upcase',             '~> 1.3'
 end
