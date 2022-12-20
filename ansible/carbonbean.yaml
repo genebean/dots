@@ -191,6 +191,12 @@
         state: present
         deb: https://pm.puppetlabs.com/pe-client-tools/2021.6.0/21.6.0/repos/deb/focal/PC1/pe-client-tools_21.6.0-1focal_amd64.deb
 
+    - name: Install TeamViewer via deb
+      become: true
+      ansible.builtin.apt:
+        state: present
+        deb: https://download.teamviewer.com/download/linux/teamviewer_amd64.deb
+
     - name: Install Webex via deb package
       become: true
       ansible.builtin.apt:
@@ -234,6 +240,7 @@
           - io.github.janbar.noson
           - io.github.mimbrero.WhatsAppDesktop
           - net.cozic.joplin_desktop
+          - org.ferdium.Ferdium
           - org.fritzing.Fritzing
           - org.gnome.meld
           - org.mozilla.Thunderbird
