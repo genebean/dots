@@ -130,7 +130,7 @@ GEM
       faraday_middleware (~> 1.0)
       minitar
       semantic_puppet (~> 1.0)
-    puppetlabs_spec_helper (5.0.2)
+    puppetlabs_spec_helper (5.0.3)
       mocha (~> 1.0)
       pathspec (>= 0.2, < 2.0.0)
       puppet-lint (>= 2.5.2, < 4.0.0)
