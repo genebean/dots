@@ -11,7 +11,7 @@ GEM
     deep_merge (1.2.2)
     diff-lcs (1.5.0)
     erubi (1.12.0)
-    facter (4.2.14)
+    facter (4.3.1)
       hocon (~> 1.3)
       thor (>= 1.0.1, < 2.0)
     faraday (1.10.3)
@@ -39,7 +39,7 @@ GEM
     faraday-retry (1.0.3)
     faraday_middleware (1.2.0)
       faraday (~> 1.0)
-    fast_gettext (2.2.0)
+    fast_gettext (2.3.0)
     forwardable (1.3.3)
     gettext (3.4.3)
       erubi
@@ -50,8 +50,8 @@ GEM
       fast_gettext (~> 2.1)
       gettext (~> 3.4)
       locale
-    hiera (3.11.0)
-    hocon (1.3.1)
+    hiera (3.12.0)
+    hocon (1.4.0)
     json (2.6.3)
     json-schema (3.0.0)
       addressable (>= 2.8)
@@ -76,7 +76,7 @@ GEM
       forwardable
       singleton
     public_suffix (4.0.7)
-    puppet (7.22.0)
+    puppet (7.24.0)
       concurrent-ruby (~> 1.0, < 1.2.0)
       deep_merge (~> 1.0)
       facter (> 2.0.1, < 5)
@@ -87,7 +87,7 @@ GEM
       puppet-resource_api (~> 1.5)
       scanf (~> 1.0)
       semantic_puppet (~> 1.0)
-    puppet (7.22.0-universal-darwin)
+    puppet (7.24.0-universal-darwin)
       CFPropertyList (~> 2.2)
       concurrent-ruby (~> 1.0, < 1.2.0)
       deep_merge (~> 1.0)
