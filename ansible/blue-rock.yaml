@@ -1,0 +1,87 @@
+---
+- name: Install packages
+  hosts: blue-rock
+  vars:
+    ansible_python_interpreter: '/usr/bin/python3'
+  tasks:
+    - name: Install packages from Homebrew
+      community.general.homebrew:
+        state: latest
+        name:
+          - adr-tools
+          # - cdktf
+          - chart-testing
+          - dog
+          - dust
+          - gh
+          - gotop
+          - helm
+          - hub
+          - jq
+          - k9s
+          - kubectl
+          - kubectx
+          - mas
+          - subversion
+          - yq
+
+    # - name: Install casks from Homebrew
+    #   community.general.homebrew:
+    #     state: present
+    #     name:
+    #       - homebrew/cask/iterm2
+    #       - homebrew/cask/meld
+    #       - homebrew/cask/signal
+    #       - homebrew/cask/whatsapp
+
+    # - name: Install apps from App Store
+    #   community.general.mas:
+    #     id:
+    #       - 409183694 # Keynote
+    #       - 413857545 # Divvy
+    #     state: present
+
+    - name: Ensure fonts directory
+      ansible.builtin.file:
+        path: "{{ lookup('env', 'HOME') }}/.fonts"
+        state: directory
+
+    - name: Download Hack Nerd Font
+      ansible.builtin.unarchive:
+        src: https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Hack.zip
+        dest: "{{ lookup('env', 'HOME') }}/.fonts/"
+        remote_src: true
+
+# Vim setup
+    - name: Symlink .vimrc
+      ansible.builtin.file:
+        src: "{{ lookup('env', 'HOME') }}/repos/dots/link/nix/vimrc"
+        dest: "{{ lookup('env', 'HOME') }}/.vimrc"
+        state: link
+        force: true
+
+    - name: Install Vundle
+      ansible.builtin.git:
+        repo: 'https://github.com/VundleVim/Vundle.vim'
+        dest: "{{ lookup('env', 'HOME') }}/.vim/bundle/Vundle.vim"
+
+    - name: Install Vundle Plugins
+      shell: "echo -ne '\n' | vim +PluginInstall! +qall"
+
+# ZSH setup
+    - name: Clone my oh-my-zsh plugins
+      ansible.builtin.git:
+        repo: 'https://github.com/genebean/my-oh-zsh-plugins'
+        dest: "{{ lookup('env', 'HOME') }}/repos/customized-oh-my-zsh/plugins"
+
+    - name: Clone my oh-my-zsh themes
+      ansible.builtin.git:
+        repo: 'https://github.com/genebean/my-oh-zsh-themes'
+        dest: "{{ lookup('env', 'HOME') }}/repos/customized-oh-my-zsh/themes"
+
+    - name: Symlink .zshrc
+      ansible.builtin.file:
+        src: "{{ lookup('env', 'HOME') }}/repos/dots/link/nix/zshrc"
+        dest: "{{ lookup('env', 'HOME') }}/.zshrc"
+        state: link
+        force: true
