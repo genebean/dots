@@ -105,6 +105,11 @@
         repo: 'https://github.com/genebean/my-oh-zsh-plugins'
         dest: "{{ lookup('env', 'HOME') }}/repos/customized-oh-my-zsh/plugins"
 
+    - name: Clone zsh-autosuggestions
+      ansible.builtin.git:
+        repo: 'https://github.com/zsh-users/zsh-autosuggestions'
+        dest: "{{ lookup('env', 'HOME') }}/repos/customized-oh-my-zsh/plugins/zsh-autosuggestions"
+
     - name: Clone my oh-my-zsh themes
       ansible.builtin.git:
         repo: 'https://github.com/genebean/my-oh-zsh-themes'
