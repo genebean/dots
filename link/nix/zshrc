@@ -99,9 +99,9 @@ if [[ $(uname) == 'Darwin' ]]; then
   export PATH=/usr/local/MacGPG2/bin:$PATH
 fi
 
-export GPG_TTY=$(tty)
-export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
-gpgconf --launch gpg-agent
+# export GPG_TTY=$(tty)
+# export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+# gpgconf --launch gpg-agent
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -202,7 +202,7 @@ if [[ `uname` == 'Darwin' ]]; then
   export PATH=$PATH:$GEMBIN
 
   # added by travis gem
-  [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
+  # [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
 
   # added to make pipx work
   [ -d /Users/gene/.local/bin ] && export PATH=$PATH:/Users/gene/.local/bin

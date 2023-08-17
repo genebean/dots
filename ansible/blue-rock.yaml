@@ -2,7 +2,7 @@
 - name: Install packages
   hosts: blue-rock
   vars:
-    ansible_python_interpreter: '/usr/bin/python3'
+    ansible_python_interpreter: '/usr/local/bin/python3'
   tasks:
     - name: Install packages from Homebrew
       community.general.homebrew:
@@ -11,6 +11,7 @@
           - adr-tools
           # - cdktf
           - chart-testing
+          - coreutils
           - dog
           - dust
           - gh
@@ -22,34 +23,57 @@
           - kubectl
           - kubectx
           - mas
+          - python
           - subversion
+          - wget
           - yq
 
     # - name: Install casks from Homebrew
     #   community.general.homebrew:
     #     state: present
     #     name:
+    #       - homebrew/cask/1password
+    #       - homebrew/cask/cakebrew
+    #       - homebrew/cask/elgato-stream-deck
+    #       - homebrew/cask/firefox
+    #       - homebrew/cask/google-drive
     #       - homebrew/cask/iterm2
+    #       - homebrew/cask/keepingyouawake
+    #       - homebrew/cask/logseq
     #       - homebrew/cask/meld
+    #       - homebrew/cask/obs
     #       - homebrew/cask/signal
+    #       - homebrew/cask/slack
+    #       - homebrew/cask/thunderbird
+    #       - homebrew/cask/visual-studio-code
     #       - homebrew/cask/whatsapp
+    #       - homebrew/cask/zoom
+    #       - homebrew/cask-fonts/font-hack-nerd-font
+    #       - homebrew/cask-fonts/font-inconsolata-g-for-powerline
+    #       - homebrew/cask-fonts/font-source-code-pro-for-powerline
+    #       - puppetlabs/puppet/pdk
 
     # - name: Install apps from App Store
     #   community.general.mas:
-    #     id:
-    #       - 409183694 # Keynote
-    #       - 413857545 # Divvy
     #     state: present
+    #     id:
+    #       - 1569813296 # 1Password for Safari
+    #       - 417375580  # BetterSnapTool
+    #       - 1532419400 # MeetingBar for Meet, Zoom & Co
+    #       - 1451685025 # WireGuard
 
-    - name: Ensure fonts directory
-      ansible.builtin.file:
-        path: "{{ lookup('env', 'HOME') }}/.fonts"
-        state: directory
+    - name: Install packages with pip
+      ansible.builtin.pip:
+        name:
+          - ansible
+          - ansible-lint
+          # - powerline-status # repalced with airline
+          # - psutil
 
     - name: Download Hack Nerd Font
       ansible.builtin.unarchive:
         src: https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Hack.zip
-        dest: "{{ lookup('env', 'HOME') }}/.fonts/"
+        dest: "{{ lookup('env', 'HOME') }}/Library/Fonts/"
         remote_src: true
 
 # Vim setup
@@ -59,6 +83,13 @@
         dest: "{{ lookup('env', 'HOME') }}/.vimrc"
         state: link
         force: true
+
+    # - name: Symlink .vimrc_os_specific
+    #   ansible.builtin.file:
+    #     src: "{{ lookup('env', 'HOME') }}/repos/dots/link/mac/vimrc_os_specific"
+    #     dest: "{{ lookup('env', 'HOME') }}/.vimrc_os_specific"
+    #     state: link
+    #     force: true
 
     - name: Install Vundle
       ansible.builtin.git:

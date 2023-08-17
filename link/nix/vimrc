@@ -75,6 +75,4 @@ let g:vim_markdown_folding_disabled      = 1
 
 " settings for vim-airline
 let g:airline_theme='powerlineish'
-" import settings that are OS specific
-" source ~/.vimrc_os_specific
-
+" let g:airline_powerline_fonts = 1
