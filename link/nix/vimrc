@@ -1,4 +1,5 @@
-filetype off " required by Vundle. filetype is reenabled after Vundle starts
+set nocompatible     " be iMproved, required
+filetype off         " required by Vundle. filetype is reenabled after Vundle starts
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -15,8 +16,10 @@ Plugin 'godlygeek/tabular'                " provides a method for lining things 
 Plugin 'honza/vim-snippets'               " provides snippets for use with vim-snipmate
 Plugin 'MarcWeber/vim-addon-mw-utils'     " a utility used by vim-snipmate
 Plugin 'mrk21/yaml-vim'                   " provides indentation and syntax highlighting for yaml
+Plugin 'rbong/vim-flog'                   " git branch viewer built on fugitive
 Plugin 'rodjek/vim-puppet'                " provides several niceties for working with Puppet
 Plugin 'tomtom/tlib_vim'                  " a utility used by vim-snipmate
+Plugin 'tpope/vim-fugitive'               " all things Git here in Vim
 Plugin 'vim-airline/vim-airline'          " status line alternative to powerline
 Plugin 'vim-airline/vim-airline-themes'   " themes for vim-airline
 Plugin 'vim-ruby/vim-ruby'                " provides syntax highlighting for ruby files
@@ -34,10 +37,11 @@ filetype plugin indent on    " required for plugins to be able to adjust indent
 "
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
-syntax on                      " enable syntax highlighting
+syntax on                                     " enable syntax highlighting
 
 set encoding=utf-8
 set termencoding=utf-8
+set t_Co=256                                  " tell vim we have 256 colors to work with
 
 set autoindent                                " automatically indent new lines
 set background=dark                           " tell vim your terminal has a dark background
@@ -47,13 +51,13 @@ set fillchars+=stl:\ ,stlnc:\                 " fix added per powerline troubles
 set laststatus=2                              " Always display the status line in all windows
 set noshowmode                                " Hide the default mode text (e.g. -- INSERT -- below the status line)
 set smarttab                                  " helps with expanding tabs to spaces (I think)
+set statusline+=%{FugitiveStatusline()}       " get git info via fugitive plugin
 set statusline+=%#warningmsg#                 " recommended setting from syntastic plugin
 set statusline+=%{SyntasticStatuslineFlag()}  " recommended setting from syntastic plugin
 set statusline+=%*                            " recommended setting from syntastic plugin
-set t_Co=256                                  " tell vim we have 256 colors to work with
 
-let g:solarized_termtrans = 1                 " This gets rid of the grey background
-colorscheme solarized                         " use the solorized set of colors
+"let g:solarized_termtrans = 1                 " This gets rid of the grey background
+"colorscheme solarized                         " use the solorized set of colors
 
 " This has to come after colorscheme to not be masked
 highlight ColorColumn ctermbg=232             " set the color to be used for guidelines
@@ -74,5 +78,6 @@ let g:syntastic_quiet_messages           = {'level': 'warnings'}
 let g:vim_markdown_folding_disabled      = 1
 
 " settings for vim-airline
-let g:airline_theme='powerlineish'
-" let g:airline_powerline_fonts = 1
+let g:airline_theme='badwolf'
+let g:airline_powerline_fonts = 1
+
