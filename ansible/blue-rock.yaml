@@ -23,8 +23,11 @@
           - kubectl
           - kubectx
           - mas
+          - neovim
+          - npm
           - python
           - subversion
+          - tree
           - wget
           - yq
 
