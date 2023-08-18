@@ -8,7 +8,6 @@ call vundle#begin()
 " let Vundle manage Vundle, required for Vundle to work right
 Plugin 'VundleVim/Vundle.vim'
 
-Plugin 'altercation/vim-colors-solarized' " provides solorized color scheme
 Plugin 'ekalinin/Dockerfile.vim'          " provides syntax highlighting for Dockerfiles
 Plugin 'elzr/vim-json'                    " provides syntax highlighting for JSON files
 Plugin 'garbas/vim-snipmate'              " provides code snippets
@@ -56,10 +55,7 @@ set statusline+=%#warningmsg#                 " recommended setting from syntast
 set statusline+=%{SyntasticStatuslineFlag()}  " recommended setting from syntastic plugin
 set statusline+=%*                            " recommended setting from syntastic plugin
 
-"let g:solarized_termtrans = 1                 " This gets rid of the grey background
-"colorscheme solarized                         " use the solorized set of colors
-
-" This has to come after colorscheme to not be masked
+" This has to come after colorscheme, if defined, to not be masked
 highlight ColorColumn ctermbg=232             " set the color to be used for guidelines
 let &colorcolumn=join(range(81,999),",")      " change the background color of everything beyond 80 characters
 
