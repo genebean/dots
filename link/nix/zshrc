@@ -4,15 +4,9 @@ export ZSH=~/.oh-my-zsh
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-if [[ `uname` == 'Linux' ]]; then
-  ZSH_THEME="beanbag"
-  #ZSH_THEME="af-magic"
-else
-  ZSH_THEME="beanbag"
-  #ZSH_THEME="robbyrussell"
-  #ZSH_THEME="pygmalion"
-  #ZSH_THEME="muse"
-fi
+#ZSH_THEME="robbyrussell"
+
+# use oh-my-posh for theme
 
 # Get Homebrew into the path early so that plugins and such can use
 # programs installed by it
@@ -84,7 +78,7 @@ ZSH_CUSTOM=~/repos/customized-oh-my-zsh
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(brew bundler gem git github history kube-ps1 kubectl macos pip python terraform vagrant vscode zsh-autosuggestions)
+plugins=(bundler gem git github history kubectl macos pip terraform vagrant vscode zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -181,16 +175,6 @@ if [[ `uname` != 'Linux' ]]; then
   }
 fi
 
-# )ofni_tnuocca_swa($ is $(aws_account_info) backwards
-#PROMPT=`echo $PROMPT | rev | sed 's/ / )ofni_tnuocca_swa($ /'| rev`
-
-function get_cluster_short() {
-  echo "$1" |rev |cut -d _ -f1 |rev
-}
-KUBE_PS1_CLUSTER_FUNCTION=get_cluster_short
-KUBE_PS1_COLOR_CONTEXT="%{$fg[yellow]%}"
-KUBE_PS1_ENABLED=false
-
 export EDITOR='vim'
 
 export GOPATH=$HOME/go
@@ -219,9 +203,6 @@ if [[ `uname` == 'Darwin' ]]; then
   # add gems to path
   GEMBIN="$(gem environment gemdir)/bin"
   export PATH=$PATH:$GEMBIN
-
-  # added by travis gem
-  # [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh || echo 'The travis gem is missing. After installing it run "echo y|travis" to create ~/.travis'
 
   # added to make pipx work
   [ -d /Users/gene/.local/bin ] && export PATH=$PATH:/Users/gene/.local/bin
@@ -284,7 +265,5 @@ if type floaty &>/dev/null; then
   source $(floaty completion --shell zsh)
 fi
 
-# default kube-ps1 to off
-kubeoff
-
+eval "$(oh-my-posh init zsh --config ~/repos/my-oh-my-posh-themes/beanbag.omp.json)"
 
