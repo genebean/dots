@@ -3,7 +3,7 @@ all:
   hosts:
     bigboy-wsl:
       ansible_connection: local
-    carbonbean:
+    blue-rock:
       ansible_connection: local
   children:
     servers:
