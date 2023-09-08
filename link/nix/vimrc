@@ -13,6 +13,7 @@ Plugin 'elzr/vim-json'                    " provides syntax highlighting for JSO
 Plugin 'garbas/vim-snipmate'              " provides code snippets
 Plugin 'godlygeek/tabular'                " provides a method for lining things up
 Plugin 'honza/vim-snippets'               " provides snippets for use with vim-snipmate
+Plugin 'LnL7/vim-nix'                     " support for writing Nix expressions in vim
 Plugin 'MarcWeber/vim-addon-mw-utils'     " a utility used by vim-snipmate
 Plugin 'mrk21/yaml-vim'                   " provides indentation and syntax highlighting for yaml
 Plugin 'rbong/vim-flog'                   " git branch viewer built on fugitive
