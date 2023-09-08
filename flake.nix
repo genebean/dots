@@ -66,7 +66,9 @@
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            users."gene.liverman".imports = [ ./modules/home-manager ];
+            users."gene.liverman".imports = [
+              ./modules/home-manager
+            ];
           };
         }
       ]; # end modules
