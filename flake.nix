@@ -22,6 +22,24 @@
 
   }; # end inputs
   outputs = { self, nixpkgs, darwin, home-manager, nix-homebrew, ... }: {
+    nixosConfigurations.rainbow-planet = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        ./modules/nixos/configuration.nix
+        home-manager.nixosModules.home-manager
+        {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            users."gene".imports = [
+              ./modules/home-manager
+              ./modules/nixos/dconf.nix
+            ];
+          };
+        }
+      ];
+    }; # end nixosConfigurations
+
     # This is only set to work with x86 macOS right now... that will need to be updated
     darwinConfigurations.Blue-Rock = darwin.lib.darwinSystem {
       system = "x86_64-darwin";
