@@ -13,6 +13,7 @@
     gh.enable = true;
     git = {
       enable = true;
+      delta.enable = true;
       lfs.enable = true;
     };
     go = {
