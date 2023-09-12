@@ -15,19 +15,17 @@
       dog
       dos2unix
       du-dust
-      subversion
-      # git-svn
+      element-desktop
       gotop
-      # helm
       hub
       hugo
       kopia
-      # kubectl
       kubectx
       mas
       mtr
       nmap
-      # node
+      nodejs
+      nodePackages.npm
       openjdk
       rename
       tree
@@ -54,6 +52,8 @@
     ];
     brews = [
       "adr-tools"
+      "helm"
+      "kubernetes-cli"
     ];
     casks = [
       "1password"
@@ -92,6 +92,14 @@
       "zenmap"
       "zoom"
     ];
+    masApps = {
+      "1Password for Safari" = 1569813296;
+      "BetterSnapTool" = 417375580;
+      "Home Assistant" = 1099568401;
+      "HomeCam" = 1292995895;
+      "MeetingBar" = 1532419400;
+      "Microsoft Remote Desktop" = 1295203466;
+    };
   };
 
   nix = {

@@ -1,8 +1,8 @@
 { pkgs, ... }: {
   home.stateVersion = "23.11";
-  # home.packages = with pkgs; [
-    #
-  # ];
+  home.packages = with pkgs; [
+    subversion
+  ];
   home.sessionVariables = {
     CLICLOLOR = 1;
     PAGER = "less";
@@ -15,6 +15,7 @@
       enable = true;
       delta.enable = true;
       lfs.enable = true;
+      package = pkgs.gitAndTools.gitFull;
     };
     go = {
       enable = true;
