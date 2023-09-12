@@ -85,7 +85,6 @@
       "thunderbird"
       "vagrant"
       "virtualbox"
-      "visual-studio-code"
       "vivaldi"
       "vlc"
       "whatsapp"

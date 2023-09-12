@@ -95,6 +95,9 @@
         let g:airline_powerline_fonts = 1
       '';
     };
+    vscode = {
+      enable = true;
+    };
     zsh = {
       enable = true;
       enableCompletion = true;

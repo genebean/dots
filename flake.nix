@@ -43,7 +43,10 @@
     # This is only set to work with x86 macOS right now... that will need to be updated
     darwinConfigurations.Blue-Rock = nix-darwin.lib.darwinSystem {
       system = "x86_64-darwin";
-      pkgs = import nixpkgs { system = "x86_64-darwin"; };
+      pkgs = import nixpkgs {
+        system = "x86_64-darwin";
+        config.allowUnfree = true;
+      };
       modules = [
         nix-homebrew.darwinModules.nix-homebrew
         {
