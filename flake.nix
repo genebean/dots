@@ -22,59 +22,67 @@
 
   }; # end inputs
   outputs = { self, nixpkgs, nix-darwin, home-manager, nix-homebrew, ... }: {
-    nixosConfigurations.rainbow-planet = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        ./modules/nixos/configuration.nix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            users."gene".imports = [
-              ./modules/home-manager
-              ./modules/nixos/dconf.nix
-            ];
-          };
-        }
-      ];
+    nixosConfigurations = let
+      user = "gene";
+    in {
+      rainbow-planet = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./modules/nixos/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.${user}.imports = [
+                ./modules/home-manager
+                ./modules/nixos/dconf.nix
+              ];
+            };
+          }
+        ];
+      }; # end rainbow-planet
     }; # end nixosConfigurations
 
     # This is only set to work with x86 macOS right now... that will need to be updated
-    darwinConfigurations.Blue-Rock = nix-darwin.lib.darwinSystem {
-      system = "x86_64-darwin";
-      pkgs = import nixpkgs {
+    darwinConfigurations = let
+      user = "gene.liverman";
+    in {
+      Blue-Rock = nix-darwin.lib.darwinSystem {
         system = "x86_64-darwin";
-        config.allowUnfree = true;
-      };
-      modules = [
-        nix-homebrew.darwinModules.nix-homebrew
-        {
-          nix-homebrew = {
-            # Install Homebrew under the default prefix
-            enable = true;
+        pkgs = import nixpkgs {
+          system = "x86_64-darwin";
+          config.allowUnfree = true;
+        };
+        modules = [
+          nix-homebrew.darwinModules.nix-homebrew
+          {
+            nix-homebrew = {
+              # Install Homebrew under the default prefix
+              enable = true;
 
-            # User owning the Homebrew prefix
-            user = "gene.liverman";
+              # User owning the Homebrew prefix
+              user = "${user}";
 
-            # Automatically migrate existing Homebrew installations
-            autoMigrate = true;
-          };
-        }
+              # Automatically migrate existing Homebrew installations
+              autoMigrate = true;
+            };
+          }
 
-        ./modules/darwin
+          ./modules/darwin
 
-        home-manager.darwinModules.home-manager
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            users."gene.liverman".imports = [
-              ./modules/home-manager
-            ];
-          };
-        }
-      ]; # end modules
-    }; # end of darwinConfigurations.Blue-Rock
+          home-manager.darwinModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.${user}.imports = [
+                ./modules/home-manager
+              ];
+            };
+          }
+        ]; # end modules
+      }; # end Blue-Rock
+    }; # end darwinConfigurations
   };
 }

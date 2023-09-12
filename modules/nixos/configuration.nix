@@ -2,9 +2,10 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
-
-{
+{ config, pkgs, ... }:let
+  user = "gene";
+  hostname = "rainbow-planet";
+in {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -14,7 +15,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "rainbow-planet"; # Define your hostname.
+  networking.hostName = "${hostname}"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -83,7 +84,7 @@
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.gene = {
+  users.users.${user} = {
     isNormalUser = true;
     description = "Gene Liverman";
     extraGroups = [ "networkmanager" "wheel" "dialout" ];
@@ -139,7 +140,7 @@
     enable = true;
     # Certain features, including CLI integration and system authentication support,
     # require enabling PolKit integration on some desktop environments (e.g. Plasma).
-    polkitPolicyOwners = [ "gene" ];
+    polkitPolicyOwners = [ "${user}" ];
   };
   # List services that you want to enable:
 
@@ -160,7 +161,7 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
 
-  nix.settings.allowed-users = [ "gene" ];
+  nix.settings.allowed-users = [ "${user}" ];
   nix.settings.experimental-features = [
     "flakes"
     "nix-command"
