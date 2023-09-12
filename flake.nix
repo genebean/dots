@@ -6,7 +6,7 @@
     nixpkgs.url = "github:nixos/nixpkgs";
 
     # Controls system level software and settings including fonts
-    darwin = {
+    nix-darwin = {
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -21,7 +21,7 @@
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
 
   }; # end inputs
-  outputs = { self, nixpkgs, darwin, home-manager, nix-homebrew, ... }: {
+  outputs = { self, nixpkgs, nix-darwin, home-manager, nix-homebrew, ... }: {
     nixosConfigurations.rainbow-planet = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
@@ -41,7 +41,7 @@
     }; # end nixosConfigurations
 
     # This is only set to work with x86 macOS right now... that will need to be updated
-    darwinConfigurations.Blue-Rock = darwin.lib.darwinSystem {
+    darwinConfigurations.Blue-Rock = nix-darwin.lib.darwinSystem {
       system = "x86_64-darwin";
       pkgs = import nixpkgs { system = "x86_64-darwin"; };
       modules = [

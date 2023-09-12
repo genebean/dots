@@ -37,12 +37,6 @@
     ];
   };
 
-  fonts.fontDir.enable = false; # True will uninstall other fonts, false installs, but doesn't uninstall
-  fonts.fonts = [ (pkgs.nerdfonts.override { fonts = [
-    "Hack"
-    "SourceCodePro"
-  ]; }) ];
-
   homebrew = {
     enable = true;
     onActivation = {
@@ -53,7 +47,7 @@
     taps = [
       "hashicorp/tap"
       # "homebrew/bundle"
-      # "homebrew/cask-fonts"
+      "homebrew/cask-fonts"
       # "jandedobbeleer/oh-my-posh"
       "null-dev/firefox-profile-switcher"
       "puppetlabs/puppet"
@@ -68,9 +62,9 @@
       "cakebrew"
       "elgato-stream-deck"
       "firefox"
-      # "font-hack-nerd-font"
-      # "font-inconsolata-g-for-powerline"
-      # "font-source-code-pro-for-powerline"
+      "font-hack-nerd-font"
+      "font-inconsolata-g-for-powerline"
+      "font-source-code-pro-for-powerline"
       "google-drive"
       "iterm2"
       "keepingyouawake"
@@ -116,7 +110,12 @@
     '';
   };
 
+  programs.zsh.enable = true;
+
   services.nix-daemon.enable = true;
 
-  users.users."gene.liverman".home = "/Users/gene.liverman";
+  users.users."gene.liverman" = {
+    home = "/Users/gene.liverman";
+    shell = pkgs.zsh;
+  };
 }
