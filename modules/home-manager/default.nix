@@ -32,7 +32,12 @@
     PAGER = "less";
   };
   programs = {
-    bat.enable = true;
+    bat = {
+      enable = true;
+      config = {
+        theme = "Dracula";
+      };
+    };
     eza.enable = true;
     firefox.enable = true;
     gh.enable = true;
