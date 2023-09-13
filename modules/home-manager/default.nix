@@ -16,7 +16,6 @@
     rename
     slack
     subversion
-    tailscale
     tree
     watch
     wget

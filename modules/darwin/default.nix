@@ -69,6 +69,7 @@ in {
       "qmk-toolbox"
       "raycast"
       "signal"
+      "tailscale"
       "thunderbird"
       "vagrant"
       "vivaldi"

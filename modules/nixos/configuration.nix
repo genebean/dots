@@ -111,6 +111,7 @@ in {
     gnomeExtensions.user-themes
     libreoffice
     neofetch
+    tailscale
     tilix
     vivaldi
   ];
