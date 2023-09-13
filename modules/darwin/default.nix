@@ -13,27 +13,14 @@ in {
     systemPackages = with pkgs; [
       coreutils
       chart-testing
-      colordiff
-      dog
-      dos2unix
-      du-dust
-      element-desktop
-      gotop
-      hub
       hugo
       kopia
       kubectx
       mas
-      mtr
       nmap
       nodejs
       nodePackages.npm
       openjdk
-      rename
-      tree
-      watch
-      wget
-      yq
     ];
   };
 
@@ -58,12 +45,10 @@ in {
       "kubernetes-cli"
     ];
     casks = [
-      "1password"
       "amethyst"
       "audacity"
       "cakebrew"
       "elgato-stream-deck"
-      "firefox"
       "font-hack-nerd-font"
       "font-inconsolata-g-for-powerline"
       "font-source-code-pro-for-powerline"
@@ -71,9 +56,7 @@ in {
       "iterm2"
       "keepingyouawake"
       "kopiaui"
-      "libreoffice"
       "logseq"
-      "meld"
       "nextcloud"
       "obs"
       "onlyoffice"
@@ -82,16 +65,12 @@ in {
       "qmk-toolbox"
       "raycast"
       "signal"
-      "slack"
-      "tailscale"
       "thunderbird"
       "vagrant"
       "virtualbox"
-      "vivaldi"
       "vlc"
       "whatsapp"
       "zenmap"
-      "zoom"
     ];
     masApps = {
       "1Password for Safari" = 1569813296;

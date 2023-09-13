@@ -1,7 +1,31 @@
 { pkgs, ... }: {
   home.stateVersion = "23.11";
   home.packages = with pkgs; [
+    _1password
+    _1password-gui
+    colordiff
+    dog
+    dos2unix
+    du-dust
+    element-desktop
+    gotop
+    htop
+    hub
+    jq
+    libreoffice
+    meld
+    mtr
+    nix-zsh-completions
+    rename
+    slack
     subversion
+    tailscale
+    tree
+    vivaldi
+    watch
+    wget
+    yq
+    zoom-us
   ];
   home.sessionVariables = {
     CLICLOLOR = 1;
@@ -10,6 +34,7 @@
   programs = {
     bat.enable = true;
     eza.enable = true;
+    firefox.enable = true;
     gh.enable = true;
     git = {
       enable = true;

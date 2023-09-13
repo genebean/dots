@@ -89,9 +89,7 @@ in {
     description = "Gene Liverman";
     extraGroups = [ "networkmanager" "wheel" "dialout" ];
     packages = with pkgs; [
-      firefox
-      slack
-    #  thunderbird
+     tailscale-systray
     ];
   };
 
@@ -103,29 +101,13 @@ in {
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    _1password
-    _1password-gui
-    bat
-    colordiff
     dconf2nix
-    dog
-    dos2unix
     gnomeExtensions.appindicator
     gnomeExtensions.caffeine
     gnomeExtensions.dash-to-panel
     gnomeExtensions.user-themes
-    gotop
-    htop
-    hub
-    mtr
     neofetch
-    nix-zsh-completions
     tilix
-    tree
-    vivaldi
-    watch
-    wget
-    jq
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
