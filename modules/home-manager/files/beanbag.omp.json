@@ -17,14 +17,10 @@
     "kubectl-bg": "transparent",
     "status-fg-okay": "#00ff00",
     "status-fg-error": "#D81E5B",
+    "tooltip-fg": "#E0DEF4",
+    "tooltip-az-bg": "#4B95E9",
     "secondary-fg": "#00ff00",
-
-
-
-    "blue": "#4B95E9",
-    "orange": "#F07623",
-    "white": "#E0DEF4",
-    "yellow": "#F3AE35"
+    "orange-text": "#ff8800"
   },
   "blocks": [
     {
@@ -46,24 +42,18 @@
           "type": "session",
           "style": "plain",
           "foreground": "p:hostname",
-          "template": " {{ (split \".\" .HostName)._0 }}("
+          "template": " {{ (split \".\" .HostName)._0 }}"
         },
         {
           "type": "os",
           "style": "plain",
-          "template": "{{ if .WSL }}WSL {{ end }}{{.Icon}}"
-        },
-        {
-          "type": "session",
-          "style": "plain",
-          "foreground": "p:hostname",
-          "template": "):"
+          "template": "{{ if .WSL }}<p:hostname>(</>WSL {{.Icon}}<p:hostname>)</>{{ end }}"
         },
         {
           "type": "path",
           "style": "plain",
           "foreground": "p:pwd",
-          "template": " \uea83 {{ path .Path .Location }}",
+          "template": " {{ path .Path .Location }}",
           "properties": {
             "folder_separator_icon": "/",
             "style": "full"
@@ -75,7 +65,7 @@
           "powerline_symbol": "\uE0B0",
           "foreground": "p:kubectl-fg",
           "background": "p:kubectl-bg",
-          "template": " <#ff8800>(</>\uFD31 {{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}}<#ff8800>)</>"
+          "template": " <p:orange-text>(</>\uFD31 {{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}}<p:orange-text>)</>"
         },
         {
           "type": "git",
@@ -87,7 +77,7 @@
             "{{ if gt .Ahead 0 }}p:git-fg-ahead{{ end }}",
             "{{ if gt .Behind 0 }}p:git-fg-behind{{ end }}"
           ],
-          "template": " <#ff8800>on</> {{ if .UpstreamURL }}{{ url .UpstreamIcon .UpstreamURL }} {{ end }}{{ url .HEAD .Kraken }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}",
+          "template": " <p:orange-text>on</> {{ if .UpstreamURL }}{{ url .UpstreamIcon .UpstreamURL }} {{ end }}{{ url .HEAD .Kraken }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}",
           "properties": {
             "branch_max_length": 25,
             "fetch_stash_count": true,
@@ -102,7 +92,7 @@
           "foreground_templates": [
             "{{ if (.Working.Changed) }}p:svn-fg-changed{{ end }}"
           ],
-          "template": " <#ff8800>on svn</> \ue0a0{{.Branch}} r{{.BaseRev}}{{ if .Working.Changed }} \uf044 {{.Working.String}}{{ end }}",
+          "template": " <p:orange-text>on svn</> \ue0a0{{.Branch}} r{{.BaseRev}}{{ if .Working.Changed }} \uf044 {{.Working.String}}{{ end }}",
           "properties": {
             "fetch_status": true
           }
@@ -142,8 +132,8 @@
         "aws"
       ],
       "style": "diamond",
-      "foreground": "p:white",
-      "background": "p:orange",
+      "foreground": "p:tooltip-fg",
+      "background": "p:orange-text",
       "leading_diamond": "\ue0b0",
       "trailing_diamond": "\ue0b4",
       "template": " \ue7ad {{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }} ",
@@ -157,8 +147,8 @@
         "az"
       ],
       "style": "diamond",
-      "foreground": "p:white",
-      "background": "p:blue",
+      "foreground": "p:tooltip-fg",
+      "background": "p:tooltip-az-bg",
       "leading_diamond": "\ue0b0",
       "trailing_diamond": "\ue0b4",
       "template": " \uebd8 {{ .Name }} ",
