@@ -101,13 +101,18 @@ in {
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    _1password
+    _1password-gui
     dconf2nix
+    firefox
     gnomeExtensions.appindicator
     gnomeExtensions.caffeine
     gnomeExtensions.dash-to-panel
     gnomeExtensions.user-themes
+    libreoffice
     neofetch
     tilix
+    vivaldi
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
