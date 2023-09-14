@@ -44,6 +44,7 @@
                 ./modules/home-manager
                 ./modules/nixos/dconf.nix
               ];
+              extraSpecialArgs = { inherit genebean-omp-themes; };
             };
           }
         ];
