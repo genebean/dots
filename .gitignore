@@ -1,5 +1,7 @@
 /.vagrant/
 /.vscode/
+/result/
+/result
 /vendor/
 
 .dccache
