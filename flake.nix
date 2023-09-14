@@ -34,7 +34,7 @@
       rainbow-planet = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./modules/nixos/configuration.nix
+          ./modules/nixos
           home-manager.nixosModules.home-manager
           {
             home-manager = {
