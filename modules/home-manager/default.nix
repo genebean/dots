@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, genebean-omp-themes, ... }: {
   home.stateVersion = "23.11";
   home.packages = with pkgs; [
     colordiff
@@ -51,7 +51,7 @@
     oh-my-posh = {
       enable = true;
       enableZshIntegration = true;
-      settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile ./files/beanbag.omp.json));
+      settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile (genebean-omp-themes + "/beanbag.omp.json")));
     };
     vim = {
       enable = true;

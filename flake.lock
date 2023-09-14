@@ -35,6 +35,22 @@
         "type": "github"
       }
     },
+    "genebean-omp-themes": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1694629194,
+        "narHash": "sha256-k1HqpsW5buBGe3rgugQvoKw5nPu/zBWiT8blb5eHc0w=",
+        "owner": "genebean",
+        "repo": "my-oh-my-posh-themes",
+        "rev": "eb6ba507c2f37accc926c65bac1b88293a71eb9c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "genebean",
+        "repo": "my-oh-my-posh-themes",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -160,6 +176,7 @@
     },
     "root": {
       "inputs": {
+        "genebean-omp-themes": "genebean-omp-themes",
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",
         "nix-homebrew": "nix-homebrew",

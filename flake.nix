@@ -20,8 +20,14 @@
     # Manage Homebrew itself
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
 
+    # My oh-my-posh theme
+    genebean-omp-themes = {
+      url = "github:genebean/my-oh-my-posh-themes";
+      flake = false;
+    };
+
   }; # end inputs
-  outputs = { self, nixpkgs, nix-darwin, home-manager, nix-homebrew, ... }: {
+  outputs = { self, nixpkgs, nix-darwin, home-manager, nix-homebrew, genebean-omp-themes, ... }: {
     nixosConfigurations = let
       user = "gene";
     in {
@@ -79,6 +85,7 @@
               users.${user}.imports = [
                 ./modules/home-manager
               ];
+              extraSpecialArgs = { inherit genebean-omp-themes; };
             };
           }
         ]; # end modules
