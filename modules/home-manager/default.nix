@@ -47,9 +47,23 @@
     git = {
       enable = true;
       delta.enable = true;
+      includes = [ { path = "~/.gitconfig-local"; }];
       lfs.enable = true;
       package = pkgs.gitAndTools.gitFull;
-    };
+      userName = "Gene Liverman";
+      extraConfig = {
+        init = {
+          defaultBranch = "main";
+        };
+        merge = {
+	  conflictStyle = "diff3";
+          tool = "meld";
+        };
+        pull = {
+          rebase = false;
+        };
+      };
+    }; # end git
     go = {
       enable = true;
       goPath = "go";
@@ -139,6 +153,7 @@
       history.size = 1000000;
       initExtra = ''
         [ -f ~/.private-env ] && source ~/.private-env || echo '~/.private-env is missing'
+        [ -f ~/.gitconfig-local ] || echo '~/.gitconfig-local is missing. Create it and set user.email'
 
         # Start GPG agent
         # Some tips from https://hedberg.io/yubikey-for-ssh/ helped simplify this:
