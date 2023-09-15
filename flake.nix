@@ -35,6 +35,7 @@
         system = "x86_64-linux";
         modules = [
           ./modules/nixos
+
           home-manager.nixosModules.home-manager
           {
             home-manager = {
@@ -42,6 +43,7 @@
               useUserPackages = true;
               users.${user}.imports = [
                 ./modules/home-manager
+                ./modules/home-manager/nixos.nix
                 ./modules/nixos/dconf.nix
               ];
               extraSpecialArgs = { inherit genebean-omp-themes; };
