@@ -42,15 +42,17 @@ in {
     # Configure keymap in X11
     layout = "us";
     xkbVariant = "";
+
+    displayManager = {
+      gdm = {
+        enable = true;
+        wayland = true;
+      };
+    };
   };
 
-  # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  programs.hyprland.enable = true;
 
-  services.udev.packages = with pkgs; [
-    gnome.gnome-settings-daemon
-  ];
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -64,6 +66,7 @@ in {
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    wireplumber.enable = true;
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -73,7 +76,7 @@ in {
   users.users.${user} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "networkmanager" "wheel" "dialout" ];
+    extraGroups = [ "networkmanager" "wheel" "dialout" "input" ];
     packages = with pkgs; [
      tailscale-systray
     ];
@@ -91,26 +94,36 @@ in {
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    brightnessctl
     dconf2nix
+    file
     firefox
-    gnomeExtensions.appindicator
-    gnomeExtensions.caffeine
-    gnomeExtensions.dash-to-panel
-    gnomeExtensions.user-themes
+    gnome.nautilus
     libreoffice
     neofetch
+    pavucontrol
+    polkit-kde-agent
+    python3
     tailscale
     tilix
+    ulauncher
     vivaldi
+    xfce.xfce4-terminal
+    wmctrl
   ];
 
-  programs._1password.enable = true;
-  programs._1password-gui = {
-    enable = true;
-    # Certain features, including CLI integration and system authentication support,
-    # require enabling PolKit integration on some desktop environments (e.g. Plasma).
-    polkitPolicyOwners = [ "${user}" ];
+  programs = {
+    _1password.enable = true;
+    _1password-gui = {
+      enable = true;
+      # Certain features, including CLI integration and system authentication support,
+      # require enabling PolKit integration on some desktop environments (e.g. Plasma).
+      polkitPolicyOwners = [ "${user}" ];
+    };
   };
+
+  # Used by Nautilus
+  services.gvfs.enable = true;
 
   nix.settings = {
     allowed-users = [ "${user}" ];
@@ -121,8 +134,13 @@ in {
   };
 
   fonts.fontDir.enable = false;
-  fonts.packages = [ (pkgs.nerdfonts.override { fonts = [
-    "Hack"
-    "SourceCodePro"
-  ]; }) ];
+  fonts.packages = with pkgs; [
+    font-awesome
+    (nerdfonts.override {
+      fonts = [
+        "Hack"
+        "SourceCodePro"
+      ];
+    })
+  ];
 }
