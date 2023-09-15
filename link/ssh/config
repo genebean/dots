@@ -1,6 +1,0 @@
-Host *.westga.edu
-  User ven-gliverman
-HOST *.delivery.puppetlabs.net
-  IdentityFile ~/.ssh/id_rsa-acceptance
-Host beanbag.technicalissues.us
-  User gliverma

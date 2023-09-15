@@ -14,6 +14,7 @@
     mtr
     nix-zsh-completions
     nurl
+    powershell
     rename
     slack
     subversion
@@ -217,5 +218,10 @@
         usessh = "gpgconf --kill gpg-agent";
       };
     }; # end zsh
+  }; # end programs
+
+  home.file = {
+    ".config/powershell/Microsoft.PowerShell_profile.ps1".source = ./files/Microsoft.PowerShell_profile.ps1;
+    ".config/powershell/Microsoft.VSCode_profile.ps1".source = ./files/Microsoft.PowerShell_profile.ps1;
   };
 }
