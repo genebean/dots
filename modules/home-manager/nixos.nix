@@ -6,6 +6,7 @@
       rev = "99a88fd21fac270bd999d4a26cf0f4a4222c58be";
       hash = "sha256-07B5QmQmsUKYf38oWU3+2C6KO4JvinuTwmW1Pfk8CT8=";
     } + "/themes/frappe.conf");
+    ".config/tilix/schemes/Beanbag-Mathias.json".source = ./files/tilix/Beanbag-Mathias.json;
     ".config/tilix/schemes/Catppuccin-Frappe.json".source = (pkgs.fetchFromGitHub {
       owner = "catppuccin";
       repo = "tilix";
