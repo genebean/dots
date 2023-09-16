@@ -12,12 +12,19 @@
       rev = "3fd05e03419321f2f2a6aad6da733b28be1765ef";
       hash = "sha256-SI7QxQ+WBHzeuXbTye+s8pi4tDVZOV4Aa33mRYO276k=";
     } + "/src/Catppuccin-Frappe.json");
+    ".config/waybar/config".source = ./files/waybar/config;
+    ".config/waybar/frappe.css".source = (pkgs.fetchFromGitHub {
+      owner = "catppuccin";
+      repo = "waybar";
+      rev = "f74ab1eecf2dcaf22569b396eed53b2b2fbe8aff";
+      hash = "sha256-WLJMA2X20E5PCPg0ZPtSop0bfmu+pLImP9t8A8V4QK8=";
+    } + "/themes/frappe.css");
+    ".config/waybar/style.css".source = ./files/waybar/style.css;
   };
 
   programs = {
-    waybar = {
-      enable = true;
-    };
+    # Using file in ./files/waybar/ to configure waybar
+    waybar.enable = true;
   };
 
   services.dunst = {
