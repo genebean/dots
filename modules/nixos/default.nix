@@ -108,8 +108,8 @@ in {
     tilix
     ulauncher
     vivaldi
-    xfce.xfce4-terminal
     wmctrl
+    xfce.xfce4-terminal
   ];
 
   programs = {
