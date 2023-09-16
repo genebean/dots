@@ -1,10 +1,18 @@
 { pkgs, ... }: {
-  home.file.".config/hypr/frappe.conf".source = (pkgs.fetchFromGitHub {
+  home.file = {
+    ".config/hypr/frappe.conf".source = (pkgs.fetchFromGitHub {
       owner = "catppuccin";
       repo = "hyprland";
       rev = "99a88fd21fac270bd999d4a26cf0f4a4222c58be";
       hash = "sha256-07B5QmQmsUKYf38oWU3+2C6KO4JvinuTwmW1Pfk8CT8=";
     } + "/themes/frappe.conf");
+    ".config/tilix/schemes/Catppuccin-Frappe.json".source = (pkgs.fetchFromGitHub {
+      owner = "catppuccin";
+      repo = "tilix";
+      rev = "3fd05e03419321f2f2a6aad6da733b28be1765ef";
+      hash = "sha256-SI7QxQ+WBHzeuXbTye+s8pi4tDVZOV4Aa33mRYO276k=";
+    } + "/src/Catppuccin-Frappe.json");
+  };
 
   programs = {
     waybar = {
