@@ -17,6 +17,7 @@ in {
     hostName = "${hostname}";
     networkmanager.enable = true;
   };
+  services.tailscale.enable = true;
 
   time.timeZone = "America/New_York";
 
