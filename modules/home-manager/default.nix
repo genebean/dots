@@ -164,25 +164,6 @@
         fi
 
         export GPG_TTY=$(tty)
-
-        if [[ `uname` == 'Linux' ]]; then
-          alias uwgconnect='nmcli dev wifi connect SecureWest password'
-          alias uwgforget='nmcli connection delete SecureWest'
-          alias ykey='sudo systemctl restart pcscd && sudo pkill -9 gpg-agent && source ~/.zshrc; ssh-add -L'
-        else
-          alias currentwifi='networksetup -getairportnetwork en0 |cut -d ":" -f2- | cut -d " " -f2-'
-          alias uwgconnect='networksetup -setairportnetwork en0 SecureWest'
-          alias uwgforget='networksetup -removepreferredwirelessnetwork en0 SecureWest'
-          alias ykey='pkill -9 gpg-agent && source ~/.zshrc; ssh-add -L'
-        fi
-        if [[ `uname` != 'Linux' ]]; then
-          function otpon() {
-                  osascript -e 'tell application "yubiswitch" to KeyOn'
-          }
-          function otpoff() {
-                  osascript -e 'tell application "yubiswitch" to KeyOff'
-          }
-        fi
       '';
       oh-my-zsh = {
         enable = true;
@@ -193,7 +174,6 @@
           "github"
           "history"
           "kubectl"
-          "macos"
           "pip"
           "terraform"
           "vagrant"
@@ -204,6 +184,7 @@
         beo = "bundle exec onceover run spec --trace --force";
         biv = "bundle install --path=vendor/bundle";
         ce = "code-exploration";
+        dots = "cd ~/repos/dots";
         gbc = ''
           git branch --merged | command grep -vE "^(\*|\s*(main|master|develop|production)\s*$)" | command xargs -n 1 git branch -d
         '';
