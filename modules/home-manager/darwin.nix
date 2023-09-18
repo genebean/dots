@@ -8,6 +8,9 @@
       function otpoff() {
         osascript -e 'tell application "yubiswitch" to KeyOff'
       }
+
+      # Include Puppet's normal bin folder since it is installed via Homebrew
+      export PATH=$PATH:/opt/puppetlabs/bin
     '';
     oh-my-zsh.plugins = [ "macos" ];
     shellAliases = {
