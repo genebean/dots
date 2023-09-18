@@ -24,6 +24,12 @@
   };
 
   programs = {
+    # Linux-specific aliases
+    zsh.shellAliases = {
+      uwgconnect = "nmcli dev wifi connect SecureWest password";
+      uwgforget = "nmcli connection delete SecureWest";
+      ykey = "sudo systemctl restart pcscd && sudo pkill -9 gpg-agent && source ~/.zshrc; ssh-add -L";
+    };
     # Using file in ./files/waybar/ to configure waybar
     waybar.enable = true;
   };

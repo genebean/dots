@@ -87,6 +87,7 @@
               useUserPackages = true;
               users.${user}.imports = [
                 ./modules/home-manager
+                ./modules/home-manager/darwin.nix
               ];
               extraSpecialArgs = { inherit genebean-omp-themes; };
             };
