@@ -41,6 +41,7 @@ in {
     ];
     brews = [
       "adr-tools"
+      "firefox-profile-switcher-connector"
       "helm"
       "kubernetes-cli"
     ];
