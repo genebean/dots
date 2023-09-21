@@ -121,6 +121,8 @@ in {
       # require enabling PolKit integration on some desktop environments (e.g. Plasma).
       polkitPolicyOwners = [ "${user}" ];
     };
+    # required for setting to be picked up by xfce4-terminal
+    xfconf.enable = true;
   };
 
   # Used by Nautilus
