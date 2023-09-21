@@ -61,6 +61,7 @@ in {
       "kopiaui"
       "libreoffice"
       "logseq"
+      "meld"
       "nextcloud"
       "obs"
       "onlyoffice"
