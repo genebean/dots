@@ -101,6 +101,7 @@ in {
     firefox
     gnome.nautilus
     libreoffice
+    meld
     neofetch
     pavucontrol
     polkit-kde-agent

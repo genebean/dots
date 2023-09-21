@@ -10,7 +10,6 @@
     htop
     hub
     jq
-    meld
     mtr
     nix-zsh-completions
     nurl
