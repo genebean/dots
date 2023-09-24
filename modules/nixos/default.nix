@@ -110,6 +110,7 @@ in {
     tilix
     ulauncher
     vivaldi
+    whalebird
     wmctrl
     xfce.xfce4-terminal
   ];
