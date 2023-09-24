@@ -80,21 +80,22 @@
       enable = true;
       defaultEditor = true;
       plugins = with pkgs.vimPlugins; [
-        vim-json
-        vim-snipmate
+        syntastic
         tabular
-        vim-snippets
-        vim-nix
-        vim-addon-mw-utils
-        vim-yaml
-        vim-flog
-        vim-puppet
         tlib_vim
-        vim-fugitive
+        vim-addon-mw-utils
         vim-airline
         vim-airline-themes
+        vim-flog
+        vim-fugitive
+        vim-json
+        vim-markdown
+        vim-nix
+        vim-puppet
         vim-ruby
-        syntastic
+        vim-snipmate
+        vim-snippets
+        vim-yaml
       ];
       settings = {
         background = "dark";

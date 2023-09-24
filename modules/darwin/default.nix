@@ -77,6 +77,7 @@ in {
       "vivaldi"
       "virtualbox"
       "vlc"
+      "whalebird"
       "whatsapp"
       "zenmap"
     ];
