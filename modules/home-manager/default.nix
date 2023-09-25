@@ -2,7 +2,7 @@
   home.stateVersion = "23.11";
   home.packages = with pkgs; [
     colordiff
-    dog
+    dogdns
     dos2unix
     du-dust
     element-desktop
