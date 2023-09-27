@@ -106,6 +106,7 @@ in {
     pavucontrol
     polkit-kde-agent
     python3
+    slack
     tailscale
     tilix
     ulauncher

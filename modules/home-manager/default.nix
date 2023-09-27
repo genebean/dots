@@ -15,7 +15,6 @@
     nurl
     powershell
     rename
-    slack
     subversion
     tree
     watch

@@ -71,6 +71,7 @@ in {
       "qmk-toolbox"
       "raycast"
       "signal"
+      "slack"
       "tailscale"
       "thunderbird"
       "vagrant"
