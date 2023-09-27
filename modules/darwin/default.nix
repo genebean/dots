@@ -67,6 +67,7 @@ in {
       "obs"
       "onlyoffice"
       "pdk"
+      "puppet-agent"
       "puppet-bolt"
       "qmk-toolbox"
       "raycast"
