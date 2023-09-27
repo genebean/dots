@@ -11,6 +11,7 @@
 
       # Include Puppet's normal bin folder since it is installed via Homebrew
       export PATH=$PATH:/opt/puppetlabs/bin
+      export PATH=$PATH:/opt/puppetlabs/pdk/bin
     '';
     oh-my-zsh.plugins = [ "macos" ];
     shellAliases = {
