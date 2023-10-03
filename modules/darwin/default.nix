@@ -75,6 +75,7 @@ in {
       "slack"
       "tailscale"
       "thunderbird"
+      "tunnelblick"
       "vagrant"
       "vivaldi"
       "virtualbox"
