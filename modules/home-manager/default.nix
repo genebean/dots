@@ -180,6 +180,8 @@
         ];
       };
       shellAliases = {
+        bcrr = "bolt command run --run-as root --sudo-password-prompt";
+        bcrrs = "bcrr --stream --no-verbose";
         beo = "bundle exec onceover run spec --trace --force";
         biv = "bundle install --path=vendor/bundle";
         ce = "code-exploration";
