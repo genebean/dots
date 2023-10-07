@@ -93,6 +93,11 @@ in {
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  # Well, this sucks, hopefully a fixed version is available soon...
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-21.4.4"
+  ];
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -131,6 +136,9 @@ in {
 
   # Used by Nautilus
   services.gvfs.enable = true;
+
+  # Provides secret storage
+  services.gnome.gnome-keyring.enable = true;
 
   nix.settings = {
     allowed-users = [ "${user}" ];
