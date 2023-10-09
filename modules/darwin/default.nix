@@ -21,6 +21,7 @@ in {
       nodejs
       nodePackages.npm
       openjdk
+      python2
     ];
   };
 

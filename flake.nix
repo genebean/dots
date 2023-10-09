@@ -61,7 +61,12 @@
         system = "x86_64-darwin";
         pkgs = import nixpkgs {
           system = "x86_64-darwin";
-          config.allowUnfree = true;
+          config = {
+            allowUnfree = true;
+            permittedInsecurePackages = [
+              "python-2.7.18.6"
+            ];
+          };
         };
         modules = [
           nix-homebrew.darwinModules.nix-homebrew
