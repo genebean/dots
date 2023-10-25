@@ -6,6 +6,7 @@
     dos2unix
     du-dust
     element-desktop
+    git-filter-repo
     gotop
     htop
     hub
