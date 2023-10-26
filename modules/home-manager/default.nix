@@ -11,6 +11,7 @@
     htop
     hub
     jq
+    minicom
     mtr
     nix-zsh-completions
     nurl
