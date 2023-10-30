@@ -42,6 +42,7 @@ in {
     ];
     brews = [
       "adr-tools"
+      "ffmpeg"
       "firefox-profile-switcher-connector"
       "helm"
       "kubernetes-cli"
@@ -90,6 +91,7 @@ in {
       "BetterSnapTool" = 417375580;
       "Home Assistant" = 1099568401;
       "HomeCam" = 1292995895;
+      "Keeper Password Manager" = 414781829;
       "MeetingBar" = 1532419400;
       "Microsoft Remote Desktop" = 1295203466;
     };
