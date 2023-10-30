@@ -42,6 +42,7 @@ in {
     ];
     brews = [
       "adr-tools"
+      "ffmpeg"
       "firefox-profile-switcher-connector"
       "helm"
       "kubernetes-cli"
