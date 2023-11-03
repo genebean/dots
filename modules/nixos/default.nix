@@ -101,6 +101,7 @@ in {
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    boinc
     brightnessctl
     dconf2nix
     file
@@ -139,6 +140,8 @@ in {
 
   # Provides secret storage
   services.gnome.gnome-keyring.enable = true;
+
+  services.boinc.enable = true;
 
   nix.settings = {
     allowed-users = [ "${user}" ];
