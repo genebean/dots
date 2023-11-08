@@ -121,6 +121,7 @@ in {
     whalebird
     wmctrl
     xfce.xfce4-terminal
+    zoom-us
   ];
 
   programs = {
