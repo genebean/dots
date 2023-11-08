@@ -22,7 +22,6 @@
     watch
     wget
     yq
-    zoom-us
   ];
   home.sessionVariables = {
     CLICLOLOR = 1;
