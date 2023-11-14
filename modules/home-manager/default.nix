@@ -28,6 +28,14 @@
     PAGER = "less";
   };
   programs = {
+    atuin = {
+      enable = true;
+      settings = {
+        sync_address = "https://atuin.home.technicalissues.us";
+        filter_mode_shell_up_key_binding = "host"; # or global, host, directory, etc
+        sync_frequency = "15m";
+      };
+    };
     bat = {
       enable = true;
       config = {
