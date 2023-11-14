@@ -52,6 +52,7 @@ in {
       "1password-cli"
       "amethyst"
       "audacity"
+      "balenaetcher"
       "boinc"
       "cakebrew"
       "elgato-stream-deck"
