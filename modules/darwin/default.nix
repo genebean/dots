@@ -96,6 +96,7 @@ in {
       "Keeper Password Manager" = 414781829;
       "MeetingBar" = 1532419400;
       "Microsoft Remote Desktop" = 1295203466;
+      "MQTT Explorer" = 1455214828;
       "Telegram" = 747648890;
       "WhatsApp Messenger" = 310633997;
     };
