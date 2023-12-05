@@ -55,6 +55,7 @@ in {
       "balenaetcher"
       "boinc"
       "cakebrew"
+      "discord"
       "elgato-stream-deck"
       "firefox"
       "font-hack-nerd-font"
