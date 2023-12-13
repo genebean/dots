@@ -101,6 +101,7 @@ in {
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    angryipscanner
     boinc
     brightnessctl
     dconf2nix
