@@ -57,7 +57,7 @@
     gh.enable = true;
     git = {
       enable = true;
-      delta.enable = true;
+      diff-so-fancy.enable = true;
       includes = [ { path = "~/.gitconfig-local"; }];
       lfs.enable = true;
       package = pkgs.gitAndTools.gitFull;

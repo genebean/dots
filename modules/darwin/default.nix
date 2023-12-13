@@ -52,6 +52,7 @@ in {
       "1password-cli"
       "amethyst"
       "angry-ip-scanner"
+      "asana"
       "audacity"
       "balenaetcher"
       "boinc"
