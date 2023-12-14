@@ -18,7 +18,12 @@ in {
     hostName = "${hostname}";
     networkmanager.enable = true;
   };
-  services.tailscale.enable = true;
+  services.tailscale = {
+    enable = true;
+    extraUpFlags = [
+      "--ssh"
+    ];
+  };
 
   time.timeZone = "America/New_York";
 
