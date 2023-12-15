@@ -37,36 +37,6 @@
   outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, nix-homebrew, disko, genebean-omp-themes, ... }: let
     inputs = { inherit disko home-manager nixpkgs nixpkgs-unstable nix-darwin; };
 
-    # creates a nixos system config
-    nixosSystem = system: hostName: username: nixpkgs.lib.nixosSystem {
-      pkgs = import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-          permittedInsecurePackages = [
-            "electron-21.4.4" # Well, this sucks, hopefully a fixed version is available soon...
-          ];
-        };
-      };
-      modules = [
-        home-manager.nixosModules.home-manager
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            users.${username}.imports = [
-              ./modules/home-manager
-              ./modules/home-manager/nixos.nix
-            ];
-            extraSpecialArgs = { inherit genebean-omp-themes; };
-          };
-        }
-
-        ./modules/common/nixos/all-hosts.nix
-        ./modules/hosts/nixos/${hostName} # ip address, host specific stuff
-      ];
-    }; # end nixosSystem
-
     # creates a macOS system config
     darwinSystem = system: hostName: username: nix-darwin.lib.darwinSystem {
       pkgs = import nixpkgs {
@@ -110,6 +80,36 @@
         ./modules/hosts/darwin/${hostName} # ip address, host specific stuff
       ]; # end modules
     }; # end darwinSystem
+
+    # creates a nixos system config
+    nixosSystem = system: hostName: username: nixpkgs.lib.nixosSystem {
+      pkgs = import nixpkgs {
+        inherit system;
+        config = {
+          allowUnfree = true;
+          permittedInsecurePackages = [
+            "electron-21.4.4" # Well, this sucks, hopefully a fixed version is available soon...
+          ];
+        };
+      };
+      modules = [
+        home-manager.nixosModules.home-manager
+        {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            users.${username}.imports = [
+              ./modules/home-manager
+              ./modules/home-manager/nixos.nix
+            ];
+            extraSpecialArgs = { inherit genebean-omp-themes; };
+          };
+        }
+
+        ./modules/common/nixos/all-hosts.nix
+        ./modules/hosts/nixos/${hostName} # ip address, host specific stuff
+      ];
+    }; # end nixosSystem
 
   in {
       darwinConfigurations = {
