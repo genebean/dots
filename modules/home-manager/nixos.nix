@@ -1,4 +1,7 @@
 { pkgs, ... }: {
+  imports = [
+    ./dconf.nix
+  ];
   home.file = {
     ".config/hypr/frappe.conf".source = (pkgs.fetchFromGitHub {
       owner = "catppuccin";
