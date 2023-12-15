@@ -44,13 +44,11 @@
         config = {
           allowUnfree = true;
           permittedInsecurePackages = [
-            "electron-21.4.4"
+            "electron-21.4.4" # Well, this sucks, hopefully a fixed version is available soon...
           ];
         };
       };
       modules = [
-        ./modules/nixos
-
         home-manager.nixosModules.home-manager
         {
           home-manager = {
@@ -59,13 +57,14 @@
             users.${username}.imports = [
               ./modules/home-manager
               ./modules/home-manager/nixos.nix
-              ./modules/nixos/dconf.nix
             ];
             extraSpecialArgs = { inherit genebean-omp-themes; };
           };
         }
-      ];
 
+        ./modules/common/nixos/all-hosts.nix
+        ./modules/hosts/nixos/${hostName} # ip address, host specific stuff
+      ];
     }; # end nixosSystem
 
     # creates a macOS system config
@@ -94,8 +93,6 @@
           };
         }
 
-        ./modules/darwin
-
         home-manager.darwinModules.home-manager
         {
           home-manager = {
@@ -108,6 +105,9 @@
             extraSpecialArgs = { inherit genebean-omp-themes; };
           };
         }
+
+        ./modules/common/darwin/all-hosts.nix
+        ./modules/hosts/darwin/${hostName} # ip address, host specific stuff
       ]; # end modules
     }; # end darwinSystem
 
