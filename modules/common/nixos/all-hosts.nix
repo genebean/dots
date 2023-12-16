@@ -1,4 +1,4 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, hostname, username, ... }: {
   imports = [
     ./internationalisation.nix
   ];
@@ -26,7 +26,10 @@
     })
   ];
 
+  networking.hostName = "${hostname}";
+
   nix.settings = {
+    allowed-users = [ "${username}" ];
     experimental-features = [
       "flakes"
       "nix-command"

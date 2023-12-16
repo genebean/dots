@@ -1,6 +1,4 @@
-{ pkgs, ... }: let
-  username = "gene.liverman";
-in {
+{ pkgs, hostname, username, ... }: {
   environment = {
     shells = with pkgs; [ bash zsh ];
     loginShell = pkgs.zsh;
@@ -67,6 +65,8 @@ in {
       "MQTT Explorer" = 1455214828;
     };
   };
+
+  networking.hostName = "${hostname}";
 
   nix = {
     settings = {
