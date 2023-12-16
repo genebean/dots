@@ -38,16 +38,17 @@
     inputs = { inherit disko home-manager nixpkgs nixpkgs-unstable nix-darwin; };
 
     # creates a macOS system config
-    darwinSystem = system: hostName: username: nix-darwin.lib.darwinSystem {
+    darwinSystem = system: hostname: username: nix-darwin.lib.darwinSystem {
       pkgs = import nixpkgs {
         inherit system;
         config = {
           allowUnfree = true;
           permittedInsecurePackages = [
-            "python-2.7.18.6"
+            "python-2.7.18.7"
           ];
         };
       };
+      specialArgs = { inherit inputs username hostname; };
       modules = [
         nix-homebrew.darwinModules.nix-homebrew
         {
@@ -77,12 +78,12 @@
         }
 
         ./modules/common/darwin/all-hosts.nix
-        ./modules/hosts/darwin/${hostName} # ip address, host specific stuff
+        ./modules/hosts/darwin/${hostname} # ip address, host specific stuff
       ]; # end modules
     }; # end darwinSystem
 
     # creates a nixos system config
-    nixosSystem = system: hostName: username: nixpkgs.lib.nixosSystem {
+    nixosSystem = system: hostname: username: nixpkgs.lib.nixosSystem {
       pkgs = import nixpkgs {
         inherit system;
         config = {
@@ -92,6 +93,7 @@
           ];
         };
       };
+      specialArgs = { inherit inputs username hostname; };
       modules = [
         home-manager.nixosModules.home-manager
         {
@@ -107,7 +109,7 @@
         }
 
         ./modules/common/nixos/all-hosts.nix
-        ./modules/hosts/nixos/${hostName} # ip address, host specific stuff
+        ./modules/hosts/nixos/${hostname} # ip address, host specific stuff
       ];
     }; # end nixosSystem
 

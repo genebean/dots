@@ -1,7 +1,4 @@
-{ config, pkgs, ... }: let
-  username = "gene";
-  hostname = "rainbow-planet";
-in {
+{ config, pkgs, username, ... }: {
   imports = [
     ./hardware-configuration.nix
   ];
@@ -39,11 +36,8 @@ in {
   ];
 
   networking = {
-    hostName = "${hostname}";
     networkmanager.enable = true;
   };
-
-  nix.settings.allowed-users = [ "${username}" ];
 
   programs = {
     _1password.enable = true;
@@ -104,7 +98,7 @@ in {
     description = "Gene Liverman";
     extraGroups = [ "networkmanager" "wheel" "dialout" "input" ];
     packages = with pkgs; [
-     tailscale-systray
+      tailscale-systray
     ];
   };
 }

@@ -3,16 +3,16 @@
     "brew-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1690184446,
-        "narHash": "sha256-fGjvNY6ON/cdExCfwhfqmHzoxs3AZ0sev7vyBHfPGJo=",
+        "lastModified": 1694443293,
+        "narHash": "sha256-wBjbF2RRFyD4lN7ie98VnggmNBwAPv/dg2U+w5mUyuM=",
         "owner": "Homebrew",
         "repo": "brew",
-        "rev": "3b3300546b5a4e40b74f4ee33cf225cca280defe",
+        "rev": "4afb8e5602f3ecc9edf67a44257d8eceeaa8a108",
         "type": "github"
       },
       "original": {
         "owner": "Homebrew",
-        "ref": "4.1.1",
+        "ref": "4.1.11",
         "repo": "brew",
         "type": "github"
       }
@@ -78,11 +78,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1694375657,
-        "narHash": "sha256-32X8dcty4vPXx+D4yJPQZBo5hJ1NQikALhevGv6elO4=",
+        "lastModified": 1702735279,
+        "narHash": "sha256-SztEzDOE/6bDNnWWvnRbSHPVrgewLwdSei1sxoZFejM=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "f7848d3e5f15ed02e3f286029697e41ee31662d7",
+        "rev": "e9b9ecef4295a835ab073814f100498716b05a96",
         "type": "github"
       },
       "original": {
@@ -98,11 +98,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1694497842,
-        "narHash": "sha256-z03v/m0OwcLBok97KcUgMl8ZFw5Xwsi2z+n6nL7JdXY=",
+        "lastModified": 1700795494,
+        "narHash": "sha256-gzGLZSiOhf155FW7262kdHo2YDeugp3VuIFb4/GGng0=",
         "owner": "lnl7",
         "repo": "nix-darwin",
-        "rev": "4496ab26628c5f43d2a5c577a06683c753e32fe2",
+        "rev": "4b9b83d5a92e8c1fbfd8eb27eda375908c11ec4d",
         "type": "github"
       },
       "original": {
@@ -137,11 +137,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1690495710,
-        "narHash": "sha256-7yF5A16Ayorrpcal74mRB1EqwUAHfXnoCIgDvj+ylgo=",
+        "lastModified": 1695057498,
+        "narHash": "sha256-wn3j7u5tOgLLbNxZC542rJiP5iX323m+CoGPMgPOxp4=",
         "owner": "zhaofengli-wip",
         "repo": "nix-homebrew",
-        "rev": "d2738b78fd0f304f5a7ed4764b736ed2c7169b94",
+        "rev": "6ab33c5e9249e74401144a7c667d96a757c5d341",
         "type": "github"
       },
       "original": {
@@ -197,11 +197,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1694459622,
-        "narHash": "sha256-PcbBuRJKFxgb+CUQ3sliI5oRaKHHAV+OSTv6GPAccEA=",
+        "lastModified": 1702735365,
+        "narHash": "sha256-PqGFt/SH8WHzuvlgRHrvRjYrafGV7A2S1mfAMnLNol8=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "bb446a19f77e8d1d0c5ada7069d21a001442fc73",
+        "rev": "db6ce8b1a2735932a19575958c1be4b3b62662df",
         "type": "github"
       },
       "original": {
