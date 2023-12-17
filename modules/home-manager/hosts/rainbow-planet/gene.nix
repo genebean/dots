@@ -1,7 +1,14 @@
-{ pkgs, ... }: {
+{ pkgs, genebean-omp-themes, ... }: {
+  home.stateVersion = "23.11";
   imports = [
-    ./dconf.nix
+    ../../common/all-cli.nix
+    ../../common/all-gui.nix
+    ../../common/all-linux.nix
+    ../../common/linux-apps/tilix.nix
+    ../../common/linux-apps/waybar.nix
+    ../../common/linux-apps/xfce4-terminal.nix
   ];
+
   home.file = {
     ".config/hypr/frappe.conf".source = (pkgs.fetchFromGitHub {
       owner = "catppuccin";
@@ -9,34 +16,6 @@
       rev = "99a88fd21fac270bd999d4a26cf0f4a4222c58be";
       hash = "sha256-07B5QmQmsUKYf38oWU3+2C6KO4JvinuTwmW1Pfk8CT8=";
     } + "/themes/frappe.conf");
-    ".config/tilix/schemes/Beanbag-Mathias.json".source = ./files/tilix/Beanbag-Mathias.json;
-    ".config/tilix/schemes/Catppuccin-Frappe.json".source = (pkgs.fetchFromGitHub {
-      owner = "catppuccin";
-      repo = "tilix";
-      rev = "3fd05e03419321f2f2a6aad6da733b28be1765ef";
-      hash = "sha256-SI7QxQ+WBHzeuXbTye+s8pi4tDVZOV4Aa33mRYO276k=";
-    } + "/src/Catppuccin-Frappe.json");
-    ".config/waybar/config".source = ./files/waybar/config;
-    ".config/waybar/frappe.css".source = (pkgs.fetchFromGitHub {
-      owner = "catppuccin";
-      repo = "waybar";
-      rev = "f74ab1eecf2dcaf22569b396eed53b2b2fbe8aff";
-      hash = "sha256-WLJMA2X20E5PCPg0ZPtSop0bfmu+pLImP9t8A8V4QK8=";
-    } + "/themes/frappe.css");
-    ".config/waybar/style.css".source = ./files/waybar/style.css;
-    ".config/xfce4/terminal/accels.scm".source = ./files/xfce4/terminal/accels.scm;
-  };
-
-  programs = {
-    # Linux-specific aliases
-    zsh.shellAliases = {
-      nixup = "sudo nixos-rebuild switch --flake ~/repos/dots";
-      uwgconnect = "nmcli dev wifi connect SecureWest password";
-      uwgforget = "nmcli connection delete SecureWest";
-      ykey = "sudo systemctl restart pcscd && sudo pkill -9 gpg-agent && source ~/.zshrc; ssh-add -L";
-    };
-    # Using file in ./files/waybar/ to configure waybar
-    waybar.enable = true;
   };
 
   services.dunst = {
@@ -62,47 +41,6 @@
         foreground = "#C6D0F5";
         frame_color = "#EF9F76";
       };
-    };
-  };
-
-  xfconf.settings = {
-    xfce4-terminal = {
-      "background-mode" = "TERMINAL_BACKGROUND_TRANSPARENT";
-      "background-darkness" = "0.90000000000000000";
-      "color-foreground" = "#e3e3ea";
-      "color-background" = "#08052b";
-      "color-cursor" = "#ff7f7f";
-      "color-cursor-use-default" = false;
-      "color-palette" = "#000000;#e52222;#a6e32d;#fc951e;#c48dff;#fa2573;#67d9f0;#f2f2f2;#555555;#ff5555;#55ff55;#ffff55;#5555ff;#ff55ff;#55ffff;#ffffff";
-      "font-name" = "Hack Nerd Font Mono 12";
-      "misc-always-show-tabs" = false;
-      "misc-bell" = false;
-      "misc-bell-urgent" = true;
-      "misc-borders-default" = true;
-      "misc-cursor-blinks" = false;
-      "misc-cursor-shape" = "TERMINAL_CURSOR_SHAPE_BLOCK";
-      "misc-default-geometry" = "120x24";
-      "misc-inherit-geometry" = false;
-      "misc-menubar-default" = true;
-      "misc-mouse-autohide" = false;
-      "misc-mouse-wheel-zoom" = true;
-      "misc-toolbar-default" = false;
-      "misc-confirm-close" = true;
-      "misc-cycle-tabs" = true;
-      "misc-tab-close-buttons" = true;
-      "misc-tab-close-middle-click" = true;
-      "misc-tab-position" = "GTK_POS_TOP";
-      "misc-highlight-urls" = true;
-      "misc-middle-click-opens-uri" = false;
-      "misc-copy-on-select" = false;
-      "misc-show-relaunch-dialog" = true;
-      "misc-rewrap-on-resize" = true;
-      "misc-slim-tabs" = true;
-      "misc-new-tab-adjacent" = false;
-      "misc-search-dialog-opacity" = "100";
-      "misc-show-unsafe-paste-dialog" = true;
-      "scrolling-unlimited" = true;
-      "title-initial" = "xfce4-terminal";
     };
   };
 
@@ -286,4 +224,3 @@
     }; # end settings
   }; # end hyprland
 }
-

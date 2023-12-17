@@ -1,11 +1,9 @@
 { pkgs, genebean-omp-themes, ... }: {
-  home.stateVersion = "23.11";
   home.packages = with pkgs; [
     colordiff
     dogdns
     dos2unix
     du-dust
-    element-desktop
     git-filter-repo
     gotop
     htop
@@ -78,17 +76,16 @@
         };
       };
     }; # end git
-    go = {
-      enable = true;
-      goPath = "go";
-    };
     jq.enable = true;
-    k9s.enable = true;
     neovim.enable = true;
     oh-my-posh = {
       enable = true;
       enableZshIntegration = true;
       settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile (genebean-omp-themes + "/beanbag.omp.json")));
+    };
+    tmux = {
+      enable = true;
+      historyLimit = 100000;
     };
     vim = {
       enable = true;
@@ -157,9 +154,6 @@
         let g:airline_powerline_fonts = 1
       '';
     };
-    vscode = {
-      enable = true;
-    };
     zsh = {
       enable = true;
       enableCompletion = true;
@@ -218,7 +212,7 @@
   }; # end programs
 
   home.file = {
-    ".config/powershell/Microsoft.PowerShell_profile.ps1".source = ./files/Microsoft.PowerShell_profile.ps1;
-    ".config/powershell/Microsoft.VSCode_profile.ps1".source = ./files/Microsoft.PowerShell_profile.ps1;
+    ".config/powershell/Microsoft.PowerShell_profile.ps1".source = ../files/Microsoft.PowerShell_profile.ps1;
+    ".config/powershell/Microsoft.VSCode_profile.ps1".source = ../files/Microsoft.PowerShell_profile.ps1;
   };
 }

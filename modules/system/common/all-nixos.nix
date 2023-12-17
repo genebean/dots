@@ -1,17 +1,18 @@
 { config, pkgs, hostname, username, ... }: {
   imports = [
-    ./internationalisation.nix
+    ./linux/internationalisation.nix
   ];
 
   environment = {
     shells = with pkgs; [ bash zsh ];
     systemPackages = with pkgs; [
-      angryipscanner
       dconf2nix
       file
       neofetch
       python3
       tailscale
+      unzip
+      wget
     ];
   };
 
@@ -34,6 +35,7 @@
       "flakes"
       "nix-command"
     ];
+    trusted-users = [ "${username}" ];
   };
 
   programs = {
