@@ -6,7 +6,7 @@
     nixpkgs.url = "github:nixos/nixpkgs";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
-    # Controls system level software and settings including fonts
+    # Controls system level software and settings including fonts on macOS
     nix-darwin = {
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -35,44 +35,34 @@
 
   }; # end inputs
   outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, nix-homebrew, disko, genebean-omp-themes, ... }: let
-    inputs = { inherit disko home-manager nixpkgs nixpkgs-unstable nix-darwin; };
 
     # creates a macOS system config
-    darwinSystem = system: hostname: username: nix-darwin.lib.darwinSystem {
+    darwinHostConfig = system: hostname: username: nix-darwin.lib.darwinSystem {
       pkgs = import nixpkgs {
         inherit system;
         config = {
           allowUnfree = true;
-          permittedInsecurePackages = [
-            "python-2.7.18.7"
-          ];
+          permittedInsecurePackages = [ "python-2.7.18.7" ];
         };
       };
       specialArgs = { inherit inputs username hostname; };
       modules = [
-        nix-homebrew.darwinModules.nix-homebrew
-        {
+        nix-homebrew.darwinModules.nix-homebrew {
           nix-homebrew = {
-            # Install Homebrew under the default prefix
-            enable = true;
-
-            # User owning the Homebrew prefix
-            user = "${username}";
-
-            # Automatically migrate existing Homebrew installations
-            autoMigrate = true;
+            enable = true;        # Install Homebrew under the default prefix
+            user = "${username}"; # User owning the Homebrew prefix
+            autoMigrate = true;   # Automatically migrate existing Homebrew installations
           };
         }
 
-        home-manager.darwinModules.home-manager
-        {
+        home-manager.darwinModules.home-manager {
           home-manager = {
+            extraSpecialArgs = { inherit genebean-omp-themes; };
             useGlobalPkgs = true;
             useUserPackages = true;
             users.${username}.imports = [
               ./modules/home-manager/hosts/${hostname}/${username}.nix 
             ];
-            extraSpecialArgs = { inherit genebean-omp-themes; };
           };
         }
 
@@ -82,27 +72,24 @@
     }; # end darwinSystem
 
     # creates a nixos system config
-    nixosSystem = system: hostname: username: nixpkgs.lib.nixosSystem {
+    nixosHostConfig = system: hostname: username: nixpkgs.lib.nixosSystem {
       pkgs = import nixpkgs {
         inherit system;
         config = {
           allowUnfree = true;
-          permittedInsecurePackages = [
-            "electron-21.4.4" # Well, this sucks, hopefully a fixed version is available soon...
-          ];
+          permittedInsecurePackages = [ "electron-21.4.4" ];
         };
       };
       specialArgs = { inherit inputs username hostname; };
       modules = [
-        home-manager.nixosModules.home-manager
-        {
+        home-manager.nixosModules.home-manager {
           home-manager = {
+            extraSpecialArgs = { inherit genebean-omp-themes; };
             useGlobalPkgs = true;
             useUserPackages = true;
             users.${username}.imports = [
               ./modules/home-manager/hosts/${hostname}/${username}.nix
             ];
-            extraSpecialArgs = { inherit genebean-omp-themes; };
           };
         }
 
@@ -113,12 +100,12 @@
 
   in {
       darwinConfigurations = {
-        Blue-Rock = darwinSystem "x86_64-darwin" "Blue-Rock" "gene.liverman";
+        Blue-Rock = darwinHostConfig "x86_64-darwin" "Blue-Rock" "gene.liverman";
       };
 
       nixosConfigurations = {
-        nixnuc = nixosSystem "x86_64-linux" "nixnuc" "gene";
-        rainbow-planet = nixosSystem "x86_64-linux" "rainbow-planet" "gene";
+        nixnuc = nixosHostConfig "x86_64-linux" "nixnuc" "gene";
+        rainbow-planet = nixosHostConfig "x86_64-linux" "rainbow-planet" "gene";
       };
   };
 }
