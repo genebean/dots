@@ -1,9 +1,5 @@
-# Generated via dconf2nix: https://github.com/gvolpe/dconf2nix
-{ lib, ... }:
+{ lib, pkgs, ... }: with lib.hm.gvariant; {
 
-with lib.hm.gvariant;
-
-{
   dconf.settings = {
     "com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d" = {
       background-color = "#272822";
@@ -20,5 +16,15 @@ with lib.hm.gvariant;
       visible-name = "Default";
     };
 
+  };
+
+  home.file = {
+    ".config/tilix/schemes/Beanbag-Mathias.json".source = ../../files/tilix/Beanbag-Mathias.json;
+    ".config/tilix/schemes/Catppuccin-Frappe.json".source = (pkgs.fetchFromGitHub {
+      owner = "catppuccin";
+      repo = "tilix";
+      rev = "3fd05e03419321f2f2a6aad6da733b28be1765ef";
+      hash = "sha256-SI7QxQ+WBHzeuXbTye+s8pi4tDVZOV4Aa33mRYO276k=";
+    } + "/src/Catppuccin-Frappe.json");
   };
 }

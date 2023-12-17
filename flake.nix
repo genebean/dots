@@ -70,15 +70,14 @@
             useGlobalPkgs = true;
             useUserPackages = true;
             users.${username}.imports = [
-              ./modules/home-manager
-              ./modules/home-manager/darwin.nix
+              ./modules/home-manager/hosts/${hostname}/${username}.nix 
             ];
             extraSpecialArgs = { inherit genebean-omp-themes; };
           };
         }
 
-        ./modules/common/darwin/all-hosts.nix
-        ./modules/hosts/darwin/${hostname} # ip address, host specific stuff
+        ./modules/system/common/all-darwin.nix # system-wide stuff
+        ./modules/hosts/darwin/${hostname} # host specific stuff
       ]; # end modules
     }; # end darwinSystem
 
@@ -101,15 +100,14 @@
             useGlobalPkgs = true;
             useUserPackages = true;
             users.${username}.imports = [
-              ./modules/home-manager
-              ./modules/home-manager/nixos.nix
+              ./modules/home-manager/hosts/${hostname}/${username}.nix
             ];
             extraSpecialArgs = { inherit genebean-omp-themes; };
           };
         }
 
-        ./modules/common/nixos/all-hosts.nix
-        ./modules/hosts/nixos/${hostname} # ip address, host specific stuff
+        ./modules/system/common/all-nixos.nix # system-wide stuff
+        ./modules/hosts/nixos/${hostname} # host specific stuff
       ];
     }; # end nixosSystem
 
@@ -119,6 +117,7 @@
       };
 
       nixosConfigurations = {
+        nixnuc = nixosSystem "x86_64-linux" "nixnuc" "gene";
         rainbow-planet = nixosSystem "x86_64-linux" "rainbow-planet" "gene";
       };
   };
