@@ -83,6 +83,10 @@
       enableZshIntegration = true;
       settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile (genebean-omp-themes + "/beanbag.omp.json")));
     };
+    tmux = {
+      enable = true;
+      historyLimit = 100000;
+    };
     vim = {
       enable = true;
       defaultEditor = true;
