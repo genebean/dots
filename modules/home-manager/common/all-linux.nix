@@ -9,4 +9,5 @@
       ykey = "sudo systemctl restart pcscd && sudo pkill -9 gpg-agent && source ~/.zshrc; ssh-add -L";
     };
   };
+
 }

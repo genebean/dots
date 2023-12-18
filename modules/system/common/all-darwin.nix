@@ -7,6 +7,7 @@
       "/share/zsh"
     ];
     systemPackages = with pkgs; [
+      age
       coreutils
       hugo
       mas
@@ -14,6 +15,8 @@
       nodejs
       nodePackages.npm
       openjdk
+      sops
+      ssh-to-age
     ];
   };
 

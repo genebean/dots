@@ -1,4 +1,4 @@
-{ inputs, config, pkgs, username,  ... }: {
+{ inputs, config, hostname, pkgs, sops-nix, username,  ... }: {
   imports = [
     ./hardware-configuration.nix
   ];
@@ -72,13 +72,27 @@
       enable = true;
       openFirewall = true;
     };
-    openssh.enable = true;
     tailscale = {
       extraUpFlags = [
         "--advertise-exit-node"
         "--operator ${username}"
         "--ssh"
       ];
+    };
+  };
+
+  sops = {
+    age.keyFile = /home/${username}/.config/sops/age/keys.txt;
+    defaultSopsFile = ./secrets.yaml;
+    secrets = {
+      local_git_config = {
+        owner = "${username}";
+        path = "/home/${username}/.gitconfig-local";
+      };
+      local_private_env = {
+        owner = "${username}";
+        path = "/home/${username}/.private-env";
+      };
     };
   };
 
