@@ -73,6 +73,13 @@
       openFirewall = true;
     };
     openssh.enable = true;
+    tailscale = {
+      extraUpFlags = [
+        "--advertise-exit-node"
+        "--operator ${username}"
+        "--ssh"
+      ];
+    };
   };
 
   users.users.${username} = {

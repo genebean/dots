@@ -57,11 +57,13 @@
 
   services = {
     boinc.enable = true;
+    fwupd.enable = true;
     gnome.gnome-keyring.enable = true; # Provides secret storage
     gvfs.enable = true; # Used by Nautilus
     printing.enable = true; # Enable CUPS
     tailscale = {
       extraUpFlags = [
+        "--operator ${username}"
         "--ssh"
       ];
     };
