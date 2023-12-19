@@ -2,6 +2,7 @@
 keys:
   - &system_nixnuc age1g24zhwvgenpc4wqejt63thvgd4rn5x9n7nnwwme7dm83nfqpp93se2vmq4
   - &system_rainbow_planet age15xlw5vnnjdx2ypz6rq0mqcywuaj3yx8y6lrgf95satafqf7y4qus6rv6ck
+  - &user_airpuppet age1awdf9h0avajf57cudx0rjfmxu2wlxw8wf3sa7yvfk8rp4j6taecsu74x77
   - &user_blue_rock age1rt72txg22w8y3cdvq9w7zff0cas6xtkplpj36kxnevfnrtn82f6ss7yw7d
 creation_rules:
   - path_regex: nixnuc/secrets.yaml$
@@ -12,6 +13,10 @@ creation_rules:
     key_groups:
       - age:
           - *system_rainbow_planet
+  - path_regex: AirPuppet/secrets.yaml$
+    key_groups:
+      - age:
+          - *user_airpuppet
   - path_regex: Blue-Rock/secrets.yaml$
     key_groups:
       - age:

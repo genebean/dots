@@ -21,5 +21,4 @@
       local_private_env.path = "/Users/${username}/.private-env";
     };
   };
-
 }
