@@ -1,4 +1,4 @@
-{ config, pkgs, hostname, username, ... }: {
+{ config, hostname, pkgs, sops-nix, username, ... }: {
   imports = [
     ./linux/internationalisation.nix
   ];
@@ -6,10 +6,13 @@
   environment = {
     shells = with pkgs; [ bash zsh ];
     systemPackages = with pkgs; [
+      age
       dconf2nix
       file
       neofetch
       python3
+      sops
+      ssh-to-age
       tailscale
       unzip
       wget
@@ -44,8 +47,22 @@
 
   security.sudo.wheelNeedsPassword = false;
 
-  services.tailscale = {
-    enable = true;
+  services = {
+    openssh.enable = true;
+    tailscale = {
+      enable = true;
+      authKeyFile = config.sops.secrets.tailscale_key.path;
+    };
+  };
+
+  sops = {
+    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    secrets = {
+      tailscale_key = {
+        restartUnits = [ "tailscaled-autoconnect.service" ];
+        sopsFile = ../../hosts/nixos/${hostname}/secrets.yaml;
+      };
+    };
   };
 
   time.timeZone = "America/New_York";

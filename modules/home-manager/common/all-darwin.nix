@@ -1,4 +1,4 @@
-{ pkgs, genebean-omp-themes, ... }: {
+{ pkgs, genebean-omp-themes, sops-nix, username, ... }: {
   # dawrwin-specific shell config
   programs.zsh = {
     initExtra = ''
@@ -23,4 +23,6 @@
       ykey = "pkill -9 gpg-agent && source ~/.zshrc; ssh-add -L";
     };
   };
+
+  sops.age.keyFile = "/Users/${username}/Library/Application Support/sops/age/keys.txt";
 }

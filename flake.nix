@@ -27,6 +27,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Secrets managemnt
+    sops-nix = {
+      url = "github:mic92/sops-nix";
+      inputs.nixpkgs.follows ="nixpkgs";
+    };
+
     # My oh-my-posh theme
     genebean-omp-themes = {
       url = "github:genebean/my-oh-my-posh-themes";
@@ -34,7 +40,7 @@
     };
 
   }; # end inputs
-  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, nix-homebrew, disko, genebean-omp-themes, ... }: let
+  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, nix-homebrew, disko, sops-nix, genebean-omp-themes, ... }: let
 
     # creates a macOS system config
     darwinHostConfig = system: hostname: username: nix-darwin.lib.darwinSystem {
@@ -57,10 +63,11 @@
 
         home-manager.darwinModules.home-manager {
           home-manager = {
-            extraSpecialArgs = { inherit genebean-omp-themes; };
+            extraSpecialArgs = { inherit genebean-omp-themes username; };
             useGlobalPkgs = true;
             useUserPackages = true;
             users.${username}.imports = [
+              sops-nix.homeManagerModule # user-level secrets management
               ./modules/home-manager/hosts/${hostname}/${username}.nix 
             ];
           };
@@ -84,7 +91,7 @@
       modules = [
         home-manager.nixosModules.home-manager {
           home-manager = {
-            extraSpecialArgs = { inherit genebean-omp-themes; };
+            extraSpecialArgs = { inherit genebean-omp-themes hostname username; };
             useGlobalPkgs = true;
             useUserPackages = true;
             users.${username}.imports = [
@@ -93,6 +100,7 @@
           };
         }
 
+        sops-nix.nixosModules.sops # system wide secrets management
         ./modules/system/common/all-nixos.nix # system-wide stuff
         ./modules/hosts/nixos/${hostname} # host specific stuff
       ];

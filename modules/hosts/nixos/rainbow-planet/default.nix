@@ -95,6 +95,21 @@
     wireplumber.enable = true;
   };
 
+  sops = {
+    age.keyFile = /home/${username}/.config/sops/age/keys.txt;
+    defaultSopsFile = ./secrets.yaml;
+    secrets = {
+      local_git_config = {
+        owner = "${username}";
+        path = "/home/${username}/.gitconfig-local";
+      };
+      local_private_env = {
+        owner = "${username}";
+        path = "/home/${username}/.private-env";
+      };
+    };
+  };
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${username} = {
     isNormalUser = true;

@@ -3,6 +3,5 @@
   imports = [
     ../../common/all-cli.nix
     ../../common/all-linux.nix
-  ];
-
+  ];  
 }
