@@ -1,20 +1,29 @@
 { pkgs, genebean-omp-themes, ... }: {
   home.packages = with pkgs; [
+    cargo
     colordiff
     dogdns
     dos2unix
     du-dust
+    fd
     git-filter-repo
     gotop
     htop
     hub
     jq
+    lazygit
+    lua-language-server
     minicom
     mtr
+    nil
     nix-zsh-completions
+    nodejs
+    nodePackages.npm
     nurl
     powershell
+    puppet-lint
     rename
+    ruby
     subversion
     tree
     trippy
@@ -78,15 +87,43 @@
       };
     }; # end git
     jq.enable = true;
-    neovim.enable = true;
+    neovim = {
+      enable = true;
+      defaultEditor = false;
+      extraLuaConfig = ''
+        local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+        vim.opt.rtp:prepend(lazypath)
+
+        require("config.keymaps")
+        require("lazy").setup("plugins")
+      '';
+      extraPackages = [ pkgs.gcc ]; # needed so treesitter can do compiling
+      plugins = [ pkgs.vimPlugins.lazy-nvim ]; # let lazy.nvim manage every other plugin
+    };
     oh-my-posh = {
       enable = true;
       enableZshIntegration = true;
       settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile (genebean-omp-themes + "/beanbag.omp.json")));
     };
+    ripgrep.enable = true;
     tmux = {
       enable = true;
       historyLimit = 100000;
+      tmuxinator.enable = true;
+      plugins = with pkgs.tmuxPlugins; [
+        vim-tmux-navigator
+        {
+          plugin = dracula;
+          extraConfig = ''
+            set -g @dracula-show-battery false
+            set -g @dracula-show-powerline true
+            set -g @dracula-refresh-rate 10
+            '';
+        }
+      ];
+      extraConfig = ''
+        set -g status-position top
+      '';
     };
     vim = {
       enable = true;
@@ -107,6 +144,7 @@
         vim-ruby
         vim-snipmate
         vim-snippets
+        vim-tmux-navigator
         vim-yaml
       ];
       settings = {
@@ -213,6 +251,10 @@
   }; # end programs
 
   home.file = {
+    ".config/nvim/lua" = {
+      source = ../files/nvim/lua;
+      recursive = true;
+    };
     ".config/powershell/Microsoft.PowerShell_profile.ps1".source = ../files/Microsoft.PowerShell_profile.ps1;
     ".config/powershell/Microsoft.VSCode_profile.ps1".source = ../files/Microsoft.PowerShell_profile.ps1;
   };

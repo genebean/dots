@@ -12,8 +12,6 @@
       hugo
       mas
       nmap
-      nodejs
-      nodePackages.npm
       openjdk
       sops
       ssh-to-age
