@@ -27,6 +27,7 @@
     # common gui apps that really should be in another file
     angryipscanner
     firefox
+    gitkraken
     libreoffice
     meld
     slack

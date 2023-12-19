@@ -36,6 +36,7 @@
       "qmk-toolbox"
       "thunderbird"
       "vagrant"
+      "vial"
       "virtualbox"
       "whalebird"
       "zenmap"
