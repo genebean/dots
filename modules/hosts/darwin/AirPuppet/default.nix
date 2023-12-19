@@ -3,6 +3,11 @@
 
   homebrew = {
     # used to have tap sandreas/tap and program m4b-tool
+    casks = [
+      "backblaze"
+      "calibre"
+      "steam"
+    ];
     masApps = {
       "HomeCam" = 1292995895;
     };
