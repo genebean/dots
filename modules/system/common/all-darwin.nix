@@ -46,6 +46,7 @@
       "font-hack-nerd-font"
       "font-inconsolata-g-for-powerline"
       "font-source-code-pro-for-powerline"
+      "gitkraken"
       "iterm2"
       "keepingyouawake"
       "libreoffice"
