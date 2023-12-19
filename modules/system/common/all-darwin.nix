@@ -57,6 +57,7 @@
       "raycast"
       "signal"
       "slack"
+      "sonos"
       "tailscale"
       "vivaldi"
       "vlc"
