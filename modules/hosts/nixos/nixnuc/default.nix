@@ -17,6 +17,7 @@
     jellyfin-ffmpeg
     jellyfin-web
     net-snmp
+    nginx
     yt-dlp
   ];
 
@@ -33,7 +34,7 @@
 
   networking = {
     # Open ports in the firewall.
-    firewall.allowedTCPPorts = [ 22 ];
+    firewall.allowedTCPPorts = [ 22 80 ];
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
     # firewall.enable = false;
@@ -71,6 +72,37 @@
     jellyfin = {
       enable = true;
       openFirewall = true;
+    };
+    nginx = {
+      enable = true;
+      virtualHosts."jellyfin" = {
+        default = true;
+        listen = [
+          {
+            addr = "0.0.0.0";
+            port = 80;
+          }
+        ];
+        locations = {
+          "= /" = {
+            return = "302 http://$host/web/";
+          };
+          "/" = {
+            proxyPass = "http://127.0.0.1:8096";
+            recommendedProxySettings = true;
+            extraConfig = "proxy_buffering off;";
+          };
+          "= /web/" = {
+            proxyPass = "http://127.0.0.1:8096/web/index.html";
+            recommendedProxySettings = true;
+          };
+          "/socket" = {
+            proxyPass = "http://127.0.0.1:8096";
+            recommendedProxySettings = true;
+            proxyWebsockets = true;
+          };
+        };
+      };
     };
     tailscale = {
       extraUpFlags = [
