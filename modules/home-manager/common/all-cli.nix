@@ -17,6 +17,7 @@
     rename
     subversion
     tree
+    trippy
     watch
     wget
     yq
