@@ -16,6 +16,7 @@
       tailscale
       unzip
       wget
+      xidel
     ];
   };
 
