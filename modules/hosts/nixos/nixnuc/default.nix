@@ -6,13 +6,20 @@
   system.stateVersion = "23.11";
 
   # Bootloader.
-  boot.loader = {
-    efi.canTouchEfiVariables = true;
-    systemd-boot.enable = true;
+  boot = {
+    loader = {
+      efi.canTouchEfiVariables = true;
+      systemd-boot.enable = true;
+    };
+    supportedFilesystems = [ "zfs" ];
+    zfs = {
+      extraPools = [ "orico" ];
+      forceImportRoot = false;
+    };
   };
 
   environment.systemPackages = with pkgs; [
-    helix
+    intel-gpu-tools
     jellyfin
     jellyfin-ffmpeg
     jellyfin-web
@@ -38,6 +45,8 @@
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
     # firewall.enable = false;
+
+    hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4
 
     networkmanager.enable = true;
   };
@@ -111,6 +120,7 @@
         "--ssh"
       ];
     };
+    zfs.autoScrub.enable = true;
   };
 
   sops = {
