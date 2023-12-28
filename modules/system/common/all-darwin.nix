@@ -8,6 +8,7 @@
     ];
     systemPackages = with pkgs; [
       age
+      bandwhich
       coreutils
       hugo
       mas

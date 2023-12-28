@@ -43,6 +43,7 @@
   };
 
   programs = {
+    bandwhich.enable = true;
     zsh.enable = true;
   };
 
