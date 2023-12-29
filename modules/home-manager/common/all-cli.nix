@@ -67,6 +67,7 @@
       };
     };
     bottom.enable = true;
+    broot.enable = true;
     eza.enable = true;
     gh.enable = true;
     git = {
