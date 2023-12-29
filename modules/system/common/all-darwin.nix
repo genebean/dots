@@ -40,6 +40,7 @@
       "angry-ip-scanner"
       "audacity"
       "balenaetcher"
+      "element"
       "firefox"
       "font-hack-nerd-font"
       "font-inconsolata-g-for-powerline"

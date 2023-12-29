@@ -1,6 +1,6 @@
 { pkgs, genebean-omp-themes, ... }: {
   home.packages = with pkgs; [
-    element-desktop
+    # nothing here right now
   ];
   programs = {
     vscode = {
