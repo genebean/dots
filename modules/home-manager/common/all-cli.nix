@@ -9,6 +9,7 @@
     git-filter-repo
     gotop
     htop
+    httpie
     hub
     jq
     lazygit
