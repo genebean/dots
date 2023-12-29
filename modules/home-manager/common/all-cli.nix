@@ -66,6 +66,7 @@
         };
       };
     };
+    bottom.enable = true;
     eza.enable = true;
     gh.enable = true;
     git = {
@@ -234,6 +235,7 @@
         bcrrs = "bcrr --stream --no-verbose";
         beo = "bundle exec onceover run spec --trace --force";
         biv = "bundle install --path=vendor/bundle";
+        bottom = "echo 'To run bottom, the command is btm'";
         ce = "code-exploration";
         dots = "cd ~/repos/dots";
         gbc = ''
@@ -246,6 +248,7 @@
         sal = "ssh-add -L";
         st = "open -a SourceTree";
         sz = "source ~/.zshrc";
+        trippy = "echo 'To run trippy, the command is trip'";
         usegpg = "killall ssh-agent; export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket) && gpgconf --launch gpg-agent";
         usessh = "gpgconf --kill gpg-agent";
       };
