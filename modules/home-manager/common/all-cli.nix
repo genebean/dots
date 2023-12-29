@@ -5,6 +5,7 @@
     dogdns
     dos2unix
     du-dust
+    duf
     fd
     git-filter-repo
     gotop
