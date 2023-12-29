@@ -21,6 +21,9 @@
     # Manage Homebrew itself
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
 
+    # Manage flatpaks
+    nix-flatpak.url = "github:gmodena/nix-flatpak"; # unstable branch. Use github:gmodena/nix-flatpak/?ref=<tag> to pin releases.
+
     # Format disks with nix-config
     disko = {
       url = "github:nix-community/disko";
@@ -40,7 +43,7 @@
     };
 
   }; # end inputs
-  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, nix-homebrew, disko, sops-nix, genebean-omp-themes, ... }: let
+  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, nix-homebrew, nix-flatpak, disko, sops-nix, genebean-omp-themes, ... }: let
 
     # creates a macOS system config
     darwinHostConfig = system: hostname: username: nix-darwin.lib.darwinSystem {
@@ -99,6 +102,8 @@
             ];
           };
         }
+
+        nix-flatpak.nixosModules.nix-flatpak
 
         sops-nix.nixosModules.sops # system wide secrets management
         ./modules/system/common/all-nixos.nix # system-wide stuff
