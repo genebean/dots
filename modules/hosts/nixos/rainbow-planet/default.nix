@@ -64,7 +64,8 @@
     printing.enable = true; # Enable CUPS
     tailscale = {
       extraUpFlags = [
-        "--operator ${username}"
+        "--operator"
+        "${username}"
         "--ssh"
       ];
     };
