@@ -27,6 +27,7 @@
     subversion
     tree
     trippy
+    vimv
     watch
     wget
     yq
