@@ -1,6 +1,7 @@
-{ config, pkgs, username, ... }: {
+{ pkgs, username, ... }: {
   imports = [
     ./hardware-configuration.nix
+    ../../../system/common/linux/flatpaks.nix
   ];
 
   system.stateVersion = "23.05";
