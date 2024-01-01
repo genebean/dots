@@ -116,7 +116,8 @@
     tailscale = {
       extraUpFlags = [
         "--advertise-exit-node"
-        "--operator ${username}"
+        "--operator"
+        "${username}"
         "--ssh"
       ];
     };
