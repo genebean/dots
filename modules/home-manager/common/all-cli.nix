@@ -1,14 +1,24 @@
-{ pkgs, genebean-omp-themes, ... }: {
+{ pkgs, genebean-omp-themes, ... }: let
+  sqlite_lib = if builtins.elem pkgs.system [
+                 "aarch64-darwin"
+                 "x86_64-darwin"
+               ]
+               then "libsqlite3.dylib"
+               else "libsqlite3.so";
+in {
   home.packages = with pkgs; [
     cargo
+    cheat
     colordiff
     dogdns
     dos2unix
     du-dust
+    duf
     fd
     git-filter-repo
     gotop
     htop
+    httpie
     hub
     jq
     lazygit
@@ -65,6 +75,8 @@
         };
       };
     };
+    bottom.enable = true;
+    broot.enable = true;
     eza.enable = true;
     gh.enable = true;
     git = {
@@ -90,15 +102,22 @@
     jq.enable = true;
     neovim = {
       enable = true;
-      defaultEditor = false;
+      defaultEditor = true;
       extraLuaConfig = ''
         local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
         vim.opt.rtp:prepend(lazypath)
 
         require("config.keymaps")
         require("lazy").setup("plugins")
+
+        vim.g.sqlite_clib_path = '${pkgs.sqlite.out}/lib/${sqlite_lib}'
+        -- NOTE: This will get the OS from Lua:
+        -- print(vim.loop.os_uname().sysname)
       '';
-      extraPackages = [ pkgs.gcc ]; # needed so treesitter can do compiling
+      extraPackages = with pkgs; [
+        gcc    # needed so treesitter can do compiling
+        sqlite # needed by sqlite.lua used by telescope-cheat
+      ];
       plugins = [ pkgs.vimPlugins.lazy-nvim ]; # let lazy.nvim manage every other plugin
     };
     oh-my-posh = {
@@ -128,7 +147,7 @@
     };
     vim = {
       enable = true;
-      defaultEditor = true;
+      defaultEditor = false;
       plugins = with pkgs.vimPlugins; [
         syntastic
         tabular
@@ -233,6 +252,7 @@
         bcrrs = "bcrr --stream --no-verbose";
         beo = "bundle exec onceover run spec --trace --force";
         biv = "bundle install --path=vendor/bundle";
+        bottom = "echo 'To run bottom, the command is btm'";
         ce = "code-exploration";
         dots = "cd ~/repos/dots";
         gbc = ''
@@ -245,6 +265,7 @@
         sal = "ssh-add -L";
         st = "open -a SourceTree";
         sz = "source ~/.zshrc";
+        trippy = "echo 'To run trippy, the command is trip'";
         usegpg = "killall ssh-agent; export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket) && gpgconf --launch gpg-agent";
         usessh = "gpgconf --kill gpg-agent";
       };
@@ -252,8 +273,12 @@
   }; # end programs
 
   home.file = {
-    ".config/nvim/lua" = {
-      source = ../files/nvim/lua;
+    ".config/nvim/lua/config" = {
+      source = ../files/nvim/lua/config;
+      recursive = true;
+    };
+    ".config/nvim/lua/plugins" = {
+      source = ../files/nvim/lua/plugins;
       recursive = true;
     };
     ".config/powershell/Microsoft.PowerShell_profile.ps1".source = ../files/Microsoft.PowerShell_profile.ps1;

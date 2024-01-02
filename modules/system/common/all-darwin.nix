@@ -8,6 +8,7 @@
     ];
     systemPackages = with pkgs; [
       age
+      bandwhich
       coreutils
       hugo
       mas
@@ -46,11 +47,14 @@
       "font-inconsolata-g-for-powerline"
       "font-source-code-pro-for-powerline"
       "gitkraken"
+      "handbrake"
       "iterm2"
       "keepingyouawake"
       "libreoffice"
       "logseq"
+      "makemkv"
       "meld"
+      "MKVToolNix"
       "nextcloud"
       "onlyoffice"
       "raycast"
