@@ -12,3 +12,6 @@ vim.opt.shiftwidth = 2
 vim.opt.shiftround = true
 
 vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>")
+
+vim.wo.relativenumber = true
+

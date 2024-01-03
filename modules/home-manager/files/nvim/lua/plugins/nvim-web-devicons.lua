@@ -1,1 +1,4 @@
-return { "nvim-tree/nvim-web-devicons", config = true }
+return {
+  "nvim-tree/nvim-web-devicons",
+  config = true,
+}
