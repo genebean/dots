@@ -78,10 +78,16 @@ in {
     bottom.enable = true;
     broot.enable = true;
     eza.enable = true;
+    fzf.enable = true;
     gh.enable = true;
     git = {
       enable = true;
       diff-so-fancy.enable = true;
+      ignores = [
+        "*~"
+        "*.swp"
+        ".DS_Store"
+      ];
       includes = [ { path = "~/.gitconfig-local"; }];
       lfs.enable = true;
       package = pkgs.gitAndTools.gitFull;
@@ -243,6 +249,16 @@ in {
         fi
 
         export GPG_TTY=$(tty)
+        nv() {
+          # Assumes all configs exist in directories named ~/.config/nvim-*
+          local config=$(fd --max-depth 1 --glob 'nvim*' ~/.config | fzf --prompt="Neovim Configs > " --height=~50% --layout=reverse --border --exit-0)
+
+          # If I exit fzf without selecting a config, don't open Neovim
+          [[ -z $config ]] && echo "No config selected" && return
+
+          # Open Neovim with the selected config
+          NVIM_APPNAME=$(basename $config) nvim $*
+        }
       '';
       oh-my-zsh = {
         enable = true;
@@ -273,6 +289,7 @@ in {
         gitextract = "git log --pretty=email --patch-with-stat --reverse --full-index --binary --";
         gpge = "gpg2 --encrypt --sign --armor -r ";
         hubpr = "hub pull-request --push --browse";
+        nvd = "NVIM_APPNAME=nvim-dots nvim";
         pssh = "ssh -o 'UserKnownHostsFile /dev/null' -o 'StrictHostKeyChecking no' -o PubkeyAcceptedKeyTypes=+ssh-rsa -o HostKeyAlgorithms=+ssh-rsa -o KexAlgorithms=+diffie-hellman-group1-sha1 -i ~/.ssh/id_rsa-acceptance";
         sal = "ssh-add -L";
         st = "open -a SourceTree";
