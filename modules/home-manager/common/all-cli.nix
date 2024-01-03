@@ -119,7 +119,7 @@ in {
         end
 
         -- load additional settings
-        require("config.keymaps")
+        require("config.vim-options")
         require("lazy").setup("plugins")
 
         -- tell sqlite.lua where to find the bits it needs

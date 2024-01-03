@@ -7,19 +7,22 @@ return {
     "nvim-tree/nvim-web-devicons",
     "MunifTanjim/nui.nvim",
   },
-  config = function ()
+  config = function()
     vim.g.loaded_netrw = 1
     vim.g.loaded_netrwPlugin = 1
-    vim.keymap.set('n', '<C-n>', ':Neotree toggle<CR>', {})
+    vim.keymap.set("n", "<C-n>", ":Neotree toggle<CR>", {})
     require("neo-tree").setup({
       filesystem = {
-        hijack_netrw_behavior = "open_default"
+        follow_current_file = {
+          enabled = true,
+        },
+        hijack_netrw_behavior = "open_default",
       },
-      follow_current_file  = { enabled = true },
+      follow_current_file = { enabled = true },
       source_selector = {
         winbar = true,
-        statusline = false
-      }
+        statusline = false,
+      },
     })
-  end
+  end,
 }
