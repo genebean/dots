@@ -48,6 +48,7 @@
       "font-source-code-pro-for-powerline"
       "gitkraken"
       "handbrake"
+      "imageoptim"
       "iterm2"
       "keepingyouawake"
       "libreoffice"
