@@ -11,6 +11,10 @@ vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.shiftround = true
 
+-- make sure all the mouse stuff is on.
+-- pressing alt to hightlight + copy/paste works like it does outside of nvim
+vim.opt.mouse = "a"
+
 vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>")
 
 vim.wo.relativenumber = true
