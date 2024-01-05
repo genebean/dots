@@ -50,7 +50,8 @@ return {
       lspconfig.puppet.setup({
         capabilities = capabilities,
         on_attach = on_attach,
-        cmd = { puppet_languageserver, "--feature-flags=puppetstrings", },
+        cmd = { puppet_languageserver, "--feature-flags=puppetstrings" },
+        settings = { puppet = { editorServices = { formatOnType = { enable = true } } } },
       })
       lspconfig.ruff_lsp.setup({ on_attach = on_attach })
     end,
