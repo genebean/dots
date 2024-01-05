@@ -148,6 +148,7 @@ in {
     tmux = {
       enable = true;
       historyLimit = 100000;
+      mouse = true;
       tmuxinator.enable = true;
       plugins = with pkgs.tmuxPlugins; [
         vim-tmux-navigator
