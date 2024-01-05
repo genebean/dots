@@ -14,6 +14,7 @@ in {
     dos2unix
     du-dust
     duf
+    esptool
     fd
     git-filter-repo
     gotop
