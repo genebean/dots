@@ -19,3 +19,4 @@ vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>")
 
 vim.wo.relativenumber = true
 
+vim.o.termguicolors = true
