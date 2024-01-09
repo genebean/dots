@@ -20,3 +20,12 @@ vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>")
 vim.wo.relativenumber = true
 
 vim.o.termguicolors = true
+
+-- Tips from https://github.com/folke/edgy.nvim
+-- views can only be fully collapsed with the global statusline
+vim.opt.laststatus = 3
+
+-- Default splitting will cause your main splits to jump when opening an edgebar.
+-- To prevent this, set `splitkeep` to either `screen` or `topline`.
+vim.opt.splitkeep = "screen"
+
