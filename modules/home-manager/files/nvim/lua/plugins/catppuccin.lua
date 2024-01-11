@@ -18,6 +18,7 @@ return {
       custom_highlights = function(colors)
         return {
           Comment = { fg = colors.subtext0 },
+          LineNr = { fg = colors.subtext0 },
         }
       end,
     })
