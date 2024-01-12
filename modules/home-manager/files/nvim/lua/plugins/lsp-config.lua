@@ -8,6 +8,7 @@ return {
     config = function()
       require("mason-lspconfig").setup({
         ensure_installed = {
+          "lemminx", -- xml
           "lua_ls", -- lua
           "nil_ls", -- nix
           "puppet", -- puppet
@@ -31,6 +32,11 @@ return {
 
       local lspconfig = require("lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+      lspconfig.lemminx.setup({
+        capabilities = capabilities,
+        on_attach = on_attach,
+      })
 
       lspconfig.lua_ls.setup({
         capabilities = capabilities,

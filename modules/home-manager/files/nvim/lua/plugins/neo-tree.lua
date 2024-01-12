@@ -19,10 +19,6 @@ return {
         hijack_netrw_behavior = "open_default",
       },
       follow_current_file = { enabled = true },
-      source_selector = {
-        winbar = true,
-        statusline = false,
-      },
     })
   end,
 }

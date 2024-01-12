@@ -27,5 +27,7 @@ return {
     }
 
     alpha.setup(dashboard.opts)
+
+    vim.cmd('autocmd User AlphaReady Neotree show')
   end,
 }
