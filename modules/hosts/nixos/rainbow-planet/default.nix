@@ -18,7 +18,10 @@
     # host specific apps
     boinc
     brightnessctl
+    gnome.gnome-tweaks
     gnome.nautilus
+    gnomeExtensions.dash-to-panel
+    gnomeExtensions.tailscale-qs
     pavucontrol
     polkit-kde-agent
     ulauncher
@@ -83,6 +86,7 @@
           wayland = true;
         };
       };
+      desktopManager.gnome.enable = true;
     };
   };
 

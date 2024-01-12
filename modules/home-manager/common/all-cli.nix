@@ -7,6 +7,7 @@
                else "libsqlite3.so";
 in {
   home.packages = with pkgs; [
+  bundix
     cargo
     cheat
     colordiff
@@ -78,6 +79,11 @@ in {
     };
     bottom.enable = true;
     broot.enable = true;
+    direnv = {
+      enable = true;
+      enableZshIntegration = true;
+      nix-direnv.enable = true;
+    };
     eza.enable = true;
     fzf.enable = true;
     gh.enable = true;
