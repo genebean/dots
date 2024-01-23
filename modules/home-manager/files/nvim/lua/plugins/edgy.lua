@@ -2,7 +2,7 @@ return {
   "folke/edgy.nvim",
   event = "VeryLazy",
   opts = {
-    exit_when_last = true,
+    exit_when_last = false,
     bottom = {
       -- toggleterm / lazyterm at the bottom with a height of 40% of the screen
       {
