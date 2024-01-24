@@ -18,6 +18,7 @@ in {
     esptool
     fd
     git-filter-repo
+    glab
     gotop
     htop
     httpie
