@@ -1,0 +1,3 @@
+{ ... }: {
+  programs.pidgin.enable = true;
+}

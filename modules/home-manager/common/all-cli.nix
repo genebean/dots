@@ -7,7 +7,7 @@
                else "libsqlite3.so";
 in {
   home.packages = with pkgs; [
-  bundix
+    bundix
     cargo
     cheat
     colordiff
@@ -19,6 +19,7 @@ in {
     fd
     git-filter-repo
     glab
+    gomuks
     gotop
     htop
     httpie
@@ -105,7 +106,7 @@ in {
           defaultBranch = "main";
         };
         merge = {
-	  conflictStyle = "diff3";
+          conflictStyle = "diff3";
           tool = "meld";
         };
         pull = {
@@ -113,6 +114,7 @@ in {
         };
       };
     }; # end git
+    irssi.enable = true;
     jq.enable = true;
     neovim = {
       enable = true;

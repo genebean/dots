@@ -21,7 +21,9 @@
     gnome.gnome-tweaks
     gnome.nautilus
     gnomeExtensions.dash-to-panel
+    gnome.networkmanager-openvpn
     gnomeExtensions.tailscale-qs
+    networkmanager-openvpn
     pavucontrol
     polkit-kde-agent
     ulauncher
