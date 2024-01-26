@@ -272,6 +272,9 @@ in {
           # Open Neovim with the selected config
           NVIM_APPNAME=$(basename $config) nvim $*
         }
+
+        # unset oh-my-zsh's gk so that gk can refer to the gitkraken-cli
+        unalias gk
       '';
       oh-my-zsh = {
         enable = true;

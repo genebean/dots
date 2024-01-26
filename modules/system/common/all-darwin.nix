@@ -47,6 +47,7 @@
       "font-inconsolata-g-for-powerline"
       "font-source-code-pro-for-powerline"
       "gitkraken"
+      "gitkraken-cli"
       "handbrake"
       "imageoptim"
       "iterm2"
