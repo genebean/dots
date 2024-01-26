@@ -16,6 +16,7 @@ in {
     du-dust
     duf
     esptool
+    fastfetch
     fd
     git-filter-repo
     glab
@@ -34,6 +35,7 @@ in {
     nodejs
     nodePackages.npm
     nurl
+    nvd
     powershell
     puppet-lint
     rename
@@ -300,8 +302,8 @@ in {
         gitextract = "git log --pretty=email --patch-with-stat --reverse --full-index --binary --";
         gpge = "gpg2 --encrypt --sign --armor -r ";
         hubpr = "hub pull-request --push --browse";
-        nvd = "NVIM_APPNAME=nvim-dots nvim";
-        nve = "nvd ~/repos/dots/modules/home-manager/files/nvim/lua";
+        nvdots = "NVIM_APPNAME=nvim-dots nvim";
+        nve = "nvdots ~/repos/dots/modules/home-manager/files/nvim/lua";
         pssh = "ssh -o 'UserKnownHostsFile /dev/null' -o 'StrictHostKeyChecking no' -o PubkeyAcceptedKeyTypes=+ssh-rsa -o HostKeyAlgorithms=+ssh-rsa -o KexAlgorithms=+diffie-hellman-group1-sha1 -i ~/.ssh/id_rsa-acceptance";
         sal = "ssh-add -L";
         st = "open -a SourceTree";
