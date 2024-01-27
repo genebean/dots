@@ -4,6 +4,7 @@ keys:
   - &system_rainbow_planet age15xlw5vnnjdx2ypz6rq0mqcywuaj3yx8y6lrgf95satafqf7y4qus6rv6ck
   - &user_airpuppet age1awdf9h0avajf57cudx0rjfmxu2wlxw8wf3sa7yvfk8rp4j6taecsu74x77
   - &user_blue_rock age1rt72txg22w8y3cdvq9w7zff0cas6xtkplpj36kxnevfnrtn82f6ss7yw7d
+  - &user_mini_watcher age1rpy8edlpgxuf6w75cvlqexuq2xe4c49h9t2ge6jhc3fzczp8vfasnjelwq
 creation_rules:
   - path_regex: nixnuc/secrets.yaml$
     key_groups:
@@ -21,10 +22,17 @@ creation_rules:
     key_groups:
       - age:
           - *user_blue_rock
+  - path_regex: mini-watcher/secrets.yaml$
+    key_groups:
+      - age:
+          - *user_mini_watcher
   - path_regex: modules/system/common/secrets.yaml$
     key_groups:
       - age:
           - *system_nixnuc
           - *system_rainbow_planet
+          - *user_airpuppet
           - *user_blue_rock
+          - *user_mini_watcher
+
 
