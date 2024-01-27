@@ -22,11 +22,15 @@
     gnome.nautilus
     gnomeExtensions.dash-to-panel
     gnome.networkmanager-openvpn
+    gnomeExtensions.pop-shell
     gnomeExtensions.tailscale-qs
     networkmanager-openvpn
     pavucontrol
     polkit-kde-agent
     ulauncher
+    pop-gtk-theme
+    pop-icon-theme
+    pop-launcher
     whalebird
     wmctrl
 
