@@ -6,6 +6,7 @@
       packages = [
         "im.riot.Riot"
         "com.cassidyjames.butler"
+        "com.logseq.Logseq"
         "org.signal.Signal"
         "org.telegram.desktop"
       ];
