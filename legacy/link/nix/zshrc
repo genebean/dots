@@ -175,8 +175,6 @@ if [[ `uname` != 'Linux' ]]; then
   }
 fi
 
-export EDITOR='vim'
-
 export GOPATH=$HOME/go
 
 if [[ `uname` == 'Darwin' ]]; then
