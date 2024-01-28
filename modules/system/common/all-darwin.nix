@@ -31,6 +31,7 @@
       "null-dev/firefox-profile-switcher"
     ];
     brews = [
+      "fastfetch"
       "ffmpeg"
       "firefox-profile-switcher-connector"
     ];

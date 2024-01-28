@@ -16,7 +16,6 @@ in {
     du-dust
     duf
     esptool
-    fastfetch
     fd
     git-filter-repo
     glab
@@ -36,6 +35,7 @@ in {
     nodePackages.npm
     nurl
     nvd
+    onefetch
     powershell
     puppet-lint
     rename
