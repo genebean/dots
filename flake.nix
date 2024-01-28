@@ -111,6 +111,27 @@
       ];
     }; # end nixosSystem
 
+    linuxHomeConfig = system: hostname: username: home-manager.lib.homeManagerConfiguration {
+      pkgs = import nixpkgs {
+        inherit system;
+        config = {
+          allowUnfree = true;
+          permittedInsecurePackages = [ "electron-21.4.4" ];
+        };
+      };
+      extraSpecialArgs = { inherit genebean-omp-themes hostname username; };
+      modules = [
+        ./modules/home-manager/hosts/${hostname}/${username}.nix
+        {
+          home = {
+            username = "${username}";
+            homeDirectory = "/home/${username}";
+          };
+        }
+        sops-nix.homeManagerModules.sops
+      ];
+    }; # end homeManagerConfiguration
+
   in {
       darwinConfigurations = {
         AirPuppet = darwinHostConfig "x86_64-darwin" "AirPuppet" "gene";
@@ -121,5 +142,9 @@
         nixnuc = nixosHostConfig "x86_64-linux" "nixnuc" "gene";
         rainbow-planet = nixosHostConfig "x86_64-linux" "rainbow-planet" "gene";
       };
+
+     homeConfigurations = {
+       gene = linuxHomeConfig "x86_64-linux" "mini-watcher" "gene";
+     };
   };
 }
