@@ -13,6 +13,7 @@
       python3
       sops
       ssh-to-age
+      sysstat
       tailscale
       unzip
       wget
