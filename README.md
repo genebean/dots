@@ -113,6 +113,24 @@ This repo historically contained my dot files. Historically symlinked files are 
 
 Now that that is done, setup Atuin:
 
+## Adding a new non-NixOS Linux host
+
+1. clone this repo
+2. add entry to `flake.nix`
+3. add file at `modules/home-manager/hosts/< hostname >/< username >.nix`
+4. maybe add file at `modules/hosts/< system >/< hostname >/default.nix`
+5. run macOS installer from https://determinate.systems/posts/graphical-nix-installer
+6. run `nix run home-manager/$(grep home-manager/release flake.nix |cut -d '"' -f2 |cut -d '/' -f3) -- --flake ~/repos/dots build`
+7. run `sudo mv /etc/shells{,.before-nix-darwin}`
+8. run `sudo mv /etc/zshenv{,.before-nix-darwin}`
+9. Note that you may also have to move or remove `~/.zshrc`
+10. Run `nix run nix-darwin -- switch --flake ~/repos/dots`
+    1. first (or several) run(s) through homebrew may well fail due to previously installed casks in `/Applications`. You may have to run brew with `--force` to fix this
+    2. you may have to run brew multiple times to fix things
+    3. in Settings > Privacy & Security > App Management you will need to allow iTerm
+    4. **Note:** ensure `firefox-profile-switcher-connector` is linked:
+11. After the nix command finally works, open a new shell and it should have all the nixified settings in it.
+12. Go into iTerm2 and use the Hack Nerd Mono font so that the prompt and other things look right. You will likely also want to adjust the size of the font.
 ```bash
 atuin import auto
 read -s ak
