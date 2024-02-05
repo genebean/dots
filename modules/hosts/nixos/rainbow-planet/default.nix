@@ -1,4 +1,4 @@
-{ pkgs, username, ... }: {
+{ config, pkgs, username, ... }: {
   imports = [
     ./hardware-configuration.nix
     ../../../system/common/linux/flatpaks.nix
@@ -73,6 +73,8 @@
     gvfs.enable = true; # Used by Nautilus
     printing.enable = true; # Enable CUPS
     tailscale = {
+      enable = true;
+      authKeyFile = config.sops.secrets.tailscale_key.path;
       extraUpFlags = [
         "--operator"
         "${username}"
@@ -119,6 +121,9 @@
       local_private_env = {
         owner = "${username}";
         path = "/home/${username}/.private-env";
+      };
+      tailscale_key = {
+        restartUnits = [ "tailscaled-autoconnect.service" ];
       };
     };
   };
