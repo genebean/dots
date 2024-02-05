@@ -13,12 +13,18 @@
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp1s0.useDHCP = lib.mkDefault true;
+  systemd.network.networks."10-wan" = {
+    networkConfig.DHCP = "no";
+    address = [
+      "167.235.18.32/32"
+      "2a01:4f8:c2c:2e49::1/64"
+    ];
+    routes = [
+      { routeConfig = { Destination = "172.31.1.1"; }; }
+      { routeConfig = { Gateway = "172.31.1.1"; GatewayOnLink = true; }; }
+      { routeConfig.Gateway = "fe80::1"; }
+    ];
+  };
 
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
 }
