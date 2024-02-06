@@ -9,6 +9,7 @@
       age
       dconf2nix
       file
+      inetutils
       neofetch
       python3
       sops
