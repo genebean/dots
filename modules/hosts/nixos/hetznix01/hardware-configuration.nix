@@ -14,18 +14,6 @@
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
-  systemd.network.networks."10-wan" = {
-    networkConfig.DHCP = "no";
-    address = [
-      "167.235.18.32/32"
-      "2a01:4f8:c2c:2e49::1/64"
-    ];
-    routes = [
-      { routeConfig = { Destination = "172.31.1.1"; }; }
-      { routeConfig = { Gateway = "172.31.1.1"; GatewayOnLink = true; }; }
-      { routeConfig.Gateway = "fe80::1"; }
-    ];
-  };
 
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
 }
