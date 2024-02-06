@@ -119,3 +119,16 @@ read -s ak
 read -s ap
 atuin login --key $ak --password $ap --username gene
 ```
+
+## Adding a NixOS host
+
+### Post-install
+
+1. clone this repo
+2. setup SOPS via `mkdir -p ~/.config/sops/age && nix run nixpkgs#ssh-to-age -- -private-key -i ~/.ssh/id_ed25519 > ~/.config/sops/age/keys.txt && nix run nixpkgs#ssh-to-age --  -i ~/.ssh/id_ed25519.pub  > ~/.config/sops/age/pub-keys.txt`
+3. copy output of `~/.config/sops/age/pub-keys.txt`
+4. add entries to `.sops.yaml`
+5. run `sops modules/hosts/nixos/$(hostname)/secrets.yaml`
+  - if there is an empty yaml file in where you target you will get an error... just delete it and try again
+6. edit `sops modules/hosts/nixos/$(hostname)/default.nix` and add the tailscale service and the block of config for sops.
+  - if there is an empty yaml file in where you target you 

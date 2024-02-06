@@ -92,6 +92,8 @@
       };
       specialArgs = { inherit inputs username hostname; };
       modules = [
+        disko.nixosModules.disko
+
         home-manager.nixosModules.home-manager {
           home-manager = {
             extraSpecialArgs = { inherit genebean-omp-themes hostname username; };
@@ -139,6 +141,7 @@
       };
 
       nixosConfigurations = {
+        hetznix01 = nixosHostConfig "aarch64-linux" "hetznix01" "gene";
         nixnuc = nixosHostConfig "x86_64-linux" "nixnuc" "gene";
         rainbow-planet = nixosHostConfig "x86_64-linux" "rainbow-planet" "gene";
       };

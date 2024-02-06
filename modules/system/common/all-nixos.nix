@@ -52,21 +52,9 @@
 
   services = {
     openssh.enable = true;
-    tailscale = {
-      enable = true;
-      authKeyFile = config.sops.secrets.tailscale_key.path;
-    };
   };
 
-  sops = {
-    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-    secrets = {
-      tailscale_key = {
-        restartUnits = [ "tailscaled-autoconnect.service" ];
-        sopsFile = ../../hosts/nixos/${hostname}/secrets.yaml;
-      };
-    };
-  };
+  sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 
   time.timeZone = "America/New_York";
 
