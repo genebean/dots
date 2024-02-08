@@ -138,6 +138,7 @@
       darwinConfigurations = {
         AirPuppet = darwinHostConfig "x86_64-darwin" "AirPuppet" "gene";
         Blue-Rock = darwinHostConfig "x86_64-darwin" "Blue-Rock" "gene.liverman";
+        mightymac = darwinHostConfig "aarch64-darwin" "mightymac" "gene.liverman";
       };
 
       nixosConfigurations = {
