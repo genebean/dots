@@ -7,6 +7,7 @@
       "backblaze"
       "calibre"
       "steam"
+      "vlc"
     ];
     masApps = {
       "HomeCam" = 1292995895;
