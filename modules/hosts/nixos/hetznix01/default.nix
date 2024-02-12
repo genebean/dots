@@ -2,7 +2,10 @@
   imports = [
     ./hardware-configuration.nix
     ./disk-config.nix
+    ../../../system/common/containers/owntracks.nix
   ];
+
+  system.stateVersion = "23.11";
 
   boot.loader.grub = {
     # no need to set devices, disko will add all devices that have a EF02 partition to the list already
@@ -10,8 +13,6 @@
     efiSupport = true;
     efiInstallAsRemovable = true;
   };
-
-  system.stateVersion = "23.11";
 
   networking = {
     # Open ports in the firewall.
