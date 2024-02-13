@@ -31,6 +31,7 @@
       "kopiaui"
       "obs"
       "pdk"
+      "podman-desktop"
       "puppet-agent"
       "puppet-bolt"
       "qmk-toolbox"
