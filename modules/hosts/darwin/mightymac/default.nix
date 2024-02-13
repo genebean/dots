@@ -35,6 +35,7 @@
       "puppet-bolt"
       "qmk-toolbox"
       "thunderbird"
+      "utm"
       "vagrant"
       "vial"
       "whalebird"
