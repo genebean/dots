@@ -38,6 +38,7 @@
         "${username}"
         "--ssh"
       ];
+      useRoutingFeatures = "both";
     };
   };
 

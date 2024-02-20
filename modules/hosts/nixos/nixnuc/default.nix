@@ -122,6 +122,7 @@
         "${username}"
         "--ssh"
       ];
+      useRoutingFeatures = "both";
     };
     zfs.autoScrub.enable = true;
   };

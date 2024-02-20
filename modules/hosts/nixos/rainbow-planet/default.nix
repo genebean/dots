@@ -80,6 +80,7 @@
         "${username}"
         "--ssh"
       ];
+      useRoutingFeatures = "client";
     };
     xserver = {
       enable = true;    # Enable the X11 windowing system.
