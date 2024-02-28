@@ -34,6 +34,7 @@
       "fastfetch"
       "ffmpeg"
       "firefox-profile-switcher-connector"
+      "telnet"
     ];
     casks = [
       "1password"
