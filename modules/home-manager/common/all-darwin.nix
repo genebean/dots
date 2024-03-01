@@ -1,4 +1,4 @@
-{ pkgs, genebean-omp-themes, sops-nix, username, ... }: {
+{ username, ... }: {
   # dawrwin-specific shell config
   programs.zsh = {
     initExtra = ''

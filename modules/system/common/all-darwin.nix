@@ -34,6 +34,7 @@
       "fastfetch"
       "ffmpeg"
       "firefox-profile-switcher-connector"
+      "telnet"
     ];
     casks = [
       "1password"
@@ -42,6 +43,7 @@
       "angry-ip-scanner"
       "audacity"
       "balenaetcher"
+      "bartender"
       #"displaylink"
       "element"
       "firefox"

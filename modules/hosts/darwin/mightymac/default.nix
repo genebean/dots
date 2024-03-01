@@ -6,7 +6,6 @@
       chart-testing
       kopia
       kubectx
-      python2
     ];
   };
 
@@ -21,6 +20,7 @@
       "adr-tools"
       "helm"
       "kubernetes-cli"
+      "lima"
     ];
     casks = [
       "asana"
