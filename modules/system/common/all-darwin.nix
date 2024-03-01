@@ -43,6 +43,7 @@
       "angry-ip-scanner"
       "audacity"
       "balenaetcher"
+      "bartender"
       #"displaylink"
       "element"
       "firefox"
