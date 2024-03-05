@@ -47,14 +47,22 @@
 
     # creates a macOS system config
     darwinHostConfig = system: hostname: username: nix-darwin.lib.darwinSystem {
-      pkgs = import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-          permittedInsecurePackages = [ "python-2.7.18.7" ];
+      specialArgs = { inherit inputs username hostname;
+        pkgs = import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            permittedInsecurePackages = [ "python-2.7.18.7" ];
+          };
+        };
+        pkgs-unstable = import nixpkgs-unstable {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            permittedInsecurePackages = [ "python-2.7.18.7" ];
+          };
         };
       };
-      specialArgs = { inherit inputs username hostname; };
       modules = [
         nix-homebrew.darwinModules.nix-homebrew {
           nix-homebrew = {
@@ -83,14 +91,22 @@
 
     # creates a nixos system config
     nixosHostConfig = system: hostname: username: nixpkgs.lib.nixosSystem {
-      pkgs = import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-          permittedInsecurePackages = [ "electron-21.4.4" ];
+      specialArgs = { inherit inputs username hostname;
+        pkgs = import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            permittedInsecurePackages = [ "electron-21.4.4" ];
+          };
+        };
+        pkgs-unstable = import nixpkgs-unstable {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            permittedInsecurePackages = [ "electron-21.4.4" ];
+          };
         };
       };
-      specialArgs = { inherit inputs username hostname; };
       modules = [
         disko.nixosModules.disko
 
@@ -114,14 +130,22 @@
     }; # end nixosSystem
 
     linuxHomeConfig = system: hostname: username: home-manager.lib.homeManagerConfiguration {
-      pkgs = import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-          permittedInsecurePackages = [ "electron-21.4.4" ];
+      extraSpecialArgs = { inherit genebean-omp-themes hostname username;
+        pkgs = import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            permittedInsecurePackages = [ "electron-21.4.4" ];
+          };
+        };
+        pkgs-unstable = import nixpkgs-unstable {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            permittedInsecurePackages = [ "electron-21.4.4" ];
+          };
         };
       };
-      extraSpecialArgs = { inherit genebean-omp-themes hostname username; };
       modules = [
         ./modules/home-manager/hosts/${hostname}/${username}.nix
         {
