@@ -1,5 +1,7 @@
-{ config, pkgs, username, ... }: {
+{ inputs, config, pkgs, username, ... }: {
   imports = [
+    (inputs.nixpkgs-unstable +"/nixos/modules/programs/chromium.nix")
+    (inputs.nixpkgs-unstable +"/nixos/modules/services/x11/desktop-managers/plasma6.nix")
     ./hardware-configuration.nix
     ../../../system/common/linux/flatpaks.nix
   ];
@@ -46,6 +48,9 @@
     xfce.xfce4-terminal
     zoom-us
   ];
+
+  #environment.plasma6.excludePackages = with pkgs-unstable.kdePackages; [
+  #];
 
   networking = {
     networkmanager.enable = true;
@@ -96,6 +101,7 @@
         };
       };
       desktopManager.gnome.enable = true;
+      desktopManager.plasma6.enable = true;
     };
   };
 
