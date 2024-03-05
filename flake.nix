@@ -47,22 +47,14 @@
 
     # creates a macOS system config
     darwinHostConfig = system: hostname: username: nix-darwin.lib.darwinSystem {
-      specialArgs = { inherit inputs username hostname;
-        pkgs = import nixpkgs {
-          inherit system;
-          config = {
-            allowUnfree = true;
-            permittedInsecurePackages = [ "python-2.7.18.7" ];
-          };
-        };
-        pkgs-unstable = import nixpkgs-unstable {
-          inherit system;
-          config = {
-            allowUnfree = true;
-            permittedInsecurePackages = [ "python-2.7.18.7" ];
-          };
+      pkgs = import nixpkgs {
+        inherit system;
+        config = {
+          allowUnfree = true;
+          permittedInsecurePackages = [ "python-2.7.18.7" ];
         };
       };
+      specialArgs = { inherit inputs username hostname; };
       modules = [
         nix-homebrew.darwinModules.nix-homebrew {
           nix-homebrew = {
