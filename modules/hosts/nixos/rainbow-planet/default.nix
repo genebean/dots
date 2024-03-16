@@ -24,7 +24,10 @@
     gnome.networkmanager-openvpn
     gnomeExtensions.pop-shell
     gnomeExtensions.tailscale-qs
+    go
+    hugo
     networkmanager-openvpn
+    nodejs
     pavucontrol
     polkit-kde-agent
     ulauncher
