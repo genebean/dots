@@ -1,4 +1,4 @@
-{ pkgs, hostname, username, ... }: {
+{ pkgs, flox-flake, hostname, username, ... }: {
   environment = {
     shells = with pkgs; [ bash zsh ];
     loginShell = pkgs.zsh;
@@ -10,6 +10,7 @@
       age
       bandwhich
       coreutils
+      flox-flake.packages.${pkgs.system}.default
       hugo
       mas
       nmap
