@@ -89,7 +89,7 @@
 
     # creates a nixos system config
     nixosHostConfig = system: hostname: username: nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs username hostname;
+      specialArgs = { inherit inputs username hostname flox-flake;
         pkgs = import nixpkgs {
           inherit system;
           config = {
