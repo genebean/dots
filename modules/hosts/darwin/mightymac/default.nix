@@ -19,8 +19,10 @@
     brews = [
       "adr-tools"
       "helm"
+      "kind"
       "kubernetes-cli"
       "lima"
+      "podman"
     ];
     casks = [
       "asana"
