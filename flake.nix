@@ -36,6 +36,12 @@
       inputs.nixpkgs.follows ="nixpkgs";
     };
 
+    flox-flake = {
+      url = "github:flox/flox";
+      # Setting the line below seems to break things... :( 
+      # inputs.nixpkgs.follows ="nixpkgs";
+    };
+
     # My oh-my-posh theme
     genebean-omp-themes = {
       url = "github:genebean/my-oh-my-posh-themes";
@@ -43,7 +49,7 @@
     };
 
   }; # end inputs
-  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, nix-homebrew, nix-flatpak, disko, sops-nix, genebean-omp-themes, ... }: let
+  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, nix-homebrew, nix-flatpak, disko, sops-nix, flox-flake, genebean-omp-themes, ... }: let
 
     # creates a macOS system config
     darwinHostConfig = system: hostname: username: nix-darwin.lib.darwinSystem {
@@ -54,7 +60,7 @@
           permittedInsecurePackages = [ "python-2.7.18.7" ];
         };
       };
-      specialArgs = { inherit inputs username hostname; };
+      specialArgs = { inherit inputs username hostname flox-flake; };
       modules = [
         nix-homebrew.darwinModules.nix-homebrew {
           nix-homebrew = {
@@ -83,7 +89,7 @@
 
     # creates a nixos system config
     nixosHostConfig = system: hostname: username: nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs username hostname;
+      specialArgs = { inherit inputs username hostname flox-flake;
         pkgs = import nixpkgs {
           inherit system;
           config = {
