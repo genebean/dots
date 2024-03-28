@@ -1,5 +1,6 @@
-{ inputs, config, hostname, pkgs, sops-nix, username,  ... }: {
+{ inputs, config, hostname, microvm, pkgs, sops-nix, username,  ... }: {
   imports = [
+    microvm.nixosModules.host
     ./hardware-configuration.nix
     ./audiobookshelf.nix
   ];
@@ -40,6 +41,10 @@
     ];
   };
 
+  microvm.autostart = [
+    #"nginx-proxy"
+  ];
+
   networking = {
     # Open ports in the firewall.
     firewall.allowedTCPPorts = [ 22 80 ];
@@ -50,6 +55,24 @@
     hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4
 
     networkmanager.enable = true;
+    enableIPv6 = true;
+    useDHCP = true;
+    vlans = {
+      vlan23 = { id = 23; interface = "eno1-23"; };
+    };
+    bridges = {
+      br1-23 = { interfaces = [ "vlan23" ]; };
+    };
+    interfaces = {
+      eno1.ipv4.addresses = [{
+        address = "192.168.20.190";
+        prefixLength = 24;
+      }];
+      br1-23.ipv4.addresses = [{
+        address = "192.168.23.21";
+        prefixLength = 24;
+      }];
+    };
   };
 
   # Hardware Transcoding for Jellyfin

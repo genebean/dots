@@ -48,8 +48,13 @@
       flake = false;
     };
 
+    microvm = {
+      url = "github:astro/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   }; # end inputs
-  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, nix-homebrew, nix-flatpak, disko, sops-nix, flox-flake, genebean-omp-themes, ... }: let
+  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, nix-homebrew, nix-flatpak, disko, sops-nix, flox-flake, microvm, genebean-omp-themes, ... }: let
 
     # creates a macOS system config
     darwinHostConfig = system: hostname: username: nix-darwin.lib.darwinSystem {
@@ -127,6 +132,22 @@
       ];
     }; # end nixosSystem
 
+    nixosMicrovmConfig = system: hostname: username: nixpkgs.lib.nixosSystem {
+      inherit system;
+      modules = [
+        microvm.nixosModules.microvm
+        {
+          networking.hostName = "${hostname}";
+          users.users.${username} = {
+            initialHashedPassword = "$6$FH6xo/OzM9mIAXqx$GTqSEDahPGyxLiDOEY77uxaApdd3xJKOkvddV6X4wplTCxsbuoyXwuOuQjMODS7dhfRs.HwL3VQgUjmok3QM60";
+            isNormalUser = true;
+          };
+        }
+        ./modules/hosts/nixos/microvms/${hostname} # host specific stuff
+      ];
+
+    }; # end nixosMicrovmConfig
+
     linuxHomeConfig = system: hostname: username: home-manager.lib.homeManagerConfiguration {
       extraSpecialArgs = { inherit genebean-omp-themes hostname username;
         pkgs = import nixpkgs {
@@ -167,6 +188,9 @@
         hetznix01 = nixosHostConfig "aarch64-linux" "hetznix01" "gene";
         nixnuc = nixosHostConfig "x86_64-linux" "nixnuc" "gene";
         rainbow-planet = nixosHostConfig "x86_64-linux" "rainbow-planet" "gene";
+
+      # VMs
+        nginx-proxy = nixosMicrovmConfig "x86_64-linux" "nginx-proxy" "gene";
       };
 
      homeConfigurations = {
