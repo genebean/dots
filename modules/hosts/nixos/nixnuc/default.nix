@@ -1,6 +1,7 @@
 { inputs, config, hostname, pkgs, sops-nix, username,  ... }: {
   imports = [
     ./hardware-configuration.nix
+    ./audiobookshelf.nix
   ];
 
   system.stateVersion = "23.11";
@@ -118,9 +119,9 @@
       authKeyFile = config.sops.secrets.tailscale_key.path;
       extraUpFlags = [
         "--advertise-exit-node"
-        "--operator"
-        "${username}"
+        "--operator=${username}"
         "--ssh"
+        "--advertise-routes=192.168.20.0/22"
       ];
       useRoutingFeatures = "both";
     };
