@@ -22,6 +22,11 @@
         mountPoint = "/nix/.ro-store";
       }
     ];
+    interfaces = [{
+      type = "tap";
+      id = "vm-nginx-proxy";
+      mac = "02:00:00:00:00:01";
+    }];
   };
 }
 

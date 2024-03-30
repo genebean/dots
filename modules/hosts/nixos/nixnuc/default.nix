@@ -1,8 +1,9 @@
 { inputs, config, hostname, microvm, pkgs, sops-nix, username,  ... }: {
   imports = [
-    microvm.nixosModules.host
     ./hardware-configuration.nix
     ./audiobookshelf.nix
+    #microvm.nixosModules.host
+    #../microvms/nginx-proxy
   ];
 
   system.stateVersion = "23.11";
@@ -41,9 +42,9 @@
     ];
   };
 
-  microvm.autostart = [
+  #microvm.autostart = [
     #"nginx-proxy"
-  ];
+  #];
 
   networking = {
     # Open ports in the firewall.
@@ -55,24 +56,25 @@
     hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4
 
     networkmanager.enable = true;
-    enableIPv6 = true;
-    useDHCP = true;
     vlans = {
-      vlan23 = { id = 23; interface = "eno1-23"; };
+      vlan23 = { id = 23; interface = "eno1"; };
     };
     bridges = {
       br1-23 = { interfaces = [ "vlan23" ]; };
     };
+    useDHCP = false;
     interfaces = {
       eno1.ipv4.addresses = [{
         address = "192.168.20.190";
         prefixLength = 24;
       }];
-      br1-23.ipv4.addresses = [{
-        address = "192.168.23.21";
-        prefixLength = 24;
-      }];
+      #br1-23.ipv4.addresses = [{
+        #address = "192.168.23.21";
+        #prefixLength = 24;
+      #}];
     };
+    defaultGateway = "192.168.20.1";
+    nameservers = [ "192.168.20.1" ];
   };
 
   # Hardware Transcoding for Jellyfin
@@ -106,6 +108,7 @@
       enable = true;
       openFirewall = true;
     };
+    lldpd.enable = true;
     nginx = {
       enable = true;
       virtualHosts."jellyfin" = {
