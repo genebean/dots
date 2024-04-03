@@ -2,7 +2,7 @@
   imports = [
     ./hardware-configuration.nix
     ./audiobookshelf.nix
-    ../containers/nginx-proxy.nix
+    ./containers/nginx-proxy.nix
   ];
 
   system.stateVersion = "23.11";
