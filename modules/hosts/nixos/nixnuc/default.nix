@@ -2,7 +2,6 @@
   imports = [
     ./hardware-configuration.nix
     ./audiobookshelf.nix
-    #microvm.nixosModules.host
     #../microvms/nginx-proxy
   ];
 
@@ -18,6 +17,36 @@
     zfs = {
       extraPools = [ "orico" ];
       forceImportRoot = false;
+    };
+  };
+
+  containers.nginx-proxy = {
+    autoStart = true;
+    privateNetwork = true;
+    hostBridge = "br1-23";
+    localAddress = "192.168.23.21/24";
+    config = { config, pkgs, lib, ... }: {
+      system.stateVersion = "23.11";
+      services.nginx = {
+        enable = true;
+        virtualHosts.default.listen = [{
+          port = 80;
+          addr = "0.0.0.0";
+        }];
+      };
+
+      networking = {
+        firewall = {
+          enable = true;
+          allowedTCPPorts = [ 80 ];
+        };
+        defaultGateway = "192.168.23.1";
+        # Use systemd-resolved inside the container
+        # Workaround for bug https://github.com/NixOS/nixpkgs/issues/162686
+        useHostResolvConf = lib.mkForce false;
+      };
+
+      services.resolved.enable = true;
     };
   };
 
@@ -42,10 +71,6 @@
     ];
   };
 
-  #microvm.autostart = [
-    #"nginx-proxy"
-  #];
-
   networking = {
     # Open ports in the firewall.
     firewall.allowedTCPPorts = [ 22 80 ];
@@ -55,6 +80,7 @@
 
     hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4
 
+    useDHCP = false;
     networkmanager.enable = true;
     vlans = {
       vlan23 = { id = 23; interface = "eno1"; };
@@ -62,19 +88,10 @@
     bridges = {
       br1-23 = { interfaces = [ "vlan23" ]; };
     };
-    useDHCP = false;
     interfaces = {
-      eno1.ipv4.addresses = [{
-        address = "192.168.20.190";
-        prefixLength = 24;
-      }];
-      #br1-23.ipv4.addresses = [{
-        #address = "192.168.23.21";
-        #prefixLength = 24;
-      #}];
+      eno1.useDHCP = true;
+      br1-23.useDHCP = false;
     };
-    defaultGateway = "192.168.20.1";
-    nameservers = [ "192.168.20.1" ];
   };
 
   # Hardware Transcoding for Jellyfin

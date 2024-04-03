@@ -112,7 +112,7 @@
       };
       modules = [
         disko.nixosModules.disko
-        microvm.nixosModules.host
+        #microvm.nixosModules.host
 
         home-manager.nixosModules.home-manager {
           home-manager = {
