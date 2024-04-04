@@ -1,4 +1,7 @@
-{ ... }: {
+{ ... }: let
+  http_port = 8080;
+  https_port = 8444;
+in {
   containers.nginx-proxy = {
     autoStart = true;
     privateNetwork = true;
@@ -8,16 +11,33 @@
       system.stateVersion = "23.11";
       services.nginx = {
         enable = true;
-        virtualHosts.default.listen = [{
-          port = 80;
-          addr = "0.0.0.0";
-        }];
+        recommendedGzipSettings = true;
+        recommendedOptimisation = true;
+        recommendedProxySettings = true;
+        recommendedTlsSettings = true;
+
+        virtualHosts = {
+          "nix-tester.home.technicalissues.us" = {
+            default = true;
+            listen = [
+              { port = http_port; addr = "0.0.0.0"; }
+              { port = https_port; addr = "0.0.0.0"; }
+            ];
+            enableACME = true;
+            forceSSL = false;
+          };
+        };
+      };
+
+      security.acme = {
+        acceptTerms = true;
+        defaults.email = "lets-encrypt@technicalissues.us";
       };
 
       networking = {
         firewall = {
           enable = true;
-          allowedTCPPorts = [ 80 ];
+          allowedTCPPorts = [ http_port https_port ];
         };
         defaultGateway = "192.168.23.1";
         # Use systemd-resolved inside the container
