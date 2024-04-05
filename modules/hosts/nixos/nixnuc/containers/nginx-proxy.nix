@@ -3,6 +3,7 @@
   https_port = 8444;
   gandi_api = "${config.sops.secrets.gandi_api.path}";
   #gandi_dns_pat = "${config.sops.secrets.gandi_dns_pat.path}";
+  home_domain = "home.technicalissues.us";
 in {
   sops.secrets.gandi_api = {
     sopsFile = ../../../../system/common/secrets.yaml;
@@ -16,6 +17,31 @@ in {
   #    "container@nginx-proxy.service"
   #  ];
   #};
+
+  ##
+  ## Gandi (gandi.net)
+  ##
+  ## Single host update
+  # protocol=gandi
+  # zone=example.com
+  # password=my-gandi-access-token
+  # use-personal-access-token=yes
+  # ttl=10800 # optional
+  # myhost.example.com
+  services.ddclient = {
+    enable = true;
+    protocol = "gandi";
+    zone = "technicalissues.us";
+    domains = [ home_domain ];
+    username = "unused";
+    extraConfig = ''
+      #usev4=webv4,webv4=ipify-ipv4
+      usev4=webv4
+      usev6=webv6
+      #use-personal-access-token=yes
+      ttl=300
+    '';
+    passwordFile = gandi_api; };
 
   containers.nginx-proxy = {
     bindMounts."${gandi_api}".isReadOnly = true;
@@ -34,7 +60,7 @@ in {
         recommendedTlsSettings = true;
 
         virtualHosts = {
-          "nix-tester.h.technicalissues.us" = {
+          "nix-tester.${home_domain}" = {
             default = true;
             listen = [
               { port = http_port; addr = "0.0.0.0"; }
