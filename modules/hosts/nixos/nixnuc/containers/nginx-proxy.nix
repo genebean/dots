@@ -35,9 +35,8 @@ in {
     domains = [ home_domain ];
     username = "unused";
     extraConfig = ''
-      #usev4=webv4,webv4=ipify-ipv4
       usev4=webv4
-      usev6=webv6
+      #usev6=webv6
       #use-personal-access-token=yes
       ttl=300
     '';
