@@ -1,4 +1,4 @@
-{ inputs, config, hostname, pkgs, sops-nix, username,  ... }: {
+{ config, pkgs, username,  ... }: {
   imports = [
     ./hardware-configuration.nix
     ./audiobookshelf.nix

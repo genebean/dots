@@ -1,8 +1,25 @@
-{ ... }: let
+{ config, ... }: let
   http_port = 8080;
   https_port = 8444;
+  gandi_api = "${config.sops.secrets.gandi_api.path}";
+  #gandi_dns_pat = "${config.sops.secrets.gandi_dns_pat.path}";
 in {
+  sops.secrets.gandi_api = {
+    sopsFile = ../../../../system/common/secrets.yaml;
+    restartUnits = [
+      "container@nginx-proxy.service"
+    ];
+  };
+  #sops.secrets.gandi_dns_pat = {
+  #  sopsFile = ../../../../system/common/secrets.yaml;
+  #  restartUnits = [
+  #    "container@nginx-proxy.service"
+  #  ];
+  #};
+
   containers.nginx-proxy = {
+    bindMounts."${gandi_api}".isReadOnly = true;
+    #bindMounts."${gandi_dns_pat}".isReadOnly = true;
     autoStart = true;
     privateNetwork = true;
     hostBridge = "br1-23";
@@ -17,13 +34,14 @@ in {
         recommendedTlsSettings = true;
 
         virtualHosts = {
-          "nix-tester.home.technicalissues.us" = {
+          "nix-tester.h.technicalissues.us" = {
             default = true;
             listen = [
               { port = http_port; addr = "0.0.0.0"; }
               { port = https_port; addr = "0.0.0.0"; }
             ];
             enableACME = true;
+            acmeRoot = null;
             forceSSL = false;
           };
         };
@@ -31,7 +49,14 @@ in {
 
       security.acme = {
         acceptTerms = true;
-        defaults.email = "lets-encrypt@technicalissues.us";
+        defaults = {
+          email = "lets-encrypt@technicalissues.us";
+          credentialFiles = { "GANDIV5_API_KEY_FILE" = gandi_api; };
+          #credentialFiles = { "GANDIV5_PERSONAL_ACCESS_TOKEN_FILE" = gandi_dns_pat; };
+          dnsProvider = "gandiv5";
+        };
+        # uncomment below for testing
+        defaults.server = "https://acme-staging-v02.api.letsencrypt.org/directory";
       };
 
       networking = {
