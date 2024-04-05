@@ -38,10 +38,11 @@ in {
             default = true;
             listen = [
               { port = http_port; addr = "0.0.0.0"; }
-              { port = https_port; addr = "0.0.0.0"; }
+              { port = https_port; addr = "0.0.0.0"; ssl = true; }
             ];
             enableACME = true;
             acmeRoot = null;
+            addSSL = true;
             forceSSL = false;
           };
         };
@@ -54,9 +55,9 @@ in {
           credentialFiles = { "GANDIV5_API_KEY_FILE" = gandi_api; };
           #credentialFiles = { "GANDIV5_PERSONAL_ACCESS_TOKEN_FILE" = gandi_dns_pat; };
           dnsProvider = "gandiv5";
+          # uncomment below for testing
+          #server = "https://acme-staging-v02.api.letsencrypt.org/directory";
         };
-        # uncomment below for testing
-        defaults.server = "https://acme-staging-v02.api.letsencrypt.org/directory";
       };
 
       networking = {
