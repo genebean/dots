@@ -154,6 +154,7 @@ in {
           credentialFiles = { "GANDIV5_API_KEY_FILE" = gandi_api; };
           #credentialFiles = { "GANDIV5_PERSONAL_ACCESS_TOKEN_FILE" = gandi_dns_pat; };
           dnsProvider = "gandiv5";
+          dnsResolver = "ns1.gandi.net";
           # uncomment below for testing
           #server = "https://acme-staging-v02.api.letsencrypt.org/directory";
         };
