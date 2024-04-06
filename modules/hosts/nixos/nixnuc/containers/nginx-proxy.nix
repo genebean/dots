@@ -1,6 +1,6 @@
 { config, ... }: let
-  http_port = 8080;
-  https_port = 8444;
+  http_port = 80;
+  https_port = 443;
   gandi_api = "${config.sops.secrets.gandi_api.path}";
   #gandi_dns_pat = "${config.sops.secrets.gandi_dns_pat.path}";
   home_domain = "home.technicalissues.us";
