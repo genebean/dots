@@ -48,6 +48,7 @@ in {
     bindMounts."${gandi_api}".isReadOnly = true;
     #bindMounts."${gandi_dns_pat}".isReadOnly = true;
     autoStart = true;
+    timeoutStartSec = "5min";
     privateNetwork = true;
     hostBridge = "br1-23";
     localAddress = "192.168.23.21/24";
