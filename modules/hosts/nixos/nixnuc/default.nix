@@ -1,7 +1,8 @@
-{ inputs, config, hostname, pkgs, sops-nix, username,  ... }: {
+{ config, pkgs, username,  ... }: {
   imports = [
     ./hardware-configuration.nix
     ./audiobookshelf.nix
+    ./containers/nginx-proxy.nix
   ];
 
   system.stateVersion = "23.11";
@@ -49,7 +50,18 @@
 
     hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4
 
+    useDHCP = false;
     networkmanager.enable = true;
+    vlans = {
+      vlan23 = { id = 23; interface = "eno1"; };
+    };
+    bridges = {
+      br1-23 = { interfaces = [ "vlan23" ]; };
+    };
+    interfaces = {
+      eno1.useDHCP = true;
+      br1-23.useDHCP = false;
+    };
   };
 
   # Hardware Transcoding for Jellyfin
@@ -83,6 +95,7 @@
       enable = true;
       openFirewall = true;
     };
+    lldpd.enable = true;
     nginx = {
       enable = true;
       virtualHosts."jellyfin" = {

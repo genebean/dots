@@ -41,10 +41,14 @@
       "flakes"
       "nix-command"
     ];
-    extra-trusted-public-keys = [
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
     ];
-    extra-trusted-substituters = [
+    substituters = [
+      "https://cache.nixos.org"
+    ];
+    trusted-substituters = [
       "https://cache.flox.dev"
     ];
     trusted-users = [ "${username}" ];
