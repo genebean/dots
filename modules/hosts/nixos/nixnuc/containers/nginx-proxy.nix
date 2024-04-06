@@ -94,7 +94,7 @@ in {
             acmeRoot = null;
             forceSSL = true;
             locations."/".proxyWebsockets = true;
-            locations."/".proxyPass = "http://${mini_watcher}:13378";
+            locations."/".proxyPass = "http://${backend_ip}:13378";
           };
           "atuin.${home_domain}" = {
             listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];

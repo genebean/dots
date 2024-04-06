@@ -43,7 +43,7 @@
 
   networking = {
     # Open ports in the firewall.
-    firewall.allowedTCPPorts = [ 22 80 ];
+    firewall.allowedTCPPorts = [ 22 80 13378];
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
     # firewall.enable = false;
@@ -60,7 +60,11 @@
     };
     interfaces = {
       eno1.useDHCP = true;
-      br1-23.useDHCP = false;
+      br1-23 = {
+        useDHCP = false;
+        # This enables the container attached to the bridge to be reachable
+        ipv4.routes = [{ address = "192.168.23.21"; prefixLength = 32; }];
+      };
     };
   };
 
