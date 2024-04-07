@@ -20,4 +20,7 @@ in {
       ];
     };
   };
+  services.restic.backups.daily.paths = [
+    "/orico/audiobookshelf"
+  ];
 }

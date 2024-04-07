@@ -3,6 +3,7 @@
     ./hardware-configuration.nix
     ./audiobookshelf.nix
     ./containers/nginx-proxy.nix
+    ../../../system/common/linux/restic.nix
   ];
 
   system.stateVersion = "23.11";
@@ -132,6 +133,9 @@
       };
     };
     resolved.enable = true;
+    restic.backups.daily.paths = [
+      "/orico/jellyfin/data"
+    ];
     tailscale = {
       enable = true;
       authKeyFile = config.sops.secrets.tailscale_key.path;
