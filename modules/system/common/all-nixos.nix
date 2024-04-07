@@ -10,6 +10,7 @@
       dconf2nix
       file
       inetutils
+      iotop
       neofetch
       python3
       sops
