@@ -9,6 +9,7 @@
       age
       dconf2nix
       file
+      iftop
       inetutils
       iotop
       neofetch
