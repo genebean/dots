@@ -28,6 +28,8 @@
     jellyfin-web
     net-snmp
     nginx
+    podman-compose
+    podman-tui # status of containers in the terminal
     yt-dlp
   ];
 
@@ -171,11 +173,19 @@
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "docker" "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      docker-compose 
-    ];
+    extraGroups = [ "podman" "networkmanager" "wheel" ];
   };
 
-  virtualisation.docker.enable = true;
+  # Enable common container config files in /etc/containers
+  virtualisation.containers.enable = true;
+
+  virtualisation.oci-containers.backend = "podman";
+
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+
+    # Required for containers under podman-compose to be able to talk to each other.
+    defaultNetwork.settings.dns_enabled = true;
+  };
 }
