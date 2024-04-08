@@ -1,7 +1,7 @@
 { config, pkgs, username,  ... }: {
   imports = [
     ./hardware-configuration.nix
-    ./audiobookshelf.nix
+    ./containers/audiobookshelf.nix
     ./containers/nginx-proxy.nix
     ../../../system/common/linux/restic.nix
   ];
