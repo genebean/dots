@@ -46,7 +46,7 @@
 
   networking = {
     # Open ports in the firewall.
-    firewall.allowedTCPPorts = [ 22 80 13378];
+    firewall.allowedTCPPorts = [ 22 80 13378 ];
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
     # firewall.enable = false;
