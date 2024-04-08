@@ -137,6 +137,8 @@
     resolved.enable = true;
     restic.backups.daily.paths = [
       "/orico/jellyfin/data"
+      "/orico/jellyfin/staging/downloaded-files"
+      #"${config.users.users.${username}.home}/compose-files/tandoor"
     ];
     tailscale = {
       enable = true;
