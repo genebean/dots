@@ -20,6 +20,10 @@
     } + "/themes/frappe.conf");
   };
 
+  programs.vscode = {
+    enable = true;
+  };
+
   services.dunst = {
     enable = true;
     settings = {

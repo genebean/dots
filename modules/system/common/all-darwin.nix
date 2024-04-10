@@ -42,6 +42,7 @@
       "1password-cli"
       "amethyst"
       "angry-ip-scanner"
+      "appcleaner"
       "audacity"
       "balenaetcher"
       "bartender"
@@ -69,6 +70,7 @@
       "slack"
       "sonos"
       "tailscale"
+      "visual-studio-code"
       "vivaldi"
       "zoom"
     ];
