@@ -42,6 +42,7 @@
       "1password-cli"
       "amethyst"
       "angry-ip-scanner"
+      "appcleaner"
       "audacity"
       "balenaetcher"
       "bartender"
