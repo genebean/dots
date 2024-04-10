@@ -69,6 +69,7 @@
       "slack"
       "sonos"
       "tailscale"
+      "visual-studio-code"
       "vivaldi"
       "zoom"
     ];
