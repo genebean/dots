@@ -1,4 +1,4 @@
-{ config, pkgs, username,  ... }: {
+{ compose2nix, config, pkgs, username,  ... }: {
   imports = [
     ./hardware-configuration.nix
     ./containers/audiobookshelf.nix
@@ -22,6 +22,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    compose2nix.packages.${pkgs.system}.default
     intel-gpu-tools
     jellyfin
     jellyfin-ffmpeg

@@ -17,6 +17,26 @@
         "type": "github"
       }
     },
+    "compose2nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1712407744,
+        "narHash": "sha256-I6u5PHFilTnDbBxXpk2TSv5al2SXZwos2TNHmKrq068=",
+        "owner": "aksiksi",
+        "repo": "compose2nix",
+        "rev": "79a1dbd3fd1f19d54a80b0d8ed0268e1e1afe187",
+        "type": "github"
+      },
+      "original": {
+        "owner": "aksiksi",
+        "repo": "compose2nix",
+        "type": "github"
+      }
+    },
     "crane": {
       "inputs": {
         "nixpkgs": [
@@ -436,6 +456,7 @@
     },
     "root": {
       "inputs": {
+        "compose2nix": "compose2nix",
         "disko": "disko",
         "flox-flake": "flox-flake",
         "genebean-omp-themes": "genebean-omp-themes",
