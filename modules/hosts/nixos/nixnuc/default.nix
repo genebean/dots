@@ -23,6 +23,7 @@
 
   environment.systemPackages = with pkgs; [
     compose2nix.packages.${pkgs.system}.default
+    docker-compose
     intel-gpu-tools
     jellyfin
     jellyfin-ffmpeg
@@ -47,7 +48,13 @@
 
   networking = {
     # Open ports in the firewall.
-    firewall.allowedTCPPorts = [ 22 80 13378 ];
+    firewall.allowedTCPPorts = [
+      22 # ssh
+      80 # http to local Nginx
+      8080 # Tandoor in podman compose
+      8090 # Wallabag in podman compose
+      13378 # Audiobookshelf in oci-container
+    ];
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
     # firewall.enable = false;
@@ -139,7 +146,8 @@
     restic.backups.daily.paths = [
       "/orico/jellyfin/data"
       "/orico/jellyfin/staging/downloaded-files"
-      #"${config.users.users.${username}.home}/compose-files/tandoor"
+      "${config.users.users.${username}.home}/compose-files/tandoor"
+      "${config.users.users.${username}.home}/compose-files/wallabag"
     ];
     tailscale = {
       enable = true;
@@ -176,7 +184,7 @@
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "podman" "networkmanager" "wheel" ];
+    extraGroups = [ "docker" "podman" "networkmanager" "wheel" ];
   };
 
   # Enable common container config files in /etc/containers
@@ -184,12 +192,16 @@
 
   virtualisation.oci-containers.backend = "podman";
 
+  # Compose based apps were crashing with podman compose, so back to Docker...
+  virtualisation.docker.enable = true;
+
   virtualisation.podman = {
     enable = true;
-    dockerCompat = true;
+    autoPrune.enable = true;
+    #dockerCompat = true;
     extraPackages = [ pkgs.zfs ]; # Required if the host is running ZFS
 
-    # Required for containers under podman-compose to be able to talk to each other.
+    # Required for container networking to be able to use names.
     defaultNetwork.settings.dns_enabled = true;
   };
 }

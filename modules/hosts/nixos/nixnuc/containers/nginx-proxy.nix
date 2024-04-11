@@ -136,14 +136,14 @@ in {
             enableACME = true;
             acmeRoot = null;
             forceSSL = true;
-            locations."/".proxyPass = "http://${mini_watcher}:8090";
+            locations."/".proxyPass = "http://${backend_ip}:8090";
           };
           "tandoor.${home_domain}" = {
             listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
             enableACME = true;
             acmeRoot = null;
             forceSSL = true;
-            locations."/".proxyPass = "http://${mini_watcher}:8080";
+            locations."/".proxyPass = "http://${backend_ip}:8080";
           };
         };
       };
