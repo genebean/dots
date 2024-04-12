@@ -53,8 +53,8 @@
       22 # ssh
       80 # http to local Nginx
       3000 # PsiTransfer in oci-container
-      8080 # Tandoor in podman compose
-      8090 # Wallabag in podman compose
+      8080 # Tandoor in docker compose
+      8090 # Wallabag in docker compose
       13378 # Audiobookshelf in oci-container
     ];
     # firewall.allowedUDPPorts = [ ... ];
