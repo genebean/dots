@@ -94,7 +94,7 @@ in {
             acmeRoot = null;
             forceSSL = true;
             locations."/".proxyWebsockets = true;
-            locations."/".proxyPass = "http://${mini_watcher}:13378";
+            locations."/".proxyPass = "http://${backend_ip}:13378";
           };
           "atuin.${home_domain}" = {
             listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
@@ -136,14 +136,14 @@ in {
             enableACME = true;
             acmeRoot = null;
             forceSSL = true;
-            locations."/".proxyPass = "http://${mini_watcher}:8090";
+            locations."/".proxyPass = "http://${backend_ip}:8090";
           };
           "tandoor.${home_domain}" = {
             listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
             enableACME = true;
             acmeRoot = null;
             forceSSL = true;
-            locations."/".proxyPass = "http://${mini_watcher}:8080";
+            locations."/".proxyPass = "http://${backend_ip}:8080";
           };
         };
       };

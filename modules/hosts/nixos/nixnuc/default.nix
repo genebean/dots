@@ -1,8 +1,10 @@
-{ config, pkgs, username,  ... }: {
+{ compose2nix, config, pkgs, username,  ... }: {
   imports = [
     ./hardware-configuration.nix
-    ./audiobookshelf.nix
+    ./containers/audiobookshelf.nix
+    ./containers/psitransfer.nix
     ./containers/nginx-proxy.nix
+    ../../../system/common/linux/restic.nix
   ];
 
   system.stateVersion = "23.11";
@@ -21,12 +23,16 @@
   };
 
   environment.systemPackages = with pkgs; [
+    compose2nix.packages.${pkgs.system}.default
+    docker-compose
     intel-gpu-tools
     jellyfin
     jellyfin-ffmpeg
     jellyfin-web
     net-snmp
     nginx
+    podman-compose
+    podman-tui # status of containers in the terminal
     yt-dlp
   ];
 
@@ -43,7 +49,14 @@
 
   networking = {
     # Open ports in the firewall.
-    firewall.allowedTCPPorts = [ 22 80 ];
+    firewall.allowedTCPPorts = [
+      22 # ssh
+      80 # http to local Nginx
+      3000 # PsiTransfer in oci-container
+      8080 # Tandoor in docker compose
+      8090 # Wallabag in docker compose
+      13378 # Audiobookshelf in oci-container
+    ];
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
     # firewall.enable = false;
@@ -60,7 +73,11 @@
     };
     interfaces = {
       eno1.useDHCP = true;
-      br1-23.useDHCP = false;
+      br1-23 = {
+        useDHCP = false;
+        # This enables the container attached to the bridge to be reachable
+        ipv4.routes = [{ address = "192.168.23.21"; prefixLength = 32; }];
+      };
     };
   };
 
@@ -127,6 +144,13 @@
         };
       };
     };
+    resolved.enable = true;
+    restic.backups.daily.paths = [
+      "/orico/jellyfin/data"
+      "/orico/jellyfin/staging/downloaded-files"
+      "${config.users.users.${username}.home}/compose-files/tandoor"
+      "${config.users.users.${username}.home}/compose-files/wallabag"
+    ];
     tailscale = {
       enable = true;
       authKeyFile = config.sops.secrets.tailscale_key.path;
@@ -162,11 +186,24 @@
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "docker" "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      docker-compose 
-    ];
+    extraGroups = [ "docker" "podman" "networkmanager" "wheel" ];
   };
 
+  # Enable common container config files in /etc/containers
+  virtualisation.containers.enable = true;
+
+  virtualisation.oci-containers.backend = "podman";
+
+  # Compose based apps were crashing with podman compose, so back to Docker...
   virtualisation.docker.enable = true;
+
+  virtualisation.podman = {
+    enable = true;
+    autoPrune.enable = true;
+    #dockerCompat = true;
+    extraPackages = [ pkgs.zfs ]; # Required if the host is running ZFS
+
+    # Required for container networking to be able to use names.
+    defaultNetwork.settings.dns_enabled = true;
+  };
 }
