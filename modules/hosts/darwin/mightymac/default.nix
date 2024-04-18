@@ -41,6 +41,7 @@
       "utm"
       "vagrant"
       "vial"
+      "waterfox"
       "whalebird"
       "zenmap"
     ];
