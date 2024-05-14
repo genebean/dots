@@ -10,7 +10,7 @@
       age
       bandwhich
       coreutils
-      flox-flake.packages.${pkgs.system}.default
+      #flox-flake.packages.${pkgs.system}.default
       hugo
       mas
       nmap
