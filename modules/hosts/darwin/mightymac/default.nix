@@ -4,8 +4,10 @@
   environment = {
     systemPackages = with pkgs; [
       chart-testing
+      goreleaser
       kopia
       kubectx
+      reposurgeon
     ];
   };
 
