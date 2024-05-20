@@ -8,6 +8,8 @@
       kopia
       kubectx
       reposurgeon
+      # terraform-versions."1.5.7"
+      terraformer
     ];
   };
 
@@ -20,6 +22,7 @@
     ];
     brews = [
       "adr-tools"
+      "awscli"
       "helm"
       "kind"
       "kubernetes-cli"
