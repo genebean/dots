@@ -1,4 +1,4 @@
-{ pkgs, flox-flake, hostname, username, ... }: {
+{ pkgs, hostname, username, ... }: {
   environment = {
     shells = with pkgs; [ bash zsh ];
     loginShell = pkgs.zsh;
@@ -10,7 +10,6 @@
       age
       bandwhich
       coreutils
-      #flox-flake.packages.${pkgs.system}.default
       hugo
       mas
       nmap
@@ -95,15 +94,11 @@
         "nix-command"
         "repl-flake"
       ];
-      trusted-public-keys = [
-        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-        "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
+      extra-substituters = [
+        "https://nixpkgs-terraform.cachix.org"
       ];
-      substituters = [
-        "https://cache.nixos.org"
-      ];
-      trusted-substituters = [
-        "https://cache.flox.dev"
+      extra-trusted-public-keys = [
+        "nixpkgs-terraform.cachix.org-1:8Sit092rIdAVENA3ZVeH9hzSiqI/jng6JiCrQ1Dmusw="
       ];
       trusted-users = [ "@admin" "${username}" ];
     };

@@ -1,4 +1,4 @@
-{ config, flox-flake, pkgs, username, ... }: {
+{ config, pkgs, username, ... }: {
   imports = [
     ./hardware-configuration.nix
     ../../../system/common/linux/flatpaks.nix
@@ -18,7 +18,6 @@
     # host specific apps
     boinc
     brightnessctl
-    #flox-flake.packages.${pkgs.system}.default
     gnome.gnome-tweaks
     gnome.nautilus
     gnomeExtensions.dash-to-panel

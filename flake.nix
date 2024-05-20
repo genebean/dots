@@ -36,10 +36,10 @@
       inputs.nixpkgs.follows ="nixpkgs";
     };
 
-    flox-flake = {
-      url = "github:flox/flox";
-      # Setting the line below seems to break things... :( 
-      # inputs.nixpkgs.follows ="nixpkgs";
+    nixpkgs-terraform = {
+      url = "github:stackbuilders/nixpkgs-terraform";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
     };
 
     compose2nix = {
@@ -55,7 +55,7 @@
     };
 
   }; # end inputs
-  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, nix-homebrew, nix-flatpak, disko, sops-nix, compose2nix, flox-flake, genebean-omp-themes, ... }: let
+  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, nix-homebrew, nix-flatpak, disko, sops-nix, nixpkgs-terraform, compose2nix, genebean-omp-themes, ... }: let
 
     # creates a macOS system config
     darwinHostConfig = system: hostname: username: nix-darwin.lib.darwinSystem {
@@ -65,8 +65,9 @@
           allowUnfree = true;
           permittedInsecurePackages = [ "python-2.7.18.7" ];
         };
+        overlays = [ nixpkgs-terraform.overlays.default ];
       };
-      specialArgs = { inherit inputs username hostname flox-flake; };
+      specialArgs = { inherit inputs username hostname; };
       modules = [
         nix-homebrew.darwinModules.nix-homebrew {
           nix-homebrew = {
@@ -95,20 +96,14 @@
 
     # creates a nixos system config
     nixosHostConfig = system: hostname: username: nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs username hostname compose2nix flox-flake;
+      specialArgs = { inherit inputs username hostname compose2nix;
         pkgs = import nixpkgs {
           inherit system;
           config = {
             allowUnfree = true;
             permittedInsecurePackages = [ "electron-21.4.4" ];
           };
-        };
-        pkgs-unstable = import nixpkgs-unstable {
-          inherit system;
-          config = {
-            allowUnfree = true;
-            permittedInsecurePackages = [ "electron-21.4.4" ];
-          };
+          overlays = [ nixpkgs-terraform.overlays.default ];
         };
       };
       modules = [
@@ -141,13 +136,7 @@
             allowUnfree = true;
             permittedInsecurePackages = [ "electron-21.4.4" ];
           };
-        };
-        pkgs-unstable = import nixpkgs-unstable {
-          inherit system;
-          config = {
-            allowUnfree = true;
-            permittedInsecurePackages = [ "electron-21.4.4" ];
-          };
+          overlays = [ nixpkgs-terraform.overlays.default ];
         };
       };
       modules = [
