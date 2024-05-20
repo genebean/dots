@@ -1,5 +1,6 @@
 ---
 keys:
+  - &system_bigboy age196gl3k9aphy2mh5kgn50wkzn38m35cus8dqhtva6qcfmmxx3acgs6vx2dg
   - &system_hetznix01 age1a652ev7gekx4aj589s8fd27ul9j5ugpdwg7pxhmqcwdjwwq9gf2qv38um9
   - &system_nixnuc age1g24zhwvgenpc4wqejt63thvgd4rn5x9n7nnwwme7dm83nfqpp93se2vmq4
   - &system_rainbow_planet age15xlw5vnnjdx2ypz6rq0mqcywuaj3yx8y6lrgf95satafqf7y4qus6rv6ck
@@ -8,6 +9,10 @@ keys:
   - &user_mightymac age1zz34qx3n3dj63sva24kaymetv3apn58lafjq4dl6zw7xxachuyts00mhck
   - &user_mini_watcher age1rpy8edlpgxuf6w75cvlqexuq2xe4c49h9t2ge6jhc3fzczp8vfasnjelwq
 creation_rules:
+  - path_regex: bigboy/secrets.yaml$
+    key_groups:
+      - age:
+          - *system_bigboy
   - path_regex: hetznix01/secrets.yaml$
     key_groups:
       - age:
@@ -39,6 +44,7 @@ creation_rules:
   - path_regex: modules/system/common/secrets.yaml$
     key_groups:
       - age:
+          - *system_bigboy
           - *system_hetznix01
           - *system_nixnuc
           - *system_rainbow_planet
