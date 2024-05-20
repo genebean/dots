@@ -6,6 +6,23 @@
     nixpkgs.url = "github:nixos/nixpkgs/release-23.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
+    compose2nix = {
+      url = "github:aksiksi/compose2nix";
+      inputs.nixpkgs.follows ="nixpkgs";
+    };
+
+    # Format disks with nix-config
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # My oh-my-posh theme
+    genebean-omp-themes = {
+      url = "github:genebean/my-oh-my-posh-themes";
+      flake = false;
+    };
+
     # Manages things in home directory
     home-manager = {
       url = "github:nix-community/home-manager/release-23.11";
@@ -18,16 +35,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Manage Homebrew itself
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-
     # Manage flatpaks
     nix-flatpak.url = "github:gmodena/nix-flatpak"; # unstable branch. Use github:gmodena/nix-flatpak/?ref=<tag> to pin releases.
 
-    # Format disks with nix-config
-    disko = {
-      url = "github:nix-community/disko";
+    # Manage Homebrew itself
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+
+    nixpkgs-terraform = {
+      url = "github:stackbuilders/nixpkgs-terraform";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
     };
 
     # Secrets managemnt
@@ -36,26 +53,10 @@
       inputs.nixpkgs.follows ="nixpkgs";
     };
 
-    nixpkgs-terraform = {
-      url = "github:stackbuilders/nixpkgs-terraform";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
-    };
-
-    compose2nix = {
-      url = "github:aksiksi/compose2nix";
-      inputs.nixpkgs.follows ="nixpkgs";
-    };
-
-
-    # My oh-my-posh theme
-    genebean-omp-themes = {
-      url = "github:genebean/my-oh-my-posh-themes";
-      flake = false;
-    };
-
   }; # end inputs
-  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, nix-darwin, home-manager, nix-homebrew, nix-flatpak, disko, sops-nix, nixpkgs-terraform, compose2nix, genebean-omp-themes, ... }: let
+  outputs = inputs@{
+    self, nixpkgs, nixpkgs-unstable, compose2nix, disko, genebean-omp-themes,
+    home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixpkgs-terraform, sops-nix, ... }: let
 
     # creates a macOS system config
     darwinHostConfig = system: hostname: username: nix-darwin.lib.darwinSystem {
@@ -67,7 +68,7 @@
         };
         overlays = [ nixpkgs-terraform.overlays.default ];
       };
-      specialArgs = { inherit inputs username hostname; };
+      specialArgs = { inherit inputs hostname username; };
       modules = [
         nix-homebrew.darwinModules.nix-homebrew {
           nix-homebrew = {
@@ -96,7 +97,7 @@
 
     # creates a nixos system config
     nixosHostConfig = system: hostname: username: nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs username hostname compose2nix;
+      specialArgs = { inherit inputs compose2nix hostname username;
         pkgs = import nixpkgs {
           inherit system;
           config = {
