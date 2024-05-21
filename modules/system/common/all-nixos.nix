@@ -13,6 +13,7 @@
       inetutils
       iotop
       neofetch
+      pciutils
       python3
       sops
       ssh-to-age

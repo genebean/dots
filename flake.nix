@@ -47,6 +47,8 @@
       inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
     };
 
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
     # Secrets managemnt
     sops-nix = {
       url = "github:mic92/sops-nix";
@@ -56,7 +58,7 @@
   }; # end inputs
   outputs = inputs@{
     self, nixpkgs, nixpkgs-unstable, compose2nix, disko, genebean-omp-themes,
-    home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixpkgs-terraform, sops-nix, ... }: let
+    home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixpkgs-terraform, nixos-hardware, sops-nix, ... }: let
 
     # creates a macOS system config
     darwinHostConfig = system: hostname: username: nix-darwin.lib.darwinSystem {
@@ -126,6 +128,7 @@
         sops-nix.nixosModules.sops # system wide secrets management
         ./modules/system/common/all-nixos.nix # system-wide stuff
         ./modules/hosts/nixos/${hostname} # host specific stuff
+        nixos-hardware.nixosModules.lenovo-thinkpad-p52
       ];
     }; # end nixosSystem
 
