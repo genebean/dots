@@ -4,6 +4,7 @@ keys:
   - &system_nixnuc age1g24zhwvgenpc4wqejt63thvgd4rn5x9n7nnwwme7dm83nfqpp93se2vmq4
   - &system_rainbow_planet age15xlw5vnnjdx2ypz6rq0mqcywuaj3yx8y6lrgf95satafqf7y4qus6rv6ck
   - &user_airpuppet age1awdf9h0avajf57cudx0rjfmxu2wlxw8wf3sa7yvfk8rp4j6taecsu74x77
+  - &user_bigboy age196gl3k9aphy2mh5kgn50wkzn38m35cus8dqhtva6qcfmmxx3acgs6vx2dg
   - &user_blue_rock age1rt72txg22w8y3cdvq9w7zff0cas6xtkplpj36kxnevfnrtn82f6ss7yw7d
   - &user_mightymac age1zz34qx3n3dj63sva24kaymetv3apn58lafjq4dl6zw7xxachuyts00mhck
   - &user_mini_watcher age1rpy8edlpgxuf6w75cvlqexuq2xe4c49h9t2ge6jhc3fzczp8vfasnjelwq
@@ -36,6 +37,11 @@ creation_rules:
     key_groups:
       - age:
           - *user_mini_watcher
+  - path_regex: home-only/secrets.yaml$
+    key_groups:
+      - age:
+          - *user_bigboy
+          - *user_mini_watcher
   - path_regex: modules/system/common/secrets.yaml$
     key_groups:
       - age:
@@ -43,6 +49,7 @@ creation_rules:
           - *system_nixnuc
           - *system_rainbow_planet
           - *user_airpuppet
+          - *user_bigboy
           - *user_blue_rock
           - *user_mightymac
           - *user_mini_watcher

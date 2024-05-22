@@ -129,19 +129,20 @@
       ];
     }; # end nixosSystem
 
-    linuxHomeConfig = system: hostname: username: home-manager.lib.homeManagerConfiguration {
-      extraSpecialArgs = { inherit genebean-omp-themes hostname username;
-        pkgs = import nixpkgs {
-          inherit system;
-          config = {
-            allowUnfree = true;
-            permittedInsecurePackages = [ "electron-21.4.4" ];
-          };
-          overlays = [ nixpkgs-terraform.overlays.default ];
+    linuxHomeConfig = system: username: home-manager.lib.homeManagerConfiguration {
+      extraSpecialArgs = { inherit genebean-omp-themes username;
+
+      };
+      pkgs = import nixpkgs {
+        inherit system;
+        config = {
+          allowUnfree = true;
+          permittedInsecurePackages = [ "electron-21.4.4" ];
         };
+        overlays = [ nixpkgs-terraform.overlays.default ];
       };
       modules = [
-        ./modules/home-manager/hosts/${hostname}/${username}.nix
+        ./modules/home-manager/home-only/${username}.nix
         {
           home = {
             username = "${username}";
@@ -166,7 +167,7 @@
       };
 
      homeConfigurations = {
-       gene = linuxHomeConfig "x86_64-linux" "mini-watcher" "gene";
+       gene = linuxHomeConfig "x86_64-linux" "gene";
      };
   };
 }
