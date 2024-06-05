@@ -247,7 +247,7 @@ in {
     zsh = {
       enable = true;
       enableCompletion = true;
-      enableAutosuggestions = true;
+      autosuggestion.enable = true;
       history.save = 1000000;
       history.size = 1000000;
       initExtra = ''

@@ -24,7 +24,7 @@
     ];
   };
 
-  fonts.fontDir.enable = false;
+  fonts.fontDir.enable = true;
   fonts.packages = with pkgs; [
     font-awesome
     (nerdfonts.override {
