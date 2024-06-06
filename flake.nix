@@ -41,6 +41,8 @@
     # Manage Homebrew itself
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
 
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
     nixpkgs-terraform = {
       url = "github:stackbuilders/nixpkgs-terraform";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -56,7 +58,7 @@
   }; # end inputs
   outputs = inputs@{
     self, nixpkgs, nixpkgs-unstable, compose2nix, disko, genebean-omp-themes,
-    home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixpkgs-terraform, sops-nix, ... }: let
+    home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixos-hardware, nixpkgs-terraform, sops-nix, ... }: let
 
     # creates a macOS system config
     darwinHostConfig = { system, hostname, username, additionaModules, additionaSpecialArgs }: nix-darwin.lib.darwinSystem {
@@ -198,7 +200,9 @@
         system = "x86_64-linux";
         hostname = "rainbow-planet";
         username = "gene";
-        additionaModules = [];
+        additionaModules = [
+          nixos-hardware.nixosModules.dell-xps-13-9360
+        ];
         additionaSpecialArgs = {};
       };
     }; # end nixosConfigurations
