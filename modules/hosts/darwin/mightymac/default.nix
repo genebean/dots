@@ -27,7 +27,10 @@
       "kind"
       "kubernetes-cli"
       "lima"
+      "opentofu"
+      "node_exporter"
       "podman"
+      "telegraf"
     ];
     casks = [
       "asana"
