@@ -182,6 +182,15 @@
 
     # NixOS hosts
     nixosConfigurations = {
+      # bigboy = nixosHostConfig {
+      #   system = "x86_64-linux";
+      #   hostname = "bigbox";
+      #   username = "gene";
+      #   additionalModules = [
+      #     nixos-hardware.nixosModules.lenovo-thinkpad-p52
+      #   ];
+      #   additionalSpecialArgs = {};
+      # };
       hetznix01 = nixosHostConfig {
         system = "aarch64-linux";
         hostname = "hetznix01";
