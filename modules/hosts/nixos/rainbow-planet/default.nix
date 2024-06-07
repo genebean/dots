@@ -15,6 +15,7 @@
   };
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
   environment.systemPackages = with pkgs; [
     # host specific apps
     boinc
@@ -75,6 +76,10 @@
   services = {
     boinc.enable = true;
     desktopManager.plasma6.enable = true;
+    displayManager.sddm = {
+      enable = true;
+      wayland.enable = true;
+    };
     fwupd.enable = true;
     gnome.gnome-keyring.enable = true; # Provides secret storage
     gvfs.enable = true; # Used by Nautilus
@@ -99,12 +104,12 @@
         variant = "";
       };
 
-      displayManager = {
-        gdm = {
-          enable = true;
-          wayland = true;
-        };
-      };
+      # displayManager = {
+      #   gdm = {
+      #     enable = true;
+      #     wayland = true;
+      #   };
+      # };
       desktopManager.gnome.enable = true;
     };
   };
