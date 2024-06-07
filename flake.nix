@@ -3,7 +3,7 @@
   inputs = {
     # Where we get most of our software. Giant mono repo with recipes
     # called derivations that say how to build software.
-    nixpkgs.url = "github:nixos/nixpkgs/release-23.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     compose2nix = {
@@ -25,7 +25,7 @@
 
     # Manages things in home directory
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.11";
+      url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -40,6 +40,8 @@
 
     # Manage Homebrew itself
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     nixpkgs-terraform = {
       url = "github:stackbuilders/nixpkgs-terraform";
@@ -56,10 +58,10 @@
   }; # end inputs
   outputs = inputs@{
     self, nixpkgs, nixpkgs-unstable, compose2nix, disko, genebean-omp-themes,
-    home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixpkgs-terraform, sops-nix, ... }: let
+    home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixos-hardware, nixpkgs-terraform, sops-nix, ... }: let
 
     # creates a macOS system config
-    darwinHostConfig = system: hostname: username: nix-darwin.lib.darwinSystem {
+    darwinHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: nix-darwin.lib.darwinSystem {
       pkgs = import nixpkgs {
         inherit system;
         config = {
@@ -68,7 +70,7 @@
         };
         overlays = [ nixpkgs-terraform.overlays.default ];
       };
-      specialArgs = { inherit inputs hostname username; };
+      specialArgs = { inherit inputs hostname username; } // additionalSpecialArgs;
       modules = [
         nix-homebrew.darwinModules.nix-homebrew {
           nix-homebrew = {
@@ -92,11 +94,11 @@
 
         ./modules/system/common/all-darwin.nix # system-wide stuff
         ./modules/hosts/darwin/${hostname} # host specific stuff
-      ]; # end modules
+      ] ++ additionalModules; # end modules
     }; # end darwinSystem
 
     # creates a nixos system config
-    nixosHostConfig = system: hostname: username: nixpkgs.lib.nixosSystem {
+    nixosHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs compose2nix hostname username;
         pkgs = import nixpkgs {
           inherit system;
@@ -106,7 +108,7 @@
           };
           overlays = [ nixpkgs-terraform.overlays.default ];
         };
-      };
+      } // additionalSpecialArgs;
       modules = [
         disko.nixosModules.disko
 
@@ -126,10 +128,10 @@
         sops-nix.nixosModules.sops # system wide secrets management
         ./modules/system/common/all-nixos.nix # system-wide stuff
         ./modules/hosts/nixos/${hostname} # host specific stuff
-      ];
+      ] ++ additionalModules;
     }; # end nixosSystem
 
-    linuxHomeConfig = system: hostname: username: home-manager.lib.homeManagerConfiguration {
+    linuxHomeConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: home-manager.lib.homeManagerConfiguration {
       extraSpecialArgs = { inherit genebean-omp-themes hostname username;
         pkgs = import nixpkgs {
           inherit system;
@@ -139,7 +141,7 @@
           };
           overlays = [ nixpkgs-terraform.overlays.default ];
         };
-      };
+      } // additionalSpecialArgs;
       modules = [
         ./modules/home-manager/hosts/${hostname}/${username}.nix
         {
@@ -149,24 +151,80 @@
           };
         }
         sops-nix.homeManagerModules.sops
-      ];
+      ] ++ additionalModules;
     }; # end homeManagerConfiguration
 
   in {
-      darwinConfigurations = {
-        AirPuppet = darwinHostConfig "x86_64-darwin" "AirPuppet" "gene";
-        Blue-Rock = darwinHostConfig "x86_64-darwin" "Blue-Rock" "gene.liverman";
-        mightymac = darwinHostConfig "aarch64-darwin" "mightymac" "gene.liverman";
+    # Darwin (macOS) hosts
+    darwinConfigurations = {
+      AirPuppet = darwinHostConfig {
+        system = "x86_64-darwin";
+        hostname = "AirPuppet";
+        username = "gene";
+        additionalModules = [];
+        additionalSpecialArgs = {};
       };
-
-      nixosConfigurations = {
-        hetznix01 = nixosHostConfig "aarch64-linux" "hetznix01" "gene";
-        nixnuc = nixosHostConfig "x86_64-linux" "nixnuc" "gene";
-        rainbow-planet = nixosHostConfig "x86_64-linux" "rainbow-planet" "gene";
+      Blue-Rock = darwinHostConfig {
+        system = "x86_64-darwin";
+        hostname = "Blue-Rock";
+        username = "gene.liverman";
+        additionalModules = [];
+        additionalSpecialArgs = {};
       };
+      mightymac = darwinHostConfig {
+        system = "aarch64-darwin";
+        hostname = "mightymac";
+        username = "gene.liverman";
+        additionalModules = [];
+        additionalSpecialArgs = {};
+      };
+    }; # end darwinConfigurations
 
-     homeConfigurations = {
-       gene = linuxHomeConfig "x86_64-linux" "mini-watcher" "gene";
-     };
+    # NixOS hosts
+    nixosConfigurations = {
+      # bigboy = nixosHostConfig {
+      #   system = "x86_64-linux";
+      #   hostname = "bigbox";
+      #   username = "gene";
+      #   additionalModules = [
+      #     nixos-hardware.nixosModules.lenovo-thinkpad-p52
+      #   ];
+      #   additionalSpecialArgs = {};
+      # };
+      hetznix01 = nixosHostConfig {
+        system = "aarch64-linux";
+        hostname = "hetznix01";
+        username = "gene";
+        additionalModules = [];
+        additionalSpecialArgs = {};
+      };
+      nixnuc = nixosHostConfig {
+        system = "x86_64-linux";
+        hostname = "nixnuc";
+        username = "gene";
+        additionalModules = [];
+        additionalSpecialArgs = {};
+      };
+      rainbow-planet = nixosHostConfig {
+        system = "x86_64-linux";
+        hostname = "rainbow-planet";
+        username = "gene";
+        additionalModules = [
+          nixos-hardware.nixosModules.dell-xps-13-9360
+        ];
+        additionalSpecialArgs = {};
+      };
+    }; # end nixosConfigurations
+
+    # Home Manager (only) users
+    homeConfigurations = {
+      gene = linuxHomeConfig {
+        system = "x86_64-linux";
+        hostname = "mini-watcher";
+        username = "gene";
+        additionalModules = [];
+        additionalSpecialArgs = {};
+      };
+    }; # end homeConfigurations
   };
 }

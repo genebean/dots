@@ -14,6 +14,8 @@
     };
   };
 
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
   environment.systemPackages = with pkgs; [
     # host specific apps
     boinc
@@ -64,6 +66,8 @@
     };
     hyprland.enable = true;
 
+    ssh.askPassword = "ssh-askpass";
+
     # common programs that really should be in another file
     # required for setting to be picked up by xfce4-terminal
     xfconf.enable = true;
@@ -71,6 +75,11 @@
 
   services = {
     boinc.enable = true;
+    desktopManager.plasma6.enable = true;
+    displayManager.sddm = {
+      enable = true;
+      wayland.enable = true;
+    };
     fwupd.enable = true;
     gnome.gnome-keyring.enable = true; # Provides secret storage
     gvfs.enable = true; # Used by Nautilus
@@ -85,19 +94,22 @@
       ];
       useRoutingFeatures = "client";
     };
+    thermald.enable = true;
     xserver = {
       enable = true;    # Enable the X11 windowing system.
 
       # Configure keymap in X11
-      layout = "us";
-      xkbVariant = "";
-
-      displayManager = {
-        gdm = {
-          enable = true;
-          wayland = true;
-        };
+      xkb = {
+        layout = "us";
+        variant = "";
       };
+
+      # displayManager = {
+      #   gdm = {
+      #     enable = true;
+      #     wayland = true;
+      #   };
+      # };
       desktopManager.gnome.enable = true;
     };
   };
