@@ -47,7 +47,6 @@
     meld
     slack
     tilix
-    vivaldi
     xfce.xfce4-terminal
     zoom-us
   ];
