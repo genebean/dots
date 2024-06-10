@@ -25,6 +25,7 @@ in {
     httpie
     hub
     jq
+    lazydocker
     lazygit
     lua-language-server
     minicom
