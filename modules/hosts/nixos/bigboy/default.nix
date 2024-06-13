@@ -12,8 +12,25 @@
     ];
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = {
+    grub = {
+      device = "nodev";
+      enable = true;
+      useOSProber = true;
+      efiSupport = true;
+      # set $FS_UUID to the UUID of the EFI partition
+      extraEntries = ''
+        menuentry "Kubuntu" {
+          insmod part_gpt
+          insmod fat
+          insmod chain
+          search --no-floppy --fs-uuid --set=root B208-923B
+          chainloader /EFI/ubuntu/grubx64.efi
+        }
+      '';
+    };
+    efi.canTouchEfiVariables = true;
+  };
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
