@@ -31,6 +31,7 @@
       "node_exporter"
       "podman"
       "telegraf"
+      "terraform-docs"
     ];
     casks = [
       "asana"
