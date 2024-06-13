@@ -29,11 +29,13 @@
     taps = [
       "homebrew/cask-fonts"
       "null-dev/firefox-profile-switcher"
+      "theseal/ssh-askpass"
     ];
     brews = [
       "fastfetch"
       "ffmpeg"
       "firefox-profile-switcher-connector"
+      "ssh-askpass"
       "telnet"
     ];
     casks = [
