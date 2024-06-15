@@ -1,10 +1,11 @@
-{ config, username,  ... }: {
+{ username,  ... }: {
   imports = [
     ./hardware-configuration.nix
     ./disk-config.nix
     # Added post-install
     ./sops.nix
     ./nginx.nix
+    ./restic.nix
     ./tailscale.nix
   ];
 
