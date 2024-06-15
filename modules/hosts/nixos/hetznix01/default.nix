@@ -4,7 +4,7 @@
     ./disk-config.nix
   ];
 
-  system.stateVersion = "23.11";
+  system.stateVersion = "24.05";
 
   boot.loader.grub = {
     # no need to set devices, disko will add all devices that have a
