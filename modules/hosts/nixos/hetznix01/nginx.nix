@@ -37,7 +37,7 @@ in {
           '';
         };
       };
-      "utk-eu.technicalissues.us" = {
+      "utk-v2.technicalissues.us" = {
         listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
         enableACME = true;
         acmeRoot = null;
