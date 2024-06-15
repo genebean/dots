@@ -192,7 +192,7 @@
         additionalSpecialArgs = {};
       };
       hetznix01 = nixosHostConfig {
-        system = "aarch64-linux";
+        system = "x86_64-linux";
         hostname = "hetznix01";
         username = "gene";
         additionalModules = [];
