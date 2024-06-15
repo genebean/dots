@@ -118,6 +118,7 @@
     angryipscanner
     displaylink
     gitkraken
+    handbrake
     libreoffice
     meld
     networkmanager-openvpn
