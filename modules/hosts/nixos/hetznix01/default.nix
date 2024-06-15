@@ -53,9 +53,8 @@ in {
         add_header Strict-Transport-Security $hsts_header;
       '';
       virtualHosts = {
-        "nue.technicalissues.us" = {
+        "hetznix01.technicalissues.us" = {
           default = true;
-          serverAliases = [ "hetznix01.technicalissues.us" ];
           listen = [
             { port = http_port; addr = "0.0.0.0"; }
             { port = https_port; addr = "0.0.0.0"; ssl = true; }
