@@ -1,6 +1,6 @@
 ---
 keys:
-  - &system_hetznix01 age1a652ev7gekx4aj589s8fd27ul9j5ugpdwg7pxhmqcwdjwwq9gf2qv38um9
+  - &system_hetznix01 age1rd55wsu0hhvxk25tm69d9h57z0z0u6556x4ypg09muj3vh4yqs5qaw23nu
   - &system_nixnuc age1g24zhwvgenpc4wqejt63thvgd4rn5x9n7nnwwme7dm83nfqpp93se2vmq4
   - &system_rainbow_planet age15xlw5vnnjdx2ypz6rq0mqcywuaj3yx8y6lrgf95satafqf7y4qus6rv6ck
   - &user_airpuppet age1awdf9h0avajf57cudx0rjfmxu2wlxw8wf3sa7yvfk8rp4j6taecsu74x77

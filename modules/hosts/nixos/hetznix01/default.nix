@@ -2,6 +2,10 @@
   imports = [
     ./hardware-configuration.nix
     ./disk-config.nix
+    # Added post-install
+    ./sops.nix
+    ./nginx.nix
+    ./tailscale.nix
   ];
 
   system.stateVersion = "24.05";
