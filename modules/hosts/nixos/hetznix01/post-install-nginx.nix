@@ -3,6 +3,7 @@
   http_port = 80;
   https_port = 443;
 in {
+
   imports = [
     ../../../system/common/linux/lets-encrypt.nix
   ];
@@ -38,7 +39,7 @@ in {
           '';
         };
       };
-      "ot.${domain}}" = {
+      "ot.${domain}" = {
         listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
         enableACME = true;
         acmeRoot = null;
@@ -47,34 +48,43 @@ in {
         locations = {
           # OwnTracks Frontend container
           "/" = {
-            proxypass = "http://127.0.0.1:8082";
-            recommendedproxysettings = true;
+            proxyPass = "http://127.0.0.1:8082";
+            recommendedProxySettings = true;
           };
+        };
+      };
+      "recorder.${domain}" = {
+        listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+        enableACME = true;
+        acmeRoot = null;
+        forceSSL = true;
+        basicAuthFile = config.sops.secrets.owntracks_basic_auth.path;
+        locations = {
           # OwnTracks Recorder
-          "/owntracks/" = {
-            proxypass = "http://127.0.0.1:8083";
-            recommendedproxysettings = true;
+          "/" = {
+            proxyPass = "http://127.0.0.1:8083";
+            recommendedProxySettings = true;
           };
-          "/owntracks/pub" = { # Client apps need to point to this path
+          "/pub" = { # Client apps need to point to this path
             extraConfig = "proxy_set_header X-Limit-U $remote_user;";
-            proxypass = "http://127.0.0.1:8083/pub";
-            recommendedproxysettings = true;
+            proxyPass = "http://127.0.0.1:8083/pub";
+            recommendedProxySettings = true;
           };
-          "/owntracks/static/" = {
-            proxypass = "http://127.0.0.1:8083/static/";
-            recommendedproxysettings = true;
+          "/static/" = {
+            proxyPass = "http://127.0.0.1:8083/static/";
+            recommendedProxySettings = true;
           };
-          "/owntracks/utils/" = {
-            proxypass = "http://127.0.0.1:8083/utils/";
-            recommendedproxysettings = true;
+          "/utils/" = {
+            proxyPass = "http://127.0.0.1:8083/utils/";
+            recommendedProxySettings = true;
           };
-          "/owntracks/view/" = {
+          "/view/" = {
             extraConfig = "proxy_buffering off;";
-            proxypass = "http://127.0.0.1:8083/view/";
-            recommendedproxysettings = true;
+            proxyPass = "http://127.0.0.1:8083/view/";
+            recommendedProxySettings = true;
           };
-          "/owntracks/ws" = {
-            extraConfig = "rewrite ^/owntracks/(.*) /$1 break;";
+          "/ws" = {
+            extraConfig = "rewrite ^/(.*) /$1 break;";
             proxyPass = "http://127.0.0.1:8083";
             recommendedProxySettings = true;
           };

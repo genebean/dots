@@ -1,8 +1,7 @@
-{ username,  ... }: {
+{ pkgs, username,  ... }: {
   imports = [
     ./hardware-configuration.nix
     ./disk-config.nix
-    ./owntracks.nix
     ./post-install-general.nix
     ./post-install-nginx.nix
   ];
@@ -16,6 +15,11 @@
     efiSupport = true;
     efiInstallAsRemovable = true;
   };
+
+  environment.systemPackages = with pkgs; [
+    podman-tui # status of containers in the terminal
+    podman-compose
+  ];
 
   networking = {
     # Open ports in the firewall.
@@ -74,6 +78,7 @@
     isNormalUser = true;
     description = "Gene Liverman";
     extraGroups = [ "networkmanager" "wheel" ];
+    linger = true;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBjigwV0KnnaTnFmKjjvnULa5X+hvsy2FAlu+lUUY59f gene@rainbow-planet"
     ];
