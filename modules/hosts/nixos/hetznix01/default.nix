@@ -2,11 +2,9 @@
   imports = [
     ./hardware-configuration.nix
     ./disk-config.nix
-    # Added post-install
-    ./sops.nix
-    ./nginx.nix
-    ./restic.nix
-    ./tailscale.nix
+    ./owntracks.nix
+    ./post-install-general.nix
+    ./post-install-nginx.nix
   ];
 
   system.stateVersion = "24.05";
