@@ -34,6 +34,10 @@
         owner = "${username}";
         path = "/home/${username}/.private-env";
       };
+      matrix_secrets_yaml = {
+        owner = config.users.users.matrix-synapse.name;
+        restartUnits = ["matrix-synapse.service"];
+      };
       mqtt_recorder_pass.restartUnits = ["mosquitto.service"];
       owntracks_basic_auth = {
         owner = config.users.users.nginx.name;

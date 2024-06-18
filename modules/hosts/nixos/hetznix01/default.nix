@@ -42,7 +42,7 @@
     fail2ban.enable = true;
     postgresql = {
       enable = true;
-      package = pkgs.postresql_16;
+      package = pkgs.postgresql_16;
     };
     uptime-kuma = {
       enable = true;

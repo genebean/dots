@@ -6,10 +6,10 @@ in {
     configureRedisLocally = true;
     enableRegistrationScript = true;
     extraConfigFiles = [
-      config.sops.secrets.matrix_secrets_yaml;
+      config.sops.secrets.matrix_secrets_yaml.path
     ];
     settings = {
-      public_baseurl = "https://matrix.technicalissues.us";
+      public_baseurl = "https://matrix-test.technicalissues.us";
       listeners = [
         {
           port = 8008;
