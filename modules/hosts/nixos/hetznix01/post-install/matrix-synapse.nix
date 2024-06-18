@@ -4,6 +4,10 @@ in {
   services.matrix-synapse = {
     enable = true;
     configureRedisLocally = true;
+    enableRegistrationScript = true;
+    extraConfigFiles = [
+      config.sops.secrets.matrix_secrets_yaml;
+    ];
     settings = {
       public_baseurl = "https://matrix.technicalissues.us";
       listeners = [
@@ -36,8 +40,6 @@ in {
       };
       url_preview_enabled = true;
       enable_registration = false;
-      registration_shared_secret = config.sops.secrets.matrix-registration_shared_secret;
-      macaroon_secret_key = config.sops.secrets.matrix-macaroon_secret_key;
       trusted_key_servers = [{ server_name = "matrix.org"; }];
 
     };
