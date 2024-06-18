@@ -1,6 +1,8 @@
 { config, username, ... }: {
   imports = [
-    ../../../system/common/linux/restic.nix
+    ../../../../system/common/linux/restic.nix
+    ./matrix-synapse.nix
+    ./nginx.nix
   ];
 
   services = {
@@ -22,7 +24,7 @@
 
   sops = {
     age.keyFile = /home/${username}/.config/sops/age/keys.txt;
-    defaultSopsFile = ./secrets.yaml;
+    defaultSopsFile = ../secrets.yaml;
     secrets = {
       local_git_config = {
         owner = "${username}";

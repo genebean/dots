@@ -2,8 +2,7 @@
   imports = [
     ./hardware-configuration.nix
     ./disk-config.nix
-    ./post-install-general.nix
-    ./post-install-nginx.nix
+    ./post-install
   ];
 
   system.stateVersion = "24.05";
@@ -41,6 +40,10 @@
 
   services = {
     fail2ban.enable = true;
+    postgresql = {
+      enable = true;
+      package = pkgs.postresql_16;
+    };
     uptime-kuma = {
       enable = true;
       settings = {

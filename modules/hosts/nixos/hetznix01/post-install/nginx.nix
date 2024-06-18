@@ -5,7 +5,7 @@
 in {
 
   imports = [
-    ../../../system/common/linux/lets-encrypt.nix
+    ../../../../system/common/linux/lets-encrypt.nix
   ];
   services.nginx = {
     enable = true;
