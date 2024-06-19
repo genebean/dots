@@ -1,7 +1,8 @@
-{ config, username,  ... }: {
+{ pkgs, username,  ... }: {
   imports = [
     ./hardware-configuration.nix
     ./disk-config.nix
+    ./post-install
   ];
 
   system.stateVersion = "24.05";
@@ -13,6 +14,11 @@
     efiSupport = true;
     efiInstallAsRemovable = true;
   };
+
+  environment.systemPackages = with pkgs; [
+    podman-tui # status of containers in the terminal
+    podman-compose
+  ];
 
   networking = {
     # Open ports in the firewall.
@@ -34,6 +40,11 @@
 
   services = {
     fail2ban.enable = true;
+    logrotate.enable = true;
+    postgresql = {
+      enable = true;
+      package = pkgs.postgresql_16;
+    };
     uptime-kuma = {
       enable = true;
       settings = {
@@ -71,6 +82,7 @@
     isNormalUser = true;
     description = "Gene Liverman";
     extraGroups = [ "networkmanager" "wheel" ];
+    linger = true;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBjigwV0KnnaTnFmKjjvnULa5X+hvsy2FAlu+lUUY59f gene@rainbow-planet"
     ];
