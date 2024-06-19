@@ -38,6 +38,7 @@
         owner = config.users.users.matrix-synapse.name;
         restartUnits = ["matrix-synapse.service"];
       };
+      matrix_homeserver_signing_key.owner = config.users.users.matrix-synapse.name;
       mqtt_recorder_pass.restartUnits = ["mosquitto.service"];
       owntracks_basic_auth = {
         owner = config.users.users.nginx.name;

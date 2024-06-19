@@ -40,6 +40,7 @@
 
   services = {
     fail2ban.enable = true;
+    logrotate.enable = true;
     postgresql = {
       enable = true;
       package = pkgs.postgresql_16;

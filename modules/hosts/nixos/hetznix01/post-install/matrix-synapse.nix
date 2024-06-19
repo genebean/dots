@@ -9,7 +9,9 @@ in {
       config.sops.secrets.matrix_secrets_yaml.path
     ];
     settings = {
-      public_baseurl = "https://matrix-test.technicalissues.us";
+      server_name = "technicalissues.us";
+      public_baseurl = "https://matrix.technicalissues.us";
+      signing_key_path = config.sops.secrets.matrix_homeserver_signing_key.path;
       listeners = [
         {
           port = 8008;
@@ -31,17 +33,9 @@ in {
           ];
         }
       ];
-      database = {
-        name = "psycopg2";
-        args = {
-          user = "synapse_user";
-          database = "synapse";
-        };
-      };
       url_preview_enabled = true;
       enable_registration = false;
       trusted_key_servers = [{ server_name = "matrix.org"; }];
-
     };
 
   };
