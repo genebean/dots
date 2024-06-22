@@ -1,6 +1,4 @@
-{ config, pkgs, ... }: let
-  #
-in {
+{ config, ... }: {
   services.matrix-synapse = {
     enable = true;
     configureRedisLocally = true;

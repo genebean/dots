@@ -24,8 +24,11 @@
     # Open ports in the firewall.
     firewall.allowedTCPPorts = [
       22 # ssh
+      25 # SMTP (unencrypted)
       80 # http to local Nginx
       443 # https to local Nginx
+      465 # SMTP with TLS 
+      587 # SMTP with STARTTLS
     ];
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
@@ -44,6 +47,11 @@
     postgresql = {
       enable = true;
       package = pkgs.postgresql_16;
+    };
+    postgresqlBackup = {
+      enable = true;
+      backupAll = true;
+      startAt = "*-*-* 23:00:00";
     };
     uptime-kuma = {
       enable = true;
