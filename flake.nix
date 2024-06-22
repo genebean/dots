@@ -49,6 +49,8 @@
       inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
     };
 
+    simple-nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-24.05";
+
     # Secrets managemnt
     sops-nix = {
       url = "github:mic92/sops-nix";
@@ -58,7 +60,8 @@
   }; # end inputs
   outputs = inputs@{
     self, nixpkgs, nixpkgs-unstable, compose2nix, disko, genebean-omp-themes,
-    home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixos-hardware, nixpkgs-terraform, sops-nix, ... }: let
+    home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixos-hardware, nixpkgs-terraform,
+    simple-nixos-mailserver, sops-nix, ... }: let
 
     # creates a macOS system config
     darwinHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: nix-darwin.lib.darwinSystem {
@@ -195,7 +198,9 @@
         system = "x86_64-linux";
         hostname = "hetznix01";
         username = "gene";
-        additionalModules = [];
+        additionalModules = [
+          simple-nixos-mailserver.nixosModule
+        ];
         additionalSpecialArgs = {};
       };
       nixnuc = nixosHostConfig {

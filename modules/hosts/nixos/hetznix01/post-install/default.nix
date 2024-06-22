@@ -1,12 +1,45 @@
 { config, username, ... }: {
   imports = [
+    ../../../../system/common/linux/lets-encrypt.nix
     ../../../../system/common/linux/restic.nix
     ./matrix-synapse.nix
     ./nginx.nix
   ];
 
+  mailserver = {
+    enable = true;
+    enableImap = false;
+    enableImapSsl = false;
+    fqdn = "mail.alt.technicalissues.us";
+    domains = [
+      "alt.technicalissues.us"
+      "indianspringsbsa.org"
+    ];
+    forwards = {
+      "webmaster@indianspringsbsa.org" = "gene+indianspringsbsa.org@geneliverman.com";
+      "newsletter@indianspringsbsa.org" = "gene+indianspringsbsa.org@geneliverman.com";
+      "@alt.technicalissues.us" = "gene+alt.technicalissues.us@geneliverman.com";
+    };
+
+    # Use Let's Encrypt certificates from Nginx
+    certificateScheme = "acme";
+  };
+
+  # Cert for the mail server
+  security.acme.certs."alt.technicalissues.us" = {
+    extraDomainNames = [
+      "mail.alt.technicalissues.us"
+      "mail.indianspringsbsa.org"
+    ];
+    reloadServices = [
+      "postfix.service"
+    ];
+  };
+
   services = {
     restic.backups.daily.paths = [
+      "${config.users.users.${username}.home}/compose-files/owntracks"
+      "/var/backup/postgresql"
       "/var/lib/uptime-kuma"
     ];
     tailscale = {
