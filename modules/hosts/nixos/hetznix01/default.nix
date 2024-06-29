@@ -93,6 +93,7 @@
     linger = true;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBjigwV0KnnaTnFmKjjvnULa5X+hvsy2FAlu+lUUY59f gene@rainbow-planet"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIp42X5DZ713+bgbOO+GXROufUFdxWo7NjJbGQ285x3N gene.liverman@ltnglobal.com"
     ];
   };
 }
