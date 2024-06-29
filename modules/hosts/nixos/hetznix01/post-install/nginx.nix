@@ -26,6 +26,9 @@ in {
       "hetznix01.${domain}" = {
         serverAliases = [
           "technicalissues.us"
+          "alt.technicalissues.us"
+          "mail.alt.technicalissues.us"
+          "mail.indianspringsbsa.org"
         ];
         default = true;
         enableACME = true;
@@ -119,6 +122,12 @@ in {
             proxyPass = "http://127.0.0.1:8083";
           };
         };
+      };
+      "stats.${domain}" = {
+        enableACME = true;
+        acmeRoot = null;
+        forceSSL = true;
+        locations."/".proxyPass = "http://127.0.0.1:8001";
       };
       "utk.${domain}" = {
         enableACME = true;
