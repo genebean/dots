@@ -1,4 +1,6 @@
-{ config, username, ... }: {
+{ config, username, ... }: let
+  domain = "technicalissues.us";
+in {
   imports = [
     ../../../../system/common/linux/lets-encrypt.nix
     ../../../../system/common/linux/restic.nix
@@ -10,33 +12,51 @@
     enable = true;
     enableImap = false;
     enableImapSsl = false;
-    fqdn = "mail.alt.technicalissues.us";
+    fqdn = "mail.alt.${domain}";
     domains = [
-      "alt.technicalissues.us"
+      "alt.${domain}"
       "indianspringsbsa.org"
     ];
     forwards = {
       "webmaster@indianspringsbsa.org" = "gene+indianspringsbsa.org@geneliverman.com";
       "newsletter@indianspringsbsa.org" = "gene+indianspringsbsa.org@geneliverman.com";
-      "@alt.technicalissues.us" = "gene+alt.technicalissues.us@geneliverman.com";
+      "@alt.${domain}" = "gene+alt.${domain}@geneliverman.com";
+      "${username}@localhost" = "${username}@technicalissues.us";
+      "root@localhost" = "root@technicalissues.us";
+      "root@${config.networking.hostName}" = "root@technicalissues.us";
     };
 
     # Use Let's Encrypt certificates from Nginx
     certificateScheme = "acme";
   };
 
-  # Cert for the mail server
-  security.acme.certs."alt.technicalissues.us" = {
-    extraDomainNames = [
-      "mail.alt.technicalissues.us"
-      "mail.indianspringsbsa.org"
-    ];
-    reloadServices = [
-      "postfix.service"
-    ];
-  };
-
   services = {
+    plausible = {
+      enable = true;
+      adminUser = {
+        # activate is used to skip the email verification of the admin-user that's
+        # automatically created by plausible. This is only supported if
+        # postgresql is configured by the module. This is done by default, but
+        # can be turned off with services.plausible.database.postgres.setup.
+        activate = true;
+        email = "${username}@technicalissues.us";
+        name = username;
+        passwordFile = config.sops.secrets.plausible_admin_pass.path;
+      };
+      database = {
+        clickhouse.setup = true;
+        postgres.setup = true;
+      };
+      mail.email = "stats@${domain}";
+      server = {
+        baseUrl = "https://stats.${domain}";
+        disableRegistration = true;
+        port = 8001;
+        # secretKeybaseFile is a path to the file which contains the secret generated
+        # with openssl as described above.
+        secretKeybaseFile = config.sops.secrets.plausible_secret_key_base.path;
+      };
+    };
     restic.backups.daily.paths = [
       "${config.users.users.${username}.home}/compose-files/owntracks"
       "/var/backup/postgresql"
@@ -77,6 +97,8 @@
         owner = config.users.users.nginx.name;
         restartUnits = ["nginx.service"];
       };
+      plausible_admin_pass.owner = config.users.users.nginx.name;
+      plausible_secret_key_base.owner = config.users.users.nginx.name;
       tailscale_key = {
         restartUnits = [ "tailscaled-autoconnect.service" ];
       };
