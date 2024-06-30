@@ -54,6 +54,9 @@ in {
     localAddress = "192.168.23.21/24";
     config = { config, pkgs, lib, ... }: {
       system.stateVersion = "23.11";
+
+      programs.traceroute.enable = true;
+
       services.nginx = {
         enable = true;
         recommendedGzipSettings = true;
