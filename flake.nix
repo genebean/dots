@@ -207,7 +207,9 @@
         system = "x86_64-linux";
         hostname = "nixnuc";
         username = "gene";
-        additionalModules = [];
+        additionalModules = [
+          simple-nixos-mailserver.nixosModule
+        ];
         additionalSpecialArgs = {};
       };
       rainbow-planet = nixosHostConfig {
