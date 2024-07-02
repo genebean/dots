@@ -52,6 +52,24 @@ in {
       intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
     ];
   };
+  
+  mailserver = {
+    enable = true;
+    enableImap = false;
+    enableImapSsl = false;
+    fqdn = "mail.${home_domain}";
+    domains = [
+      home_domain
+    ];
+    forwards = {
+      "${username}@localhost" = "${username}@technicalissues.us";
+      "root@localhost" = "root@technicalissues.us";
+      "root@${config.networking.hostName}" = "root@technicalissues.us";
+    };
+
+    # Use Let's Encrypt certificates from Nginx
+    certificateScheme = "acme";
+  };
 
   networking = {
     # Open ports in the firewall.
@@ -138,6 +156,53 @@ in {
       openFirewall = true;
     };
     lldpd.enable = true;
+    nextcloud = {
+      enable = true;
+      hostName = "nextcloud.home.technicalissues.us";
+      package = pkgs.nextcloud29; # Need to manually increment with every major upgrade.
+      appstoreEnable = true;
+      autoUpdateApps.enable = true;
+      config = {
+        adminuser = username;
+        adminpassFile = config.sops.secrets.nextcloud_admin_pass.path;
+        dbtype = "pgsql";
+      };
+      configureRedis = true;
+      database.createLocally = true;
+      #extraApps = with config.services.nextcloud.package.packages.apps; {
+      #  # List of apps we want to install and are already packaged in
+      #  # https://github.com/NixOS/nixpkgs/blob/master/pkgs/servers/nextcloud/packages/nextcloud-apps.json
+      #  inherit calendar contacts cookbook maps notes tasks;
+      #};
+      #extraAppsEnable = true;
+      home = "/orico/nextcloud";
+      https = true;
+      maxUploadSize = "100G"; # Increase the PHP maximum file upload size
+      phpOptions."opcache.interned_strings_buffer" = "16"; # Suggested by Nextcloud's health check.
+      settings = {
+        default_phone_region = "US";
+        # https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#enabledpreviewproviders
+        enabledPreviewProviders = [
+          "OC\\Preview\\BMP"
+          "OC\\Preview\\GIF"
+          "OC\\Preview\\JPEG"
+          "OC\\Preview\\Krita"
+          "OC\\Preview\\MarkDown"
+          "OC\\Preview\\MP3"
+          "OC\\Preview\\OpenDocument"
+          "OC\\Preview\\PNG"
+          "OC\\Preview\\TXT"
+          "OC\\Preview\\XBitmap"
+
+          "OC\\Preview\\HEIC"
+          "OC\\Preview\\Movie"
+        ];
+        log_type = "file";
+        maintenance_window_start = 5;
+        overwriteProtocol = "https";
+        "profile.enabled" = true;
+      };
+    };
     nginx = {
       enable = true;
       recommendedGzipSettings = true;
@@ -183,15 +248,16 @@ in {
 
         "${home_domain}" = {
           default = true;
-          serverAliases = [ "nix-tester.${home_domain}" ];
+          serverAliases = [
+            "mail.${home_domain}"
+            "nix-tester.${home_domain}"
+          ];
           listen = [
-            { port = http_port; addr = "0.0.0.0"; }
             { port = https_port; addr = "0.0.0.0"; ssl = true; }
           ];
           enableACME = true;
           acmeRoot = null;
-          addSSL = true;
-          forceSSL = false;
+          forceSSL = true;
           locations."/" = {
             return = "200 '<h1>Hello world ;)</h1>'";
             extraConfig = ''
@@ -237,6 +303,11 @@ in {
             proxy_max_temp_file_size 0;
           '';
         };
+        "nextcloud.${home_domain}" = {
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+        };
         "onlyoffice.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
           enableACME = true;
@@ -261,12 +332,23 @@ in {
         };
       };
     };
+    postgresql = {
+      enable = true;
+      package = pkgs.postgresql_16;
+    };
+    postgresqlBackup = {
+      enable = true;
+      backupAll = true;
+      startAt = "*-*-* 23:00:00";
+    };
     resolved.enable = true;
     restic.backups.daily.paths = [
-      "/orico/jellyfin/data"
-      "/orico/jellyfin/staging/downloaded-files"
+      config.services.nextcloud.home
       "${config.users.users.${username}.home}/compose-files/tandoor"
       "${config.users.users.${username}.home}/compose-files/wallabag"
+      "/orico/jellyfin/data"
+      "/orico/jellyfin/staging/downloaded-files"
+      "/var/backup/postgresql"
     ];
     zfs.autoScrub.enable = true;
   };
@@ -283,6 +365,14 @@ in {
         owner = "${username}";
         path = "/home/${username}/.private-env";
       };
+      nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
+    };
+  };
+
+  systemd.services = {
+    "nextcloud-setup" = {
+      requires = ["postgresql.service"];
+      after = ["postgresql.service"];
     };
   };
 
