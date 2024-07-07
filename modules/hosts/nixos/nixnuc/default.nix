@@ -283,6 +283,20 @@ in {
           forceSSL = true;
           locations."/".proxyPass = "http://${mini_watcher}:9999";
         };
+        "immich.${home_domain}" = {
+          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/".proxyPass = "http://${backend_ip}:2283";
+          locations."/".proxyWebsockets = true;
+          extraConfig = ''
+            client_max_body_size 0;
+            proxy_read_timeout 600s;
+            proxy_send_timeout 600s;
+            send_timeout       600s;
+          '';
+        };
         "nc.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
           enableACME = true;
@@ -329,6 +343,7 @@ in {
           acmeRoot = null;
           forceSSL = true;
           locations."/".proxyPass = "http://${backend_ip}:8080";
+          locations."/media/".alias = "/orico/tandoor-recipes/";
         };
       };
     };
@@ -419,6 +434,7 @@ in {
 
   # Compose based apps were crashing with podman compose, so back to Docker...
   virtualisation.docker.enable = true;
+  virtualisation.docker.package = pkgs.docker_26;
 
   virtualisation.podman = {
     enable = true;
