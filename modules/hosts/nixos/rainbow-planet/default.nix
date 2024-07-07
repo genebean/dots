@@ -36,6 +36,8 @@
     pop-gtk-theme
     pop-icon-theme
     pop-launcher
+    rclone
+    rclone-browser
     whalebird
     wmctrl
 
