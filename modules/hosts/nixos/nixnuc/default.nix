@@ -350,6 +350,32 @@ in {
       "/orico/jellyfin/staging/downloaded-files"
       "/var/backup/postgresql"
     ];
+    tandoor-recipes = {
+      enable = true;
+      address = "0.0.0.0";
+      extraConfig = {
+        #ALLOWED_HOSTS=*
+        #COMMENT_PREF_DEFAULT=1
+        DB_ENGINE = "django.db.backends.postgresql";
+        #DEBUG=0
+        #DEBUG_TOOLBAR=0
+        #FRACTION_PREF_DEFAULT=0
+        #GUNICORN_MEDIA=0
+        POSTGRES_DB = "tandoor";
+        POSTGRES_HOST = "127.0.0.1";
+        # This sucks, but this module doesn't support pulling the password from a file
+        POSTGRES_PASSWORD = "yummy-flat-bread-with-garlic";
+        POSTGRES_PORT = 5432;
+        POSTGRES_USER = "tandoor";
+        #REMOTE_USER_AUTH=0
+        SECRET_KEY_FILE = config.sops.secrets.tandoor_secret_key.path;
+        #SHOPPING_MIN_AUTOSYNC_INTERVAL=5
+        #SQL_DEBUG=0
+
+        MEDIA_ROOT = "/orico/tandoor-recipes/mediafiles";
+      };
+      port = 8080;
+    };
     zfs.autoScrub.enable = true;
   };
 
@@ -366,6 +392,10 @@ in {
         path = "/home/${username}/.private-env";
       };
       nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
+      tandoor_db_pass.mode = "0444";
+      tandoor_db_pass.path = "/orico/tandoor-recipes/.dbpass";
+      tandoor_secret_key.mode = "0444";
+      tandoor_secret_key.path = "/orico/tandoor-recipes/.skey";
     };
   };
 
