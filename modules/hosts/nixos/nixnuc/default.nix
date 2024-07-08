@@ -283,6 +283,20 @@ in {
           forceSSL = true;
           locations."/".proxyPass = "http://${mini_watcher}:9999";
         };
+        "immich.${home_domain}" = {
+          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/".proxyPass = "http://${backend_ip}:2283";
+          locations."/".proxyWebsockets = true;
+          extraConfig = ''
+            client_max_body_size 0;
+            proxy_read_timeout 600s;
+            proxy_send_timeout 600s;
+            send_timeout       600s;
+          '';
+        };
         "nc.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
           enableACME = true;
@@ -329,6 +343,7 @@ in {
           acmeRoot = null;
           forceSSL = true;
           locations."/".proxyPass = "http://${backend_ip}:8080";
+          locations."/media/".alias = "/orico/tandoor-recipes/";
         };
       };
     };
@@ -350,6 +365,32 @@ in {
       "/orico/jellyfin/staging/downloaded-files"
       "/var/backup/postgresql"
     ];
+    tandoor-recipes = {
+      enable = true;
+      address = "0.0.0.0";
+      extraConfig = {
+        #ALLOWED_HOSTS=*
+        #COMMENT_PREF_DEFAULT=1
+        DB_ENGINE = "django.db.backends.postgresql";
+        #DEBUG=0
+        #DEBUG_TOOLBAR=0
+        #FRACTION_PREF_DEFAULT=0
+        #GUNICORN_MEDIA=0
+        POSTGRES_DB = "tandoor";
+        POSTGRES_HOST = "127.0.0.1";
+        # This sucks, but this module doesn't support pulling the password from a file
+        POSTGRES_PASSWORD = "yummy-flat-bread-with-garlic";
+        POSTGRES_PORT = 5432;
+        POSTGRES_USER = "tandoor";
+        #REMOTE_USER_AUTH=0
+        SECRET_KEY_FILE = config.sops.secrets.tandoor_secret_key.path;
+        #SHOPPING_MIN_AUTOSYNC_INTERVAL=5
+        #SQL_DEBUG=0
+
+        MEDIA_ROOT = "/orico/tandoor-recipes/mediafiles";
+      };
+      port = 8080;
+    };
     zfs.autoScrub.enable = true;
   };
 
@@ -366,6 +407,10 @@ in {
         path = "/home/${username}/.private-env";
       };
       nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
+      tandoor_db_pass.mode = "0444";
+      tandoor_db_pass.path = "/orico/tandoor-recipes/.dbpass";
+      tandoor_secret_key.mode = "0444";
+      tandoor_secret_key.path = "/orico/tandoor-recipes/.skey";
     };
   };
 
@@ -389,6 +434,7 @@ in {
 
   # Compose based apps were crashing with podman compose, so back to Docker...
   virtualisation.docker.enable = true;
+  virtualisation.docker.package = pkgs.docker_26;
 
   virtualisation.podman = {
     enable = true;
