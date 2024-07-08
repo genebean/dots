@@ -2,26 +2,50 @@
 
 This repo is a Nix flake that manages most of my setup on macOS and fully manages machines I have that run NixOS as their operating system.
 
+- [Flake structure](#flake-structure)
+- [Note](#note)
+- [Repo structure](#repo-structure)
+- [Historical bits](#historical-bits)
+- [Adding a new macOS host](#adding-a-new-macos-host)
+  - [Extras steps not done by Nix and/or Homebrew and/or mas](#extras-steps-not-done-by-nix-andor-homebrew-andor-mas)
+    - [Firefox profile switcher](#firefox-profile-switcher)
+    - [Setup sudo via  Touch ID](#setup-sudo-via--touch-id)
+    - [Atuin](#atuin)
+    - [Mouse support](#mouse-support)
+- [Adding a NixOS host](#adding-a-nixos-host)
+  - [Post-install](#post-install)
+
+
 ## Flake structure
 
-The Nix bits are driven by `flake.nix` which pulls in things under `modules/`. Initial support is for both x86 macOS and NixOS. The flake is structured like so:
+The Nix bits are driven by `flake.nix` which pulls in things under `modules/`. Both Intel and Apple Silicon macOS are suppoted, as is NixOS. The flake is structured like so:
 
 - description: a human readable description of this flake
 - inputs: all the places things are pulled from
 - outputs:
   - all the outputs from the inputs
   - a `let` ... `in` block that contains:
-    - `darwinHostConfig` which takes 3 params and pulls in all the things needed to use Nix on a macOS host
-    - `nixosHostConfig` which takes 3 params and pulls in all the things needed to configure a NixOS host
+    - `darwinHostConfig` which takes a set of paramters as an attribute set and pulls in all the things needed to use Nix on a macOS host
+    - `nixosHostConfig` which takes a set of parameters as an attribute set and pulls in all the things needed to configure a NixOS host
+    - `linuxHomeConfig` which takes a set of paramters as an attribute set and pulls in the things I manage on non-NixOS Linux hosts
   - the body of outputs that contains:
-    - `darwinConfigurations` contains an entry for each macOS host set to the results of a call to `darwinHostConfig` with values for each of the required parameters
-    - `nixosConfigurations` contains an entry for each nixOS host set to the results of a call to `nixosHostConfig` with values for each of the required parameters
+    - `darwinConfigurations` contains is an attribute set that contains keys named for each macOS host set to the results of a call to `darwinHostConfig` with values for each of the required parameters
+    - `nixosConfigurations` contains is an attribute set that contains keys named for each NixOS host set to the results of a call to `darwinHostConfig` with values for each of the required parameters
+    - `homeConfigurations` contains an entry for each username set to the results of a call to `linuxHomeConfig` with values for each of the required parameters
 
 The parameters on `darwinHostConfig` & `nixosHostConfig` are:
 
 - `system:` the system definition to use for nixpkgs
 - `hostname:` the hostname of the machine being configured
 - `username:` the username being configured on the host (all code currently assumes there is a single human user managed by Nix)
+- `additionalModules:` any nix modules that are desired to supplement the default for the host. An example use case for this is adding in the hardware specific module from `nixos-hardware`.
+- `additionalSpecialArgs:` any supplemental arguments to be passed to `specialArgs`.
+
+The parameters on `linxuHomeConfig` are the same as the above.
+
+## Note
+
+> All the bits below here are useful, but may be slightly outdated... I have not done a good job of keeping them updated.
 
 ## Repo structure
 
