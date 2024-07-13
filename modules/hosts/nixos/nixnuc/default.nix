@@ -361,6 +361,7 @@ in {
       config.services.nextcloud.home
       "${config.users.users.${username}.home}/compose-files/tandoor"
       "${config.users.users.${username}.home}/compose-files/wallabag"
+      "/orico/immich/library"
       "/orico/jellyfin/data"
       "/orico/jellyfin/staging/downloaded-files"
       "/var/backup/postgresql"
