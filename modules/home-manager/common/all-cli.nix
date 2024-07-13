@@ -17,6 +17,7 @@ in {
     duf
     esptool
     fd
+    f2
     git-filter-repo
     glab
     gomuks
