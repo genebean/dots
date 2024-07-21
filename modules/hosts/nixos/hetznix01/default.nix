@@ -23,12 +23,13 @@
   networking = {
     # Open ports in the firewall.
     firewall.allowedTCPPorts = [
-      22  # ssh
-      25  # SMTP (unencrypted)
-      80  # http to local Nginx
-      443 # https to local Nginx
-      465 # SMTP with TLS 
-      587 # SMTP with STARTTLS
+      22   # ssh
+      25   # SMTP (unencrypted)
+      80   # http to local Nginx
+      443  # https to local Nginx
+      465  # SMTP with TLS
+      587  # SMTP with STARTTLS
+      8448 # Matrix Synapse
     ];
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
