@@ -39,6 +39,7 @@ in {
     nvd
     onefetch
     powershell
+    pre-commit
     puppet-lint
     rename
     ruby
