@@ -63,6 +63,8 @@
     home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixos-hardware, nixpkgs-terraform,
     simple-nixos-mailserver, sops-nix, ... }: let
 
+    local_overlays = import ./modules/overlays {  };
+
     # creates a macOS system config
     darwinHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: nix-darwin.lib.darwinSystem {
       pkgs = import nixpkgs {
@@ -71,7 +73,10 @@
           allowUnfree = true;
           permittedInsecurePackages = [ "python-2.7.18.7" ];
         };
-        overlays = [ nixpkgs-terraform.overlays.default ];
+        overlays = [
+          local_overlays.local_pkgs
+          nixpkgs-terraform.overlays.default
+        ];
       };
       specialArgs = { inherit inputs hostname username; } // additionalSpecialArgs;
       modules = [
@@ -109,7 +114,10 @@
             allowUnfree = true;
             permittedInsecurePackages = [ "electron-21.4.4" ];
           };
-          overlays = [ nixpkgs-terraform.overlays.default ];
+          overlays = [
+            local_overlays.local_pkgs
+            nixpkgs-terraform.overlays.default
+          ];
         };
       } // additionalSpecialArgs;
       modules = [
@@ -142,7 +150,10 @@
             allowUnfree = true;
             permittedInsecurePackages = [ "electron-21.4.4" ];
           };
-          overlays = [ nixpkgs-terraform.overlays.default ];
+          overlays = [
+            local_overlays.local_pkgs
+            nixpkgs-terraform.overlays.default
+          ];
         };
       } // additionalSpecialArgs;
       modules = [

@@ -39,6 +39,7 @@ in {
     nvd
     onefetch
     powershell
+    puppet-editor-services
     puppet-lint
     rename
     ruby
