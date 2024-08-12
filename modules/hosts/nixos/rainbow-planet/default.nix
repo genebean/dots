@@ -22,6 +22,7 @@
     brightnessctl
     butane
     cilium-cli
+    displaylink
     gnome.gnome-tweaks
     gnome.nautilus
     gnomeExtensions.dash-to-panel
@@ -65,6 +66,7 @@
 
   networking = {
     networkmanager.enable = true;
+    useNetworkd = true;
   };
 
   programs = {
@@ -157,6 +159,7 @@
   };
 
   users.extraGroups.vboxusers.members = [ "${username}" ];
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${username} = {
     isNormalUser = true;
