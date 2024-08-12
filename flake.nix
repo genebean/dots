@@ -17,6 +17,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    flox = {
+      url = "github:flox/flox/v1.2.3";
+      # their nixpkgs currently follow release-23.11
+    };
+
     # My oh-my-posh theme
     genebean-omp-themes = {
       url = "github:genebean/my-oh-my-posh-themes";
@@ -64,7 +69,7 @@
 
   }; # end inputs
   outputs = inputs@{
-    self, nixpkgs, nixpkgs-unstable, compose2nix, disko, genebean-omp-themes,
+    self, nixpkgs, nixpkgs-unstable, compose2nix, disko, flox, genebean-omp-themes,
     home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixos-cosmic,
     nixos-hardware, nixpkgs-terraform, simple-nixos-mailserver, sops-nix, ...
   }: let
