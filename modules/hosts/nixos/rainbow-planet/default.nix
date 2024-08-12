@@ -86,6 +86,7 @@
 
   services = {
     boinc.enable = true;
+    desktopManager.cosmic.enable = true;
     desktopManager.plasma6.enable = true;
     displayManager.sddm = {
       enable = true;
@@ -165,6 +166,7 @@
       tailscale-systray
     ];
   };
+
   virtualisation = {
     containers.enable = true;
     libvirtd = {
