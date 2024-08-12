@@ -49,12 +49,14 @@
     # ];
     substituters = [
       "https://cache.nixos.org" # default one
+      "https://cache.flox.dev"
       "https://cosmic.cachix.org/"
       "https://nixpkgs-terraform.cachix.org"
     ];
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" # default one
       "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE="
+      "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
       "nixpkgs-terraform.cachix.org-1:8Sit092rIdAVENA3ZVeH9hzSiqI/jng6JiCrQ1Dmusw="
     ];
     trusted-users = [ "${username}" ];

@@ -1,10 +1,11 @@
-{ pkgs, ... }: {
+{ inputs, pkgs, ... }: {
   system.stateVersion = 4;
 
   environment = {
     systemPackages = with pkgs; [
       chart-testing
       goreleaser
+      inputs.flox.packages.${pkgs.system}.default
       kopia
       kubectx
       reposurgeon
