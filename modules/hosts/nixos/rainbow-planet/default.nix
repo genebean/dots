@@ -20,6 +20,8 @@
     # host specific apps
     boinc
     brightnessctl
+    butane
+    cilium-cli
     gnome.gnome-tweaks
     gnome.nautilus
     gnomeExtensions.dash-to-panel
@@ -27,7 +29,12 @@
     gnomeExtensions.pop-shell
     gnomeExtensions.tailscale-qs
     go
+    hubble
     hugo
+    kubectl
+    kubectx
+    kubernetes-helm
+    kubeseal
     networkmanager-openvpn
     nodejs
     pavucontrol
@@ -36,8 +43,11 @@
     pop-gtk-theme
     pop-icon-theme
     pop-launcher
+    #quickemu
     rclone
     rclone-browser
+    step-cli
+    virt-manager
     whalebird
     wmctrl
 
@@ -145,6 +155,7 @@
     };
   };
 
+  users.extraGroups.vboxusers.members = [ "${username}" ];
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${username} = {
     isNormalUser = true;
@@ -153,5 +164,17 @@
     packages = with pkgs; [
       tailscale-systray
     ];
+  };
+  virtualisation = {
+    containers.enable = true;
+    libvirtd = {
+      enable = true;
+      qemu.package = pkgs.qemu_kvm;
+    };
+    podman = {
+      enable = true;
+      defaultNetwork.settings.dns_enabled = true;
+    };
+    virtualbox.host.enable = true;
   };
 }
