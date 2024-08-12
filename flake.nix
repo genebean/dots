@@ -41,12 +41,17 @@
     # Manage Homebrew itself
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
 
+    nixos-cosmic = {
+      url = "github:lilyinstarlight/nixos-cosmic";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     nixpkgs-terraform = {
       url = "github:stackbuilders/nixpkgs-terraform";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
+      inputs.nixpkgs-1_6.follows = "nixpkgs";
+      inputs.nixpkgs-1_9.follows = "nixpkgs-unstable";
     };
 
     simple-nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-24.05";
@@ -60,8 +65,9 @@
   }; # end inputs
   outputs = inputs@{
     self, nixpkgs, nixpkgs-unstable, compose2nix, disko, genebean-omp-themes,
-    home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixos-hardware, nixpkgs-terraform,
-    simple-nixos-mailserver, sops-nix, ... }: let
+    home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixos-cosmic,
+    nixos-hardware, nixpkgs-terraform, simple-nixos-mailserver, sops-nix, ...
+  }: let
 
     # creates a macOS system config
     darwinHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: nix-darwin.lib.darwinSystem {
@@ -217,6 +223,7 @@
         hostname = "rainbow-planet";
         username = "gene";
         additionalModules = [
+          nixos-cosmic.nixosModules.default
           nixos-hardware.nixosModules.dell-xps-13-9360
         ];
         additionalSpecialArgs = {};

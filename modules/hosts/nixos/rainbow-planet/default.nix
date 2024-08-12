@@ -20,6 +20,9 @@
     # host specific apps
     boinc
     brightnessctl
+    butane
+    cilium-cli
+    displaylink
     gnome.gnome-tweaks
     gnome.nautilus
     gnomeExtensions.dash-to-panel
@@ -27,7 +30,12 @@
     gnomeExtensions.pop-shell
     gnomeExtensions.tailscale-qs
     go
+    hubble
     hugo
+    kubectl
+    kubectx
+    kubernetes-helm
+    kubeseal
     networkmanager-openvpn
     nodejs
     pavucontrol
@@ -36,8 +44,11 @@
     pop-gtk-theme
     pop-icon-theme
     pop-launcher
+    #quickemu
     rclone
     rclone-browser
+    step-cli
+    virt-manager
     whalebird
     wmctrl
 
@@ -55,6 +66,7 @@
 
   networking = {
     networkmanager.enable = true;
+    useNetworkd = true;
   };
 
   programs = {
@@ -76,6 +88,7 @@
 
   services = {
     boinc.enable = true;
+    desktopManager.cosmic.enable = true;
     desktopManager.plasma6.enable = true;
     displayManager.sddm = {
       enable = true;
@@ -145,6 +158,8 @@
     };
   };
 
+  users.extraGroups.vboxusers.members = [ "${username}" ];
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${username} = {
     isNormalUser = true;
@@ -153,5 +168,18 @@
     packages = with pkgs; [
       tailscale-systray
     ];
+  };
+
+  virtualisation = {
+    containers.enable = true;
+    libvirtd = {
+      enable = true;
+      qemu.package = pkgs.qemu_kvm;
+    };
+    podman = {
+      enable = true;
+      defaultNetwork.settings.dns_enabled = true;
+    };
+    virtualbox.host.enable = true;
   };
 }
