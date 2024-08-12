@@ -22,8 +22,11 @@
     ];
     brews = [
       "adr-tools"
+      "argocd"
       "awscli"
+      "cilium-cli"
       "helm"
+      "hubble"
       "kind"
       "kubernetes-cli"
       "lima"
