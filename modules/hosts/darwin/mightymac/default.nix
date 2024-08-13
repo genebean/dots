@@ -9,6 +9,7 @@
       kopia
       kubectx
       reposurgeon
+      step-cli
       # terraform-versions."1.5.7"
       terraformer
     ];
@@ -30,6 +31,7 @@
       "hubble"
       "kind"
       "kubernetes-cli"
+      "kubeseal"
       "lima"
       "opentofu"
       "node_exporter"
