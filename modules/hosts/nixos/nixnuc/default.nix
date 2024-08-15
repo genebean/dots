@@ -156,6 +156,27 @@ in {
       openFirewall = true;
     };
     lldpd.enable = true;
+    mealie = {
+      enable = true;
+      credentialsFile = config.sops.secrets.mealie.path;
+      listenAddress = "0.0.0.0";
+      port = 9000;
+      settings = {
+        ALLOW_SIGNUP = "false";
+        BASE_URL = "https://mealie.${home_domain}";
+        DATA_DIR = "/var/lib/mealie";
+        DB_ENGINE = "postgres";
+        POSTGRES_USER = "mealie";
+        POSTGRES_DB = "mealie";
+        POSTGRES_SERVER = "localhost";
+        POSTGRES_PORT = config.services.postgresql.settings.port;
+        SMTP_HOST = "localhost";
+        SMTP_PORT = 25;
+        SMTP_FROM_NAME = "Mealie";
+        SMTP_FROM_EMAIL = "mealie@${home_domain}";
+        SMTP_AUTH_STRATEGY = "NONE";
+      };
+    };
     nextcloud = {
       enable = true;
       hostName = "nextcloud.home.technicalissues.us";
@@ -297,6 +318,16 @@ in {
             send_timeout       600s;
           '';
         };
+        "mealie.${home_domain}" = {
+          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/".proxyPass = "http://${backend_ip}:9000";
+          extraConfig = ''
+            client_max_body_size 10M;
+          '';
+        };
         "nc.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
           enableACME = true;
@@ -358,6 +389,7 @@ in {
     };
     resolved.enable = true;
     restic.backups.daily.paths = [
+      config.services.mealie.settings.DATA_DIR
       config.services.nextcloud.home
       "${config.users.users.${username}.home}/compose-files/tandoor"
       "${config.users.users.${username}.home}/compose-files/wallabag"
@@ -407,6 +439,7 @@ in {
         owner = "${username}";
         path = "/home/${username}/.private-env";
       };
+      mealie.mode = "0444";
       nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
       tandoor_db_pass.mode = "0444";
       tandoor_db_pass.path = "/orico/tandoor-recipes/.dbpass";
@@ -416,6 +449,10 @@ in {
   };
 
   systemd.services = {
+    "mealie" = {
+      requires = ["postgresql.service"];
+      after = ["postgresql.service"];
+    };
     "nextcloud-setup" = {
       requires = ["postgresql.service"];
       after = ["postgresql.service"];
