@@ -79,6 +79,7 @@ in {
       443 # https to local Nginx
       3000 # PsiTransfer in oci-container
       8080 # Tandoor in docker compose
+      8888 # Atuin
       8090 # Wallabag in docker compose
       13378 # Audiobookshelf in oci-container
     ];
@@ -126,6 +127,11 @@ in {
 
   # List services that you want to enable:
   services = {
+    atuin = {
+      enable = true;
+      host = "127.0.0.1";
+      maxHistoryLength = 2000000000;
+    };
     ##
     ## Gandi (gandi.net)
     ##
@@ -302,7 +308,7 @@ in {
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${mini_watcher}:9999";
+          locations."/".proxyPass = "http://${backend_ip}:8888";
         };
         "immich.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
