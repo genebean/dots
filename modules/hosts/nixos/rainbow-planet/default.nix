@@ -1,4 +1,4 @@
-{ config, pkgs, username, ... }: {
+{ config, inputs, pkgs, username, ... }: {
   imports = [
     ./hardware-configuration.nix
     ../../../system/common/linux/flatpaks.nix
@@ -32,6 +32,7 @@
     go
     hubble
     hugo
+    inputs.flox.packages.${pkgs.system}.default
     kubectl
     kubectx
     kubernetes-helm
@@ -77,7 +78,7 @@
       # require enabling PolKit integration on some desktop environments (e.g. Plasma).
       polkitPolicyOwners = [ "${username}" ];
     };
-    hyprland.enable = true;
+    #hyprland.enable = true;
 
     ssh.askPassword = "ssh-askpass";
 

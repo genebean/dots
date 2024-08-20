@@ -48,6 +48,7 @@
 
     nixos-cosmic = {
       url = "github:lilyinstarlight/nixos-cosmic";
+      inputs.nixpkgs-stable.follows = "nixpkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -59,12 +60,17 @@
       inputs.nixpkgs-1_9.follows = "nixpkgs-unstable";
     };
 
-    simple-nixos-mailserver.url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-24.05";
+    simple-nixos-mailserver = {
+      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-24.05";
+      inputs.nixpkgs-24_05.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Secrets managemnt
     sops-nix = {
       url = "github:mic92/sops-nix";
       inputs.nixpkgs.follows ="nixpkgs";
+      inputs.nixpkgs-stable.follows = "nixpkgs";
     };
 
   }; # end inputs
