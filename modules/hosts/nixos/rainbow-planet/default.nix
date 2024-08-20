@@ -1,4 +1,3 @@
-{ config, pkgs, username, ... }: {
 { config, inputs, pkgs, username, ... }: {
   imports = [
     ./hardware-configuration.nix
@@ -79,7 +78,7 @@
       # require enabling PolKit integration on some desktop environments (e.g. Plasma).
       polkitPolicyOwners = [ "${username}" ];
     };
-    hyprland.enable = true;
+    #hyprland.enable = true;
 
     ssh.askPassword = "ssh-askpass";
 
