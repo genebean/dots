@@ -1,4 +1,5 @@
 { config, pkgs, username, ... }: {
+{ config, inputs, pkgs, username, ... }: {
   imports = [
     ./hardware-configuration.nix
     ../../../system/common/linux/flatpaks.nix
@@ -32,6 +33,7 @@
     go
     hubble
     hugo
+    inputs.flox.packages.${pkgs.system}.default
     kubectl
     kubectx
     kubernetes-helm
