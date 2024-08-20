@@ -122,6 +122,14 @@
           };
           overlays = [ nixpkgs-terraform.overlays.default ];
         };
+        pkgs-unstable = import nixpkgs-unstable {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            permittedInsecurePackages = [ "electron-21.4.4" ];
+          };
+          overlays = [ ];
+        };
       } // additionalSpecialArgs;
       modules = [
         disko.nixosModules.disko
@@ -231,6 +239,13 @@
           nixos-cosmic.nixosModules.default
           nixos-hardware.nixosModules.dell-xps-13-9360
         ];
+        additionalSpecialArgs = {};
+      };
+      smarthome = nixosHostConfig {
+        system = "x86_64-linux";
+        hostname = "smarthome";
+        username = "gene";
+        additionalModules = [];
         additionalSpecialArgs = {};
       };
     }; # end nixosConfigurations
