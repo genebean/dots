@@ -97,6 +97,9 @@ in {
     git = {
       enable = true;
       diff-so-fancy.enable = true;
+      extraConfig = {
+        diff.sopsdiffer.textconv = "sops --config /dev/null --decrypt";
+      };
       ignores = [
         "*~"
         "*.swp"
