@@ -22,6 +22,7 @@
   sops = {
     defaultSopsFile = ./secrets.yaml;
     secrets = {
+      i2cssh_config.path = "/Users/${username}/.i2csshrc";
       local_git_config.path = "/Users/${username}/.gitconfig-local";
       local_private_env.path = "/Users/${username}/.private-env";
     };

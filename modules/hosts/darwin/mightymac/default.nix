@@ -21,6 +21,7 @@
       # "homebrew/bundle"
       # "jandedobbeleer/oh-my-posh"
       "puppetlabs/puppet"
+      "wouterdebie/repo"
     ];
     brews = [
       "adr-tools"
@@ -29,6 +30,7 @@
       "cilium-cli"
       "helm"
       "hubble"
+      "i2cssh"
       "kind"
       "kubernetes-cli"
       "kubeseal"
