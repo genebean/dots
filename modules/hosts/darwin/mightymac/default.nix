@@ -48,6 +48,7 @@
       "elgato-stream-deck"
       "google-drive"
       "kopiaui"
+      "mumble"
       "obs"
       "pdk"
       "podman-desktop"
