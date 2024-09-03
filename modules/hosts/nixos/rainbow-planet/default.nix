@@ -6,11 +6,17 @@
 
   system.stateVersion = "23.05";
 
-  boot.loader = {
-    efi.canTouchEfiVariables = true;
-    systemd-boot= {
+  boot = {
+    initrd.systemd = {
       enable = true;
-      consoleMode = "1";
+      network.wait-online.enable = false; # Handled by NetworkManager
+    };
+    loader = {
+      efi.canTouchEfiVariables = true;
+      systemd-boot= {
+        enable = true;
+        consoleMode = "1";
+      };
     };
   };
 
@@ -89,16 +95,20 @@
 
   services = {
     boinc.enable = true;
+    dbus.implementation = "broker";
     desktopManager.cosmic.enable = true;
     desktopManager.plasma6.enable = true;
     displayManager.sddm = {
       enable = true;
       wayland.enable = true;
     };
+    fstrim.enable = true;
     fwupd.enable = true;
     gnome.gnome-keyring.enable = true; # Provides secret storage
     gvfs.enable = true; # Used by Nautilus
+    irqbalance.enable = true;
     printing.enable = true; # Enable CUPS
+    resolved.enable = true;
     tailscale = {
       enable = true;
       authKeyFile = config.sops.secrets.tailscale_key.path;
@@ -158,6 +168,13 @@
       };
     };
   };
+
+  system.switch = {
+    enable = false;
+    enableNg = true;
+  };
+
+  systemd.network.wait-online.enable = false; # Handled by NetworkManager
 
   users.extraGroups.vboxusers.members = [ "${username}" ];
 
