@@ -48,6 +48,8 @@
     pavucontrol
     polkit-kde-agent
     ulauncher
+    podman-compose
+    podman-tui # status of containers in the terminal
     pop-gtk-theme
     pop-icon-theme
     pop-launcher
@@ -182,7 +184,7 @@
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "networkmanager" "wheel" "dialout" "input" ];
+    extraGroups = [ "dialout" "docker" "input" "networkmanager" "podman" "wheel" ];
     packages = with pkgs; [
       tailscale-systray
     ];
@@ -190,13 +192,19 @@
 
   virtualisation = {
     containers.enable = true;
+    docker = {
+      enable = true;
+      package = pkgs.docker_26;
+    };
     libvirtd = {
       enable = true;
       qemu.package = pkgs.qemu_kvm;
     };
     podman = {
       enable = true;
+      autoPrune.enable = true;
       defaultNetwork.settings.dns_enabled = true;
+      # dockerCompat = true;
     };
     virtualbox.host.enable = true;
   };
