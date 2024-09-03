@@ -6,11 +6,17 @@
 
   system.stateVersion = "23.05";
 
-  boot.loader = {
-    efi.canTouchEfiVariables = true;
-    systemd-boot= {
+  boot = {
+    initrd.systemd = {
       enable = true;
-      consoleMode = "1";
+      network.wait-online.enable = false; # Handled by NetworkManager
+    };
+    loader = {
+      efi.canTouchEfiVariables = true;
+      systemd-boot= {
+        enable = true;
+        consoleMode = "1";
+      };
     };
   };
 
@@ -42,6 +48,8 @@
     pavucontrol
     polkit-kde-agent
     ulauncher
+    podman-compose
+    podman-tui # status of containers in the terminal
     pop-gtk-theme
     pop-icon-theme
     pop-launcher
@@ -89,16 +97,20 @@
 
   services = {
     boinc.enable = true;
+    dbus.implementation = "broker";
     desktopManager.cosmic.enable = true;
     desktopManager.plasma6.enable = true;
     displayManager.sddm = {
       enable = true;
       wayland.enable = true;
     };
+    fstrim.enable = true;
     fwupd.enable = true;
     gnome.gnome-keyring.enable = true; # Provides secret storage
     gvfs.enable = true; # Used by Nautilus
+    irqbalance.enable = true;
     printing.enable = true; # Enable CUPS
+    resolved.enable = true;
     tailscale = {
       enable = true;
       authKeyFile = config.sops.secrets.tailscale_key.path;
@@ -159,13 +171,20 @@
     };
   };
 
+  system.switch = {
+    enable = false;
+    enableNg = true;
+  };
+
+  systemd.network.wait-online.enable = false; # Handled by NetworkManager
+
   users.extraGroups.vboxusers.members = [ "${username}" ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "networkmanager" "wheel" "dialout" "input" ];
+    extraGroups = [ "dialout" "docker" "input" "networkmanager" "podman" "wheel" ];
     packages = with pkgs; [
       tailscale-systray
     ];
@@ -173,13 +192,19 @@
 
   virtualisation = {
     containers.enable = true;
+    docker = {
+      enable = true;
+      package = pkgs.docker_26;
+    };
     libvirtd = {
       enable = true;
       qemu.package = pkgs.qemu_kvm;
     };
     podman = {
       enable = true;
+      autoPrune.enable = true;
       defaultNetwork.settings.dns_enabled = true;
+      # dockerCompat = true;
     };
     virtualbox.host.enable = true;
   };
