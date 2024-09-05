@@ -220,6 +220,15 @@
         ];
         additionalSpecialArgs = {};
       };
+      hetznix02 = nixosHostConfig {
+        system = "aarch64-linux";
+        hostname = "hetznix02";
+        username = "gene";
+        additionalModules = [
+          # simple-nixos-mailserver.nixosModule
+        ];
+        additionalSpecialArgs = {};
+      };
       nixnuc = nixosHostConfig {
         system = "x86_64-linux";
         hostname = "nixnuc";
