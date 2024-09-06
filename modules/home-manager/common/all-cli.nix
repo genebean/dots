@@ -323,6 +323,7 @@ in {
         nve = "nvdots ~/repos/dots/modules/home-manager/files/nvim/lua";
         pssh = "ssh -o 'UserKnownHostsFile /dev/null' -o 'StrictHostKeyChecking no' -o PubkeyAcceptedKeyTypes=+ssh-rsa -o HostKeyAlgorithms=+ssh-rsa -o KexAlgorithms=+diffie-hellman-group1-sha1 -i ~/.ssh/id_rsa-acceptance";
         sal = "ssh-add -L";
+        sshnull = "ssh -o UserKnownHostsFile=/dev/null";
         st = "open -a SourceTree";
         sz = "source ~/.zshrc";
         trippy = "echo 'To run trippy, the command is trip'";
