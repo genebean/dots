@@ -7,37 +7,36 @@
 
   system.stateVersion = "24.05";
 
-  boot.loader.grub = {
-    # no need to set devices, disko will add all devices that have a
-    # EF02 partition to the list already
-    # devices = [ ];
-    efiSupport = true;
-    efiInstallAsRemovable = true;
+  boot = {
+    loader.grub = {
+      # no need to set devices, disko will add all devices that have a
+      # EF02 partition to the list already
+      # devices = [ ];
+      efiSupport = true;
+      efiInstallAsRemovable = true;
+      device = "nodev";
+    };
+    tmp.cleanOnBoot = true;
   };
 
   environment.systemPackages = with pkgs; [
-    podman-tui # status of containers in the terminal
-    podman-compose
+    # podman-tui # status of containers in the terminal
+    # podman-compose
   ];
 
   networking = {
     # Open ports in the firewall.
     firewall.allowedTCPPorts = [
       22   # ssh
-      25   # SMTP (unencrypted)
-      80   # http to local Nginx
-      443  # https to local Nginx
-      465  # SMTP with TLS
-      587  # SMTP with STARTTLS
-      8448 # Matrix Synapse
     ];
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
     # firewall.enable = false;
 
-    hostId = "85d0e6cb"; # head -c4 /dev/urandom | od -A none -t x4
+    hostId = "89bbb3e6"; # head -c4 /dev/urandom | od -A none -t x4
 
-    networkmanager.enable = true;
+    networkmanager.enable = false;
+    useNetworkd = true;
   };
 
   programs.mtr.enable = true;
@@ -45,22 +44,9 @@
   services = {
     fail2ban.enable = true;
     logrotate.enable = true;
-    postgresql = {
-      enable = true;
-      package = pkgs.postgresql_16;
-    };
-    postgresqlBackup = {
-      enable = true;
-      backupAll = true;
-      startAt = "*-*-* 23:00:00";
-    };
-    uptime-kuma = {
-      enable = true;
-      settings = {
-        UPTIME_KUMA_HOST = "127.0.0.1";
-        #UPTIME_KUMA_PORT = "3001";
-      };
-    };
+    udev.extraRules = ''
+      ATTR{address}=="96:00:03:ae:45:aa", NAME="eth0"
+    '';
   };
 
   systemd.network = {
@@ -68,8 +54,9 @@
     networks."10-wan" = {
       matchConfig.Name = "enp1s0";
       address = [
-        "5.161.244.95/32"
-        "2a01:4ff:f0:977c::1/64"
+        "195.201.224.89/32"
+        "2a01:4f8:1c1e:aa68::1/64"
+        "fe80::9400:3ff:feae:45aa/64"
       ];
       dns = [
         "185.12.64.1"
@@ -97,4 +84,6 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIp42X5DZ713+bgbOO+GXROufUFdxWo7NjJbGQ285x3N gene.liverman@ltnglobal.com"
     ];
   };
+
+  zramSwap.enable = true;
 }

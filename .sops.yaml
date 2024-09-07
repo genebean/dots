@@ -1,6 +1,7 @@
 ---
 keys:
   - &system_hetznix01 age1rd55wsu0hhvxk25tm69d9h57z0z0u6556x4ypg09muj3vh4yqs5qaw23nu
+  - &system_hetznix02 age180w4c04kga07097u0us6d72aslnv2523hx64x8fzgzu4tccrxuyqa50hpm
   - &system_nixnuc age1g24zhwvgenpc4wqejt63thvgd4rn5x9n7nnwwme7dm83nfqpp93se2vmq4
   - &system_rainbow_planet age15xlw5vnnjdx2ypz6rq0mqcywuaj3yx8y6lrgf95satafqf7y4qus6rv6ck
   - &user_airpuppet age1awdf9h0avajf57cudx0rjfmxu2wlxw8wf3sa7yvfk8rp4j6taecsu74x77
@@ -12,6 +13,10 @@ creation_rules:
     key_groups:
       - age:
           - *system_hetznix01
+  - path_regex: hetznix02/secrets.yaml$
+    key_groups:
+      - age:
+          - *system_hetznix02
   - path_regex: nixnuc/secrets.yaml$
     key_groups:
       - age:
@@ -40,6 +45,7 @@ creation_rules:
     key_groups:
       - age:
           - *system_hetznix01
+          - *system_hetznix02
           - *system_nixnuc
           - *system_rainbow_planet
           - *user_airpuppet
