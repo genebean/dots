@@ -29,12 +29,6 @@
     butane
     cilium-cli
     displaylink
-    gnome.gnome-tweaks
-    gnome.nautilus
-    gnomeExtensions.dash-to-panel
-    gnome.networkmanager-openvpn
-    gnomeExtensions.pop-shell
-    gnomeExtensions.tailscale-qs
     go
     hubble
     hugo
@@ -47,12 +41,9 @@
     nodejs
     pavucontrol
     polkit-kde-agent
-    ulauncher
+    #ulauncher
     podman-compose
     podman-tui # status of containers in the terminal
-    pop-gtk-theme
-    pop-icon-theme
-    pop-launcher
     #quickemu
     rclone
     rclone-browser
@@ -106,8 +97,6 @@
     };
     fstrim.enable = true;
     fwupd.enable = true;
-    gnome.gnome-keyring.enable = true; # Provides secret storage
-    gvfs.enable = true; # Used by Nautilus
     irqbalance.enable = true;
     printing.enable = true; # Enable CUPS
     resolved.enable = true;
@@ -122,23 +111,6 @@
       useRoutingFeatures = "client";
     };
     thermald.enable = true;
-    xserver = {
-      enable = true;    # Enable the X11 windowing system.
-
-      # Configure keymap in X11
-      xkb = {
-        layout = "us";
-        variant = "";
-      };
-
-      # displayManager = {
-      #   gdm = {
-      #     enable = true;
-      #     wayland = true;
-      #   };
-      # };
-      desktopManager.gnome.enable = true;
-    };
   };
 
   # Enable sound with pipewire.
