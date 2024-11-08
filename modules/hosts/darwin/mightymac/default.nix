@@ -18,8 +18,6 @@
   homebrew = {
     taps = [
       "hashicorp/tap"
-      # "homebrew/bundle"
-      # "jandedobbeleer/oh-my-posh"
       "puppetlabs/puppet"
       "wouterdebie/repo"
     ];
@@ -42,7 +40,6 @@
       "terraform-docs"
     ];
     casks = [
-      "asana"
       "boinc"
       "discord"
       "elgato-stream-deck"
@@ -59,7 +56,6 @@
       "utm"
       "vagrant"
       "vial"
-      "waterfox"
       "whalebird"
       "zenmap"
     ];
