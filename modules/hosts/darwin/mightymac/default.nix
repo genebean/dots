@@ -18,8 +18,6 @@
   homebrew = {
     taps = [
       "hashicorp/tap"
-      # "homebrew/bundle"
-      # "jandedobbeleer/oh-my-posh"
       "puppetlabs/puppet"
       "wouterdebie/repo"
     ];
@@ -32,9 +30,12 @@
       "hubble"
       "i2cssh"
       "kind"
+      "kompose"
       "kubernetes-cli"
       "kubeseal"
       "lima"
+      "linkerd"
+      "minio-mc"
       "opentofu"
       "node_exporter"
       "podman"
@@ -42,7 +43,6 @@
       "terraform-docs"
     ];
     casks = [
-      "asana"
       "boinc"
       "discord"
       "elgato-stream-deck"
@@ -59,7 +59,6 @@
       "utm"
       "vagrant"
       "vial"
-      "waterfox"
       "whalebird"
       "zenmap"
     ];
@@ -70,6 +69,7 @@
       "Microsoft Remote Desktop" = 1295203466;
       "Telegram" = 747648890;
       "WhatsApp Messenger" = 310633997;
+      "Xcode" = 497799835;
     };
   };
 }

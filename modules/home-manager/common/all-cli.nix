@@ -49,7 +49,7 @@ in {
     vimv
     watch
     wget
-    yq
+    yq-go
   ];
   home.sessionVariables = {
     CLICLOLOR = 1;

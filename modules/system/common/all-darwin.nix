@@ -1,7 +1,6 @@
 { pkgs, hostname, username, ... }: {
   environment = {
     shells = with pkgs; [ bash zsh ];
-    loginShell = pkgs.zsh;
     pathsToLink = [
       "/Applications"
       "/share/zsh"
