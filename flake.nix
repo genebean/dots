@@ -87,7 +87,7 @@
         inherit system;
         config = {
           allowUnfree = true;
-          permittedInsecurePackages = [ "python-2.7.18.7" ];
+          permittedInsecurePackages = [ "olm-3.2.16" "python-2.7.18.7" ];
         };
         overlays = [ nixpkgs-terraform.overlays.default ];
       };
