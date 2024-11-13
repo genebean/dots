@@ -175,13 +175,20 @@ in {
           ENABLED = true;
           DEFAULT_ACTIONS_URL = "github";
         };
-        service.DISABLE_REGISTRATION = true;
+        DEFAULT.APP_NAME = "Beantown's Code";
+        repository = {
+          DEFAULT_PUSH_CREATE_PRIVATE = true;
+          ENABLE_PUSH_CREATE_ORG = true;
+          ENABLE_PUSH_CREATE_USER = true;
+        };
         server = {
           DOMAIN = "git.${home_domain}";
           HTTP_PORT = 3030;
           LANDING_PAGE = "explore";
           ROOT_URL = "https://git.${home_domain}/";
         };
+        service.DISABLE_REGISTRATION = true;
+        session.COOKIE_SECURE = true;
       };
       stateDir = "/orico/forgejo";
     };
@@ -434,6 +441,7 @@ in {
     };
     resolved.enable = true;
     restic.backups.daily.paths = [
+      config.services.forgejo.stateDir
       config.services.mealie.settings.DATA_DIR
       config.services.nextcloud.home
       "${config.users.users.${username}.home}/compose-files/tandoor"
