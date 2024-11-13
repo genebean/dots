@@ -79,6 +79,7 @@ in {
         80    # http to local Nginx
         443   # https to local Nginx
         3000  # PsiTransfer in oci-container
+        3030  # Forgejo
         8000  # Tube Archivist
         8080  # Tandoor in docker compose
         8384  # Syncthing gui
@@ -163,6 +164,26 @@ in {
         ttl=300
       '';
       passwordFile = "${config.sops.secrets.gandi_api.path}";
+    };
+    forgejo = {
+      enable = true;
+      database.type = "postgres";
+      lfs.enable = true;
+      settings = {
+        # Add support for actions, based on act: https://github.com/nektos/act
+        actions = {
+          ENABLED = true;
+          DEFAULT_ACTIONS_URL = "github";
+        };
+        service.DISABLE_REGISTRATION = true;
+        server = {
+          DOMAIN = "git.${home_domain}";
+          HTTP_PORT = 3030;
+          LANDING_PAGE = "explore";
+          ROOT_URL = "https://git.${home_domain}/";
+        };
+      };
+      stateDir = "/orico/forgejo";
     };
     fwupd.enable = true;
     jellyfin = {
@@ -317,6 +338,16 @@ in {
           acmeRoot = null;
           forceSSL = true;
           locations."/".proxyPass = "http://${backend_ip}:8888";
+        };
+        "git.${home_domain}" = {
+          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/".proxyPass = "http://${backend_ip}:3030";
+          extraConfig = ''
+            client_max_body_size 0;
+          '';
         };
         "immich.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
