@@ -79,6 +79,7 @@ in {
         80    # http to local Nginx
         443   # https to local Nginx
         3000  # PsiTransfer in oci-container
+        8000  # Tube Archivist
         8080  # Tandoor in docker compose
         8384  # Syncthing gui
         8888  # Atuin
