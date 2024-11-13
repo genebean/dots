@@ -125,7 +125,7 @@
           inherit system;
           config = {
             allowUnfree = true;
-            permittedInsecurePackages = [ "electron-21.4.4" ];
+            permittedInsecurePackages = [ "olm-3.2.16" "electron-21.4.4" ];
           };
           overlays = [ nixpkgs-terraform.overlays.default ];
         };
@@ -158,7 +158,7 @@
           inherit system;
           config = {
             allowUnfree = true;
-            permittedInsecurePackages = [ "electron-21.4.4" ];
+            permittedInsecurePackages = [ "olm-3.2.16" "electron-21.4.4" ];
           };
           overlays = [ nixpkgs-terraform.overlays.default ];
         };
