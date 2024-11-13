@@ -73,17 +73,24 @@ in {
 
   networking = {
     # Open ports in the firewall.
-    firewall.allowedTCPPorts = [
-      22 # ssh
-      80 # http to local Nginx
-      443 # https to local Nginx
-      3000 # PsiTransfer in oci-container
-      8080 # Tandoor in docker compose
-      8888 # Atuin
-      8090 # Wallabag in docker compose
-      13378 # Audiobookshelf in oci-container
-    ];
-    # firewall.allowedUDPPorts = [ ... ];
+    firewall = {
+      allowedTCPPorts = [
+        22    # ssh
+        80    # http to local Nginx
+        443   # https to local Nginx
+        3000  # PsiTransfer in oci-container
+        8080  # Tandoor in docker compose
+        8384  # Syncthing gui
+        8888  # Atuin
+        8090  # Wallabag in docker compose
+        13378 # Audiobookshelf in oci-container
+        22000 # Syncthing transfers
+      ];
+      allowedUDPPorts = [
+        21027 # Syncthing discovery
+        22000 # Syncthing transfers
+      ];
+    };
     # Or disable the firewall altogether.
     # firewall.enable = false;
 
@@ -404,6 +411,12 @@ in {
       "/orico/jellyfin/staging/downloaded-files"
       "/var/backup/postgresql"
     ];
+    syncthing = {
+      enable = true;
+      dataDir = "/orico/syncthing";
+      openDefaultPorts = true;
+      guiAddress = "0.0.0.0:8384";
+    };
     tandoor-recipes = {
       enable = true;
       address = "0.0.0.0";
