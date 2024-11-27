@@ -12,7 +12,7 @@ return {
           "lua_ls", -- lua
           "nil_ls", -- nix
           "puppet", -- puppet
-          "ruff_lsp", -- python
+          "ruff", -- python
         },
       })
     end,
@@ -59,7 +59,7 @@ return {
         cmd = { puppet_languageserver, "--feature-flags=puppetstrings" },
         settings = { puppet = { editorServices = { formatOnType = { enable = true } } } },
       })
-      lspconfig.ruff_lsp.setup({ on_attach = on_attach })
+      lspconfig.ruff.setup({ on_attach = on_attach })
     end,
   },
 }
