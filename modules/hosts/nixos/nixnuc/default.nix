@@ -81,7 +81,6 @@ in {
         3000  # PsiTransfer in oci-container
         3030  # Forgejo
         8001  # Tube Archivist
-        8080  # Tandoor in docker compose
         8384  # Syncthing gui
         8888  # Atuin
         8090  # Wallabag in docker compose
@@ -419,14 +418,6 @@ in {
           forceSSL = true;
           locations."/".proxyPass = "http://${backend_ip}:8090";
         };
-        "tandoor.${home_domain}" = {
-          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:8080";
-          locations."/media/".alias = "/orico/tandoor-recipes/";
-        };
       };
     };
     postgresql = {
@@ -443,7 +434,6 @@ in {
       config.services.forgejo.stateDir
       config.services.mealie.settings.DATA_DIR
       config.services.nextcloud.home
-      "${config.users.users.${username}.home}/compose-files/tandoor"
       "${config.users.users.${username}.home}/compose-files/wallabag"
       "/orico/immich/library"
       "/orico/jellyfin/data"
@@ -455,32 +445,6 @@ in {
       dataDir = "/orico/syncthing";
       openDefaultPorts = true;
       guiAddress = "0.0.0.0:8384";
-    };
-    tandoor-recipes = {
-      enable = true;
-      address = "0.0.0.0";
-      extraConfig = {
-        #ALLOWED_HOSTS=*
-        #COMMENT_PREF_DEFAULT=1
-        DB_ENGINE = "django.db.backends.postgresql";
-        #DEBUG=0
-        #DEBUG_TOOLBAR=0
-        #FRACTION_PREF_DEFAULT=0
-        #GUNICORN_MEDIA=0
-        POSTGRES_DB = "tandoor";
-        POSTGRES_HOST = "127.0.0.1";
-        # This sucks, but this module doesn't support pulling the password from a file
-        POSTGRES_PASSWORD = "yummy-flat-bread-with-garlic";
-        POSTGRES_PORT = 5432;
-        POSTGRES_USER = "tandoor";
-        #REMOTE_USER_AUTH=0
-        SECRET_KEY_FILE = config.sops.secrets.tandoor_secret_key.path;
-        #SHOPPING_MIN_AUTOSYNC_INTERVAL=5
-        #SQL_DEBUG=0
-
-        MEDIA_ROOT = "/orico/tandoor-recipes/mediafiles";
-      };
-      port = 8080;
     };
     zfs.autoScrub.enable = true;
   };
@@ -499,10 +463,6 @@ in {
       };
       mealie.mode = "0444";
       nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
-      tandoor_db_pass.mode = "0444";
-      tandoor_db_pass.path = "/orico/tandoor-recipes/.dbpass";
-      tandoor_secret_key.mode = "0444";
-      tandoor_secret_key.path = "/orico/tandoor-recipes/.skey";
     };
   };
 
