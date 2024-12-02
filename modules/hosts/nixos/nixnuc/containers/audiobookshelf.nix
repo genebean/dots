@@ -5,15 +5,14 @@ in {
   # Audiobookshelf
 
   #############################################################################
-  # I am using v2.8.1 because that is both the current Docker image and       #
-  # the current version in nixpkgs unstable. My plan is to switch from Podman #
-  # to a systemd-nspawn container.                                            #
+  # I am using v2.17.2 because that is the current one in nix 24.11.          #
+  # My plan is to switch from Podman to the native NixOS service              #
   #############################################################################
 
   virtualisation.oci-containers.containers = {
     "audiobookshelf" = {
       autoStart = true;
-      image = "ghcr.io/advplyr/audiobookshelf:2.8.1";
+      image = "ghcr.io/advplyr/audiobookshelf:2.17.2";
       environment = {
         AUDIOBOOKSHELF_UID = "99";
         AUDIOBOOKSHELF_GID = "100";
