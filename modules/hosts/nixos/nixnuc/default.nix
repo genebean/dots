@@ -73,16 +73,26 @@ in {
 
   networking = {
     # Open ports in the firewall.
-    firewall.allowedTCPPorts = [
-      22 # ssh
-      80 # http to local Nginx
-      443 # https to local Nginx
-      3000 # PsiTransfer in oci-container
-      8080 # Tandoor in docker compose
-      8090 # Wallabag in docker compose
-      13378 # Audiobookshelf in oci-container
-    ];
-    # firewall.allowedUDPPorts = [ ... ];
+    firewall = {
+      allowedTCPPorts = [
+        22    # ssh
+        80    # http to local Nginx
+        443   # https to local Nginx
+        3000  # PsiTransfer in oci-container
+        3030  # Forgejo
+        8001  # Tube Archivist
+        8080  # Tandoor in docker compose
+        8384  # Syncthing gui
+        8888  # Atuin
+        8090  # Wallabag in docker compose
+        13378 # Audiobookshelf in oci-container
+        22000 # Syncthing transfers
+      ];
+      allowedUDPPorts = [
+        21027 # Syncthing discovery
+        22000 # Syncthing transfers
+      ];
+    };
     # Or disable the firewall altogether.
     # firewall.enable = false;
 
@@ -126,6 +136,11 @@ in {
 
   # List services that you want to enable:
   services = {
+    atuin = {
+      enable = true;
+      host = "127.0.0.1";
+      maxHistoryLength = 2000000000;
+    };
     ##
     ## Gandi (gandi.net)
     ##
@@ -150,12 +165,60 @@ in {
       '';
       passwordFile = "${config.sops.secrets.gandi_api.path}";
     };
+    forgejo = {
+      enable = true;
+      database.type = "postgres";
+      lfs.enable = true;
+      settings = {
+        # Add support for actions, based on act: https://github.com/nektos/act
+        actions = {
+          ENABLED = true;
+          DEFAULT_ACTIONS_URL = "github";
+        };
+        DEFAULT.APP_NAME = "Beantown's Code";
+        repository = {
+          DEFAULT_PUSH_CREATE_PRIVATE = true;
+          ENABLE_PUSH_CREATE_ORG = true;
+          ENABLE_PUSH_CREATE_USER = true;
+        };
+        server = {
+          DOMAIN = "git.${home_domain}";
+          HTTP_PORT = 3030;
+          LANDING_PAGE = "explore";
+          ROOT_URL = "https://git.${home_domain}/";
+        };
+        service.DISABLE_REGISTRATION = true;
+        session.COOKIE_SECURE = true;
+      };
+      stateDir = "/orico/forgejo";
+    };
     fwupd.enable = true;
     jellyfin = {
       enable = true;
       openFirewall = true;
     };
     lldpd.enable = true;
+    mealie = {
+      enable = true;
+      credentialsFile = config.sops.secrets.mealie.path;
+      listenAddress = "0.0.0.0";
+      port = 9000;
+      settings = {
+        ALLOW_SIGNUP = "false";
+        BASE_URL = "https://mealie.${home_domain}";
+        DATA_DIR = "/var/lib/mealie";
+        DB_ENGINE = "postgres";
+        POSTGRES_USER = "mealie";
+        POSTGRES_DB = "mealie";
+        POSTGRES_SERVER = "localhost";
+        POSTGRES_PORT = config.services.postgresql.settings.port;
+        SMTP_HOST = "localhost";
+        SMTP_PORT = 25;
+        SMTP_FROM_NAME = "Mealie";
+        SMTP_FROM_EMAIL = "mealie@${home_domain}";
+        SMTP_AUTH_STRATEGY = "NONE";
+      };
+    };
     nextcloud = {
       enable = true;
       hostName = "nextcloud.home.technicalissues.us";
@@ -281,7 +344,17 @@ in {
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${mini_watcher}:9999";
+          locations."/".proxyPass = "http://${backend_ip}:8888";
+        };
+        "git.${home_domain}" = {
+          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/".proxyPass = "http://${backend_ip}:3030";
+          extraConfig = ''
+            client_max_body_size 0;
+          '';
         };
         "immich.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
@@ -295,6 +368,16 @@ in {
             proxy_read_timeout 600s;
             proxy_send_timeout 600s;
             send_timeout       600s;
+          '';
+        };
+        "mealie.${home_domain}" = {
+          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/".proxyPass = "http://${backend_ip}:9000";
+          extraConfig = ''
+            client_max_body_size 10M;
           '';
         };
         "nc.${home_domain}" = {
@@ -358,13 +441,22 @@ in {
     };
     resolved.enable = true;
     restic.backups.daily.paths = [
+      config.services.forgejo.stateDir
+      config.services.mealie.settings.DATA_DIR
       config.services.nextcloud.home
       "${config.users.users.${username}.home}/compose-files/tandoor"
       "${config.users.users.${username}.home}/compose-files/wallabag"
+      "/orico/immich/library"
       "/orico/jellyfin/data"
       "/orico/jellyfin/staging/downloaded-files"
       "/var/backup/postgresql"
     ];
+    syncthing = {
+      enable = true;
+      dataDir = "/orico/syncthing";
+      openDefaultPorts = true;
+      guiAddress = "0.0.0.0:8384";
+    };
     tandoor-recipes = {
       enable = true;
       address = "0.0.0.0";
@@ -406,6 +498,7 @@ in {
         owner = "${username}";
         path = "/home/${username}/.private-env";
       };
+      mealie.mode = "0444";
       nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
       tandoor_db_pass.mode = "0444";
       tandoor_db_pass.path = "/orico/tandoor-recipes/.dbpass";
@@ -415,6 +508,10 @@ in {
   };
 
   systemd.services = {
+    "mealie" = {
+      requires = ["postgresql.service"];
+      after = ["postgresql.service"];
+    };
     "nextcloud-setup" = {
       requires = ["postgresql.service"];
       after = ["postgresql.service"];
