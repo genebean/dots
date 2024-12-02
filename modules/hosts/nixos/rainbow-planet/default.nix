@@ -89,7 +89,7 @@
   services = {
     boinc.enable = true;
     dbus.implementation = "broker";
-    desktopManager.cosmic.enable = true;
+    #desktopManager.cosmic.enable = true;
     desktopManager.plasma6.enable = true;
     displayManager.sddm = {
       enable = true;
