@@ -93,7 +93,6 @@
         "auto-allocate-uids"
         "flakes"
         "nix-command"
-        "repl-flake"
       ];
       # extra-substituters = [
       # ];
