@@ -76,8 +76,6 @@
     };
   };
 
-  sound.enable = false;
-
   systemd.network = {
     enable = true;
     netdevs = {
