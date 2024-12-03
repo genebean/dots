@@ -1,5 +1,5 @@
 { ... }: let
-  volume_base = "/orico/audiobookshelf";
+  volume_base = "/var/lib/audiobookshelf";
   http_port = "13378";
 in {
   # Audiobookshelf
