@@ -112,7 +112,7 @@ $ tree . -I legacy* -I link* --gitignore --dirsfirst
 
 ## Historical bits
 
-This repo historically contained my dot files. Historically symlinked files are still in `link/`. Most all the other old stuff is now tucked away under `legacy/` to get it out of the way until I decide what is and isn't needed.
+This repo historically contained my dot files. Historically symlinked files on Windows are still in `windows/`. Everything else is just in git history now.
 
 ## Adding a new macOS host
 
