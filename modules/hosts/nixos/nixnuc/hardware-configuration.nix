@@ -23,6 +23,11 @@
       fsType = "vfat";
     };
 
+  fileSystems."/var/lib/audiobookshelf" =
+    { device = "orico/audiobookshelf";
+      fsType = "zfs";
+    };
+
   swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking

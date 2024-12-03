@@ -20,7 +20,7 @@
   };
 
   sops = {
-    age.keyFile = /home/${username}/.config/sops/age/keys.txt;
+    age.keyFile = "${config.users.users.${username}.home}/.config/sops/age/keys.txt";
     secrets.gandi_api.sopsFile = ../secrets.yaml;
   };
 }

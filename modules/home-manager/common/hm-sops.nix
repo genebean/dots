@@ -1,14 +1,14 @@
-{ pkgs, hostname, username, ... }: {
+{ config, pkgs, hostname, username, ... }: {
   home.packages = with pkgs; [
     home-manager
   ];
 
   sops = {
-    age.keyFile = /home/${username}/.config/sops/age/keys.txt;
+    age.keyFile = "${config.users.users.${username}.home}/.config/sops/age/keys.txt";
     defaultSopsFile = ../hosts/${hostname}/secrets.yaml;
     secrets = {
-      local_git_config.path = "/home/${username}/.gitconfig-local";
-      local_private_env.path = "/home/${username}/.private-env";
+      local_git_config.path = "${config.users.users.${username}.home}/.gitconfig-local";
+      local_private_env.path = "${config.users.users.${username}.home}/.private-env";
     };
   };
 }

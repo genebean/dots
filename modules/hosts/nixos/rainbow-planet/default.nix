@@ -114,7 +114,6 @@
   };
 
   # Enable sound with pipewire.
-  sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -126,16 +125,16 @@
   };
 
   sops = {
-    age.keyFile = /home/${username}/.config/sops/age/keys.txt;
+    age.keyFile = "${config.users.users.${username}.home}/.config/sops/age/keys.txt";
     defaultSopsFile = ./secrets.yaml;
     secrets = {
       local_git_config = {
         owner = "${username}";
-        path = "/home/${username}/.gitconfig-local";
+        path = "${config.users.users.${username}.home}/.gitconfig-local";
       };
       local_private_env = {
         owner = "${username}";
-        path = "/home/${username}/.private-env";
+        path = "${config.users.users.${username}.home}/.private-env";
       };
       tailscale_key = {
         restartUnits = [ "tailscaled-autoconnect.service" ];
