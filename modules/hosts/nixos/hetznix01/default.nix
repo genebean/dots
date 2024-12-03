@@ -78,9 +78,9 @@
         "2a01:4ff:ff00::add:2"
       ];
       routes = [
-        { routeConfig = { Destination = "172.31.1.1"; }; }
-        { routeConfig = { Gateway = "172.31.1.1"; GatewayOnLink = true; }; }
-        { routeConfig.Gateway = "fe80::1"; }
+        { Destination = "172.31.1.1"; }
+        { Gateway = "172.31.1.1"; GatewayOnLink = true; }
+        { Gateway = "fe80::1"; }
       ];
       # make the routes on this interface a dependency for network-online.target
       linkConfig.RequiredForOnline = "routable";
