@@ -255,7 +255,7 @@
         hostname = "rainbow-planet";
         username = "gene";
         additionalModules = [
-          #nixos-cosmic.nixosModules.default
+          nixos-cosmic.nixosModules.default
           nixos-hardware.nixosModules.dell-xps-13-9360
         ];
         additionalSpecialArgs = {};
