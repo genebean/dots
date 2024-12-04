@@ -79,6 +79,10 @@
     home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixos-cosmic,
     nixos-hardware, nixpkgs-terraform, simple-nixos-mailserver, sops-nix, ...
   }: let
+    # Functions that setup systems
+    mylib = import ./lib { inherit inputs nixpkgs nixpkgs-unstable compose2nix disko flox genebean-omp-themes
+      home-manager nix-darwin nix-flatpak nix-homebrew nixos-cosmic
+      nixos-hardware nixpkgs-terraform simple-nixos-mailserver sops-nix; };
 
     # creates a macOS system config
     darwinHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: nix-darwin.lib.darwinSystem {
@@ -116,43 +120,6 @@
         ./modules/hosts/darwin/${hostname} # host specific stuff
       ] ++ additionalModules; # end modules
     }; # end darwinSystem
-
-    # creates a nixos system config
-    nixosHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: nixpkgs.lib.nixosSystem {
-      inherit system;
-      specialArgs = { inherit inputs compose2nix hostname username; } // additionalSpecialArgs;
-      modules = [
-        # move this to a common file later
-        ({
-          nixpkgs = {
-            config = {
-              allowUnfree = true;
-              permittedInsecurePackages = [ "olm-3.2.16" "electron-27.3.11" ];
-            };
-            overlays = [ nixpkgs-terraform.overlays.default ];
-          };
-        })
-
-        disko.nixosModules.disko
-
-        home-manager.nixosModules.home-manager {
-          home-manager = {
-            extraSpecialArgs = { inherit genebean-omp-themes hostname username; };
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            users.${username}.imports = [
-              ./modules/home-manager/hosts/${hostname}/${username}.nix
-            ];
-          };
-        }
-
-        nix-flatpak.nixosModules.nix-flatpak
-
-        sops-nix.nixosModules.sops # system wide secrets management
-        ./modules/system/common/all-nixos.nix # system-wide stuff
-        ./modules/hosts/nixos/${hostname} # host specific stuff
-      ] ++ additionalModules;
-    }; # end nixosSystem
 
     linuxHomeConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: home-manager.lib.homeManagerConfiguration {
       extraSpecialArgs = { inherit genebean-omp-themes hostname username;
@@ -205,60 +172,43 @@
 
     # NixOS hosts
     nixosConfigurations = {
-      bigboy = nixosHostConfig {
-        system = "x86_64-linux";
+      bigboy = mylib.nixosHostConfig {
         hostname = "bigboy";
-        username = "gene";
         additionalModules = [
           nixos-hardware.nixosModules.lenovo-thinkpad-p52
         ];
-        additionalSpecialArgs = {};
       };
-      hetznix01 = nixosHostConfig {
-        system = "x86_64-linux";
+      hetznix01 = mylib.nixosHostConfig {
         hostname = "hetznix01";
-        username = "gene";
         additionalModules = [
           simple-nixos-mailserver.nixosModule
         ];
-        additionalSpecialArgs = {};
       };
-      hetznix02 = nixosHostConfig {
+      hetznix02 = mylib.nixosHostConfig {
         system = "aarch64-linux";
         hostname = "hetznix02";
-        username = "gene";
         additionalModules = [
           # simple-nixos-mailserver.nixosModule
         ];
-        additionalSpecialArgs = {};
       };
-      nixnas1 = nixosHostConfig {
-        system = "x86_64-linux";
+      nixnas1 = mylib.nixosHostConfig {
         hostname = "nixnas1";
-        username = "gene";
         additionalModules = [
           simple-nixos-mailserver.nixosModule
         ];
-        additionalSpecialArgs = {};
       };
-      nixnuc = nixosHostConfig {
-        system = "x86_64-linux";
+      nixnuc = mylib.nixosHostConfig {
         hostname = "nixnuc";
-        username = "gene";
         additionalModules = [
           simple-nixos-mailserver.nixosModule
         ];
-        additionalSpecialArgs = {};
       };
-      rainbow-planet = nixosHostConfig {
-        system = "x86_64-linux";
+      rainbow-planet = mylib.nixosHostConfig {
         hostname = "rainbow-planet";
-        username = "gene";
         additionalModules = [
           nixos-cosmic.nixosModules.default
           nixos-hardware.nixosModules.dell-xps-13-9360
         ];
-        additionalSpecialArgs = {};
       };
     }; # end nixosConfigurations
 
