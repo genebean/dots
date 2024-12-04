@@ -119,17 +119,20 @@
 
     # creates a nixos system config
     nixosHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs compose2nix hostname username;
-        pkgs = import nixpkgs {
-          inherit system;
-          config = {
-            allowUnfree = true;
-            permittedInsecurePackages = [ "olm-3.2.16" "electron-27.3.11" ];
-          };
-          overlays = [ nixpkgs-terraform.overlays.default ];
-        };
-      } // additionalSpecialArgs;
+      inherit system;
+      specialArgs = { inherit inputs compose2nix hostname username; } // additionalSpecialArgs;
       modules = [
+        # move this to a common file later
+        ({
+          nixpkgs = {
+            config = {
+              allowUnfree = true;
+              permittedInsecurePackages = [ "olm-3.2.16" "electron-27.3.11" ];
+            };
+            overlays = [ nixpkgs-terraform.overlays.default ];
+          };
+        })
+
         disko.nixosModules.disko
 
         home-manager.nixosModules.home-manager {
