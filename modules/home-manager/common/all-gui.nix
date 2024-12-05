@@ -1,4 +1,4 @@
-{ pkgs, genebean-omp-themes, ... }: {
+{ pkgs, ... }: {
   home.packages = with pkgs; [
     # nothing here right now
   ];

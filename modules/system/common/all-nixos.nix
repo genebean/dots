@@ -1,4 +1,4 @@
-{ config, hostname, pkgs, sops-nix, username, ... }: {
+{ hostname, pkgs, username, ... }: {
   imports = [
     ./linux/internationalisation.nix
   ];

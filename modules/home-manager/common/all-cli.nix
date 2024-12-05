@@ -1,4 +1,4 @@
-{ pkgs, genebean-omp-themes, ... }: let
+{ inputs, pkgs, ... }: let
   sqlite_lib = if builtins.elem pkgs.system [
                  "aarch64-darwin"
                  "x86_64-darwin"
@@ -159,7 +159,7 @@ in {
     oh-my-posh = {
       enable = true;
       enableZshIntegration = true;
-      settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile (genebean-omp-themes + "/beanbag.omp.json")));
+      settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile (inputs.genebean-omp-themes + "/beanbag.omp.json")));
     };
     ripgrep.enable = true;
     tmux = {

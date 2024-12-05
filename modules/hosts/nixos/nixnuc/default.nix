@@ -1,4 +1,4 @@
-{ compose2nix, config, pkgs, username,  ... }: let
+{ inputs, config, pkgs, username,  ... }: let
   http_port = 80;
   https_port = 443;
   home_domain = "home.technicalissues.us";
@@ -29,7 +29,7 @@ in {
   };
 
   environment.systemPackages = with pkgs; [
-    compose2nix.packages.${pkgs.system}.default
+    inputs.compose2nix.packages.${pkgs.system}.default
     docker-compose
     intel-gpu-tools
     jellyfin

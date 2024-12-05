@@ -1,4 +1,4 @@
-{ config, inputs, pkgs, username, ... }: {
+{ inputs, config, pkgs, username, ... }: {
   imports = [
     ./hardware-configuration.nix
     ../../../system/common/linux/flatpaks.nix

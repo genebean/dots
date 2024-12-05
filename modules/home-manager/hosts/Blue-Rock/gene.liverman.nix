@@ -1,4 +1,4 @@
-{ pkgs, genebean-omp-themes, sops-nix, username, ... }: {
+{ username, ... }: {
   home.stateVersion = "23.11";
   imports = [
     ../../common/all-cli.nix

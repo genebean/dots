@@ -80,9 +80,7 @@
     nixos-hardware, nixpkgs-terraform, simple-nixos-mailserver, sops-nix, ...
   }: let
     # Functions that setup systems
-    mylib = import ./lib { inherit inputs nixpkgs nixpkgs-unstable compose2nix disko flox genebean-omp-themes
-      home-manager nix-darwin nix-flatpak nix-homebrew nixos-cosmic
-      nixos-hardware nixpkgs-terraform simple-nixos-mailserver sops-nix; };
+    mylib = import ./lib { inherit inputs; };
 
     # creates a macOS system config
     darwinHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: nix-darwin.lib.darwinSystem {
