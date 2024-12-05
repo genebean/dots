@@ -9,16 +9,7 @@
     inherit system;
     specialArgs = { inherit inputs hostname username; } // additionalSpecialArgs;
     modules = [
-      # move this to a common file later
-      ({
-        nixpkgs = {
-          config = {
-            allowUnfree = true;
-            permittedInsecurePackages = [ "olm-3.2.16" "electron-27.3.11" ];
-          };
-          overlays = [ inputs.nixpkgs-terraform.overlays.default ];
-        };
-      })
+      ./nixpkgs-settings.nix
 
       inputs.disko.nixosModules.disko
 
