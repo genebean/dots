@@ -1,5 +1,5 @@
 { inputs, ... }: {
-  nixosHostConfig = {
+  mkNixosHost = {
     system ? "x86_64-linux",
     hostname,
     username ? "gene",

@@ -1,7 +1,7 @@
 { inputs, ... }: let
-  nixosHostConfig = import ./nixosHostConfig.nix { inherit inputs; };
+  mkNixosHost = import ./mkNixosHost.nix { inherit inputs; };
 in {
-  inherit (nixosHostConfig)
-    nixosHostConfig
+  inherit (mkNixosHost)
+    mkNixosHost
     ;
 }

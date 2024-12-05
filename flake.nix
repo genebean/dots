@@ -170,38 +170,38 @@
 
     # NixOS hosts
     nixosConfigurations = {
-      bigboy = mylib.nixosHostConfig {
+      bigboy = mylib.mkNixosHost {
         hostname = "bigboy";
         additionalModules = [
           nixos-hardware.nixosModules.lenovo-thinkpad-p52
         ];
       };
-      hetznix01 = mylib.nixosHostConfig {
+      hetznix01 = mylib.mkNixosHost {
         hostname = "hetznix01";
         additionalModules = [
           simple-nixos-mailserver.nixosModule
         ];
       };
-      hetznix02 = mylib.nixosHostConfig {
+      hetznix02 = mylib.mkNixosHost {
         system = "aarch64-linux";
         hostname = "hetznix02";
         additionalModules = [
           # simple-nixos-mailserver.nixosModule
         ];
       };
-      nixnas1 = mylib.nixosHostConfig {
+      nixnas1 = mylib.mkNixosHost {
         hostname = "nixnas1";
         additionalModules = [
           simple-nixos-mailserver.nixosModule
         ];
       };
-      nixnuc = mylib.nixosHostConfig {
+      nixnuc = mylib.mkNixosHost {
         hostname = "nixnuc";
         additionalModules = [
           simple-nixos-mailserver.nixosModule
         ];
       };
-      rainbow-planet = mylib.nixosHostConfig {
+      rainbow-planet = mylib.mkNixosHost {
         hostname = "rainbow-planet";
         additionalModules = [
           nixos-cosmic.nixosModules.default
