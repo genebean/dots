@@ -80,7 +80,7 @@
     nixos-hardware, nixpkgs-terraform, simple-nixos-mailserver, sops-nix, ...
   }: let
     # Functions that setup systems
-    mylib = import ./lib { inherit inputs; };
+    localLib = import ./lib { inherit inputs; };
 
     # creates a macOS system config
     darwinHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: nix-darwin.lib.darwinSystem {
@@ -170,38 +170,38 @@
 
     # NixOS hosts
     nixosConfigurations = {
-      bigboy = mylib.mkNixosHost {
+      bigboy = localLib.mkNixosHost {
         hostname = "bigboy";
         additionalModules = [
           nixos-hardware.nixosModules.lenovo-thinkpad-p52
         ];
       };
-      hetznix01 = mylib.mkNixosHost {
+      hetznix01 = localLib.mkNixosHost {
         hostname = "hetznix01";
         additionalModules = [
           simple-nixos-mailserver.nixosModule
         ];
       };
-      hetznix02 = mylib.mkNixosHost {
+      hetznix02 = localLib.mkNixosHost {
         system = "aarch64-linux";
         hostname = "hetznix02";
         additionalModules = [
           # simple-nixos-mailserver.nixosModule
         ];
       };
-      nixnas1 = mylib.mkNixosHost {
+      nixnas1 = localLib.mkNixosHost {
         hostname = "nixnas1";
         additionalModules = [
           simple-nixos-mailserver.nixosModule
         ];
       };
-      nixnuc = mylib.mkNixosHost {
+      nixnuc = localLib.mkNixosHost {
         hostname = "nixnuc";
         additionalModules = [
           simple-nixos-mailserver.nixosModule
         ];
       };
-      rainbow-planet = mylib.mkNixosHost {
+      rainbow-planet = localLib.mkNixosHost {
         hostname = "rainbow-planet";
         additionalModules = [
           nixos-cosmic.nixosModules.default
