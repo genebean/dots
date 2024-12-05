@@ -1,10 +1,13 @@
-{ inputs, nixpkgs, nixpkgs-unstable, compose2nix, disko, flox, genebean-omp-themes,
-    home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixos-cosmic,
-    nixos-hardware, nixpkgs-terraform, simple-nixos-mailserver, sops-nix, ...
-}: {
-  nixosHostConfig = { system ? "x86_64-linux", hostname, username ? "gene", additionalModules ? [], additionalSpecialArgs ? {} }: nixpkgs.lib.nixosSystem {
+{ inputs, ... }: {
+  nixosHostConfig = {
+    system ? "x86_64-linux",
+    hostname,
+    username ? "gene",
+    additionalModules ? [],
+    additionalSpecialArgs ? {}
+  }: inputs.nixpkgs.lib.nixosSystem {
     inherit system;
-    specialArgs = { inherit inputs compose2nix hostname username; } // additionalSpecialArgs;
+    specialArgs = { inherit inputs hostname username; } // additionalSpecialArgs;
     modules = [
       # move this to a common file later
       ({
@@ -13,15 +16,15 @@
             allowUnfree = true;
             permittedInsecurePackages = [ "olm-3.2.16" "electron-27.3.11" ];
           };
-          overlays = [ nixpkgs-terraform.overlays.default ];
+          overlays = [ inputs.nixpkgs-terraform.overlays.default ];
         };
       })
 
-      disko.nixosModules.disko
+      inputs.disko.nixosModules.disko
 
-      home-manager.nixosModules.home-manager {
+      inputs.home-manager.nixosModules.home-manager {
         home-manager = {
-          extraSpecialArgs = { inherit genebean-omp-themes hostname username; };
+          extraSpecialArgs = { inherit inputs hostname username; };
           useGlobalPkgs = true;
           useUserPackages = true;
           users.${username}.imports = [
@@ -30,9 +33,9 @@
         };
       }
 
-      nix-flatpak.nixosModules.nix-flatpak
+      inputs.nix-flatpak.nixosModules.nix-flatpak
 
-      sops-nix.nixosModules.sops # system wide secrets management
+      inputs.sops-nix.nixosModules.sops # system wide secrets management
       ../modules/system/common/all-nixos.nix # system-wide stuff
       ../modules/hosts/nixos/${hostname} # host specific stuff
     ] ++ additionalModules;
