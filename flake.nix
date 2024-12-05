@@ -74,27 +74,23 @@
     };
 
   }; # end inputs
-  outputs = inputs@{
-    self, nixpkgs, nixpkgs-unstable, compose2nix, disko, flox, genebean-omp-themes,
-    home-manager, nix-darwin, nix-flatpak, nix-homebrew, nixos-cosmic,
-    nixos-hardware, nixpkgs-terraform, simple-nixos-mailserver, sops-nix, ...
-  }: let
+  outputs = inputs@{ self, ... }: let
     # Functions that setup systems
     localLib = import ./lib { inherit inputs; };
 
     # creates a macOS system config
-    darwinHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: nix-darwin.lib.darwinSystem {
-      pkgs = import nixpkgs {
+    darwinHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: inputs.nix-darwin.lib.darwinSystem {
+      pkgs = import inputs.nixpkgs {
         inherit system;
         config = {
           allowUnfree = true;
           permittedInsecurePackages = [ "olm-3.2.16" "python-2.7.18.7" ];
         };
-        overlays = [ nixpkgs-terraform.overlays.default ];
+        overlays = [ inputs.nixpkgs-terraform.overlays.default ];
       };
       specialArgs = { inherit inputs hostname username; } // additionalSpecialArgs;
       modules = [
-        nix-homebrew.darwinModules.nix-homebrew {
+        inputs.nix-homebrew.darwinModules.nix-homebrew {
           nix-homebrew = {
             enable = true;        # Install Homebrew under the default prefix
             user = "${username}"; # User owning the Homebrew prefix
@@ -102,13 +98,13 @@
           };
         }
 
-        home-manager.darwinModules.home-manager {
+        inputs.home-manager.darwinModules.home-manager {
           home-manager = {
-            extraSpecialArgs = { inherit genebean-omp-themes username; };
+            extraSpecialArgs = { inherit inputs username; };
             useGlobalPkgs = true;
             useUserPackages = true;
             users.${username}.imports = [
-              sops-nix.homeManagerModule # user-level secrets management
+              inputs.sops-nix.homeManagerModule # user-level secrets management
               ./modules/home-manager/hosts/${hostname}/${username}.nix 
             ];
           };
@@ -119,15 +115,15 @@
       ] ++ additionalModules; # end modules
     }; # end darwinSystem
 
-    linuxHomeConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: home-manager.lib.homeManagerConfiguration {
-      extraSpecialArgs = { inherit genebean-omp-themes hostname username;
-        pkgs = import nixpkgs {
+    linuxHomeConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: inputs.home-manager.lib.homeManagerConfiguration {
+      extraSpecialArgs = { inherit inputs hostname username;
+        pkgs = import inputs.nixpkgs {
           inherit system;
           config = {
             allowUnfree = true;
             permittedInsecurePackages = [ "olm-3.2.16" "electron-21.4.4" ];
           };
-          overlays = [ nixpkgs-terraform.overlays.default ];
+          overlays = [ inputs.nixpkgs-terraform.overlays.default ];
         };
       } // additionalSpecialArgs;
       modules = [
@@ -138,7 +134,7 @@
             homeDirectory = "/home/${username}";
           };
         }
-        sops-nix.homeManagerModules.sops
+        inputs.sops-nix.homeManagerModules.sops
       ] ++ additionalModules;
     }; # end homeManagerConfiguration
 
@@ -173,39 +169,39 @@
       bigboy = localLib.mkNixosHost {
         hostname = "bigboy";
         additionalModules = [
-          nixos-hardware.nixosModules.lenovo-thinkpad-p52
+          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p52
         ];
       };
       hetznix01 = localLib.mkNixosHost {
         hostname = "hetznix01";
         additionalModules = [
-          simple-nixos-mailserver.nixosModule
+          inputs.simple-nixos-mailserver.nixosModule
         ];
       };
       hetznix02 = localLib.mkNixosHost {
         system = "aarch64-linux";
         hostname = "hetznix02";
         additionalModules = [
-          # simple-nixos-mailserver.nixosModule
+          # inputs.simple-nixos-mailserver.nixosModule
         ];
       };
       nixnas1 = localLib.mkNixosHost {
         hostname = "nixnas1";
         additionalModules = [
-          simple-nixos-mailserver.nixosModule
+          inputs.simple-nixos-mailserver.nixosModule
         ];
       };
       nixnuc = localLib.mkNixosHost {
         hostname = "nixnuc";
         additionalModules = [
-          simple-nixos-mailserver.nixosModule
+          inputs.simple-nixos-mailserver.nixosModule
         ];
       };
       rainbow-planet = localLib.mkNixosHost {
         hostname = "rainbow-planet";
         additionalModules = [
-          nixos-cosmic.nixosModules.default
-          nixos-hardware.nixosModules.dell-xps-13-9360
+          inputs.nixos-cosmic.nixosModules.default
+          inputs.nixos-hardware.nixosModules.dell-xps-13-9360
         ];
       };
     }; # end nixosConfigurations
