@@ -76,44 +76,7 @@
   }; # end inputs
   outputs = inputs@{ self, ... }: let
     # Functions that setup systems
-    localLib = import ./lib { inherit inputs; };
-
-    # creates a macOS system config
-    darwinHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: inputs.nix-darwin.lib.darwinSystem {
-      pkgs = import inputs.nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-          permittedInsecurePackages = [ "olm-3.2.16" "python-2.7.18.7" ];
-        };
-        overlays = [ inputs.nixpkgs-terraform.overlays.default ];
-      };
-      specialArgs = { inherit inputs hostname username; } // additionalSpecialArgs;
-      modules = [
-        inputs.nix-homebrew.darwinModules.nix-homebrew {
-          nix-homebrew = {
-            enable = true;        # Install Homebrew under the default prefix
-            user = "${username}"; # User owning the Homebrew prefix
-            autoMigrate = true;   # Automatically migrate existing Homebrew installations
-          };
-        }
-
-        inputs.home-manager.darwinModules.home-manager {
-          home-manager = {
-            extraSpecialArgs = { inherit inputs username; };
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            users.${username}.imports = [
-              inputs.sops-nix.homeManagerModule # user-level secrets management
-              ./modules/home-manager/hosts/${hostname}/${username}.nix 
-            ];
-          };
-        }
-
-        ./modules/system/common/all-darwin.nix # system-wide stuff
-        ./modules/hosts/darwin/${hostname} # host specific stuff
-      ] ++ additionalModules; # end modules
-    }; # end darwinSystem
+    localLib = import ./lib { inherit inputs; };    
 
     linuxHomeConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: inputs.home-manager.lib.homeManagerConfiguration {
       extraSpecialArgs = { inherit inputs hostname username;
@@ -141,26 +104,18 @@
   in {
     # Darwin (macOS) hosts
     darwinConfigurations = {
-      AirPuppet = darwinHostConfig {
+      AirPuppet = localLib.mkDarwinHost {
         system = "x86_64-darwin";
         hostname = "AirPuppet";
-        username = "gene";
-        additionalModules = [];
-        additionalSpecialArgs = {};
       };
-      Blue-Rock = darwinHostConfig {
+      Blue-Rock = localLib.mkDarwinHost {
         system = "x86_64-darwin";
         hostname = "Blue-Rock";
         username = "gene.liverman";
-        additionalModules = [];
-        additionalSpecialArgs = {};
       };
-      mightymac = darwinHostConfig {
-        system = "aarch64-darwin";
+      mightymac = localLib.mkDarwinHost {
         hostname = "mightymac";
         username = "gene.liverman";
-        additionalModules = [];
-        additionalSpecialArgs = {};
       };
     }; # end darwinConfigurations
 
