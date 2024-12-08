@@ -1,14 +1,12 @@
 { pkgs, ... }: {
   home.stateVersion = "23.11";
   imports = [
-    ../../common/all-cli.nix
     ../../common/all-gui.nix
-    ../../common/all-linux.nix
-    ../../common/linux-apps/hexchat.nix
-    ../../common/linux-apps/pidgin.nix
-    ../../common/linux-apps/tilix.nix
-    ../../common/linux-apps/waybar.nix
-    ../../common/linux-apps/xfce4-terminal.nix
+    ../../common/linux/apps/hexchat.nix
+    ../../common/linux/apps/pidgin.nix
+    ../../common/linux/apps/tilix.nix
+    ../../common/linux/apps/waybar.nix
+    ../../common/linux/apps/xfce4-terminal.nix
   ];
 
   home.file = {

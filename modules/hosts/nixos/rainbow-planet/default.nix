@@ -1,7 +1,7 @@
 { inputs, config, pkgs, username, ... }: {
   imports = [
     ./hardware-configuration.nix
-    ../../../system/common/linux/flatpaks.nix
+    ../../common/linux/flatpaks.nix
   ];
 
   system.stateVersion = "23.05";

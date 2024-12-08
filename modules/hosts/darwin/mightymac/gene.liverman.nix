@@ -1,10 +1,5 @@
 { username, ... }: {
   home.stateVersion = "23.11";
-  imports = [
-    ../home.nix
-    ../../common
-    ../../common/all-gui.nix
-  ];
 
   programs = {
     go = {

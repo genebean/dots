@@ -19,7 +19,9 @@
           useGlobalPkgs = true;
           useUserPackages = true;
           users.${username}.imports = [
-            ../modules/home-manager/hosts/${hostname}/${username}.nix
+            ../modules/hosts/common
+            ../modules/hosts/common/linux/home.nix
+            ../modules/hosts/nixos/${hostname}/${username}.nix
           ];
         };
       }
@@ -27,7 +29,7 @@
       inputs.nix-flatpak.nixosModules.nix-flatpak
 
       inputs.sops-nix.nixosModules.sops # system wide secrets management
-      ../modules/system/common/all-nixos.nix # system-wide stuff
+      ../modules/hosts/nixos # system-wide stuff
       ../modules/hosts/nixos/${hostname} # host specific stuff
     ] ++ additionalModules;
   };

@@ -9,8 +9,8 @@ in {
     ./hardware-configuration.nix
     ./containers/audiobookshelf.nix
     ./containers/psitransfer.nix
-    ../../../system/common/linux/lets-encrypt.nix
-    ../../../system/common/linux/restic.nix
+    ../../common/linux/lets-encrypt.nix
+    ../../common/linux/restic.nix
   ];
 
   system.stateVersion = "23.11";
