@@ -481,6 +481,10 @@ in {
     isNormalUser = true;
     description = "Gene Liverman";
     extraGroups = [ "docker" "podman" "networkmanager" "wheel" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFvLaPTfG3r+bcbI6DV4l69UgJjnwmZNCQk79HXyf1Pt gene@rainbow-planet"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIp42X5DZ713+bgbOO+GXROufUFdxWo7NjJbGQ285x3N gene.liverman@ltnglobal.com"
+    ];
   };
 
   # Enable common container config files in /etc/containers
