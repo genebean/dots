@@ -29,7 +29,7 @@
             ../modules/hosts/common
             ../modules/hosts/common/all-gui.nix
             ../modules/hosts/darwin/home.nix
-            ../modules/hosts/darwin/${hostname}/${username}.nix 
+            ../modules/hosts/darwin/${hostname}/home-${username}.nix 
           ];
         };
       }

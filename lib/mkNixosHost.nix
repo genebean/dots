@@ -21,7 +21,7 @@
           users.${username}.imports = [
             ../modules/hosts/common
             ../modules/hosts/common/linux/home.nix
-            ../modules/hosts/nixos/${hostname}/${username}.nix
+            ../modules/hosts/nixos/${hostname}/home-${username}.nix
           ];
         };
       }
