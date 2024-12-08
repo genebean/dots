@@ -1,9 +1,9 @@
 { username, ... }: {
   home.stateVersion = "23.11";
   imports = [
-    ../../common/all-cli.nix
+    ../home.nix
+    ../../common
     ../../common/all-gui.nix
-    ../../common/all-darwin.nix
   ];
 
   programs = {

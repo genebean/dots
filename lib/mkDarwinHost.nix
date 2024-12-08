@@ -26,12 +26,12 @@
           useUserPackages = true;
           users.${username}.imports = [
             inputs.sops-nix.homeManagerModule # user-level secrets management
-            ../modules/home-manager/hosts/${hostname}/${username}.nix 
+            ../modules/hosts/darwin/${hostname}/${username}.nix 
           ];
         };
       }
 
-      ../modules/system/common/all-darwin.nix # system-wide stuff
+      ../modules/hosts/darwin # system-wide stuff
       ../modules/hosts/darwin/${hostname} # host specific stuff
     ] ++ additionalModules; # end modules
   }; # end darwinSystem

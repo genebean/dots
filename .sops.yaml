@@ -46,7 +46,7 @@ creation_rules:
     key_groups:
       - age:
           - *user_mini_watcher
-  - path_regex: modules/system/common/secrets.yaml$
+  - path_regex: modules/hosts/common/secrets.yaml$
     key_groups:
       - age:
           - *system_hetznix01
