@@ -4,7 +4,7 @@
     darwinHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }:
       nix-darwin.lib.darwinSystem { };
 
-    nixosHostConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }:
+    mkNixosHost = { system, hostname, username, additionalModules, additionalSpecialArgs }:
       nixpkgs.lib.nixosSystem { };
     
     linuxHomeConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }:
@@ -24,7 +24,7 @@
 
     # NixOS hosts
     nixosConfigurations = {
-      rainbow-planet = nixosHostConfig {
+      rainbow-planet = mkNixosHost {
         system = "x86_64-linux";
         hostname = "rainbow-planet";
         username = "gene";

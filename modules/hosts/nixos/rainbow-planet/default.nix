@@ -1,7 +1,7 @@
-{ config, inputs, pkgs, username, ... }: {
+{ inputs, config, pkgs, username, ... }: {
   imports = [
     ./hardware-configuration.nix
-    ../../../system/common/linux/flatpaks.nix
+    ../../common/linux/flatpaks.nix
   ];
 
   system.stateVersion = "23.05";
@@ -89,7 +89,7 @@
   services = {
     boinc.enable = true;
     dbus.implementation = "broker";
-    #desktopManager.cosmic.enable = true;
+    desktopManager.cosmic.enable = true;
     desktopManager.plasma6.enable = true;
     displayManager.sddm = {
       enable = true;

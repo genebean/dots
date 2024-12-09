@@ -18,6 +18,8 @@ This repo is a Nix flake that manages most of my setup on macOS and fully manage
 
 ## Flake structure
 
+> **RESTRUCTURING IN PROGRESS**: please note, I am restructuring this to remove a lot of complexity. This first pass is done and moves home manager bits into modules that have home in the name. Things that apply to everything under a part of the tree are in a corresponding `default.nix`
+
 The Nix bits are driven by `flake.nix` which pulls in things under `modules/`. Both Intel and Apple Silicon macOS are suppoted, as is NixOS. The flake is structured like so:
 
 - description: a human readable description of this flake
@@ -26,14 +28,14 @@ The Nix bits are driven by `flake.nix` which pulls in things under `modules/`. B
   - all the outputs from the inputs
   - a `let` ... `in` block that contains:
     - `darwinHostConfig` which takes a set of paramters as an attribute set and pulls in all the things needed to use Nix on a macOS host
-    - `nixosHostConfig` which takes a set of parameters as an attribute set and pulls in all the things needed to configure a NixOS host
+    - `mkNixosHost` which takes a set of parameters as an attribute set and pulls in all the things needed to configure a NixOS host
     - `linuxHomeConfig` which takes a set of paramters as an attribute set and pulls in the things I manage on non-NixOS Linux hosts
   - the body of outputs that contains:
     - `darwinConfigurations` contains is an attribute set that contains keys named for each macOS host set to the results of a call to `darwinHostConfig` with values for each of the required parameters
     - `nixosConfigurations` contains is an attribute set that contains keys named for each NixOS host set to the results of a call to `darwinHostConfig` with values for each of the required parameters
     - `homeConfigurations` contains an entry for each username set to the results of a call to `linuxHomeConfig` with values for each of the required parameters
 
-The parameters on `darwinHostConfig` & `nixosHostConfig` are:
+The parameters on `darwinHostConfig` & `mkNixosHost` are:
 
 - `system:` the system definition to use for nixpkgs
 - `hostname:` the hostname of the machine being configured

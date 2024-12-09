@@ -2,8 +2,8 @@
   domain = "technicalissues.us";
 in {
   imports = [
-    ../../../../system/common/linux/lets-encrypt.nix
-    ../../../../system/common/linux/restic.nix
+    ../../../common/linux/lets-encrypt.nix
+    ../../../common/linux/restic.nix
     ./matrix-synapse.nix
     ./nginx.nix
   ];
