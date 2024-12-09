@@ -18,6 +18,8 @@ This repo is a Nix flake that manages most of my setup on macOS and fully manage
 
 ## Flake structure
 
+> **RESTRUCTURING IN PROGRESS**: please note, I am restructuring this to remove a lot of complexity. This first pass is done and moves home manager bits into modules that have home in the name. Things that apply to everything under a part of the tree are in a corresponding `default.nix`
+
 The Nix bits are driven by `flake.nix` which pulls in things under `modules/`. Both Intel and Apple Silicon macOS are suppoted, as is NixOS. The flake is structured like so:
 
 - description: a human readable description of this flake
