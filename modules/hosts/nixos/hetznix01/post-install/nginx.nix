@@ -38,6 +38,17 @@ in {
           "/" = {
             return = "301 https://beanbag.technicalissues.us";
           };
+          "/.well-known/lnurlp/genebean" = {
+            return = ''
+              200 '{"status":"OK","tag":"payRequest","commentAllowed":255,"callback":"https://getalby.com/lnurlp/genebean/callback","metadata":"[[\\"text/identifier\\",\\"genebean@getalby.com\\"],[\\"text/plain\\",\\"Sats for GeneBean\\"]]","minSendable":1000,"maxSendable":150000000,"payerData":{"name":{"mandatory":false},"email":{"mandatory":false},"pubkey":{"mandatory":false}},"nostrPubkey":"79f00d3f5a19ec806189fcab03c1be4ff81d18ee4f653c88fac41fe03570f432","allowsNostr":true}'
+            '';
+            extraConfig = ''
+              default_type application/json;
+              source_charset utf-8;
+              charset utf-8;
+              add_header Access-Control-Allow-Origin *;
+            '';
+          };
           "/.well-known/matrix/client" = {
             return = ''
               200 '{"m.homeserver": {"base_url": "https://matrix.technicalissues.us"}}'
