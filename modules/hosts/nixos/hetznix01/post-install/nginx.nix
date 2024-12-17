@@ -69,6 +69,21 @@ in {
           };
         };
       };
+      "albyhub.${domain}" = {
+        listen = [
+          { port = https_port; addr = "0.0.0.0"; ssl = true; }
+          { port = https_port; addr = "[::]"; ssl = true; }
+        ];
+        enableACME = true;
+        acmeRoot = null;
+        forceSSL = true;
+       # basicAuthFile = config.sops.secrets.owntracks_basic_auth.path;
+        # Albyhub container
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8080";
+          proxyWebsockets = true;
+        };
+      };
       "matrix.${domain}" = {
         listen = [
           { port = https_port; addr = "0.0.0.0"; ssl = true; }
