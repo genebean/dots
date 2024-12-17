@@ -17,7 +17,7 @@
     oh-my-zsh.plugins = [ "macos" ];
     shellAliases = {
       currentwifi = "networksetup -getairportnetwork en0 |cut -d ':' -f2- | cut -d ' ' -f2-";
-      nixdiff = "cd ~/repos/dots && darwin-rebuild build --flake . && nvd diff /run/current-system result";
+      nixdiff = "brew outdated && brew outdated --cask && mas outdated && cd ~/repos/dots && darwin-rebuild build --flake . && nvd diff /run/current-system result";
       nixup = "darwin-rebuild switch --flake ~/repos/dots";
       uwgconnect = "networksetup -setairportnetwork en0 SecureWest";
       uwgforget = "networksetup -removepreferredwirelessnetwork en0 SecureWest";
