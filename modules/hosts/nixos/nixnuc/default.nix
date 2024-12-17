@@ -88,6 +88,8 @@ in {
         22000 # Syncthing transfers
       ];
       allowedUDPPorts = [
+         1900 # Jellyfin service auto-discovery
+         7359 # Jellyfin auto-discovery
         21027 # Syncthing discovery
         22000 # Syncthing transfers
       ];
@@ -279,34 +281,6 @@ in {
         add_header Strict-Transport-Security $hsts_header;
       '';
       virtualHosts = {
-        "jellyfin" = {
-          listen = [
-            {
-              addr = "0.0.0.0";
-              port = 8099;
-            }
-          ];
-          locations = {
-            "= /" = {
-              return = "302 http://$host/web/";
-            };
-            "/" = {
-              proxyPass = "http://127.0.0.1:8096";
-              recommendedProxySettings = true;
-              extraConfig = "proxy_buffering off;";
-            };
-            "= /web/" = {
-              proxyPass = "http://127.0.0.1:8096/web/index.html";
-              recommendedProxySettings = true;
-            };
-            "/socket" = {
-              proxyPass = "http://127.0.0.1:8096";
-              recommendedProxySettings = true;
-              proxyWebsockets = true;
-            };
-          };
-        };
-
         "${home_domain}" = {
           default = true;
           serverAliases = [
@@ -366,6 +340,31 @@ in {
             proxy_read_timeout 600s;
             proxy_send_timeout 600s;
             send_timeout       600s;
+          '';
+        };
+        "jellyfin.${home_domain}" = {
+          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://${backend_ip}:8096";
+              extraConfig = ''
+                proxy_buffering off;
+                proxy_set_header X-Forwarded-Protocol $scheme;
+              '';
+            };
+            "/socket" = {
+              proxyPass = "http://${backend_ip}:8096";
+              proxyWebsockets = true;
+              extraConfig = ''
+                proxy_set_header X-Forwarded-Protocol $scheme;
+              '';
+            };
+          };
+          extraConfig = ''
+            client_max_body_size 20M;
           '';
         };
         "mealie.${home_domain}" = {
