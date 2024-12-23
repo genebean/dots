@@ -44,6 +44,7 @@ in {
     rename
     ruby
     subversion
+    tldr
     tree
     trippy
     vimv
