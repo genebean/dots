@@ -38,6 +38,7 @@
     kubectx
     kubernetes-helm
     kubeseal
+    mumble
     networkmanager-openvpn
     nodejs
     pavucontrol
