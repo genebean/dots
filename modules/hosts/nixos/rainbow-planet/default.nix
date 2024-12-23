@@ -33,6 +33,7 @@
     hubble
     hugo
     inputs.flox.packages.${pkgs.system}.default
+    kdePackages.kdenlive
     kubectl
     kubectx
     kubernetes-helm
@@ -49,6 +50,7 @@
     rclone-browser
     step-cli
     virt-manager
+    vlc
     whalebird
     wmctrl
 
