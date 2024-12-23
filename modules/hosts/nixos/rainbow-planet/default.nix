@@ -2,6 +2,7 @@
   imports = [
     ./hardware-configuration.nix
     ../../common/linux/flatpaks.nix
+    ../../common/linux/ripping.nix
   ];
 
   system.stateVersion = "23.05";
