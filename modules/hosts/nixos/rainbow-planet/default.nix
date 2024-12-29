@@ -30,6 +30,7 @@
     butane
     cilium-cli
     displaylink
+    filezilla
     go
     hubble
     hugo
