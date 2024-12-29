@@ -147,11 +147,6 @@
     };
   };
 
-  system.switch = {
-    enable = false;
-    enableNg = true;
-  };
-
   systemd.network.wait-online.enable = false; # Handled by NetworkManager
 
   users.extraGroups.vboxusers.members = [ "${username}" ];
