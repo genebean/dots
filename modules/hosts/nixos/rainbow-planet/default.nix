@@ -2,6 +2,7 @@
   imports = [
     ./hardware-configuration.nix
     ../../common/linux/flatpaks.nix
+    ../../common/linux/ripping.nix
   ];
 
   system.stateVersion = "23.05";
@@ -29,14 +30,17 @@
     butane
     cilium-cli
     displaylink
+    filezilla
     go
     hubble
     hugo
     inputs.flox.packages.${pkgs.system}.default
+    kdePackages.kdenlive
     kubectl
     kubectx
     kubernetes-helm
     kubeseal
+    mumble
     networkmanager-openvpn
     nodejs
     pavucontrol
@@ -49,6 +53,7 @@
     rclone-browser
     step-cli
     virt-manager
+    vlc
     whalebird
     wmctrl
 
@@ -140,11 +145,6 @@
         restartUnits = [ "tailscaled-autoconnect.service" ];
       };
     };
-  };
-
-  system.switch = {
-    enable = false;
-    enableNg = true;
   };
 
   systemd.network.wait-online.enable = false; # Handled by NetworkManager
