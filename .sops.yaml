@@ -1,5 +1,6 @@
 ---
 keys:
+  - &system_bigboy age1hraf69phgqg9y48m2r2sn6tr2sw7tf2h5j62ysl8nrv3qs2ft9kst0ysxm
   - &system_hetznix01 age1rd55wsu0hhvxk25tm69d9h57z0z0u6556x4ypg09muj3vh4yqs5qaw23nu
   - &system_hetznix02 age180w4c04kga07097u0us6d72aslnv2523hx64x8fzgzu4tccrxuyqa50hpm
   - &system_nixnas1 age1g4h5a4f5xfle2a6np8te342pphs3mcuan60emz2zp87nrwjzl5yquhr5vl
@@ -8,8 +9,11 @@ keys:
   - &user_airpuppet age1awdf9h0avajf57cudx0rjfmxu2wlxw8wf3sa7yvfk8rp4j6taecsu74x77
   - &user_blue_rock age1rt72txg22w8y3cdvq9w7zff0cas6xtkplpj36kxnevfnrtn82f6ss7yw7d
   - &user_mightymac age1zz34qx3n3dj63sva24kaymetv3apn58lafjq4dl6zw7xxachuyts00mhck
-  - &user_mini_watcher age1rpy8edlpgxuf6w75cvlqexuq2xe4c49h9t2ge6jhc3fzczp8vfasnjelwq
 creation_rules:
+  - path_regex: bigboy/secrets.yaml$
+    key_groups:
+      - age:
+          - *system_bigboy
   - path_regex: hetznix01/secrets.yaml$
     key_groups:
       - age:
@@ -42,13 +46,10 @@ creation_rules:
     key_groups:
       - age:
           - *user_mightymac
-  - path_regex: mini-watcher/secrets.yaml$
-    key_groups:
-      - age:
-          - *user_mini_watcher
   - path_regex: modules/hosts/common/secrets.yaml$
     key_groups:
       - age:
+          - *system_bigboy
           - *system_hetznix01
           - *system_hetznix02
           - *system_nixnas1
@@ -57,6 +58,4 @@ creation_rules:
           - *user_airpuppet
           - *user_blue_rock
           - *user_mightymac
-          - *user_mini_watcher
-
 
