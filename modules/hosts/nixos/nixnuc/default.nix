@@ -79,6 +79,7 @@ in {
         80    # http to local Nginx
         443   # https to local Nginx
         3000  # PsiTransfer in oci-container
+        3001  # immich-kiosk in compose
         3030  # Forgejo
         8001  # Tube Archivist
         8384  # Syncthing gui
