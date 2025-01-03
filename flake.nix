@@ -159,6 +159,10 @@
           inputs.nixos-hardware.nixosModules.dell-xps-13-9360
         ];
       };
+      raspberry = localLib.mkNixosHost {
+        system = "aarch64-linux";
+        hostname = "raspberry";
+      };
     }; # end nixosConfigurations
 
     # Home Manager (only) users
