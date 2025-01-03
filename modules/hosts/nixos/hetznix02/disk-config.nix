@@ -2,8 +2,8 @@
 { lib, ... }:
 {
   disko.devices = {
-    disk.disk1 = {
-      device = lib.mkDefault "/dev/sda";
+    disk.primary = {
+      device = lib.mkDefault "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_51838383";
       type = "disk";
       content = {
         type = "gpt";
@@ -30,6 +30,27 @@
               type = "filesystem";
               format = "ext4";
               mountpoint = "/";
+              mountOptions = [
+                "defaults"
+              ];
+            };
+          };
+        };
+      };
+    };
+    disk.volume1 = {
+      device = lib.mkDefault "/dev/disk/by-id/scsi-0HC_Volume_101886924";
+      type = "disk";
+      content = {
+        type = "gpt";
+        partitions = {
+         nix = {
+           name = "nix";
+           size = "100%";
+           content = {
+              type = "filesystem";
+              format = "ext4";
+              mountpoint = "/nix";
               mountOptions = [
                 "defaults"
               ];
