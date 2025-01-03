@@ -26,6 +26,10 @@
       device = lib.mkForce "/dev/sda1";
       fsType = "ext4";
     };
+    "/nix" = {
+      device = "/dev/disk/by-id/scsi-0HC_Volume_101886924-part1";
+      fsType = "ext4";
+    };
   };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
