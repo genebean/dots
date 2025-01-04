@@ -162,6 +162,9 @@
       raspberry = localLib.mkNixosHost {
         system = "aarch64-linux";
         hostname = "raspberry";
+        additionalModules = [
+          inputs.nixos-hardware.nixosModules.raspberry-pi-3
+        ];
       };
     }; # end nixosConfigurations
 
