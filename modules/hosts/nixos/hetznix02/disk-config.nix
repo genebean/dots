@@ -3,7 +3,7 @@
 {
   disko.devices = {
     disk.disk1 = {
-      device = lib.mkDefault "/dev/sda";
+      device = lib.mkDefault "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_51838383";
       type = "disk";
       content = {
         type = "gpt";
@@ -38,7 +38,7 @@
         };
       };
     };
-    disk.disk2 = {
+    disk.volume-nix-store = {
       device = lib.mkDefault "/dev/disk/by-id/scsi-0HC_Volume_101886924";
       type = "disk";
       content = {

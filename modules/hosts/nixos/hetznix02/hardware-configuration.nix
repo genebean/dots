@@ -27,7 +27,7 @@
       fsType = "ext4";
     };
     "/nix" = {
-      device = "/dev/disk/by-id/scsi-0HC_Volume_101886924-part1";
+      device = "/dev/disk/by-partlabel/disk-volume-nix-store-nix";
       fsType = "ext4";
     };
   };
