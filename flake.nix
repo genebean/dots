@@ -144,6 +144,13 @@
           # inputs.simple-nixos-mailserver.nixosModule
         ];
       };
+      kiosk-gene-desk = localLib.mkNixosHost {
+        system = "aarch64-linux";
+        hostname = "kiosk-gene-desk";
+        additionalModules = [
+          inputs.nixos-hardware.nixosModules.raspberry-pi-4
+        ];
+      };
       nixnas1 = localLib.mkNixosHost {
         hostname = "nixnas1";
         additionalModules = [
@@ -161,13 +168,6 @@
         additionalModules = [
           inputs.nixos-cosmic.nixosModules.default
           inputs.nixos-hardware.nixosModules.dell-xps-13-9360
-        ];
-      };
-      raspberry = localLib.mkNixosHost {
-        system = "aarch64-linux";
-        hostname = "raspberry";
-        additionalModules = [
-          inputs.nixos-hardware.nixosModules.raspberry-pi-3
         ];
       };
     }; # end nixosConfigurations

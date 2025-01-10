@@ -1,10 +1,22 @@
-{ inputs, username, ... }: {
+{ inputs, lib, pkgs, username, ... }: {
   imports = [
     # SD card image
     "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
   ];
-  
+
   system.stateVersion = "24.11";
+
+  boot.supportedFilesystems = lib.mkForce [
+    "vfat"
+    "ext4"
+  ];
+
+  environment.systemPackages = with pkgs; [
+    libraspberrypi
+    raspberrypi-eeprom
+  ];
+
+  hardware.enableRedistributableFirmware = true;
 
   networking.wireless = {
     enable = true;
@@ -16,6 +28,22 @@
       };
     };
   };
+
+  nixpkgs.overlays = [
+    (final: super: {
+      makeModulesClosure = x:
+        super.makeModulesClosure (x // { allowMissing = true; });
+    })
+  ];
+
+  services = {
+    cage = {
+      enable = true;
+      program = "${pkgs.chromium}/bin/chromium-browser";
+    };
+  };
+
+  sdImage.compressImage = false;
 
   users.users.${username} = {
     isNormalUser = true;
