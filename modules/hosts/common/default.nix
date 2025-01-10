@@ -160,9 +160,9 @@ in {
     oh-my-posh = {
       enable = true;
       enableZshIntegration = true;
-      #settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile (inputs.genebean-omp-themes + "/beanbag.omp.json")));
+      settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile (inputs.genebean-omp-themes + "/beanbag.omp.json")));
       #useTheme = "amro";
-      useTheme = "montys";
+      #useTheme = "montys";
     };
     ripgrep.enable = true;
     tmux = {
