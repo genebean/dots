@@ -7,11 +7,6 @@
       goPath = "go";
     };
     k9s.enable = true;
-    zsh = {
-      initExtra = ''
-        eval $(brew shellenv)
-      '';
-    };
   };
 
   sops = {
