@@ -160,9 +160,9 @@ in {
     oh-my-posh = {
       enable = true;
       enableZshIntegration = true;
-      #settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile (inputs.genebean-omp-themes + "/beanbag.omp.json")));
+      settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile (inputs.genebean-omp-themes + "/beanbag.omp.json")));
       #useTheme = "amro";
-      useTheme = "montys";
+      #useTheme = "montys";
     };
     ripgrep.enable = true;
     tmux = {
@@ -271,7 +271,7 @@ in {
         fi
 
         export GPG_TTY=$(tty)
-        nv() {
+        function nv() {
           # Assumes all configs exist in directories named ~/.config/nvim-*
           local config=$(fd --max-depth 1 --glob 'nvim*' ~/.config | fzf --prompt="Neovim Configs > " --height=~50% --layout=reverse --border --exit-0)
 
@@ -282,32 +282,32 @@ in {
           NVIM_APPNAME=$(basename $config) nvim $*
         }
 
-        svndiffless() {
+        function svndiffless() {
           svn diff "$@" |diff-so-fancy |less -R
         }
 
-        svndiffless-nows() {
+        function svndiffless-nows() {
           svn diff -x -w "$@" |diff-so-fancy |less -R
         }
-
-        # unset oh-my-zsh's gk so that gk can refer to the gitkraken-cli
-        unalias gk
       '';
-      oh-my-zsh = {
-        enable = true;
-        plugins = [
-          "bundler"
-          "gem"
-          "git"
-          "github"
-          "history"
-          "kubectl"
-          "pip"
-          "terraform"
-          "vagrant"
-          "vscode"
-        ];
-      };
+      #   # unset oh-my-zsh's gk so that gk can refer to the gitkraken-cli
+      #   unalias gk
+      # '';
+      # oh-my-zsh = {
+      #   enable = true;
+      #   plugins = [
+      #     "bundler"
+      #     "gem"
+      #     "git"
+      #     "github"
+      #     "history"
+      #     "kubectl"
+      #     "pip"
+      #     "terraform"
+      #     "vagrant"
+      #     "vscode"
+      #   ];
+      # };
       shellAliases = {
         bcrr = "bolt command run --run-as root --sudo-password-prompt";
         bcrrs = "bcrr --stream --no-verbose";
