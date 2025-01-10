@@ -343,6 +343,21 @@ in {
             send_timeout       600s;
           '';
         };
+        "immich-kiosk.${home_domain}" = {
+          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          basicAuthFile = config.sops.secrets.immich_kiosk_basic_auth.path;
+          locations."/".proxyPass = "http://${backend_ip}:3001";
+          locations."/".proxyWebsockets = true;
+          extraConfig = ''
+            client_max_body_size 0;
+            proxy_read_timeout 600s;
+            proxy_send_timeout 600s;
+            send_timeout       600s;
+          '';
+        };
         "jellyfin.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
           enableACME = true;
@@ -453,6 +468,10 @@ in {
     age.keyFile = "${config.users.users.${username}.home}/.config/sops/age/keys.txt";
     defaultSopsFile = ./secrets.yaml;
     secrets = {
+      immich_kiosk_basic_auth = {
+        owner = config.users.users.nginx.name;
+        restartUnits = ["nginx.service"];
+      };
       local_git_config = {
         owner = "${username}";
         path = "${config.users.users.${username}.home}/.gitconfig-local";
