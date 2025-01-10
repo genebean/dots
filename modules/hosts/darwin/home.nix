@@ -14,7 +14,7 @@
       export PATH=$PATH:/opt/puppetlabs/pdk/bin
       export PATH=$PATH:/opt/puppetlabs/puppet/bin
     '';
-    oh-my-zsh.plugins = [ "macos" ];
+    # oh-my-zsh.plugins = [ "macos" ];
     shellAliases = {
       currentwifi = "networksetup -getairportnetwork en0 |cut -d ':' -f2- | cut -d ' ' -f2-";
       nixdiff = "brew outdated && brew outdated --cask && mas outdated && cd ~/repos/dots && darwin-rebuild build --flake . && nvd diff /run/current-system result";

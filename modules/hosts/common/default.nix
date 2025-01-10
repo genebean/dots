@@ -289,25 +289,25 @@ in {
         function svndiffless-nows() {
           svn diff -x -w "$@" |diff-so-fancy |less -R
         }
-
-        # unset oh-my-zsh's gk so that gk can refer to the gitkraken-cli
-        unalias gk
       '';
-      oh-my-zsh = {
-        enable = true;
-        plugins = [
-          "bundler"
-          "gem"
-          "git"
-          "github"
-          "history"
-          "kubectl"
-          "pip"
-          "terraform"
-          "vagrant"
-          "vscode"
-        ];
-      };
+      #   # unset oh-my-zsh's gk so that gk can refer to the gitkraken-cli
+      #   unalias gk
+      # '';
+      # oh-my-zsh = {
+      #   enable = true;
+      #   plugins = [
+      #     "bundler"
+      #     "gem"
+      #     "git"
+      #     "github"
+      #     "history"
+      #     "kubectl"
+      #     "pip"
+      #     "terraform"
+      #     "vagrant"
+      #     "vscode"
+      #   ];
+      # };
       shellAliases = {
         bcrr = "bolt command run --run-as root --sudo-password-prompt";
         bcrrs = "bcrr --stream --no-verbose";
