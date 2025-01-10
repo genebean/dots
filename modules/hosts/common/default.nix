@@ -271,7 +271,7 @@ in {
         fi
 
         export GPG_TTY=$(tty)
-        nv() {
+        function nv() {
           # Assumes all configs exist in directories named ~/.config/nvim-*
           local config=$(fd --max-depth 1 --glob 'nvim*' ~/.config | fzf --prompt="Neovim Configs > " --height=~50% --layout=reverse --border --exit-0)
 
@@ -282,11 +282,11 @@ in {
           NVIM_APPNAME=$(basename $config) nvim $*
         }
 
-        svndiffless() {
+        function svndiffless() {
           svn diff "$@" |diff-so-fancy |less -R
         }
 
-        svndiffless-nows() {
+        function svndiffless-nows() {
           svn diff -x -w "$@" |diff-so-fancy |less -R
         }
 
