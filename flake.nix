@@ -144,6 +144,13 @@
           # inputs.simple-nixos-mailserver.nixosModule
         ];
       };
+      kiosk-gene-desk = localLib.mkNixosHost {
+        system = "aarch64-linux";
+        hostname = "kiosk-gene-desk";
+        additionalModules = [
+          inputs.nixos-hardware.nixosModules.raspberry-pi-4
+        ];
+      };
       nixnas1 = localLib.mkNixosHost {
         hostname = "nixnas1";
         additionalModules = [
@@ -163,13 +170,6 @@
           inputs.nixos-hardware.nixosModules.dell-xps-13-9360
         ];
       };
-      raspberry = localLib.mkNixosHost {
-        system = "aarch64-linux";
-        hostname = "raspberry";
-        additionalModules = [
-          inputs.nixos-hardware.nixosModules.raspberry-pi-3
-        ];
-      };
     }; # end nixosConfigurations
 
     # Home Manager (only) users
@@ -182,5 +182,11 @@
         additionalSpecialArgs = {};
       };
     }; # end homeConfigurations
+
+    packages.aarch64-linux.kiosk-gene-desk-sdImage = (self.nixosConfigurations.kiosk-gene-desk.extendModules {
+      modules = [
+        "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
+      ];
+    }).config.system.build.sdImage;
   };
 }
