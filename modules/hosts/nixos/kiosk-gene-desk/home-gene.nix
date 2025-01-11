@@ -5,8 +5,7 @@
     chromium = {
       enable = true;
       commandLineArgs = [
-        #"http://192.168.22.22:8123/kiosk-gene-desk/0?kiosk"
-        "--app=http://192.168.20.190:3001/?album=e2281831-ae1b-45a5-8fe1-0a267ba5e1a9&transtion=cross-fade"
+        "--app=http://192.168.22.22:8123/kiosk-gene-desk/immich?kiosk"
         "--kiosk"
         "--noerrdialogs"
         "--disable-infobars"
