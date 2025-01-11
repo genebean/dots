@@ -47,7 +47,7 @@
     })
   ];
 
-  sdImage.compressImage = false;
+  sdImage.compressImage = true;
 
   services = {
     cage = let
