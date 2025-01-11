@@ -28,6 +28,7 @@
     boinc
     brightnessctl
     butane
+    caligula
     cilium-cli
     displaylink
     filezilla
@@ -40,6 +41,7 @@
     kubectx
     kubernetes-helm
     kubeseal
+    mediawriter
     mumble
     networkmanager-openvpn
     nodejs
@@ -51,6 +53,7 @@
     #quickemu
     rclone
     rclone-browser
+    rpi-imager
     step-cli
     virt-manager
     vlc
@@ -59,7 +62,6 @@
 
     # common gui apps that really should be in another file
     angryipscanner
-    firefox
     gitkraken
     libreoffice
     meld
@@ -82,6 +84,7 @@
       # require enabling PolKit integration on some desktop environments (e.g. Plasma).
       polkitPolicyOwners = [ "${username}" ];
     };
+    firefox.enable = true;
     #hyprland.enable = true;
 
     ssh.askPassword = "ssh-askpass";
