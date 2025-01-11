@@ -3,6 +3,7 @@ keys:
   - &system_bigboy age1hraf69phgqg9y48m2r2sn6tr2sw7tf2h5j62ysl8nrv3qs2ft9kst0ysxm
   - &system_hetznix01 age1rd55wsu0hhvxk25tm69d9h57z0z0u6556x4ypg09muj3vh4yqs5qaw23nu
   - &system_hetznix02 age180w4c04kga07097u0us6d72aslnv2523hx64x8fzgzu4tccrxuyqa50hpm
+  - &system_kiosk_gene_desk age1an6t5f0rr6h55rzsv5ejycxju72rp46jka840fwvupwfk65jegrq7hmkl9
   - &system_nixnas1 age1g4h5a4f5xfle2a6np8te342pphs3mcuan60emz2zp87nrwjzl5yquhr5vl
   - &system_nixnuc age1g24zhwvgenpc4wqejt63thvgd4rn5x9n7nnwwme7dm83nfqpp93se2vmq4
   - &system_rainbow_planet age15xlw5vnnjdx2ypz6rq0mqcywuaj3yx8y6lrgf95satafqf7y4qus6rv6ck
@@ -22,6 +23,10 @@ creation_rules:
     key_groups:
       - age:
           - *system_hetznix02
+  - path_regex: kiosk-gene-desk/secrets.yaml$
+    key_groups:
+      - age:
+          - *system_kiosk_gene_desk
   - path_regex: nixnas1/secrets.yaml$
     key_groups:
       - age:
@@ -52,6 +57,7 @@ creation_rules:
           - *system_bigboy
           - *system_hetznix01
           - *system_hetznix02
+          - *system_kiosk_gene_desk
           - *system_nixnas1
           - *system_nixnuc
           - *system_rainbow_planet
