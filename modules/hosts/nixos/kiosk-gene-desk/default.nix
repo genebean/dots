@@ -26,6 +26,7 @@
   };
 
   networking = {
+    firewall.enable = false;
     wireless = {
       enable = true;
       networks = {
