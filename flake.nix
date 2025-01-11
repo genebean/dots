@@ -183,10 +183,6 @@
       };
     }; # end homeConfigurations
 
-    packages.aarch64-linux.kiosk-gene-desk-sdImage = (self.nixosConfigurations.kiosk-gene-desk.extendModules {
-      modules = [
-        "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
-      ];
-    }).config.system.build.sdImage;
+    packages.aarch64-linux.kiosk-gene-desk-sdImage = self.nixosConfigurations.kiosk-gene-desk.config.system.build.sdImage;
   };
 }
