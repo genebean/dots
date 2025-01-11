@@ -19,20 +19,24 @@
     wlr-randr
   ];
 
-  hardware.enableRedistributableFirmware = true;
-  hardware.graphics.enable = true;
-  hardware.raspberry-pi."4".fkms-3d.enable = true;
+  hardware = {
+    enableRedistributableFirmware = true;
+    graphics.enable = true;
+    raspberry-pi."4".fkms-3d.enable = true;
+  };
 
-  networking.wireless = {
-    enable = true;
-    networks = {
-      # Home
-      "Diagon Alley".pskRaw = "ext:psk_diagon_alley";
-      # Public networks
-      "Gallery Row-GuestWiFi" = {};
-      "LocalTies Guest".pskRaw = "ext:psk_local_ties";
+  networking = {
+    wireless = {
+      enable = true;
+      networks = {
+        # Home
+        "Diagon Alley".pskRaw = "ext:psk_diagon_alley";
+        # Public networks
+        "Gallery Row-GuestWiFi" = {};
+        "LocalTies Guest".pskRaw = "ext:psk_local_ties";
+      };
+      secretsFile = "${config.sops.secrets.wifi_creds.path}";
     };
-    secretsFile = "${config.sops.secrets.wifi_creds.path}";
   };
 
   nixpkgs.overlays = [
