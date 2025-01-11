@@ -97,6 +97,12 @@
     };
   };
 
+  systemd.services.cage-tty1 = {
+    wants = [
+      "wpa_supplicant.service"
+    ];
+  };
+
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
