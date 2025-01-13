@@ -37,8 +37,10 @@ in {
     jellyfin-web
     net-snmp
     nginx
+    nvme-cli
     podman-compose
     podman-tui # status of containers in the terminal
+    smartmontools
     yt-dlp
   ];
 
@@ -75,16 +77,19 @@ in {
     # Open ports in the firewall.
     firewall = {
       allowedTCPPorts = [
-        22    # ssh
-        80    # http to local Nginx
-        443   # https to local Nginx
-        3000  # PsiTransfer in oci-container
-        3001  # immich-kiosk in compose
-        3030  # Forgejo
-        8001  # Tube Archivist
-        8384  # Syncthing gui
-        8888  # Atuin
-        8090  # Wallabag in docker compose
+           22 # ssh
+           80 # http to local Nginx
+          443 # https to local Nginx
+         3000 # PsiTransfer in oci-container
+         3001 # immich-kiosk in compose
+         3002 # grafana
+         3030 # Forgejo
+         8001 # Tube Archivist
+         8384 # Syncthing gui
+         8888 # Atuin
+         8090 # Wallabag in docker compose
+         9090 # Prometheus Server
+         9273 # Telegraf's Prometheus endpoint
         13378 # Audiobookshelf in oci-container
         22000 # Syncthing transfers
       ];
@@ -194,6 +199,18 @@ in {
       stateDir = "/orico/forgejo";
     };
     fwupd.enable = true;
+    grafana = {
+      enable = true;
+      settings = {
+        server = {
+          domain = "monitoring.${home_domain}";
+          http_addr = "0.0.0.0";
+          http_port = 3002;
+          root_url = "https://monitoring.${home_domain}/grafana/"; # Not needed if it is `https://your.domain/`
+          serve_from_sub_path = true;
+        };
+      };
+    };
     jellyfin = {
       enable = true;
       openFirewall = true;
@@ -300,6 +317,13 @@ in {
               add_header Content-Type text/html;
             '';
           };
+          locations."/server_status" = {
+            extraConfig = ''
+              stub_status;
+              allow 127.0.0.1;
+              deny all;
+            '';
+          };
         };
         "ab.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
@@ -393,6 +417,13 @@ in {
             client_max_body_size 10M;
           '';
         };
+        "monitoring.${home_domain}" = {
+          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/grafana/".proxyPass = "http://${backend_ip}:3002";
+        };
         "nc.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
           enableACME = true;
@@ -444,9 +475,45 @@ in {
       backupAll = true;
       startAt = "*-*-* 23:00:00";
     };
+    prometheus = {
+      enable = true;
+      checkConfig = "syntax-only";
+      globalConfig.scrape_interval = "10s"; # "1m"
+      scrapeConfigs = [
+        {
+          job_name = "hass";
+          scrape_interval = "30s";
+          metrics_path = "/api/prometheus";
+          static_configs = [{
+            targets = [ "192.168.22.22:8123" ];
+          }];
+          bearer_token_file = config.sops.secrets.home_assistant_token.path;
+        }
+        {
+          job_name = "telegraf";
+          scrape_interval = "5s";
+          static_configs = [{
+            targets = [ "localhost:9273" ];
+          }];
+        }
+        {
+          job_name = "uptimekuma";
+          scheme = "https";
+          scrape_interval = "30s";
+          static_configs = [{
+            targets = [ "utk.technicalissues.us" ];
+          }];
+          basic_auth = {
+            password_file = config.sops.secrets.uptimekuma_grafana_api_key.path;
+            username = "";
+          };
+        }
+      ];
+    };
     resolved.enable = true;
     restic.backups.daily.paths = [
       config.services.forgejo.stateDir
+      config.services.grafana.dataDir
       config.services.mealie.settings.DATA_DIR
       config.services.nextcloud.home
       "${config.users.users.${username}.home}/compose-files/wallabag"
@@ -454,12 +521,90 @@ in {
       "/orico/jellyfin/data"
       "/orico/jellyfin/staging/downloaded-files"
       "/var/backup/postgresql"
+      "/var/lib/prometheus2"
     ];
     syncthing = {
       enable = true;
       dataDir = "/orico/syncthing";
       openDefaultPorts = true;
       guiAddress = "0.0.0.0:8384";
+    };
+    telegraf = {
+      enable = true;
+      extraConfig = {
+        agent = {
+          interval = "15s";
+          round_interval = true;
+          collection_jitter = "0s";
+          debug = false;
+        };
+        inputs = {
+          cpu = {
+            percpu = true;
+            totalcpu = true;
+            report_active = true;
+            collect_cpu_time = true;
+          };
+          disk = {
+            ignore_fs = [
+              "aufs"
+              "devfs"
+              "devtmpfs"
+              "iso9660"
+              "overlay"
+              "squashfs"
+              "tmpfs"
+            ];
+          };
+          diskio = {
+            skip_serial_number = true;
+          };
+          docker = {
+            endpoint = "unix:///run/docker.sock";
+            container_name_include  = [];
+            storage_objects = [
+              "container"
+              "volume"
+            ];
+            perdevice_include = [
+              "cpu"
+              "blkio"
+              "network"
+            ];
+            total_include = [
+              "cpu"
+              "blkio"
+              "network"
+            ];
+            timeout = "5s";
+            gather_services = false;
+          };
+          mem = {};
+          net = {
+            ignore_protocol_stats = true;
+          };
+          nginx = {
+            insecure_skip_verify = true;
+            urls = [ "https://127.0.0.1/server_status" ];
+          };
+          #smart = {};
+          system = {};
+          #systemd_units = {};
+          zfs = {
+            datasetMetrics = true;
+            poolMetrics = true;
+          };
+        };
+        outputs = {
+          prometheus_client = {
+            collectors_exclude = [
+              "gocollector"
+              "process"
+            ];
+            listen = ":9273";
+          };
+        };
+      };
     };
     zfs.autoScrub.enable = true;
   };
@@ -468,6 +613,10 @@ in {
     age.keyFile = "${config.users.users.${username}.home}/.config/sops/age/keys.txt";
     defaultSopsFile = ./secrets.yaml;
     secrets = {
+      home_assistant_token = {
+        owner = config.users.users.prometheus.name;
+        restartUnits = ["prometheus.service"];
+      };
       immich_kiosk_basic_auth = {
         owner = config.users.users.nginx.name;
         restartUnits = ["nginx.service"];
@@ -482,6 +631,11 @@ in {
       };
       mealie.mode = "0444";
       nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
+      uptimekuma_grafana_api_key = {
+        owner = config.users.users.prometheus.name;
+        restartUnits = ["prometheus.service"];
+        sopsFile = ../../common/secrets.yaml;
+      };
     };
   };
 
@@ -506,6 +660,8 @@ in {
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIp42X5DZ713+bgbOO+GXROufUFdxWo7NjJbGQ285x3N gene.liverman@ltnglobal.com"
     ];
   };
+
+  users.users.telegraf.extraGroups = [ "docker" ];
 
   # Enable common container config files in /etc/containers
   virtualisation.containers.enable = true;
