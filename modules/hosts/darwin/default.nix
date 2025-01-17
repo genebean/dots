@@ -61,7 +61,7 @@
       "libreoffice"
       "logseq"
       "makemkv"
-      "meld"
+      "dehesselle-meld"
       "MKVToolNix"
       "nextcloud"
       "onlyoffice"
