@@ -70,6 +70,8 @@
       "slack"
       "sonos"
       "tailscale"
+      "todoist"
+      "transmission"
       "visual-studio-code"
       "vivaldi"
       "zoom"
