@@ -1,5 +1,6 @@
 { config, ... }: let 
   domain = "technicalissues.us";
+  http_port = 80;
   https_port = 443;
 in {
 
@@ -18,10 +19,6 @@ in {
       }
       add_header Strict-Transport-Security $hsts_header;
     '';
-    defaultListen = [
-      { port = https_port; addr = "0.0.0.0"; ssl = true; }
-      { port = https_port; addr = "[::]"; ssl = true; }
-    ];
     virtualHosts = {
       "hetznix01.${domain}" = {
         serverAliases = [
@@ -69,10 +66,6 @@ in {
         };
       };
       "albyhub.${domain}" = {
-        listen = [
-          { port = https_port; addr = "0.0.0.0"; ssl = true; }
-          { port = https_port; addr = "[::]"; ssl = true; }
-        ];
         enableACME = true;
         acmeRoot = null;
         forceSSL = true;
@@ -85,8 +78,12 @@ in {
       };
       "matrix.${domain}" = {
         listen = [
+          { port = http_port; addr = "0.0.0.0"; }
+          { port = http_port; addr = "[::]"; }
+
           { port = https_port; addr = "0.0.0.0"; ssl = true; }
           { port = https_port; addr = "[::]"; ssl = true; }
+
           { port = 8448; addr = "0.0.0.0"; ssl = true; }
           { port = 8448; addr = "[::]"; ssl = true; }
         ];
