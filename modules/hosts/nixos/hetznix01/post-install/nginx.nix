@@ -77,6 +77,15 @@ in {
               add_header Access-Control-Allow-Origin *;
             '';
           };
+          "/.well-known/nostr.json" = {
+            return = ''
+              200 '{"names": {"genebean": "dba168fc95fdbd94b40096f4a6db1a296c0e85c4231bfc9226fca5b7fcc3e5ca"}}'
+            '';
+            extraConfig = ''
+              default_type application/json;
+              add_header Access-Control-Allow-Origin *;
+            '';
+          };
         };
       };
       "albyhub.${domain}" = {
