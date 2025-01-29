@@ -1,6 +1,8 @@
 { config, ... }: let 
   domain = "technicalissues.us";
+  http_port = 80;
   https_port = 443;
+  private_btc = "100.83.153.7";
 in {
 
   services.nginx = {
@@ -18,10 +20,19 @@ in {
       }
       add_header Strict-Transport-Security $hsts_header;
     '';
-    defaultListen = [
-      { port = https_port; addr = "0.0.0.0"; ssl = true; }
-      { port = https_port; addr = "[::]"; ssl = true; }
-    ];
+    streamConfig = ''
+      server {
+        listen 0.0.0.0:8333;
+        listen [::]:8333;
+        proxy_pass ${private_btc}:8333;
+      }
+
+      server {
+        listen 0.0.0.0:9735;
+        listen [::]:9735;
+        proxy_pass ${private_btc}:9735;
+      }
+    '';
     virtualHosts = {
       "hetznix01.${domain}" = {
         serverAliases = [
@@ -39,7 +50,7 @@ in {
           };
           "/.well-known/lnurlp/genebean" = {
             return = ''
-              200 '{"status":"OK","tag":"payRequest","commentAllowed":255,"callback":"https://getalby.com/lnurlp/genebean/callback","metadata":"[[\\"text/identifier\\",\\"genebean@getalby.com\\"],[\\"text/plain\\",\\"Sats for GeneBean\\"]]","minSendable":1000,"maxSendable":150000000,"payerData":{"name":{"mandatory":false},"email":{"mandatory":false},"pubkey":{"mandatory":false}},"nostrPubkey":"79f00d3f5a19ec806189fcab03c1be4ff81d18ee4f653c88fac41fe03570f432","allowsNostr":true}'
+              200 '{"status":"OK","tag":"payRequest","commentAllowed":255,"callback":"https://getalby.com/lnurlp/genebean/callback","metadata":"[[\\"text/identifier\\",\\"genebean@getalby.com\\"],[\\"text/plain\\",\\"Sats for GeneBean\\"]]","minSendable":1000,"maxSendable":10000000000,"payerData":{"name":{"mandatory":false},"email":{"mandatory":false},"pubkey":{"mandatory":false}},"nostrPubkey":"79f00d3f5a19ec806189fcab03c1be4ff81d18ee4f653c88fac41fe03570f432","allowsNostr":true}'
             '';
             extraConfig = ''
               default_type application/json;
@@ -66,27 +77,36 @@ in {
               add_header Access-Control-Allow-Origin *;
             '';
           };
+          "/.well-known/nostr.json" = {
+            return = ''
+              200 '{"names": {"genebean": "dba168fc95fdbd94b40096f4a6db1a296c0e85c4231bfc9226fca5b7fcc3e5ca"}}'
+            '';
+            extraConfig = ''
+              default_type application/json;
+              add_header Access-Control-Allow-Origin *;
+            '';
+          };
         };
       };
       "albyhub.${domain}" = {
-        listen = [
-          { port = https_port; addr = "0.0.0.0"; ssl = true; }
-          { port = https_port; addr = "[::]"; ssl = true; }
-        ];
         enableACME = true;
         acmeRoot = null;
         forceSSL = true;
        # basicAuthFile = config.sops.secrets.owntracks_basic_auth.path;
-        # Albyhub container
+        # Albyhub via Tailscale
         locations."/" = {
-          proxyPass = "http://127.0.0.1:8080";
+          proxyPass = "http://${private_btc}:59000";
           proxyWebsockets = true;
         };
       };
       "matrix.${domain}" = {
         listen = [
+          { port = http_port; addr = "0.0.0.0"; }
+          { port = http_port; addr = "[::]"; }
+
           { port = https_port; addr = "0.0.0.0"; ssl = true; }
           { port = https_port; addr = "[::]"; ssl = true; }
+
           { port = 8448; addr = "0.0.0.0"; ssl = true; }
           { port = 8448; addr = "[::]"; ssl = true; }
         ];

@@ -29,7 +29,9 @@
       443  # https to local Nginx
       465  # SMTP with TLS
       587  # SMTP with STARTTLS
+      8333 # Bitcoin Core
       8448 # Matrix Synapse
+      9735 # LND
     ];
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
