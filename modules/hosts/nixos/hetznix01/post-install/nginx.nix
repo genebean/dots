@@ -2,7 +2,7 @@
   domain = "technicalissues.us";
   http_port = 80;
   https_port = 443;
-  private_btc = "100.83.153.7";
+  private_btc = "umbrel.atlas-snares.ts.net";
 in {
 
   services.nginx = {
