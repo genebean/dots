@@ -34,6 +34,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nix-bitcoin = {
+      url = "github:fort-nix/nix-bitcoin/nixos-24.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
+    };
+
     # Controls system level software and settings including fonts on macOS
     nix-darwin = {
       url = "github:lnl7/nix-darwin/nix-darwin-24.11";
@@ -125,6 +131,9 @@
 
     # NixOS hosts
     nixosConfigurations = {
+      beancoin1 = localLib.mkNixBitcoinHost {
+        hostname = "beancoin1";
+      };
       bigboy = localLib.mkNixosHost {
         hostname = "bigboy";
         additionalModules = [
