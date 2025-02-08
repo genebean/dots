@@ -18,8 +18,13 @@
     } + "/themes/frappe.conf");
   };
 
-  programs.vscode = {
-    enable = true;
+  programs = {
+    ghostty = {
+      enable = true;
+    };
+    vscode = {
+      enable = true;
+    };
   };
 
   services.dunst = {
