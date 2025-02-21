@@ -317,7 +317,7 @@ in {
         ce = "code-exploration";
         dots = "cd ~/repos/dots";
         gbc = ''
-          git branch --merged | command grep -vE "^(\*|\s*(main|master|develop|production)\s*$)" | command xargs -n 1 git branch -d
+          git branch --merged | command grep -vE "^(\*|\s*(main|master|develop|production|qa)\s*$)" | command xargs -n 1 git branch -d
         '';
         gitextract = "git log --pretty=email --patch-with-stat --reverse --full-index --binary --";
         gpge = "gpg2 --encrypt --sign --armor -r ";
