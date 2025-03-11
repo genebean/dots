@@ -125,7 +125,7 @@ This repo historically contained my dot files. Historically symlinked files on W
 5. run `mkdir ~/repos`
 6. run `cd ~/repos`
 7. run `git clone git@github.com/genebean/dots`
-8. create keys for [SOPS](https://georgheiler.com/2023/12/01/securing-secrets-with-mozilla-sops-and-age-a-powerful-combo/) via `mkdir -p ~/Library/Application\ Support/sops/age && nix run nixpkgs#ssh-to-age -- -private-key -i ~/.ssh/id_ed25519 > ~/Library/Application\ Support/sops/age/keys.txt && nix run nixpkgs#ssh-to-age -- -i ~/.ssh/id_ed25519.pub  >~/Library/Application\ Support/sops/age/pub-keys.txt`
+8. create keys for [SOPS](https://georgheiler.com/post/sops/) via `mkdir -p ~/Library/Application\ Support/sops/age && nix run nixpkgs#ssh-to-age -- -private-key -i ~/.ssh/id_ed25519 > ~/Library/Application\ Support/sops/age/keys.txt && nix run nixpkgs#ssh-to-age -- -i ~/.ssh/id_ed25519.pub  >~/Library/Application\ Support/sops/age/pub-keys.txt`
 9. run `cat ~/Library/Application\ Support/sops/age/pub-keys.txt |pbcopy`
 10. edit `.sops.yaml` and:
     1. paste copied data into a new line under keys
