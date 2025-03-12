@@ -54,7 +54,10 @@
     rclone
     rclone-browser
     rpi-imager
+    sparrow
     step-cli
+    trezor-suite
+    trezor-udev-rules
     virt-manager
     vlc
     whalebird
@@ -102,6 +105,12 @@
     displayManager.sddm = {
       enable = true;
       wayland.enable = true;
+    };
+    flatpak = {
+      enable = true;
+      packages = [
+        "com.blockstream.Green"
+      ];
     };
     fstrim.enable = true;
     fwupd.enable = true;
