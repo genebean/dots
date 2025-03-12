@@ -39,6 +39,7 @@
       "opentofu"
       "node_exporter"
       "podman"
+      "qemu"
       "telegraf"
       "terraform-docs"
     ];
