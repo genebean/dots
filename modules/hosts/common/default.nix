@@ -20,6 +20,7 @@ in {
     f2
     git-filter-repo
     glab
+    glow
     gomuks
     gotop
     htop
@@ -32,6 +33,7 @@ in {
     minicom
     mtr
     nil
+    nix-search
     nix-zsh-completions
     nodejs
     nodePackages.npm
