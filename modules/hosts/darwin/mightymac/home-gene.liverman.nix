@@ -15,6 +15,7 @@
       i2cssh_config.path = "/Users/${username}/.i2csshrc";
       local_git_config.path = "/Users/${username}/.gitconfig-local";
       local_private_env.path = "/Users/${username}/.private-env";
+      user_nix_conf.path = "/Users/${username}/.config/nix/nix.conf";
     };
   };
 }
