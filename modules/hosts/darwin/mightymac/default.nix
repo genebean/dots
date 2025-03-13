@@ -57,6 +57,7 @@
       "puppet-bolt"
       "qmk-toolbox"
       "thunderbird"
+      "thunderbird@daily"
       "utm"
       "vagrant"
       "vial"
