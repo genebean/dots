@@ -102,8 +102,9 @@
     dbus.implementation = "broker";
     desktopManager.cosmic.enable = true;
     desktopManager.plasma6.enable = true;
+    displayManager.cosmic-greeter.enable = true;
     displayManager.sddm = {
-      enable = true;
+      enable = false;
       wayland.enable = true;
     };
     flatpak = {
