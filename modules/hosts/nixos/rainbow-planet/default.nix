@@ -99,6 +99,7 @@
 
   services = {
     boinc.enable = true;
+    bpftune.enable = true;
     dbus.implementation = "broker";
     desktopManager.cosmic.enable = true;
     desktopManager.cosmic.xwayland.enable = false;
