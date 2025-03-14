@@ -39,6 +39,7 @@
 
   nix.settings = {
     allowed-users = [ "${username}" ];
+    download-buffer-size = 524288000;
     experimental-features = [
       "flakes"
       "nix-command"
