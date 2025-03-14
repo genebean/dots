@@ -101,6 +101,7 @@
     boinc.enable = true;
     dbus.implementation = "broker";
     desktopManager.cosmic.enable = true;
+    desktopManager.cosmic.xwayland.enable = false;
     desktopManager.plasma6.enable = true;
     displayManager.cosmic-greeter.enable = true;
     displayManager.sddm = {
