@@ -40,7 +40,6 @@ in {
     nvme-cli
     podman-compose
     podman-tui # status of containers in the terminal
-    smartmontools
     yt-dlp
   ];
 
