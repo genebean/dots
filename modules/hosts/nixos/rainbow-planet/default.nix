@@ -58,6 +58,7 @@
     step-cli
     trezor-suite
     trezor-udev-rules
+    ungoogled-chromium
     virt-manager
     vlc
     whalebird
@@ -99,11 +100,14 @@
 
   services = {
     boinc.enable = true;
+    bpftune.enable = true;
     dbus.implementation = "broker";
     desktopManager.cosmic.enable = true;
+    desktopManager.cosmic.xwayland.enable = false;
     desktopManager.plasma6.enable = true;
+    displayManager.cosmic-greeter.enable = true;
     displayManager.sddm = {
-      enable = true;
+      enable = false;
       wayland.enable = true;
     };
     flatpak = {

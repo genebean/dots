@@ -39,6 +39,7 @@
       "opentofu"
       "node_exporter"
       "podman"
+      "qemu"
       "telegraf"
       "terraform-docs"
     ];
@@ -46,6 +47,7 @@
       "boinc"
       "discord"
       "elgato-stream-deck"
+      "eloston-chromium" # aka ungoogled-chromium
       "google-drive"
       "kopiaui"
       "mumble"
@@ -56,6 +58,7 @@
       "puppet-bolt"
       "qmk-toolbox"
       "thunderbird"
+      "thunderbird@daily"
       "utm"
       "vagrant"
       "vial"
