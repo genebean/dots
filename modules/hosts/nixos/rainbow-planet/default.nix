@@ -58,6 +58,7 @@
     step-cli
     trezor-suite
     trezor-udev-rules
+    ungoogled-chromium
     virt-manager
     vlc
     whalebird

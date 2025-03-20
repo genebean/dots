@@ -47,6 +47,7 @@
       "boinc"
       "discord"
       "elgato-stream-deck"
+      "eloston-chromium" # aka ungoogled-chromium
       "google-drive"
       "kopiaui"
       "mumble"
