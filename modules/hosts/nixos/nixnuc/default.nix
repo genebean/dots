@@ -528,6 +528,18 @@ in {
       openDefaultPorts = true;
       guiAddress = "0.0.0.0:8384";
     };
+    tailscale = {
+      enable = true;
+      authKeyFile = config.sops.secrets.tailscale_key.path;
+      extraUpFlags = [
+        "--advertise-exit-node"
+        "--operator"
+        "${username}"
+        "--ssh"
+        "--advertise-routes=192.168.20.0/22"
+      ];
+      useRoutingFeatures = "both";
+    };
     telegraf = {
       enable = true;
       extraConfig = {
@@ -630,6 +642,9 @@ in {
       };
       mealie.mode = "0444";
       nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
+      tailscale_key = {
+        restartUnits = [ "tailscaled-autoconnect.service" ];
+      };
       uptimekuma_grafana_api_key = {
         owner = config.users.users.prometheus.name;
         restartUnits = ["prometheus.service"];
