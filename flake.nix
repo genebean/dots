@@ -18,7 +18,7 @@
     };
 
     flox = {
-      url = "github:flox/flox/v1.2.3";
+      url = "github:flox/flox/v1.3.16";
       # their nixpkgs currently follow release-23.11
     };
 
