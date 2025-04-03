@@ -144,6 +144,10 @@
           # inputs.simple-nixos-mailserver.nixosModule
         ];
       };
+      kiosk-entryway = localLib.mkNixosHost {
+        # Lenovo IdeaCentre Q190
+        hostname = "kiosk-entryway";
+      };
       kiosk-gene-desk = localLib.mkNixosHost {
         system = "aarch64-linux";
         hostname = "kiosk-gene-desk";

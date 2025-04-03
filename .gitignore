@@ -8,6 +8,9 @@
 *.swp
 *.kate-swp
 
+# From running nixos-rebuild build-vm
+*.qcow2
+
 # Config files that are not suitable to add to version control:
 link/nix/config/.mono/
 link/nix/config/asciinema/
