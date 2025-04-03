@@ -27,6 +27,7 @@
 
   networking = {
     firewall.enable = false;
+    useNetworkd = true;
     wireless = {
       enable = true;
       networks = {
@@ -100,6 +101,7 @@
   systemd.services.cage-tty1 = {
     wants = [
       "wpa_supplicant.service"
+      "network-online.target"
     ];
   };
 
