@@ -640,7 +640,10 @@ in {
         owner = "${username}";
         path = "${config.users.users.${username}.home}/.private-env";
       };
-      mealie.mode = "0444";
+      mealie = {
+        mode = "0444";
+        restartUnits = ["mealie.service"];
+      };
       nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
       tailscale_key = {
         restartUnits = [ "tailscaled-autoconnect.service" ];
