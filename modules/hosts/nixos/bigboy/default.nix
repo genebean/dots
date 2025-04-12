@@ -1,4 +1,12 @@
-{ inputs, config, pkgs, username, ... }: {
+{ config, pkgs, username, ... }:
+  let
+    libbluray = pkgs.libbluray.override {
+      withAACS = true;
+      withBDplus = true;
+    };
+    vlc-with-decoding = pkgs.vlc.override { inherit libbluray; };
+  in
+{
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ../../common/linux/flatpaks.nix
@@ -14,7 +22,7 @@
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
-    environment.systemPackages = with pkgs; [
+  environment.systemPackages = with pkgs; [
     angryipscanner
     displaylink
     filezilla
@@ -29,7 +37,7 @@
     slack
     tilix
     vivaldi
-    vlc
+    vlc-with-decoding
     xorg.xf86videofbdev
     xfce.xfce4-terminal
     zoom-us
