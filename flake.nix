@@ -61,8 +61,7 @@
 
     nixpkgs-terraform = {
       url = "github:stackbuilders/nixpkgs-terraform";
-      inputs.nixpkgs-1_6.follows = "nixpkgs";
-      inputs.nixpkgs-1_9.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     simple-nixos-mailserver = {
