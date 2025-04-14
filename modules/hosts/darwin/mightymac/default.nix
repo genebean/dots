@@ -68,6 +68,7 @@
     masApps = {
       "HomeCam" = 1292995895;
       "Keeper Password Manager" = 414781829;
+      "MEATER® Smart Meat Thermometer" = 1157416022;
       "MeetingBar" = 1532419400;
       "Messenger" = 1480068668;
       "Microsoft Remote Desktop" = 1295203466;
