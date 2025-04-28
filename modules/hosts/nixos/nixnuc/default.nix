@@ -421,7 +421,7 @@ in {
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/grafana/".proxyPass = "http://${backend_ip}:3002";
+          locations."/grafana/".proxyPass = "http://${backend_ip}:3002/grafana/";
         };
         "nc.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
