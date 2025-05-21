@@ -99,6 +99,14 @@ in {
           proxyWebsockets = true;
         };
       };
+      "location.${domain}" = {
+        enableACME = true;
+        acmeRoot = null;
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://localhost:3003";
+        };
+      };
       "matrix.${domain}" = {
         listen = [
           { port = http_port; addr = "0.0.0.0"; }
