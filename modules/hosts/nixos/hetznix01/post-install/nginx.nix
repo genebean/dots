@@ -99,6 +99,11 @@ in {
           proxyWebsockets = true;
         };
       };
+      "cloud.pack1828.org" = {
+        enableACME = true;
+        acmeRoot = null;
+        forceSSL = true;
+      };
       "location.${domain}" = {
         enableACME = true;
         acmeRoot = null;

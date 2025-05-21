@@ -1,4 +1,4 @@
-{ config, username, ... }: let
+{ config, pkgs, username, ... }: let
   domain = "technicalissues.us";
 in {
   imports = [
@@ -31,6 +31,53 @@ in {
   };
 
   services = {
+    nextcloud = {
+      enable = true;
+      hostName = "cloud.pack1828.org";
+      package = pkgs.nextcloud31; # Need to manually increment with every major upgrade.
+      appstoreEnable = true;
+      autoUpdateApps.enable = true;
+      config = {
+        adminuser = username;
+        adminpassFile = config.sops.secrets.nextcloud_admin_pass.path;
+        dbtype = "pgsql";
+      };
+      configureRedis = true;
+      database.createLocally = true;
+      #extraApps = with config.services.nextcloud.package.packages.apps; {
+      #  # List of apps we want to install and are already packaged in
+      #  # https://github.com/NixOS/nixpkgs/blob/master/pkgs/servers/nextcloud/packages/nextcloud-apps.json
+      #  inherit calendar contacts cookbook maps notes tasks;
+      #};
+      #extraAppsEnable = true;
+      home = "/pack1828/nextcloud";
+      https = true;
+      maxUploadSize = "3G"; # Increase the PHP maximum file upload size
+      phpOptions."opcache.interned_strings_buffer" = "16"; # Suggested by Nextcloud's health check.
+      settings = {
+        default_phone_region = "US";
+        # https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#enabledpreviewproviders
+        enabledPreviewProviders = [
+          "OC\\Preview\\BMP"
+          "OC\\Preview\\GIF"
+          "OC\\Preview\\JPEG"
+          "OC\\Preview\\Krita"
+          "OC\\Preview\\MarkDown"
+          "OC\\Preview\\MP3"
+          "OC\\Preview\\OpenDocument"
+          "OC\\Preview\\PNG"
+          "OC\\Preview\\TXT"
+          "OC\\Preview\\XBitmap"
+
+          "OC\\Preview\\HEIC"
+          "OC\\Preview\\Movie"
+        ];
+        log_type = "file";
+        maintenance_window_start = 5;
+        overwriteProtocol = "https";
+        "profile.enabled" = true;
+      };
+    };
     plausible = {
       enable = true;
       adminUser = {
@@ -93,6 +140,7 @@ in {
       };
       matrix_homeserver_signing_key.owner = config.users.users.matrix-synapse.name;
       mqtt_recorder_pass.restartUnits = ["mosquitto.service"];
+      nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
       owntracks_basic_auth = {
         owner = config.users.users.nginx.name;
         restartUnits = ["nginx.service"];
