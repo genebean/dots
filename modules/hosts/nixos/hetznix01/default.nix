@@ -47,6 +47,13 @@
   services = {
     fail2ban.enable = true;
     logrotate.enable = true;
+    ntopng = {
+      enable = true;
+      interfaces = [
+        "enp1s0"
+        "tailscale0"
+      ];
+    };
     postgresql = {
       enable = true;
       package = pkgs.postgresql_16;
