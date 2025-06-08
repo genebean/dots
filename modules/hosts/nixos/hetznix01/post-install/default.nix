@@ -11,11 +11,14 @@ in {
   mailserver = {
     enable = true;
     enableImap = false;
-    enableImapSsl = false;
+    enableImapSsl = true;
+    enableSubmission = false;
+    enableSubmissionSsl = true;
     fqdn = "mail.alt.${domain}";
     domains = [
       "alt.${domain}"
       "indianspringsbsa.org"
+      "pack1828.org"
     ];
     forwards = {
       "webmaster@indianspringsbsa.org" = "gene+indianspringsbsa.org@geneliverman.com";

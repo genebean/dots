@@ -26,9 +26,11 @@
       22   # ssh
       25   # SMTP (unencrypted)
       80   # http to local Nginx
+      143  # imap
       443  # https to local Nginx
       465  # SMTP with TLS
       587  # SMTP with STARTTLS
+      993  # imaps
       8333 # Bitcoin Core
       8448 # Matrix Synapse
       9735 # LND
@@ -53,6 +55,12 @@
         "enp1s0"
         "tailscale0"
       ];
+    };
+    openssh.settings = {
+      # require public key authentication for better security
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
     };
     postgresql = {
       enable = true;

@@ -160,6 +160,14 @@ in {
         # OwnTracks Frontend container
         locations."/".proxyPass = "http://127.0.0.1:8082";
       };
+      "pack1828.org" = {
+        enableACME = true;
+        acmeRoot = null;
+        forceSSL = true;
+        locations."/" = {
+          return = "307 https://cloud.pack1828.org";
+        };
+      };
       "recorder.${domain}" = {
         enableACME = true;
         acmeRoot = null;
