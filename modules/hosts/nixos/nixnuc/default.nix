@@ -522,6 +522,7 @@ in {
       "/var/backup/postgresql"
       "/var/lib/prometheus2"
     ];
+    smartd.enable = true;
     syncthing = {
       enable = true;
       dataDir = "/orico/syncthing";

@@ -58,6 +58,7 @@
     restic.backups.daily.paths = [
       # "/storage/foo"
     ];
+    smartd.enable = true;
     zfs.autoScrub.enable = true;
   };
 
