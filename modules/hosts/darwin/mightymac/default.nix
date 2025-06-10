@@ -60,7 +60,7 @@
       "thunderbird"
       "thunderbird@daily"
       "utm"
-      "vagrant"
+      # "vagrant"
       "vial"
       "whalebird"
       "zenmap"
