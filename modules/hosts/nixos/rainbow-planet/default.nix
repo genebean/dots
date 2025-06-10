@@ -44,7 +44,6 @@
     mediawriter
     mumble
     networkmanager-openvpn
-    nodejs
     pavucontrol
     polkit-kde-agent
     #ulauncher
