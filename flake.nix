@@ -18,8 +18,7 @@
     };
 
     flox = {
-      url = "github:flox/flox/v1.3.16";
-      # their nixpkgs currently follow release-23.11
+      url = "github:flox/flox/v1.4.3";
     };
 
     # My oh-my-posh theme
