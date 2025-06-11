@@ -1,4 +1,6 @@
 { pkgs, hostname, username, ... }: {
+  system.primaryUser = username;
+
   environment = {
     shells = with pkgs; [ bash zsh ];
     pathsToLink = [
@@ -124,8 +126,6 @@
   programs = {
     zsh.enable = true;
   };
-
-  services.nix-daemon.enable = true;
 
   users.users.${username} = {
     home = "/Users/${username}";

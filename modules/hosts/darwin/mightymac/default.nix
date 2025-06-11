@@ -77,4 +77,6 @@
       "Xcode" = 497799835;
     };
   };
+
+  security.pam.services.sudo_local.enable = false;
 }
