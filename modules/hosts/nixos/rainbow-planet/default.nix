@@ -29,6 +29,7 @@
     brightnessctl
     butane
     caligula
+    chirp
     cilium-cli
     displaylink
     filezilla
@@ -42,6 +43,7 @@
     kubernetes-helm
     kubeseal
     mediawriter
+    mqtt-explorer
     mumble
     networkmanager-openvpn
     pavucontrol
@@ -92,6 +94,8 @@
 
     ssh.askPassword = "ssh-askpass";
 
+    thunderbird.enable = true;
+
     # common programs that really should be in another file
     # required for setting to be picked up by xfce4-terminal
     xfconf.enable = true;
@@ -113,6 +117,7 @@
       enable = true;
       packages = [
         "com.blockstream.Green"
+        "com.discordapp.Discord"
       ];
     };
     fstrim.enable = true;
