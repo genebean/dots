@@ -5,6 +5,7 @@ in {
     ../../../common/linux/lets-encrypt.nix
     ../../../common/linux/restic.nix
     ./matrix-synapse.nix
+    ./mosquitto.nix
     ./nginx.nix
   ];
 
@@ -76,7 +77,7 @@ in {
       extraApps = with config.services.nextcloud.package.packages.apps; {
         # List of apps we want to install and are already packaged in
         # https://github.com/NixOS/nixpkgs/blob/master/pkgs/servers/nextcloud/packages/nextcloud-apps.json
-        inherit 
+        inherit
           richdocuments # Collabora Online for Nextcloud - https://apps.nextcloud.com/apps/richdocuments
           ;
       };

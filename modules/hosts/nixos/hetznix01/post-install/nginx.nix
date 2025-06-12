@@ -152,6 +152,12 @@ in {
           "/_synapse/client".proxyPass = "http://[::1]:8008";
         };
       };
+      "mqtt.${domain}" = {
+        enableACME = true;
+        acmeRoot = null;
+        forceSSL = true;
+        locations."/".return = "301 https://beanbag.technicalissues.us";
+      };
       "ot.${domain}" = {
         enableACME = true;
         acmeRoot = null;

@@ -12,6 +12,7 @@
       iftop
       inetutils
       iotop
+      mosquitto
       neofetch
       python3
       smartmontools

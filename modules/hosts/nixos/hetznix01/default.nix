@@ -31,8 +31,10 @@
       465  # SMTP with TLS
       587  # SMTP with STARTTLS
       993  # imaps
+      1883 # mqtt
       8333 # Bitcoin Core
       8448 # Matrix Synapse
+      8883 # mqtt over tls
       9735 # LND
     ];
     # firewall.allowedUDPPorts = [ ... ];
