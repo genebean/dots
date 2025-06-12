@@ -75,6 +75,7 @@
       };
     in [
       {
+        port = 1883;
         users = mqtt_users;
         settings.allow_anonymous = false;
       }
@@ -82,12 +83,25 @@
         port = 8883;
         users = mqtt_users;
         settings = let
-           certDir = config.security.acme.certs."mqtt.technicalissues.us".directory;
+          certDir = config.security.acme.certs."mqtt.technicalissues.us".directory;
         in {
           allow_anonymous = false;
           keyfile = certDir + "/key.pem";
           certfile = certDir + "/cert.pem";
           cafile = certDir + "/chain.pem";
+        };
+      }
+      {
+        port = 9001;
+        users = mqtt_users;
+        settings = let
+          certDir = config.security.acme.certs."mqtt.technicalissues.us".directory;
+        in {
+          allow_anonymous = false;
+          keyfile = certDir + "/key.pem";
+          certfile = certDir + "/cert.pem";
+          cafile = certDir + "/chain.pem";
+          protocol = "websockets";
         };
       }
     ];
