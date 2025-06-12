@@ -1,4 +1,8 @@
-{ config, ... }: {
+{ config, ... }: let
+  mqtt_domain = "mqtt.technicalissues.us";
+in {
+  security.acme.certs.${mqtt_domain}.postRun = "systemctl restart ${config.systemd.services.mosquitto.name}";
+
   services.mosquitto = {
     enable = true;
     bridges = {
@@ -83,7 +87,7 @@
         port = 8883;
         users = mqtt_users;
         settings = let
-          certDir = config.security.acme.certs."mqtt.technicalissues.us".directory;
+          certDir = config.security.acme.certs."${mqtt_domain}".directory;
         in {
           allow_anonymous = false;
           keyfile = certDir + "/key.pem";
@@ -95,7 +99,7 @@
         port = 9001;
         users = mqtt_users;
         settings = let
-          certDir = config.security.acme.certs."mqtt.technicalissues.us".directory;
+          certDir = config.security.acme.certs."${mqtt_domain}".directory;
         in {
           allow_anonymous = false;
           keyfile = certDir + "/key.pem";
