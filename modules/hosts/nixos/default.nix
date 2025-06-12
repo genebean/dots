@@ -29,12 +29,9 @@
   fonts.fontDir.enable = true;
   fonts.packages = with pkgs; [
     font-awesome
-    (nerdfonts.override {
-      fonts = [
-        "Hack"
-        "SourceCodePro"
-      ];
-    })
+    nerd-fonts.hack
+    # Pulled from https://github.com/NixOS/nixpkgs/blob/nixos-25.05/pkgs/data/fonts/nerd-fonts/manifests/fonts.json
+    nerd-fonts.sauce-code-pro
   ];
 
   networking.hostName = "${hostname}";

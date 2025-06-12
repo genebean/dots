@@ -43,7 +43,6 @@
     zoom-us
   ];
 
-  hardware.pulseaudio.enable = false;
   
   networking.networkmanager.enable = true;
 
@@ -82,6 +81,7 @@
       pulse.enable = true;
     };
     printing.enable = true; # Enable CUPS
+    pulseaudio.enable = false;
     smartd.enable = true;
     xserver = {
       enable = true;

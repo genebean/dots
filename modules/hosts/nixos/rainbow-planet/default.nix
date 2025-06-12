@@ -47,7 +47,7 @@
     mumble
     networkmanager-openvpn
     pavucontrol
-    polkit-kde-agent
+    kdePackages.polkit-kde-agent-1
     #ulauncher
     podman-compose
     podman-tui # status of containers in the terminal
@@ -140,7 +140,6 @@
   };
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -149,6 +148,7 @@
     pulse.enable = true;
     wireplumber.enable = true;
   };
+  services.pulseaudio.enable = false;
 
   sops = {
     age.keyFile = "${config.users.users.${username}.home}/.config/sops/age/keys.txt";

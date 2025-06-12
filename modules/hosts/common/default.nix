@@ -261,7 +261,7 @@ in {
       autosuggestion.enable = true;
       history.save = 1000000;
       history.size = 1000000;
-      initExtra = ''
+      initContent = ''
         [ -f ~/.private-env ] && source ~/.private-env || echo '~/.private-env is missing'
         [ -f ~/.gitconfig-local ] || echo '~/.gitconfig-local is missing. Create it and set user.email'
 

@@ -3,7 +3,7 @@
   inputs = {
     # Where we get most of our software. Giant mono repo with recipes
     # called derivations that say how to build software.
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     compose2nix = {
@@ -18,7 +18,7 @@
     };
 
     flox = {
-      url = "github:flox/flox/v1.4.3";
+      url = "github:flox/flox/v1.4.4";
     };
 
     # My oh-my-posh theme
@@ -29,13 +29,13 @@
 
     # Manages things in home directory
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Controls system level software and settings including fonts on macOS
     nix-darwin = {
-      url = "github:lnl7/nix-darwin/nix-darwin-24.11";
+      url = "github:lnl7/nix-darwin/nix-darwin-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -45,8 +45,6 @@
     # Manage Homebrew itself
     nix-homebrew = {
       url = "github:zhaofengli-wip/nix-homebrew";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nix-darwin.follows = "nix-darwin";
     };
 
     nixos-cosmic = {
@@ -64,8 +62,8 @@
     };
 
     simple-nixos-mailserver = {
-      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-24.11";
-      inputs.nixpkgs-24_11.follows = "nixpkgs";
+      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-25.05";
+      inputs.nixpkgs-25_05.follows = "nixpkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

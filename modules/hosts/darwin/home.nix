@@ -1,7 +1,7 @@
 { username, ... }: {
   # dawrwin-specific shell config
   programs.zsh = {
-    initExtra = ''
+    initContent = ''
       function otpon() {
         osascript -e 'tell application "yubiswitch" to KeyOn'
       }
@@ -17,8 +17,8 @@
     oh-my-zsh.plugins = [ "macos" ];
     shellAliases = {
       currentwifi = "networksetup -getairportnetwork en0 |cut -d ':' -f2- | cut -d ' ' -f2-";
-      nixdiff = "brew outdated && brew outdated --cask && mas outdated && cd ~/repos/dots && darwin-rebuild build --flake . && nvd diff /run/current-system result";
-      nixup = "darwin-rebuild switch --flake ~/repos/dots";
+      nixdiff = "brew outdated && brew outdated --cask && mas outdated && cd ~/repos/dots && sudo darwin-rebuild build --flake . && nvd diff /run/current-system result";
+      nixup = "sudo darwin-rebuild switch --flake ~/repos/dots";
       uwgconnect = "networksetup -setairportnetwork en0 SecureWest";
       uwgforget = "networksetup -removepreferredwirelessnetwork en0 SecureWest";
       ykey = "pkill -9 gpg-agent && source ~/.zshrc; ssh-add -L";

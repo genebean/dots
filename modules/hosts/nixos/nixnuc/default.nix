@@ -128,7 +128,6 @@ in {
   ];
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -136,6 +135,7 @@ in {
     alsa.support32Bit = true;
     pulse.enable = true;
   };
+  services.pulseaudio.enable = false;
 
   programs.mtr.enable = true;
 
