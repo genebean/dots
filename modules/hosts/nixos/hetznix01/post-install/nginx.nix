@@ -99,6 +99,28 @@ in {
           proxyWebsockets = true;
         };
       };
+      "cloud.pack1828.org" = {
+        enableACME = true;
+        acmeRoot = null;
+        forceSSL = true;
+      };
+      "collabora.pack1828.org" = {
+        enableACME = true;
+        acmeRoot = null;
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://[::1]:${toString config.services.collabora-online.port}";
+          proxyWebsockets = true; # collabora uses websockets
+        };
+      };
+      "location.${domain}" = {
+        enableACME = true;
+        acmeRoot = null;
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://localhost:3003";
+        };
+      };
       "matrix.${domain}" = {
         listen = [
           { port = http_port; addr = "0.0.0.0"; }
@@ -130,6 +152,12 @@ in {
           "/_synapse/client".proxyPass = "http://[::1]:8008";
         };
       };
+      "mqtt.${domain}" = {
+        enableACME = true;
+        acmeRoot = null;
+        forceSSL = true;
+        locations."/".return = "301 https://beanbag.technicalissues.us";
+      };
       "ot.${domain}" = {
         enableACME = true;
         acmeRoot = null;
@@ -137,6 +165,14 @@ in {
         basicAuthFile = config.sops.secrets.owntracks_basic_auth.path;
         # OwnTracks Frontend container
         locations."/".proxyPass = "http://127.0.0.1:8082";
+      };
+      "pack1828.org" = {
+        enableACME = true;
+        acmeRoot = null;
+        forceSSL = true;
+        locations."/" = {
+          return = "307 https://cloud.pack1828.org";
+        };
       };
       "recorder.${domain}" = {
         enableACME = true;

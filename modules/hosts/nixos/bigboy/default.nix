@@ -82,6 +82,7 @@
       pulse.enable = true;
     };
     printing.enable = true; # Enable CUPS
+    smartd.enable = true;
     xserver = {
       enable = true;
       xkb = {

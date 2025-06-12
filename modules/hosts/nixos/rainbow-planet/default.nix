@@ -125,6 +125,7 @@
     irqbalance.enable = true;
     printing.enable = true; # Enable CUPS
     resolved.enable = true;
+    smartd.enable = true;
     tailscale = {
       enable = true;
       authKeyFile = config.sops.secrets.tailscale_key.path;
