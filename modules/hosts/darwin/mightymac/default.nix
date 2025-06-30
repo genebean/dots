@@ -66,7 +66,6 @@
       # "vagrant"
       "vial"
       "whalebird"
-      "zenmap"
     ];
     masApps = {
       "HomeCam" = 1292995895;
