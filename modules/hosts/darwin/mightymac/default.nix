@@ -68,6 +68,7 @@
       "whalebird"
     ];
     masApps = {
+      "FluffyChat" = 1551469600;
       "HomeCam" = 1292995895;
       "Keeper Password Manager" = 414781829;
       "MEATER® Smart Meat Thermometer" = 1157416022;
