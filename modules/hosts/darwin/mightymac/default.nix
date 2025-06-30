@@ -49,7 +49,6 @@
       "boinc"
       "discord"
       "elgato-stream-deck"
-      "eloston-chromium" # aka ungoogled-chromium
       "google-drive"
       "gpg-suite"
       "kopiaui"
@@ -62,17 +61,18 @@
       "qmk-toolbox"
       "thunderbird"
       "thunderbird@daily"
+      "ungoogled-chromium"
       "utm"
       # "vagrant"
       "vial"
       "whalebird"
-      "zenmap"
     ];
     masApps = {
       "HomeCam" = 1292995895;
       "Keeper Password Manager" = 414781829;
       "MEATER® Smart Meat Thermometer" = 1157416022;
       "MeetingBar" = 1532419400;
+      "Meshtastic" = 1586432531;
       "Messenger" = 1480068668;
       "Microsoft Remote Desktop" = 1295203466;
       "Telegram" = 747648890;
