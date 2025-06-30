@@ -26,6 +26,7 @@
       "argocd"
       "awscli"
       "cilium-cli"
+      "gnupg"
       "helm"
       "hubble"
       "i2cssh"
@@ -38,6 +39,7 @@
       "minio-mc"
       "opentofu"
       "node_exporter"
+      "pinentry-mac"
       "podman"
       "qemu"
       "telegraf"
@@ -49,6 +51,7 @@
       "elgato-stream-deck"
       "eloston-chromium" # aka ungoogled-chromium
       "google-drive"
+      "gpg-suite"
       "kopiaui"
       "mumble"
       "obs"
