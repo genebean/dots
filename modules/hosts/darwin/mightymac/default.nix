@@ -49,7 +49,6 @@
       "boinc"
       "discord"
       "elgato-stream-deck"
-      "eloston-chromium" # aka ungoogled-chromium
       "google-drive"
       "gpg-suite"
       "kopiaui"
@@ -62,6 +61,7 @@
       "qmk-toolbox"
       "thunderbird"
       "thunderbird@daily"
+      "ungoogled-chromium"
       "utm"
       # "vagrant"
       "vial"
