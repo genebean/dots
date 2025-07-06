@@ -89,6 +89,7 @@
       # require enabling PolKit integration on some desktop environments (e.g. Plasma).
       polkitPolicyOwners = [ "${username}" ];
     };
+    adb.enable = true;
     firefox.enable = true;
     #hyprland.enable = true;
 
@@ -176,7 +177,7 @@
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "dialout" "docker" "input" "networkmanager" "podman" "wheel" ];
+    extraGroups = [ "adbusers" "dialout" "docker" "input" "networkmanager" "podman" "wheel" ];
     packages = with pkgs; [
       tailscale-systray
     ];
