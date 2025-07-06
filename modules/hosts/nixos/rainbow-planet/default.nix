@@ -90,6 +90,7 @@
       # require enabling PolKit integration on some desktop environments (e.g. Plasma).
       polkitPolicyOwners = [ "${username}" ];
     };
+    adb.enable = true;
     firefox.enable = true;
     #hyprland.enable = true;
 
@@ -106,12 +107,12 @@
     boinc.enable = true;
     bpftune.enable = true;
     dbus.implementation = "broker";
-    desktopManager.cosmic.enable = true;
+    desktopManager.cosmic.enable = false;
     desktopManager.cosmic.xwayland.enable = false;
     desktopManager.plasma6.enable = true;
-    displayManager.cosmic-greeter.enable = true;
+    displayManager.cosmic-greeter.enable = false;
     displayManager.sddm = {
-      enable = false;
+      enable = true;
       wayland.enable = true;
     };
     flatpak = {
@@ -177,7 +178,7 @@
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "dialout" "docker" "input" "networkmanager" "podman" "wheel" ];
+    extraGroups = [ "adbusers" "dialout" "docker" "input" "networkmanager" "podman" "wheel" ];
     packages = with pkgs; [
       tailscale-systray
     ];
