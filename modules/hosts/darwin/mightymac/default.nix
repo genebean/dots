@@ -9,6 +9,7 @@
       kopia
       kubectx
       reposurgeon
+      rpiboot
       step-cli
       # terraform-versions."1.5.7"
       terraformer
@@ -59,6 +60,7 @@
       "puppet-agent"
       "puppet-bolt"
       "qmk-toolbox"
+      "raspberry-pi-imager"
       "thunderbird"
       "thunderbird@daily"
       "ungoogled-chromium"
