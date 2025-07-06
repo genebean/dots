@@ -106,12 +106,12 @@
     boinc.enable = true;
     bpftune.enable = true;
     dbus.implementation = "broker";
-    desktopManager.cosmic.enable = true;
+    desktopManager.cosmic.enable = false;
     desktopManager.cosmic.xwayland.enable = false;
     desktopManager.plasma6.enable = true;
-    displayManager.cosmic-greeter.enable = true;
+    displayManager.cosmic-greeter.enable = false;
     displayManager.sddm = {
-      enable = false;
+      enable = true;
       wayland.enable = true;
     };
     flatpak = {
