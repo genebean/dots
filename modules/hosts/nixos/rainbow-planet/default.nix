@@ -55,6 +55,7 @@
     rclone
     rclone-browser
     rpi-imager
+    rpiboot
     sparrow
     step-cli
     trezor-suite
