@@ -37,6 +37,8 @@
     hubble
     hugo
     inputs.flox.packages.${pkgs.system}.default
+    kdePackages.bluedevil
+    kdePackages.bluez-qt
     kdePackages.kdenlive
     kubectl
     kubectx
