@@ -47,6 +47,7 @@
       "terraform-docs"
     ];
     casks = [
+      "alacritty"
       "boinc"
       "discord"
       "elgato-stream-deck"
