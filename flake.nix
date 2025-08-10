@@ -174,9 +174,16 @@
 
     # Home Manager (only) users
     homeConfigurations = {
-      gene = localLib.mkHomeConfig {
+      gene-x86_64-linux = localLib.mkHomeConfig {
         homeDirectory = "/home/gene";
         username = "gene";
+        system = "x86_64-linux";
+      };
+
+      gene-aarch64-linux = localLib.mkHomeConfig {
+        homeDirectory = "/home/gene";
+        username = "gene";
+        system = "aarch64-linux";
       };
     }; # end homeConfigurations
 

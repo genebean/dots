@@ -1,10 +1,10 @@
 { inputs, ... }: {
   mkHomeConfig = {
-    system ? "x86_64-linux",
     homeDirectory,
+    system,
     username,
   }: inputs.home-manager.lib.homeManagerConfiguration {
-    extraSpecialArgs = { inherit inputs homeDirectory username; };
+    extraSpecialArgs = { inherit inputs homeDirectory system username; };
 
     pkgs = inputs.nixpkgs.legacyPackages.${system};
 
