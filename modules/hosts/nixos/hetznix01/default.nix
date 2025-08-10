@@ -36,6 +36,7 @@
       8448 # Matrix Synapse
       8883 # mqtt over tls
       9001 # mqtt websockets over tls
+      9333 # Bitcoin Knots
       9735 # LND
     ];
     # firewall.allowedUDPPorts = [ ... ];
