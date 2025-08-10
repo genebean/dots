@@ -1,4 +1,4 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, system, username, ... }: {
   home.stateVersion = "25.05";
   home.packages = with pkgs; [
     age
@@ -9,8 +9,8 @@
 
   # home-manager switch --flake ~/repos/dots
   programs.zsh.shellAliases = {
-    nixdiff = "cd ~/repos/dots && home-manager build --flake . && nvd diff /run/current-system result";
-    nixup = "home-manager switch --flake ~/repos/dots";
+    nixdiff = "cd ~/repos/dots && home-manager build --flake .#${username}-${system} && nvd diff /run/current-system result";
+    nixup = "home-manager switch --flake ~/repos/dots#${username}-${system}";
   };
 
   sops = {
