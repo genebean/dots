@@ -23,8 +23,10 @@ in {
     streamConfig = ''
       server {
         listen 0.0.0.0:8333;
+        listen 0.0.0.0:9333;
         listen [::]:8333;
-        proxy_pass ${private_btc}:8333;
+        listen [::]:9333;
+        proxy_pass ${private_btc}:9333;
       }
 
       server {
