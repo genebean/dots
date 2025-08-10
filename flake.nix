@@ -174,12 +174,9 @@
 
     # Home Manager (only) users
     homeConfigurations = {
-      gene = linuxHomeConfig {
-        system = "x86_64-linux";
-        hostname = "mini-watcher";
+      gene = localLib.mkHomeConfig {
+        homeDirectory = "/home/gene";
         username = "gene";
-        additionalModules = [];
-        additionalSpecialArgs = {};
       };
     }; # end homeConfigurations
 

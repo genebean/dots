@@ -56,6 +56,10 @@ creation_rules:
     key_groups:
       - age:
           - *user_mightymac
+  - path_regex: modules/hosts/home-manager-only/secrets.yaml$
+    key_groups:
+      - age:
+          - *system_rainbow_planet
   - path_regex: modules/hosts/common/secrets.yaml$
     key_groups:
       - age:
