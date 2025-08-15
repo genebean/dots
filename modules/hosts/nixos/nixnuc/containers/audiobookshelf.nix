@@ -5,14 +5,14 @@ in {
   # Audiobookshelf
 
   #############################################################################
-  # I am using v2.17.2 because that is the current one in nix 24.11.          #
+  # I am using v2.24.0 because that is the current one in nix 25.05.          #
   # My plan is to switch from Podman to the native NixOS service              #
   #############################################################################
 
   virtualisation.oci-containers.containers = {
     "audiobookshelf" = {
       autoStart = true;
-      image = "ghcr.io/advplyr/audiobookshelf:2.17.2";
+      image = "ghcr.io/advplyr/audiobookshelf:2.24.0";
       environment = {
         AUDIOBOOKSHELF_UID = "99";
         AUDIOBOOKSHELF_GID = "100";
