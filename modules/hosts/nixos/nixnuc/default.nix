@@ -8,6 +8,7 @@ in {
   imports = [
     ./hardware-configuration.nix
     ./containers/audiobookshelf.nix
+    ./containers/mountain-mesh-bot-discord.nix
     ./containers/psitransfer.nix
     ../../common/linux/lets-encrypt.nix
     ../../common/linux/restic.nix
