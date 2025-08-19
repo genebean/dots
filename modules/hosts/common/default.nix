@@ -256,6 +256,10 @@ in {
         let g:airline_powerline_fonts = 1
       '';
     };
+    zellij = {
+      enable = true;
+      enableZshIntegration = false;
+    };
     zsh = {
       enable = true;
       enableCompletion = true;
