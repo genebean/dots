@@ -7,6 +7,7 @@
                else "libsqlite3.so";
 in {
   home.packages = with pkgs; [
+    btop
     bundix
     cargo
     cheat
