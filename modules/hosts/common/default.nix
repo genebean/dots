@@ -7,6 +7,7 @@
                else "libsqlite3.so";
 in {
   home.packages = with pkgs; [
+    btop
     bundix
     cargo
     cheat
@@ -254,6 +255,10 @@ in {
         let g:airline_theme='badwolf'
         let g:airline_powerline_fonts = 1
       '';
+    };
+    zellij = {
+      enable = true;
+      enableZshIntegration = false;
     };
     zsh = {
       enable = true;

@@ -7,10 +7,6 @@
       goPath = "go";
     };
     k9s.enable = true;
-    zellij = {
-      enable = true;
-      enableZshIntegration = true;
-    };
   };
 
   sops = {
