@@ -9,7 +9,7 @@
 
   # home-manager switch --flake ~/repos/dots
   programs.zsh.shellAliases = {
-    nixdiff = "cd ~/repos/dots && home-manager build --flake .#${username}-${system} && nvd diff /run/current-system result";
+    nixdiff = "cd ~/repos/dots && home-manager build --flake .#${username}-${system} && nvd diff ${config.home.homeDirectory}/.local/state/nix/profiles/home-manager result";
     nixup = "home-manager switch --flake ~/repos/dots#${username}-${system}";
   };
 
