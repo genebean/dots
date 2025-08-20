@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }: let
+{ inputs, pkgs, username, ... }: let
   sqlite_lib = if builtins.elem pkgs.system [
                  "aarch64-darwin"
                  "x86_64-darwin"
@@ -159,6 +159,10 @@ in {
         sqlite # needed by sqlite.lua used by telescope-cheat
       ];
       plugins = [ pkgs.vimPlugins.lazy-nvim ]; # let lazy.nvim manage every other plugin
+    };
+    nh = {
+      enable = true;
+      flake = "/Users/${username}/repos/dots";
     };
     oh-my-posh = {
       enable = true;
