@@ -78,29 +78,6 @@
     # Functions that setup systems
     localLib = import ./lib { inherit inputs; };    
 
-    linuxHomeConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: inputs.home-manager.lib.homeManagerConfiguration {
-      extraSpecialArgs = { inherit inputs hostname username;
-        pkgs = import inputs.nixpkgs {
-          inherit system;
-          config = {
-            allowUnfree = true;
-            permittedInsecurePackages = [ "olm-3.2.16" "electron-21.4.4" ];
-          };
-          overlays = [ inputs.nixpkgs-terraform.overlays.default ];
-        };
-      } // additionalSpecialArgs;
-      modules = [
-        ./modules/home-manager/hosts/${hostname}/${username}.nix
-        {
-          home = {
-            username = "${username}";
-            homeDirectory = "/home/${username}";
-          };
-        }
-        inputs.sops-nix.homeManagerModules.sops
-      ] ++ additionalModules;
-    }; # end homeManagerConfiguration
-
   in {
     # Darwin (macOS) hosts
     darwinConfigurations = {
