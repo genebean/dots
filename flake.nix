@@ -140,13 +140,16 @@
           inputs.simple-nixos-mailserver.nixosModule
         ];
       };
-      rainbow-planet = localLib.mkNixosHost {
-        hostname = "rainbow-planet";
-        additionalModules = [
-          inputs.nixos-cosmic.nixosModules.default
-          inputs.nixos-hardware.nixosModules.dell-xps-13-9360
-        ];
-      };
+      # This machines is currently running Ubuntu and
+      # configured with home-manager only.
+      #
+      # rainbow-planet = localLib.mkNixosHost {
+      #   hostname = "rainbow-planet";
+      #   additionalModules = [
+      #     inputs.nixos-cosmic.nixosModules.default
+      #     inputs.nixos-hardware.nixosModules.dell-xps-13-9360
+      #   ];
+      # };
     }; # end nixosConfigurations
 
     # Home Manager (only) users
