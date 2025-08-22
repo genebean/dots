@@ -1,5 +1,7 @@
 { config, pkgs, system, username, ... }: {
+
   home.stateVersion = "25.05";
+
   home.packages = with pkgs; [
     age
     home-manager
