@@ -15,6 +15,18 @@
     wlr-randr
   ];
 
+  fonts = {
+    fontconfig = {
+      enable = true;
+      useEmbeddedBitmaps = true;
+    };
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-emoji
+      noto-fonts-cjk-sans
+    ];
+  };
+
   hardware = {
     enableRedistributableFirmware = true;
     graphics.enable = true;
