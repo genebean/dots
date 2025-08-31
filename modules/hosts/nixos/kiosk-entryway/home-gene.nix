@@ -15,6 +15,7 @@
         "--start-maximized"
         "--force-dark-mode"
         "--hide-crash-restore-bubble"
+        "--hide-scrollbars"
       ];
     };
   };
