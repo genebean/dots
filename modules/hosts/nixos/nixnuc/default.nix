@@ -147,6 +147,11 @@ in {
       host = "127.0.0.1";
       maxHistoryLength = 2000000000;
     };
+    avahi = {
+      enable = true;
+      nssmdns4 = true;
+      openFirewall = true;
+    };
     ##
     ## Gandi (gandi.net)
     ##
