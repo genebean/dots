@@ -15,6 +15,7 @@
       mosquitto
       neofetch
       python3
+      rclone
       smartmontools
       sops
       ssh-to-age

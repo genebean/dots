@@ -54,7 +54,6 @@
     podman-compose
     podman-tui # status of containers in the terminal
     #quickemu
-    rclone
     rclone-browser
     rpi-imager
     rpiboot
