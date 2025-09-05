@@ -14,6 +14,9 @@
         export PATH=$PATH:/opt/puppetlabs/bin
         export PATH=$PATH:/opt/puppetlabs/pdk/bin
         export PATH=$PATH:/opt/puppetlabs/puppet/bin
+
+        # Podman installer pkg for the cli places podman here
+        export PATH=/opt/podman/bin:$PATH
       '';
       oh-my-zsh.plugins = [ "macos" ];
       shellAliases = {

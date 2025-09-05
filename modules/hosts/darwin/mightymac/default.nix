@@ -41,7 +41,7 @@
       "opentofu"
       "node_exporter"
       "pinentry-mac"
-      "podman"
+      #"podman" # this version is missing libkrun. Use installer at https://github.com/containers/podman/releases instead
       "qemu"
       "telegraf"
       "terraform-docs"
