@@ -32,7 +32,6 @@
     meld
     mumble
     networkmanager-openvpn
-    rclone
     rclone-browser
     slack
     tilix
