@@ -41,6 +41,15 @@
     };
   };
 
+  nix.buildMachines = [
+    {
+      hostName = "hetznix02.technicalissues.us";
+      sshUser = "${username}";
+      protocol = "ssh-ng";
+      systems = ["aarch64-linux"];
+    }
+  ];
+
   nixpkgs.overlays = [
     (final: super: {
       makeModulesClosure = x:
