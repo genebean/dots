@@ -4,8 +4,9 @@ in {
   imports = [
     ../../../common/linux/lets-encrypt.nix
     ../../../common/linux/restic.nix
+    ./containers/emqx.nix
     ./matrix-synapse.nix
-    ./mosquitto.nix
+    #./mosquitto.nix
     ./nginx.nix
   ];
 
