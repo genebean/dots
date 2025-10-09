@@ -4,6 +4,7 @@
   home_domain = "home.technicalissues.us";
   backend_ip = "127.0.0.1";
   mini_watcher = "192.168.23.20";
+  restic_backup_time = "02:00";
 in {
   imports = [
     ./hardware-configuration.nix
@@ -516,18 +517,24 @@ in {
       ];
     };
     resolved.enable = true;
-    restic.backups.daily.paths = [
-      config.services.forgejo.stateDir
-      config.services.grafana.dataDir
-      config.services.mealie.settings.DATA_DIR
-      config.services.nextcloud.home
-      "${config.users.users.${username}.home}/compose-files/wallabag"
-      "/orico/immich/library"
-      "/orico/jellyfin/data"
-      "/orico/jellyfin/staging/downloaded-files"
-      "/var/backup/postgresql"
-      "/var/lib/prometheus2"
-    ];
+    restic.backups.daily = {
+      paths = [
+        config.services.forgejo.stateDir
+        config.services.grafana.dataDir
+        config.services.mealie.settings.DATA_DIR
+        config.services.nextcloud.home
+        "${config.users.users.${username}.home}/compose-files/wallabag"
+        "/orico/immich/library"
+        "/orico/jellyfin/data"
+        "/orico/jellyfin/staging/downloaded-files"
+        "/var/backup/postgresql"
+        "/var/lib/prometheus2"
+      ];
+      timerConfig = {
+        OnCalendar = restic_backup_time;
+        Persistent = true;
+      };
+    };
     smartd.enable = true;
     syncthing = {
       enable = true;

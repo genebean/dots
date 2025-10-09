@@ -1,5 +1,6 @@
 { config, lib, pkgs, username, ... }: let
   domain = "technicalissues.us";
+  restic_backup_time = "01:00";
 in {
   imports = [
     ../../../common/linux/lets-encrypt.nix
@@ -126,11 +127,17 @@ in {
         secretKeybaseFile = config.sops.secrets.plausible_secret_key_base.path;
       };
     };
-    restic.backups.daily.paths = [
-      "${config.users.users.${username}.home}/compose-files/owntracks"
-      "/var/backup/postgresql"
-      "/var/lib/uptime-kuma"
-    ];
+    restic.backups.daily = {
+      paths = [
+        "${config.users.users.${username}.home}/compose-files/owntracks"
+        "/var/backup/postgresql"
+        "/var/lib/uptime-kuma"
+      ];
+      timerConfig = {
+        OnCalendar = restic_backup_time;
+        Persistent = true;
+      };
+    };
     tailscale = {
       enable = true;
       authKeyFile = config.sops.secrets.tailscale_key.path;

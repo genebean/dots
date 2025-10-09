@@ -17,6 +17,10 @@
       repositoryFile = config.sops.secrets.restic_repo.path;
       passwordFile = config.sops.secrets.restic_password.path;
 
+      extraBackupArgs = [
+        "--retry-lock 2h"
+      ]
+
       pruneOpts = [
         "--keep-daily 7"
         "--keep-weekly 5"
