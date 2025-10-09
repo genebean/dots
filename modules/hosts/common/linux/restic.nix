@@ -19,7 +19,7 @@
 
       extraBackupArgs = [
         "--retry-lock 2h"
-      ]
+      ];
 
       pruneOpts = [
         "--keep-daily 7"
