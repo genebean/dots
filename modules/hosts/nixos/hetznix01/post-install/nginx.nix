@@ -22,6 +22,23 @@ in {
     '';
     streamConfig = ''
       server {
+        # https://docs.emqx.com/en/emqx/latest/deploy/cluster/lb-nginx.html
+        listen 8883 ssl;
+        ssl_session_timeout 10m;
+        ssl_certificate ${config.security.acme.certs."mqtt.${domain}".directory}/fullchain.pem;
+        ssl_certificate_key ${config.security.acme.certs."mqtt.${domain}".directory}/key.pem;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-CHACHA20-POLY1305;
+        proxy_pass 127.0.0.0:1883;
+        proxy_protocol on;
+        proxy_connect_timeout 10s;
+        # Default keep-alive time is 10 minutes
+        proxy_timeout 1800s;
+        proxy_buffer_size 3M;
+        tcp_nodelay on;
+      }
+
+      server {
         listen 0.0.0.0:8333;
         listen 0.0.0.0:9333;
         listen [::]:8333;
