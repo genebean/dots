@@ -4,10 +4,12 @@
     flatpak = {
       enable = true;
       packages = [
-        "im.riot.Riot"
         "com.cassidyjames.butler"
         "com.logseq.Logseq"
         "com.vivaldi.Vivaldi"
+        "im.riot.Riot"
+        "io.kopia.KopiaUI"
+        "org.gnome.Fractal"
         "org.signal.Signal"
         "org.telegram.desktop"
       ];
