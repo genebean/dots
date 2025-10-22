@@ -84,6 +84,8 @@ in {
          3000 # PsiTransfer in oci-container
          3001 # immich-kiosk in compose
          3002 # grafana
+         3005 # Firefly III
+         3006 # Firefly III Data Importer
          3030 # Forgejo
          8001 # Tube Archivist
          8384 # Syncthing gui
@@ -176,6 +178,24 @@ in {
         ttl=300
       '';
       passwordFile = "${config.sops.secrets.gandi_api.path}";
+    };
+    firefly-iii = {
+      enable = true;
+      enableNginx = true;
+      settings.APP_KEY_FILE = "${config.sops.secrets.firefly_app_key.path}";
+      virtualHost = "budget.${home_domain}";
+    };
+    firefly-iii-data-importer = {
+      enable = true;
+      enableNginx = true;
+      settings = {
+        FIREFLY_III_URL = "http://localhost:3005";
+        VANITY_URL_FILE = "${config.sops.secrets.firefly_vanity_url.path}";
+        FIREFLY_III_ACCESS_TOKEN_FILE = "${config.sops.secrets.firefly_pat_data_import.path}";
+        SIMPLEFIN_TOKEN_FILE = "${config.sops.secrets.firefly_simplefin_token.path}";
+        TZ = "America/New_York";
+      };
+      virtualHost = "budget-importer.${home_domain}";
     };
     forgejo = {
       enable = true;
@@ -349,6 +369,9 @@ in {
           forceSSL = true;
           locations."/".proxyPass = "http://${backend_ip}:8888";
         };
+        # budget.${home_domain}
+        "${config.services.firefly-iii.virtualHost}".listen = [{ port = 3005; addr = "0.0.0.0"; ssl = false; }];
+        "${config.services.firefly-iii-data-importer.virtualHost}".listen = [{ port = 3006; addr = "0.0.0.0"; ssl = false; }];
         "git.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
           enableACME = true;
@@ -638,6 +661,31 @@ in {
     age.keyFile = "${config.users.users.${username}.home}/.config/sops/age/keys.txt";
     defaultSopsFile = ./secrets.yaml;
     secrets = {
+      firefly_app_key = {
+        owner = config.services.firefly-iii.user;
+        restartUnits = ["nginx.service"];
+      };
+      firefly_pat_data_import = {
+        owner = config.services.firefly-iii-data-importer.user;
+        restartUnits = [
+          "firefly-iii-data-importer-setup.service"
+          "phpfpm-firefly-iii-data-importer.service"
+        ];
+      };
+      firefly_simplefin_token = {
+        owner = config.services.firefly-iii-data-importer.user;
+        restartUnits = [
+          "firefly-iii-data-importer-setup.service"
+          "phpfpm-firefly-iii-data-importer.service"
+        ];
+      };
+      firefly_vanity_url = {
+        owner = config.services.firefly-iii-data-importer.user;
+        restartUnits = [
+          "firefly-iii-data-importer-setup.service"
+          "phpfpm-firefly-iii-data-importer.service"
+        ];
+      };
       home_assistant_token = {
         owner = config.users.users.prometheus.name;
         restartUnits = ["prometheus.service"];
