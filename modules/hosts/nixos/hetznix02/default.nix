@@ -28,6 +28,8 @@
     # Open ports in the firewall.
     firewall.allowedTCPPorts = [
       22   # ssh
+      80   # Nginx
+      443  # Nginx
     ];
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
