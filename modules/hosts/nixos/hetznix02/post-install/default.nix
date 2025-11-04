@@ -1,4 +1,9 @@
 { config, username, ... }: {
+  imports = [
+    ../../../common/linux/lets-encrypt.nix
+    ./nginx.nix
+  ];
+
   sops = {
     age.keyFile = "${config.users.users.${username}.home}/.config/sops/age/keys.txt";
     defaultSopsFile = ../secrets.yaml;
