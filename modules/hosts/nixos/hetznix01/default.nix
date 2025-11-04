@@ -54,7 +54,7 @@
     fail2ban.enable = true;
     logrotate.enable = true;
     ntopng = {
-      enable = true;
+      enable = false;
       interfaces = [
         "enp1s0"
         "tailscale0"
