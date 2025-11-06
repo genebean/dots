@@ -1,9 +1,20 @@
 
-{ config, ... }: let
+{ config, pkgs, ... }: let
   domain = "genebean.me";
   http_port = 80;
   https_port = 443;
 in {
+  environment.etc.nginx-littlelinks = {
+    # Info generated via
+    # nurl https://github.com/genebean/littlelink genebean-sometag
+    source = pkgs.fetchFromGitHub {
+      owner = "genebean";
+      repo = "littlelink";
+      rev = "genebean-1.0.1";
+      hash = "sha256-r7cvcKdlivQ2MA1UhypwdJrg7CREzTZE5fiNA9AWY/0=";
+    };
+  };
+
   security.acme.certs."${domain}" = {
     email = "lets-encrypt@technicalissues.us";
     inheritDefaults = false;
@@ -38,7 +49,7 @@ in {
         forceSSL = true;
         locations = {
           "/" = {
-            return = "302 https://beanbag.technicalissues.us";
+            root = "/etc/nginx-littlelinks";
           };
           "/.well-known/lnurlp/genebean" = {
             return = ''
@@ -60,8 +71,14 @@ in {
               add_header Access-Control-Allow-Origin *;
             '';
           };
+          "/api/event" = {
+            return = "301 https://stats.technicalissues.us/api/event";
+          };
           "/github" = {
             return = "301 https://github.com/genebean";
+          };
+          "/js/script.outbound-links.js" = {
+            return = "301 https://stats.technicalissues.us/js/script.outbound-links.js";
           };
           "/mastodon" = {
             return = "302 https://fosstodon.org/@genebean";
