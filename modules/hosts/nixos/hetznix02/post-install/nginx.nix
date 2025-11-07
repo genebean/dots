@@ -72,13 +72,15 @@ in {
             '';
           };
           "/api/event" = {
-            return = "301 https://stats.technicalissues.us/api/event";
+            proxyPass = "https://stats.technicalissues.us/api/event";
+            proxyWebsockets = true;
           };
           "/github" = {
             return = "301 https://github.com/genebean";
           };
           "/js/script.outbound-links.js" = {
-            return = "301 https://stats.technicalissues.us/js/script.outbound-links.js";
+            proxyPass = "https://stats.technicalissues.us/js/script.outbound-links.js";
+            proxyWebsockets = true;
           };
           "/mastodon" = {
             return = "302 https://fosstodon.org/@genebean";
