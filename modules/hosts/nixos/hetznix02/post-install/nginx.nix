@@ -10,8 +10,8 @@ in {
     source = pkgs.fetchFromGitHub {
       owner = "genebean";
       repo = "littlelink";
-      rev = "genebean-1.0.1";
-      hash = "sha256-r7cvcKdlivQ2MA1UhypwdJrg7CREzTZE5fiNA9AWY/0=";
+      rev = "genebean-1.0.2";
+      hash = "sha256-Fr1Qt/YaXNoDI4WHUuI2s852ENte8GjOmJrtEpq/SfY=";
     };
   };
 
@@ -78,9 +78,12 @@ in {
           "/github" = {
             return = "301 https://github.com/genebean";
           };
-          "/js/script.outbound-links.js" = {
-            proxyPass = "https://stats.technicalissues.us/js/script.outbound-links.js";
+          "/js/script.hash.outbound-links.js" = {
+            proxyPass = "https://stats.technicalissues.us/js/script.hash.outbound-links.js";
             proxyWebsockets = true;
+            extraConfig = ''
+              add_header Content-Type application/x-javascript;
+            '';
           };
           "/mastodon" = {
             return = "302 https://fosstodon.org/@genebean";
