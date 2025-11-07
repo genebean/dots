@@ -73,16 +73,14 @@ in {
           };
           "/api/event" = {
             proxyPass = "https://stats.technicalissues.us/api/event";
-            proxyWebsockets = true;
           };
           "/github" = {
             return = "301 https://github.com/genebean";
           };
           "/js/script.hash.outbound-links.js" = {
             proxyPass = "https://stats.technicalissues.us/js/script.hash.outbound-links.js";
-            proxyWebsockets = true;
             extraConfig = ''
-              add_header Content-Type application/x-javascript;
+              default_type application/x-javascript;
             '';
           };
           "/mastodon" = {
