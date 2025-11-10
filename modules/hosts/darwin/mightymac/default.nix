@@ -8,7 +8,7 @@
       inputs.flox.packages.${pkgs.system}.default
       kopia
       kubectx
-      reposurgeon
+      #reposurgeon # Nix is a major version behind brew
       rpiboot
       step-cli
       # terraform-versions."1.5.7"
@@ -44,6 +44,7 @@
       #"podman" # this version is missing libkrun. Use installer at https://github.com/containers/podman/releases instead
       "qemu"
       "telegraf"
+      "reposurgeon"
       "terraform-docs"
     ];
     casks = [
