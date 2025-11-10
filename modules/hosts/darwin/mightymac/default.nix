@@ -24,27 +24,27 @@
     ];
     brews = [
       "adr-tools"
-      "argocd"
+      #"argocd"
       "awscli"
-      "cilium-cli"
+      #"cilium-cli"
       "gnupg"
-      "helm"
-      "hubble"
+      #"helm"
+      #"hubble"
       "i2cssh"
-      "kind"
-      "kompose"
-      "kubernetes-cli"
-      "kubeseal"
+      #"kind"
+      #"kompose"
+      #"kubernetes-cli"
+      #"kubeseal"
       "lima"
-      "linkerd"
-      "minio-mc"
+      #"linkerd"
+      #"minio-mc"
       "opentofu"
-      "node_exporter"
+      #"node_exporter"
       "pinentry-mac"
       #"podman" # this version is missing libkrun. Use installer at https://github.com/containers/podman/releases instead
-      "qemu"
-      "telegraf"
+      #"qemu"
       "reposurgeon"
+      #"telegraf"
       "terraform-docs"
     ];
     casks = [
@@ -66,10 +66,10 @@
       "thunderbird"
       "thunderbird@daily"
       "ungoogled-chromium"
-      "utm"
+      #"utm"
       # "vagrant"
       "vial"
-      "whalebird"
+      #"whalebird"
     ];
     masApps = {
       #"FluffyChat" = 1551469600;
