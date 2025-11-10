@@ -29,13 +29,13 @@
     };
     taps = [
       "homebrew/cask-fonts"
-      "null-dev/firefox-profile-switcher"
+      #"null-dev/firefox-profile-switcher"
       "theseal/ssh-askpass"
     ];
     brews = [
       "fastfetch"
       "ffmpeg"
-      "firefox-profile-switcher-connector"
+      #"firefox-profile-switcher-connector" # having had this on seems to mean I need to toggle browser.profiles.enabled to true in about:config for the new built in version
       "ssh-askpass"
       "telnet"
     ];
