@@ -10,6 +10,7 @@ in {
     ./hardware-configuration.nix
     ./containers/audiobookshelf.nix
     ./containers/mountain-mesh-bot-discord.nix
+    ./containers/pinchflat.nix
     ./containers/psitransfer.nix
     ../../common/linux/lets-encrypt.nix
     ../../common/linux/restic.nix
@@ -91,6 +92,7 @@ in {
          8384 # Syncthing gui
          8888 # Atuin
          8090 # Wallabag in docker compose
+         8945 # Pinchflat in oci-container
          9090 # Prometheus Server
          9273 # Telegraf's Prometheus endpoint
         13378 # Audiobookshelf in oci-container
