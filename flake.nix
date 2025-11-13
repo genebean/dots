@@ -56,6 +56,11 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
+    nixvim = {
+      url = "github:nix-community/nixvim/nixos-24.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixpkgs-terraform = {
       url = "github:stackbuilders/nixpkgs-terraform";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
