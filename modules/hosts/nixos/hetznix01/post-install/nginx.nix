@@ -229,6 +229,9 @@ in {
         forceSSL = true;
         locations."/".proxyPass = "http://127.0.0.1:8001";
         locations."/".proxyWebsockets = true;
+        extraConfig = ''
+          access_log /var/log/nginx/stats.${domain}.log;
+        '';
       };
       "utk.${domain}" = {
         serverAliases = [
