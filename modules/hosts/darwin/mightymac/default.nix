@@ -11,7 +11,6 @@
       #reposurgeon # Nix is a major version behind brew
       rpiboot
       step-cli
-      # terraform-versions."1.5.7"
       terraformer
     ];
   };

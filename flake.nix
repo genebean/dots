@@ -56,11 +56,6 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
-    nixpkgs-terraform = {
-      url = "github:stackbuilders/nixpkgs-terraform";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
     simple-nixos-mailserver = {
       url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-25.05";
       inputs.nixpkgs-25_05.follows = "nixpkgs";
@@ -86,7 +81,6 @@
             allowUnfree = true;
             permittedInsecurePackages = [ "olm-3.2.16" "electron-21.4.4" ];
           };
-          overlays = [ inputs.nixpkgs-terraform.overlays.default ];
         };
       } // additionalSpecialArgs;
       modules = [
