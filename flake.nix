@@ -3,7 +3,7 @@
   inputs = {
     # Where we get most of our software. Giant mono repo with recipes
     # called derivations that say how to build software.
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     compose2nix = {
@@ -29,13 +29,13 @@
 
     # Manages things in home directory
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Controls system level software and settings including fonts on macOS
     nix-darwin = {
-      url = "github:lnl7/nix-darwin/nix-darwin-25.05";
+      url = "github:lnl7/nix-darwin/nix-darwin-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -56,14 +56,8 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
-    nixpkgs-terraform = {
-      url = "github:stackbuilders/nixpkgs-terraform";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
     simple-nixos-mailserver = {
-      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-25.05";
-      inputs.nixpkgs-25_05.follows = "nixpkgs";
+      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -86,7 +80,6 @@
             allowUnfree = true;
             permittedInsecurePackages = [ "olm-3.2.16" "electron-21.4.4" ];
           };
-          overlays = [ inputs.nixpkgs-terraform.overlays.default ];
         };
       } // additionalSpecialArgs;
       modules = [

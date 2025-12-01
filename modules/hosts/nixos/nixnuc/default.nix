@@ -31,29 +31,31 @@ in {
     };
   };
 
-  environment.systemPackages = with pkgs; [
-    inputs.compose2nix.packages.${pkgs.system}.default
-    docker-compose
-    intel-gpu-tools
-    jellyfin
-    jellyfin-ffmpeg
-    jellyfin-web
-    net-snmp
-    nginx
-    nvme-cli
-    podman-compose
-    podman-tui # status of containers in the terminal
-    yt-dlp
-  ];
+  environment = {
+    sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; };
+    systemPackages = with pkgs; [
+      inputs.compose2nix.packages.${pkgs.stdenv.hostPlatform.system}.default
+      docker-compose
+      intel-gpu-tools
+      jellyfin
+      jellyfin-ffmpeg
+      jellyfin-web
+      net-snmp
+      nginx
+      nvme-cli
+      podman-compose
+      podman-tui # status of containers in the terminal
+      yt-dlp
+    ];
+  };
 
+  # https://wiki.nixos.org/wiki/Jellyfin
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
-      intel-media-driver
-      vaapiIntel
-      vaapiVdpau
-      libvdpau-va-gl
-      intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
+      intel-compute-runtime-legacy1 # pre-13th gen cpu
+      intel-media-driver # For Broadwell and newer (ca. 2014+), use with LIBVA_DRIVER_NAME=iHD:
+      intel-ocl # Generic OpenCL support
     ];
   };
   
@@ -70,6 +72,7 @@ in {
       "root@localhost" = "root@technicalissues.us";
       "root@${config.networking.hostName}" = "root@technicalissues.us";
     };
+    stateVersion = 3;
 
     # Use Let's Encrypt certificates from Nginx
     certificateScheme = "acme";
@@ -121,17 +124,6 @@ in {
       vlan23.ipv4.addresses = [{ address = "192.168.23.21"; prefixLength = 24; }];
     };
   };
-
-  # Hardware Transcoding for Jellyfin
-  nixpkgs.overlays = [
-    (self: super: {
-      # "vaapiIntel" is in some docs, but that is an alias
-      # to intel-vaapi-driver as of 2023-05-31
-      intel-vaapi-driver = super.intel-vaapi-driver.override {
-        enableHybridCodec = true;
-      };
-    })
-  ];
 
   # Enable sound with pipewire.
   security.rtkit.enable = true;
@@ -721,6 +713,7 @@ in {
   };
 
   systemd.services = {
+    jellyfin.environment.LIBVA_DRIVER_NAME = "iHD";
     "mealie" = {
       requires = ["postgresql.service"];
       after = ["postgresql.service"];
@@ -752,7 +745,7 @@ in {
 
   # Compose based apps were crashing with podman compose, so back to Docker...
   virtualisation.docker.enable = true;
-  virtualisation.docker.package = pkgs.docker_26;
+  virtualisation.docker.package = pkgs.docker;
 
   virtualisation.podman = {
     enable = true;

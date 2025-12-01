@@ -5,13 +5,12 @@
     systemPackages = with pkgs; [
       chart-testing
       goreleaser
-      inputs.flox.packages.${pkgs.system}.default
+      inputs.flox.packages.${pkgs.stdenv.hostPlatform.system}.default
       kopia
       kubectx
       #reposurgeon # Nix is a major version behind brew
       rpiboot
       step-cli
-      # terraform-versions."1.5.7"
       terraformer
     ];
   };

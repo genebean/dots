@@ -1,5 +1,5 @@
 { inputs, pkgs, username, ... }: let
-  sqlite_lib = if builtins.elem pkgs.system [
+  sqlite_lib = if builtins.elem pkgs.stdenv.hostPlatform.system [
                  "aarch64-darwin"
                  "x86_64-darwin"
                ]
@@ -14,8 +14,8 @@ in {
     colordiff
     dogdns
     dos2unix
-    du-dust
     duf
+    dust
     esptool
     fd
     f2
@@ -37,7 +37,6 @@ in {
     nix-search
     nix-zsh-completions
     nodejs
-    nodePackages.npm
     nurl
     nvd
     onefetch
@@ -90,6 +89,10 @@ in {
     };
     bottom.enable = true;
     broot.enable = true;
+    diff-so-fancy = {
+      enable = true;
+      enableGitIntegration = true;
+    };
     direnv = {
       enable = true;
       enableZshIntegration = true;
@@ -100,8 +103,7 @@ in {
     gh.enable = true;
     git = {
       enable = true;
-      diff-so-fancy.enable = true;
-      extraConfig = {
+      settings = {
         diff.sopsdiffer.textconv = "sops --config /dev/null --decrypt";
       };
       ignores = [
@@ -111,9 +113,8 @@ in {
       ];
       includes = [ { path = "~/.gitconfig-local"; }];
       lfs.enable = true;
-      package = pkgs.gitAndTools.gitFull;
-      userName = "Gene Liverman";
-      extraConfig = {
+      package = pkgs.gitFull;
+      settings = {
         init = {
           defaultBranch = "main";
         };
@@ -123,6 +124,9 @@ in {
         };
         pull = {
           rebase = false;
+        };
+        user = {
+          name = "Gene Liverman";
         };
       };
     }; # end git
