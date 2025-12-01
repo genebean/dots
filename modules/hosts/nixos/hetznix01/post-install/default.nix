@@ -23,14 +23,7 @@ in {
       "indianspringsbsa.org"
       "pack1828.org"
     ];
-    forwards = {
-      "webmaster@indianspringsbsa.org" = "gene+indianspringsbsa.org@geneliverman.com";
-      "newsletter@indianspringsbsa.org" = "gene+indianspringsbsa.org@geneliverman.com";
-      "@alt.${domain}" = "gene+alt.${domain}@geneliverman.com";
-      "${username}@localhost" = "${username}@technicalissues.us";
-      "root@localhost" = "root@technicalissues.us";
-      "root@${config.networking.hostName}" = "root@technicalissues.us";
-    };
+    stateVersion = 3;
 
     # Use Let's Encrypt certificates from Nginx
     certificateScheme = "acme";

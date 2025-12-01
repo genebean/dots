@@ -36,7 +36,7 @@
     go
     hubble
     hugo
-    inputs.flox.packages.${pkgs.system}.default
+    inputs.flox.packages.${pkgs.stdenv.hostPlatform.system}.default
     kdePackages.bluedevil
     kdePackages.bluez-qt
     kdePackages.kdenlive
@@ -189,7 +189,7 @@
     containers.enable = true;
     docker = {
       enable = true;
-      package = pkgs.docker_26;
+      package = pkgs.docker;
     };
     libvirtd = {
       enable = true;
