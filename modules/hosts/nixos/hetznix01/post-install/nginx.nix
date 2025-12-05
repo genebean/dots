@@ -107,17 +107,6 @@ in {
           };
         };
       };
-      "albyhub.${domain}" = {
-        enableACME = true;
-        acmeRoot = null;
-        forceSSL = true;
-       # basicAuthFile = config.sops.secrets.owntracks_basic_auth.path;
-        # Albyhub via Tailscale
-        locations."/" = {
-          proxyPass = "http://${private_btc}:59000";
-          proxyWebsockets = true;
-        };
-      };
       "cloud.pack1828.org" = {
         enableACME = true;
         acmeRoot = null;
