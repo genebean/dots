@@ -13,6 +13,7 @@
       inetutils
       iotop
       mosquitto
+      net-tools
       neofetch
       python3
       rclone
