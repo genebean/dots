@@ -91,6 +91,7 @@ in {
          3005 # Firefly III
          3006 # Firefly III Data Importer
          3030 # Forgejo
+         3087 # Youtarr in docker compose
          8001 # Tube Archivist
          8384 # Syncthing gui
          8888 # Atuin
