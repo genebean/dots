@@ -3,6 +3,7 @@
     libbluray = pkgs.libbluray.override {
       withAACS = true;
       withBDplus = true;
+      withJava = true;
     };
     vlc-with-decoding = pkgs.vlc.override { inherit libbluray; };
   in
@@ -55,6 +56,13 @@
     };
 
     firefox.enable = true;
+
+    java = {
+      enable = true; # Needed for some Blu-ray disk menus
+      package = pkgs.jdk17;
+    };
+
+    kdeconnect.enable = true;
 
     ssh.askPassword = "ssh-askpass";
 
