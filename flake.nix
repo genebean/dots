@@ -33,6 +33,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nix-auth = {
+      url = "github:numtide/nix-auth";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Controls system level software and settings including fonts on macOS
     nix-darwin = {
       url = "github:lnl7/nix-darwin/nix-darwin-25.11";
