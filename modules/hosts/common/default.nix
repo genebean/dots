@@ -16,7 +16,6 @@ in {
     dos2unix
     duf
     dust
-    esptool
     fd
     f2
     git-filter-repo
