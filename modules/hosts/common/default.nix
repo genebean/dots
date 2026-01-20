@@ -26,7 +26,7 @@ in {
     htop
     httpie
     hub
-    inputs.nix-auth.packages.${system}.default
+    inputs.nix-auth.packages.${stdenv.hostPlatform.system}.default
     jq
     lazydocker
     lazygit
