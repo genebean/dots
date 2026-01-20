@@ -1,6 +1,6 @@
 { pkgs, ... }: {
   home.packages = with pkgs; [
-    # nothing here right now
+    esptool
   ];
   programs = {
     git.settings.aliases = {
