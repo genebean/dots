@@ -125,9 +125,12 @@ in {
         enableACME = true;
         acmeRoot = null;
         forceSSL = true;
-        locations."/" = {
-          proxyPass = "http://localhost:3003";
-        };
+        # Other settings come from services.dawarich.configureNginx
+        # The client_max_body_size setting is need to allow for large GeoJSON files
+        # such as those exported from a containerized version of Dawarich.
+        extraConfig = ''
+          client_max_body_size 200m;
+        '';
       };
       "matrix.${domain}" = {
         listen = [

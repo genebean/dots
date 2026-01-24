@@ -56,6 +56,15 @@ in {
         server_name = "collabora.pack1828.org";
       };
     };
+    dawarich = {
+      enable = true;
+      configureNginx = true;
+      localDomain = "location.technicalissues.us";
+      smtp = {
+        fromAddress = "location@hetznix01.technicalissues.us";
+        host = "127.0.0.1";
+      };
+    };
     nextcloud = {
       enable = true;
       hostName = "cloud.pack1828.org";
