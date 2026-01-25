@@ -1,4 +1,4 @@
-{ config, ... }: let 
+{ config, ... }: let
   domain = "technicalissues.us";
   http_port = 80;
   https_port = 443;

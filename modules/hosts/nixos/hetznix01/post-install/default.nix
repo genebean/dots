@@ -59,6 +59,10 @@ in {
     dawarich = {
       enable = true;
       configureNginx = true;
+      environment = {
+        NOMINATIM_API_HOST = "nominatim.home.technicalissues.us";
+        NOMINATIM_API_USE_HTTPS = "true";
+      };
       localDomain = "location.technicalissues.us";
       smtp = {
         fromAddress = "location@hetznix01.technicalissues.us";

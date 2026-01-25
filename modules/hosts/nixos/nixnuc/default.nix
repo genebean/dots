@@ -472,6 +472,18 @@ in {
           acmeRoot = null;
           forceSSL = true;
         };
+        "nominatim.${home_domain}" = {
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          extraConfig = ''
+            allow 127.0.0.1;
+            allow ::1;
+            allow 2600:1700:1712:880f:8eee:4ba4:75dc:f39c;
+            allow 100.64.0.0/10;
+            deny all;
+          '';
+        };
         "onlyoffice.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
           enableACME = true;
@@ -488,6 +500,14 @@ in {
           locations."/".proxyPass = "http://${backend_ip}:8090";
         };
       };
+    };
+    nominatim = {
+      enable = true;
+      hostName = "nominatim.home.technicalissues.us";
+      ui.config = ''
+        Nominatim_Config.Page_Title="Beantown's Nominatim";
+        Nominatim_Config.Nominatim_API_Endpoint='https://${config.services.nominatim.hostName}/';
+      '';
     };
     pinchflat = {
       enable = true;
