@@ -560,12 +560,6 @@ in {
       };
     };
     smartd.enable = true;
-    syncthing = {
-      enable = true;
-      dataDir = "/orico/syncthing";
-      openDefaultPorts = true;
-      guiAddress = "0.0.0.0:8384";
-    };
     tailscale = {
       enable = true;
       authKeyFile = config.sops.secrets.tailscale_key.path;
