@@ -63,6 +63,9 @@ in {
         NOMINATIM_API_HOST = "nominatim.home.technicalissues.us";
         NOMINATIM_API_USE_HTTPS = "true";
       };
+      extraEnvFiles = [
+        "${config.sops.secrets.dawarich_env.path}"
+      ];
       localDomain = "location.technicalissues.us";
       smtp = {
         fromAddress = "location@hetznix01.technicalissues.us";
@@ -169,6 +172,10 @@ in {
       local_private_env = {
         owner = "${username}";
         path = "${config.users.users.${username}.home}/.private-env";
+      };
+      dawarich_env = {
+        owner = config.services.dawarich.user;
+        restartUnits = [ "dawarich-web.service" ];
       };
       matrix_secrets_yaml = {
         owner = config.users.users.matrix-synapse.name;
