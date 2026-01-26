@@ -376,6 +376,18 @@ in {
             client_max_body_size 0;
           '';
         };
+        "id.${home_domain}" = {
+          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/".proxyPass = "http://${backend_ip}:1411";
+          extraConfig = ''
+            proxy_busy_buffers_size   512k;
+            proxy_buffers           4 512k;
+            proxy_buffer_size         256k;
+          '';
+        };
         "immich.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
           enableACME = true;
@@ -515,6 +527,13 @@ in {
       mediaDir = "/orico/jellyfin/data/Pinchflat";
       selfhosted = true; # Only because this is not exsposed to the web
       user = "jellyfin";
+    };
+    pocket-id = {
+      enable = true;
+      settings = {
+        APP_URL = "https://id.${home_domain}";
+        TRUST_PROXY = true;
+      };
     };
     postgresql = {
       enable = true;
