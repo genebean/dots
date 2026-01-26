@@ -222,6 +222,10 @@ in {
     grafana = {
       enable = true;
       settings = {
+        auth = {
+          disable_login_form = true;
+          oauth_auto_login = true;
+        };
         server = {
           domain = "monitoring.${home_domain}";
           http_addr = "0.0.0.0";
