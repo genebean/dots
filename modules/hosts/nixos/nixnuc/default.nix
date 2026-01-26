@@ -168,10 +168,10 @@ in {
       extraConfig = ''
         usev4=webv4
         #usev6=webv6
-        #use-personal-access-token=yes
+        use-personal-access-token=yes
         ttl=300
       '';
-      passwordFile = "${config.sops.secrets.gandi_api.path}";
+      passwordFile = "${config.sops.secrets.gandi_dns_pat.path}";
     };
     firefly-iii = {
       enable = true;
