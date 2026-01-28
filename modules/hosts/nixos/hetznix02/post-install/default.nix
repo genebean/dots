@@ -1,6 +1,7 @@
 { config, username, ... }: {
   imports = [
     ../../../common/linux/lets-encrypt.nix
+    ./monitoring.nix
     ./nginx.nix
   ];
 

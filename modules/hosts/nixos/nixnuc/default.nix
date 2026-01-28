@@ -3,7 +3,6 @@
   https_port = 443;
   home_domain = "home.technicalissues.us";
   backend_ip = "127.0.0.1";
-  mini_watcher = "192.168.23.20";
   restic_backup_time = "02:00";
 in {
   imports = [
@@ -11,6 +10,7 @@ in {
     ./containers/audiobookshelf.nix
     ./containers/mountain-mesh-bot-discord.nix
     ./containers/psitransfer.nix
+    ./monitoring-stack.nix
     ../../common/linux/lets-encrypt.nix
     ../../common/linux/restic.nix
   ];
@@ -96,16 +96,11 @@ in {
          8888 # Atuin
          8090 # Wallabag in docker compose
          8945 # Pinchflat
-         9090 # Prometheus Server
-         9273 # Telegraf's Prometheus endpoint
         13378 # Audiobookshelf in oci-container
-        22000 # Syncthing transfers
       ];
       allowedUDPPorts = [
          1900 # Jellyfin service auto-discovery
          7359 # Jellyfin auto-discovery
-        21027 # Syncthing discovery
-        22000 # Syncthing transfers
       ];
     };
     # Or disable the firewall altogether.
@@ -135,7 +130,9 @@ in {
   };
   services.pulseaudio.enable = false;
 
-  programs.mtr.enable = true;
+  programs = {
+    mtr.enable = true;
+  };
 
   # List services that you want to enable:
   services = {
@@ -219,22 +216,6 @@ in {
       stateDir = "/orico/forgejo";
     };
     fwupd.enable = true;
-    grafana = {
-      enable = true;
-      settings = {
-        auth = {
-          disable_login_form = true;
-          oauth_auto_login = true;
-        };
-        server = {
-          domain = "monitoring.${home_domain}";
-          http_addr = "0.0.0.0";
-          http_port = 3002;
-          root_url = "https://monitoring.${home_domain}/grafana/"; # Not needed if it is `https://your.domain/`
-          serve_from_sub_path = true;
-        };
-      };
-    };
     jellyfin = {
       enable = true;
       openFirewall = true;
@@ -461,27 +442,14 @@ in {
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/grafana/".proxyPass = "http://${backend_ip}:3002/grafana/";
-        };
-        "nc.${home_domain}" = {
-          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          extraConfig = ''
-            client_max_body_size 0;
-            underscores_in_headers on;
-          '';
-          locations."/".proxyWebsockets = true;
-          locations."/".proxyPass = "http://${mini_watcher}:8081";
-          locations."/".extraConfig = ''
-            # these are added per https://www.nicemicro.com/tutorials/debian-snap-nextcloud.html
-            add_header Front-End-Https on;
-            proxy_headers_hash_max_size 512;
-            proxy_headers_hash_bucket_size 64;
-            proxy_buffering off;
-            proxy_max_temp_file_size 0;
-          '';
+          locations = {
+            "/grafana/".proxyPass = "http://${backend_ip}:3002/grafana/";
+            "/remotewrite" = {
+              basicAuthFile = config.sops.secrets.nginx_basic_auth.path;
+              proxyPass = "http://127.0.0.1:8428/api/v1/write";
+              proxyWebsockets = true;
+            };
+          };
         };
         "nextcloud.${home_domain}" = {
           enableACME = true;
@@ -500,14 +468,6 @@ in {
             deny all;
           '';
         };
-        "onlyoffice.${home_domain}" = {
-          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations."/".proxyWebsockets = true;
-          locations."/".proxyPass = "http://${mini_watcher}:8888";
-        };
         "readit.${home_domain}" = {
           listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
           enableACME = true;
@@ -520,6 +480,9 @@ in {
     nominatim = {
       enable = true;
       hostName = "nominatim.home.technicalissues.us";
+      settings = {
+        NOMINATIM_PROJECT_DIR = "/var/lib/nominatim/project";
+      };
       ui.config = ''
         Nominatim_Config.Page_Title="Beantown's Nominatim";
         Nominatim_Config.Nominatim_API_Endpoint='https://${config.services.nominatim.hostName}/';
@@ -542,52 +505,23 @@ in {
     postgresql = {
       enable = true;
       package = pkgs.postgresql_16;
+      ensureUsers = [
+        {
+          # Required by Nominatim
+          name = "www-data";
+          ensureDBOwnership = false;
+        }
+      ];
     };
     postgresqlBackup = {
       enable = true;
       backupAll = true;
       startAt = "*-*-* 23:00:00";
     };
-    prometheus = {
-      enable = true;
-      checkConfig = "syntax-only";
-      globalConfig.scrape_interval = "10s"; # "1m"
-      scrapeConfigs = [
-        {
-          job_name = "hass";
-          scrape_interval = "30s";
-          metrics_path = "/api/prometheus";
-          static_configs = [{
-            targets = [ "192.168.22.22:8123" ];
-          }];
-          bearer_token_file = config.sops.secrets.home_assistant_token.path;
-        }
-        {
-          job_name = "telegraf";
-          scrape_interval = "5s";
-          static_configs = [{
-            targets = [ "localhost:9273" ];
-          }];
-        }
-        {
-          job_name = "uptimekuma";
-          scheme = "https";
-          scrape_interval = "30s";
-          static_configs = [{
-            targets = [ "utk.technicalissues.us" ];
-          }];
-          basic_auth = {
-            password_file = config.sops.secrets.uptimekuma_grafana_api_key.path;
-            username = "";
-          };
-        }
-      ];
-    };
     resolved.enable = true;
     restic.backups.daily = {
       paths = [
         config.services.forgejo.stateDir
-        config.services.grafana.dataDir
         config.services.mealie.settings.DATA_DIR
         config.services.nextcloud.home
         "${config.users.users.${username}.home}/compose-files/wallabag"
@@ -595,7 +529,6 @@ in {
         "/orico/jellyfin/data"
         "/orico/jellyfin/staging/downloaded-files"
         "/var/backup/postgresql"
-        "/var/lib/prometheus2"
       ];
       timerConfig = {
         OnCalendar = restic_backup_time;
@@ -614,83 +547,6 @@ in {
         "--advertise-routes=192.168.20.0/22"
       ];
       useRoutingFeatures = "both";
-    };
-    telegraf = {
-      enable = true;
-      extraConfig = {
-        agent = {
-          interval = "15s";
-          round_interval = true;
-          collection_jitter = "0s";
-          debug = false;
-        };
-        inputs = {
-          cpu = {
-            percpu = true;
-            totalcpu = true;
-            report_active = true;
-            collect_cpu_time = true;
-          };
-          disk = {
-            ignore_fs = [
-              "aufs"
-              "devfs"
-              "devtmpfs"
-              "iso9660"
-              "overlay"
-              "squashfs"
-              "tmpfs"
-            ];
-          };
-          diskio = {
-            skip_serial_number = true;
-          };
-          docker = {
-            endpoint = "unix:///run/docker.sock";
-            container_name_include  = [];
-            storage_objects = [
-              "container"
-              "volume"
-            ];
-            perdevice_include = [
-              "cpu"
-              "blkio"
-              "network"
-            ];
-            total_include = [
-              "cpu"
-              "blkio"
-              "network"
-            ];
-            timeout = "5s";
-            gather_services = false;
-          };
-          mem = {};
-          net = {
-            ignore_protocol_stats = true;
-          };
-          nginx = {
-            insecure_skip_verify = true;
-            urls = [ "https://127.0.0.1/server_status" ];
-          };
-          #smart = {};
-          system = {};
-          #systemd_units = {};
-          zfs = {
-            datasetMetrics = true;
-            poolMetrics = true;
-          };
-        };
-        outputs = {
-          prometheus_client = {
-            collectors_exclude = [
-              "gocollector"
-              "process"
-            ];
-            listen = ":9273";
-          };
-        };
-      };
     };
     zfs.autoScrub.enable = true;
   };
@@ -724,10 +580,6 @@ in {
           "phpfpm-firefly-iii-data-importer.service"
         ];
       };
-      home_assistant_token = {
-        owner = config.users.users.prometheus.name;
-        restartUnits = ["prometheus.service"];
-      };
       immich_kiosk_basic_auth = {
         owner = config.users.users.nginx.name;
         restartUnits = ["nginx.service"];
@@ -745,13 +597,12 @@ in {
         restartUnits = ["mealie.service"];
       };
       nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
+      nginx_basic_auth = {
+        owner = "nginx";
+        restartUnits = ["nginx.service"];
+      };
       tailscale_key = {
         restartUnits = [ "tailscaled-autoconnect.service" ];
-      };
-      uptimekuma_grafana_api_key = {
-        owner = config.users.users.prometheus.name;
-        restartUnits = ["prometheus.service"];
-        sopsFile = ../../common/secrets.yaml;
       };
     };
   };
@@ -779,8 +630,6 @@ in {
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIp42X5DZ713+bgbOO+GXROufUFdxWo7NjJbGQ285x3N gene.liverman@ltnglobal.com"
     ];
   };
-
-  users.users.telegraf.extraGroups = [ "docker" ];
 
   # Enable common container config files in /etc/containers
   virtualisation.containers.enable = true;

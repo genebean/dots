@@ -2,6 +2,7 @@
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
+    ./monitoring.nix
   ];
 
   system.stateVersion = "24.11";

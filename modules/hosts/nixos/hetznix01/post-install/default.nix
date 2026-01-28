@@ -7,6 +7,7 @@ in {
     ../../../common/linux/restic.nix
     ./containers/emqx.nix
     ./matrix-synapse.nix
+    ./monitoring.nix
     #./mosquitto.nix
     ./nginx.nix
   ];
