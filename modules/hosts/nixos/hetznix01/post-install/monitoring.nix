@@ -26,7 +26,6 @@ in {
             relabel_configs = [
               {
                 target_label = "instance";
-                regex = "127.0.0.1.*";
                 replacement = "${config.networking.hostName}";
               }
             ];
