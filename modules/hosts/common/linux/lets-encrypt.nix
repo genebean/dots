@@ -10,8 +10,7 @@
     acceptTerms = true;
     defaults = {
       email = "lets-encrypt@technicalissues.us";
-      credentialFiles = { "GANDIV5_API_KEY_FILE" = "${config.sops.secrets.gandi_api.path}"; };
-      #credentialFiles = { "GANDIV5_PERSONAL_ACCESS_TOKEN_FILE" = gandi_dns_pat; };
+      credentialFiles = { "GANDIV5_PERSONAL_ACCESS_TOKEN_FILE" = "${config.sops.secrets.gandi_dns_pat.path}"; };
       dnsProvider = "gandiv5";
       dnsResolver = "ns1.gandi.net";
       # uncomment below for testing
@@ -21,6 +20,6 @@
 
   sops = {
     age.keyFile = "${config.users.users.${username}.home}/.config/sops/age/keys.txt";
-    secrets.gandi_api.sopsFile = ../secrets.yaml;
+    secrets.gandi_dns_pat.sopsFile = ../secrets.yaml;
   };
 }
