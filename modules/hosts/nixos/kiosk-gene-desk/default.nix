@@ -41,6 +41,21 @@
     };
   };
 
+  nix = {
+    buildMachines = [
+      {
+        hostName = "hetznix02.technicalissues.us";
+        sshUser = "${username}";
+        sshKey = "/home/${username}/id_ed25519";
+        protocol = "ssh-ng";
+        systems = ["aarch64-linux"];
+        maxJobs = 3;
+        speedFactor = 3;
+      }
+    ];
+    distributedBuilds = true;
+  };
+
   nixpkgs.overlays = [
     (final: super: {
       makeModulesClosure = x:
