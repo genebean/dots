@@ -12,6 +12,7 @@
       iftop
       inetutils
       iotop
+      lsof
       mosquitto
       net-tools
       neofetch

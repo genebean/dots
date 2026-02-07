@@ -28,6 +28,22 @@
       fsType = "zfs";
     };
 
+  fileSystems."/var/lib/postgresql" =
+    { device = "orico/postgresql-data";
+      fsType = "zfs";
+    };
+
+  fileSystems."/var/lib/postgresql/16/pg_wal" =
+    { device = "orico/postgresql-wal-16";
+      fsType = "zfs";
+    };
+
+  # Second disk inside case
+  #fileSystems."/var/lib/postgresql" =
+  #  { device = "/dev/disk/by-uuid/7351c15f-1b9f-4e12-853b-ebf5cc425530";
+  #    fsType = "ext4";
+  #  };
+
   swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
