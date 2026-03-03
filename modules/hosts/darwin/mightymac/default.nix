@@ -18,6 +18,7 @@
   homebrew = {
     taps = [
       "hashicorp/tap"
+      "openvoxproject/openvox"
       "puppetlabs/puppet"
       "wouterdebie/repo"
     ];
@@ -43,10 +44,10 @@
       "kopiaui"
       "mumble"
       "obs"
+      "openvox8-agent"
+      "openvox8-openbolt"
       "pdk"
       "podman-desktop"
-      "puppet-agent"
-      "puppet-bolt"
       "qmk-toolbox"
       "raspberry-pi-imager"
       "thunderbird"
