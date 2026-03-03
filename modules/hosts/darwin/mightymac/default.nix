@@ -23,27 +23,14 @@
     ];
     brews = [
       "adr-tools"
-      #"argocd"
       "awscli"
-      #"cilium-cli"
       "gnupg"
-      #"helm"
-      #"hubble"
       "i2cssh"
-      #"kind"
-      #"kompose"
-      #"kubernetes-cli"
-      #"kubeseal"
       "lima"
-      #"linkerd"
-      #"minio-mc"
       "opentofu"
-      #"node_exporter"
       "pinentry-mac"
       #"podman" # this version is missing libkrun. Use installer at https://github.com/containers/podman/releases instead
-      #"qemu"
       "reposurgeon"
-      #"telegraf"
       "terraform-docs"
     ];
     casks = [
