@@ -18,32 +18,20 @@
   homebrew = {
     taps = [
       "hashicorp/tap"
+      "openvoxproject/openvox"
       "puppetlabs/puppet"
       "wouterdebie/repo"
     ];
     brews = [
       "adr-tools"
-      #"argocd"
       "awscli"
-      #"cilium-cli"
       "gnupg"
-      #"helm"
-      #"hubble"
       "i2cssh"
-      #"kind"
-      #"kompose"
-      #"kubernetes-cli"
-      #"kubeseal"
       "lima"
-      #"linkerd"
-      #"minio-mc"
       "opentofu"
-      #"node_exporter"
       "pinentry-mac"
       #"podman" # this version is missing libkrun. Use installer at https://github.com/containers/podman/releases instead
-      #"qemu"
       "reposurgeon"
-      #"telegraf"
       "terraform-docs"
     ];
     casks = [
@@ -56,10 +44,10 @@
       "kopiaui"
       "mumble"
       "obs"
+      "openvox8-agent"
+      "openvox8-openbolt"
       "pdk"
       "podman-desktop"
-      "puppet-agent"
-      "puppet-bolt"
       "qmk-toolbox"
       "raspberry-pi-imager"
       "thunderbird"
