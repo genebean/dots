@@ -42,6 +42,7 @@
       "google-drive"
       "gpg-suite"
       "kopiaui"
+      "multipass"
       "mumble"
       "obs"
       "openvox8-agent"
