@@ -61,6 +61,12 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
+    # Private flake for sensitive configs
+    private-flake = {
+      url = "github:genebean/private-flake/initial_setup";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     simple-nixos-mailserver = {
       url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -128,7 +134,7 @@
       hetznix01 = localLib.mkNixosHost {
         hostname = "hetznix01";
         additionalModules = [
-          inputs.simple-nixos-mailserver.nixosModule
+          inputs.private-flake.nixosModules.private.hetznix01
         ];
       };
       hetznix02 = localLib.mkNixosHost {
