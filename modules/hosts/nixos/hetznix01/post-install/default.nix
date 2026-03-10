@@ -76,7 +76,7 @@ in {
     nextcloud = {
       enable = true;
       hostName = "cloud.pack1828.org";
-      package = pkgs.nextcloud31; # Need to manually increment with every major upgrade.
+      package = pkgs.nextcloud33; # Need to manually increment with every major upgrade.
       appstoreEnable = true;
       autoUpdateApps.enable = true;
       config = {
