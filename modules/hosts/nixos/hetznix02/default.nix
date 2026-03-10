@@ -3,6 +3,7 @@
     ./hardware-configuration.nix
     ./disk-config.nix
     ./post-install
+    ../../common/linux/nixroutes.nix
   ];
 
   system.stateVersion = "24.05";
