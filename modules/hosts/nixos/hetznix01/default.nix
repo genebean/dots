@@ -1,9 +1,10 @@
 { config, pkgs, username,  ... }: {
   imports = [
-    ./hardware-configuration.nix
-    ./disk-config.nix
-    ./post-install
     ../../common/linux/nixroutes.nix
+    ./disk-config.nix
+    ./hardware-configuration.nix
+    ./post-install
+    inputs.private-flake.nixosModules.private.hetznix01
   ];
 
   system.stateVersion = "24.05";
@@ -82,18 +83,6 @@
         UPTIME_KUMA_HOST = "127.0.0.1";
         #UPTIME_KUMA_PORT = "3001";
       };
-    };
-  };
-
-  systemd.network = {
-    enable = true;
-    networks."10-wan" = {
-      matchConfig.Name = "enp1s0";
-      address = config.private-flake.hetznix01.networkAddresses;
-      dns = config.private-flake.hetznix01.dnsServers;
-      routes = config.private-flake.hetznix01.networkRoutes;
-      # make the routes on this interface a dependency for network-online.target
-      linkConfig.RequiredForOnline = "routable";
     };
   };
 

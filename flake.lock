@@ -694,11 +694,11 @@
         "sops-nix": "sops-nix"
       },
       "locked": {
-        "lastModified": 1773114599,
-        "narHash": "sha256-xPPkXW9mlszorwDVJ3bXQsKVg0wIpiiOCL9kbZlyTjY=",
+        "lastModified": 1773144129,
+        "narHash": "sha256-F00t0DRlt0GsaUxgp1qreSpV6qaZy0oNX9j98qj+NoY=",
         "owner": "genebean",
         "repo": "private-flake",
-        "rev": "8d886b681a65ad3e2a102d40a7a34001b6973450",
+        "rev": "ed799ef806b4dc232866f9411ac5bc32b6f9ff5f",
         "type": "github"
       },
       "original": {
