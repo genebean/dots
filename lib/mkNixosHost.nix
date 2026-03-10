@@ -27,7 +27,7 @@
       }
 
       inputs.nix-flatpak.nixosModules.nix-flatpak
-
+      inputs.private-flake.nixosModules.private.ssh-keys
       inputs.sops-nix.nixosModules.sops # system wide secrets management
       ../modules/hosts/nixos # system-wide stuff
       ../modules/hosts/nixos/${hostname} # host specific stuff
