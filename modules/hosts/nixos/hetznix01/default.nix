@@ -1,4 +1,4 @@
-{ pkgs, username,  ... }: {
+{ config, pkgs, username,  ... }: {
   imports = [
     ./hardware-configuration.nix
     ./disk-config.nix
@@ -88,21 +88,9 @@
     enable = true;
     networks."10-wan" = {
       matchConfig.Name = "enp1s0";
-      address = [
-        "5.161.244.95/32"
-        "2a01:4ff:f0:977c::1/64"
-      ];
-      dns = [
-        "185.12.64.1"
-        "185.12.64.2"
-        "2a01:4ff:ff00::add:1"
-        "2a01:4ff:ff00::add:2"
-      ];
-      routes = [
-        { Destination = "172.31.1.1"; }
-        { Gateway = "172.31.1.1"; GatewayOnLink = true; }
-        { Gateway = "fe80::1"; }
-      ];
+      address = config.private-flake.hetznix01.networkAddresses;
+      dns = config.private-flake.hetznix01.dnsServers;
+      routes = config.private-flake.hetznix01.networkRoutes;
       # make the routes on this interface a dependency for network-online.target
       linkConfig.RequiredForOnline = "routable";
     };
