@@ -16,22 +16,6 @@
         "type": "gitlab"
       }
     },
-    "blobs_2": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1604995301,
-        "narHash": "sha256-wcLzgLec6SGJA8fx1OEN1yV/Py5b+U5iyYpksUY/yLw=",
-        "owner": "simple-nixos-mailserver",
-        "repo": "blobs",
-        "rev": "2cccdf1ca48316f2cfd1c9a0017e8de5a7156265",
-        "type": "gitlab"
-      },
-      "original": {
-        "owner": "simple-nixos-mailserver",
-        "repo": "blobs",
-        "type": "gitlab"
-      }
-    },
     "brew-src": {
       "flake": false,
       "locked": {
@@ -175,22 +159,6 @@
         "type": "github"
       }
     },
-    "flake-compat_4": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1761588595,
-        "narHash": "sha256-XKUZz9zewJNUj46b4AJdiRZJAvSZ0Dqj2BNfXvFlJC4=",
-        "owner": "edolstra",
-        "repo": "flake-compat",
-        "rev": "f387cd2afec9419c8ee37694406ca490c3f34ee5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "edolstra",
-        "repo": "flake-compat",
-        "type": "github"
-      }
-    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -266,38 +234,10 @@
     "git-hooks": {
       "inputs": {
         "flake-compat": [
-          "private-flake",
           "simple-nixos-mailserver",
           "flake-compat"
         ],
         "gitignore": "gitignore_2",
-        "nixpkgs": [
-          "private-flake",
-          "simple-nixos-mailserver",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1763319842,
-        "narHash": "sha256-YG19IyrTdnVn0l3DvcUYm85u3PaqBt6tI6VvolcuHnA=",
-        "owner": "cachix",
-        "repo": "git-hooks.nix",
-        "rev": "7275fa67fbbb75891c16d9dee7d88e58aea2d761",
-        "type": "github"
-      },
-      "original": {
-        "owner": "cachix",
-        "repo": "git-hooks.nix",
-        "type": "github"
-      }
-    },
-    "git-hooks_2": {
-      "inputs": {
-        "flake-compat": [
-          "simple-nixos-mailserver",
-          "flake-compat"
-        ],
-        "gitignore": "gitignore_3",
         "nixpkgs": [
           "simple-nixos-mailserver",
           "nixpkgs"
@@ -340,29 +280,6 @@
       }
     },
     "gitignore_2": {
-      "inputs": {
-        "nixpkgs": [
-          "private-flake",
-          "simple-nixos-mailserver",
-          "git-hooks",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1709087332,
-        "narHash": "sha256-HG2cCnktfHsKV0s4XW83gU3F57gaTljL9KNSuG6bnQs=",
-        "owner": "hercules-ci",
-        "repo": "gitignore.nix",
-        "rev": "637db329424fd7e46cf4185293b9cc8c88c95394",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hercules-ci",
-        "repo": "gitignore.nix",
-        "type": "github"
-      }
-    },
-    "gitignore_3": {
       "inputs": {
         "nixpkgs": [
           "simple-nixos-mailserver",
@@ -626,11 +543,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1772822230,
-        "narHash": "sha256-yf3iYLGbGVlIthlQIk5/4/EQDZNNEmuqKZkQssMljuw=",
+        "lastModified": 1773068389,
+        "narHash": "sha256-vMrm7Pk2hjBRPnCSjhq1pH0bg350Z+pXhqZ9ICiqqCs=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "71caefce12ba78d84fe618cf61644dce01cf3a96",
+        "rev": "44bae273f9f82d480273bab26f5c50de3724f52f",
         "type": "github"
       },
       "original": {
@@ -690,20 +607,23 @@
         "nixpkgs": [
           "nixpkgs"
         ],
-        "simple-nixos-mailserver": "simple-nixos-mailserver",
-        "sops-nix": "sops-nix"
+        "simple-nixos-mailserver": [
+          "simple-nixos-mailserver"
+        ],
+        "sops-nix": [
+          "sops-nix"
+        ]
       },
       "locked": {
-        "lastModified": 1773107095,
-        "narHash": "sha256-FH96EdivFlkW85eumLrp17EdXLMxlPXk4+6p3eGCzOs=",
+        "lastModified": 1773203147,
+        "narHash": "sha256-16q/JVUUM8SqeDY4rmM7wt53dXj2dPeBIfGPVP9/NOo=",
         "owner": "genebean",
         "repo": "private-flake",
-        "rev": "1e245e3d7fab1dd1466569ed10f4488abf343e38",
+        "rev": "510a9214433b56fde82cd572063b99ec9a32eb7f",
         "type": "github"
       },
       "original": {
         "owner": "genebean",
-        "ref": "initial_setup",
         "repo": "private-flake",
         "type": "github"
       }
@@ -724,8 +644,8 @@
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "private-flake": "private-flake",
-        "simple-nixos-mailserver": "simple-nixos-mailserver_2",
-        "sops-nix": "sops-nix_2"
+        "simple-nixos-mailserver": "simple-nixos-mailserver",
+        "sops-nix": "sops-nix"
       }
     },
     "rust-analyzer-src": {
@@ -772,31 +692,6 @@
         "flake-compat": "flake-compat_3",
         "git-hooks": "git-hooks",
         "nixpkgs": [
-          "private-flake",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1766537863,
-        "narHash": "sha256-HEt+wbazRgJYeY+lgj65bxhPyVc4x7NEB2bs5NU6DF8=",
-        "owner": "simple-nixos-mailserver",
-        "repo": "nixos-mailserver",
-        "rev": "23f0a53ca6e58e61e1ea2b86791c69b79c91656d",
-        "type": "gitlab"
-      },
-      "original": {
-        "owner": "simple-nixos-mailserver",
-        "ref": "nixos-25.11",
-        "repo": "nixos-mailserver",
-        "type": "gitlab"
-      }
-    },
-    "simple-nixos-mailserver_2": {
-      "inputs": {
-        "blobs": "blobs_2",
-        "flake-compat": "flake-compat_4",
-        "git-hooks": "git-hooks_2",
-        "nixpkgs": [
           "nixpkgs"
         ]
       },
@@ -818,36 +713,15 @@
     "sops-nix": {
       "inputs": {
         "nixpkgs": [
-          "private-flake",
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1769469829,
-        "narHash": "sha256-wFcr32ZqspCxk4+FvIxIL0AZktRs6DuF8oOsLt59YBU=",
+        "lastModified": 1773096132,
+        "narHash": "sha256-M3zEnq9OElB7zqc+mjgPlByPm1O5t2fbUrH3t/Hm5Ag=",
         "owner": "mic92",
         "repo": "sops-nix",
-        "rev": "c5eebd4eb2e3372fe12a8d70a248a6ee9dd02eff",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mic92",
-        "repo": "sops-nix",
-        "type": "github"
-      }
-    },
-    "sops-nix_2": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1772944399,
-        "narHash": "sha256-xTzsSd3r5HBeufSZ3fszAn0ldfKctvsYG7tT2YJg5gY=",
-        "owner": "mic92",
-        "repo": "sops-nix",
-        "rev": "c8e69670b316d6788e435a3aa0bda74eb1b82cc0",
+        "rev": "d1ff3b1034d5bab5d7d8086a7803c5a5968cd784",
         "type": "github"
       },
       "original": {
