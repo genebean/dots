@@ -4,7 +4,6 @@
     ./disk-config.nix
     ./hardware-configuration.nix
     ./post-install
-    inputs.private-flake.nixosModules.private.hetznix01
   ];
 
   system.stateVersion = "24.05";
