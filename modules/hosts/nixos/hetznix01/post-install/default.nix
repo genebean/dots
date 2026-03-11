@@ -12,24 +12,6 @@ in {
     ./nginx.nix
   ];
 
-  mailserver = {
-    enable = true;
-    enableImap = false;
-    enableImapSsl = true;
-    enableSubmission = false;
-    enableSubmissionSsl = true;
-    fqdn = "mail.alt.${domain}";
-    domains = [
-      "alt.${domain}"
-      "indianspringsbsa.org"
-      "pack1828.org"
-    ];
-    stateVersion = 3;
-
-    # Use Let's Encrypt certificates from Nginx
-    certificateScheme = "acme";
-  };
-
   services = {
     collabora-online = {
       enable = true;

@@ -1,7 +1,8 @@
-{ pkgs, username,  ... }: {
+{ inputs, pkgs, username,  ... }: {
   imports = [
-    ./hardware-configuration.nix
+    ../../common/linux/nixroutes.nix
     ./disk-config.nix
+    ./hardware-configuration.nix
     ./post-install
   ];
 
@@ -84,39 +85,10 @@
     };
   };
 
-  systemd.network = {
-    enable = true;
-    networks."10-wan" = {
-      matchConfig.Name = "enp1s0";
-      address = [
-        "5.161.244.95/32"
-        "2a01:4ff:f0:977c::1/64"
-      ];
-      dns = [
-        "185.12.64.1"
-        "185.12.64.2"
-        "2a01:4ff:ff00::add:1"
-        "2a01:4ff:ff00::add:2"
-      ];
-      routes = [
-        { Destination = "172.31.1.1"; }
-        { Gateway = "172.31.1.1"; GatewayOnLink = true; }
-        { Gateway = "fe80::1"; }
-      ];
-      # make the routes on this interface a dependency for network-online.target
-      linkConfig.RequiredForOnline = "routable";
-    };
-  };
-
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
     extraGroups = [ "networkmanager" "wheel" ];
     linger = true;
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFvLaPTfG3r+bcbI6DV4l69UgJjnwmZNCQk79HXyf1Pt gene@rainbow-planet"
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIp42X5DZ713+bgbOO+GXROufUFdxWo7NjJbGQ285x3N gene.liverman@ltnglobal.com"
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICxSBXdng/+esUXN/uLHQ0l9SgHS5EI9Z8UbqxLMNpK5 gene@newt"
-    ];
   };
 }
