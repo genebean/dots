@@ -1,4 +1,4 @@
-{ config, pkgs, username,  ... }: {
+{ inputs, pkgs, username,  ... }: {
   imports = [
     ../../common/linux/nixroutes.nix
     ./disk-config.nix
