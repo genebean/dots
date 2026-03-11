@@ -63,8 +63,12 @@
 
     # Private flake for sensitive configs
     private-flake = {
-      url = "github:genebean/private-flake/initial_setup";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:genebean/private-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        simple-nixos-mailserver.follows = "simple-nixos-mailserver";
+        sops-nix.follows = "sops-nix";
+      };
     };
 
     simple-nixos-mailserver = {
