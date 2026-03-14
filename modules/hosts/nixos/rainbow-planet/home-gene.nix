@@ -11,15 +11,14 @@
   ];
 
   home.file = {
-    ".config/hypr/frappe.conf".source = (
+    ".config/hypr/frappe.conf".source =
       pkgs.fetchFromGitHub {
         owner = "catppuccin";
         repo = "hyprland";
         rev = "99a88fd21fac270bd999d4a26cf0f4a4222c58be";
         hash = "sha256-07B5QmQmsUKYf38oWU3+2C6KO4JvinuTwmW1Pfk8CT8=";
       }
-      + "/themes/frappe.conf"
-    );
+      + "/themes/frappe.conf";
   };
 
   programs = {

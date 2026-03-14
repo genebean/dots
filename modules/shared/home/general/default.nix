@@ -51,7 +51,7 @@ in
     nodejs
     nurl
     nvd
-    nixfmt
+    nixfmt-tree
     onefetch
     powershell
     pre-commit

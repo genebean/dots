@@ -39,14 +39,13 @@ with lib.hm.gvariant;
 
   home.file = {
     ".config/tilix/schemes/Beanbag-Mathias.json".source = ../../../files/tilix/Beanbag-Mathias.json;
-    ".config/tilix/schemes/Catppuccin-Frappe.json".source = (
+    ".config/tilix/schemes/Catppuccin-Frappe.json".source =
       pkgs.fetchFromGitHub {
         owner = "catppuccin";
         repo = "tilix";
         rev = "3fd05e03419321f2f2a6aad6da733b28be1765ef";
         hash = "sha256-SI7QxQ+WBHzeuXbTye+s8pi4tDVZOV4Aa33mRYO276k=";
       }
-      + "/src/Catppuccin-Frappe.json"
-    );
+      + "/src/Catppuccin-Frappe.json";
   };
 }

@@ -1,6 +1,6 @@
 { config, lib, ... }:
 let
-  hostName = config.networking.hostName;
+  inherit (config.networking) hostName;
 in
 {
   programs.zsh.shellAliases.nixroutes = "cd ~/repos/dots && echo '=== Current Routes ===' && ip route show && ip -6 route show && echo '' && echo '=== New Build Routes ===' && nix eval --json '.#nixosConfigurations.${hostName}.config.systemd.network.networks.\"10-wan\".routes'";

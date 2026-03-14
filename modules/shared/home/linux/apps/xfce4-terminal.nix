@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   home.file = {
     ".config/xfce4/terminal/accels.scm".source = ../../../files/xfce4/terminal/accels.scm;
   };

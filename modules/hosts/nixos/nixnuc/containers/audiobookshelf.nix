@@ -1,4 +1,4 @@
-{ ... }:
+_:
 let
   volume_base = "/var/lib/audiobookshelf";
   http_port = "13378";
