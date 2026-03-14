@@ -19,7 +19,7 @@
   };
 
   home.file = {
-    ".config/tilix/schemes/Beanbag-Mathias.json".source = ../../files/tilix/Beanbag-Mathias.json;
+    ".config/tilix/schemes/Beanbag-Mathias.json".source = ../../../files/tilix/Beanbag-Mathias.json;
     ".config/tilix/schemes/Catppuccin-Frappe.json".source = (pkgs.fetchFromGitHub {
       owner = "catppuccin";
       repo = "tilix";

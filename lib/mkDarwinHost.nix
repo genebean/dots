@@ -26,8 +26,8 @@
           useUserPackages = true;
           users.${username}.imports = [
             inputs.sops-nix.homeManagerModule # user-level secrets management
-            ../modules/hosts/common
-            ../modules/hosts/common/all-gui.nix
+            ../modules/shared/home/general
+            ../modules/shared/home/general/all-gui.nix
             ../modules/hosts/darwin/home.nix
             ../modules/hosts/darwin/${hostname}/home-${username}.nix 
           ];

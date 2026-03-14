@@ -2,7 +2,7 @@
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
-    ../../../system/common/linux/restic.nix
+    ../../../shared/nixos/restic.nix
   ];
 
   system.stateVersion = "24.05";

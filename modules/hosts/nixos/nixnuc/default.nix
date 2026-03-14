@@ -11,8 +11,8 @@ in {
     ./containers/mountain-mesh-bot-discord.nix
     ./containers/psitransfer.nix
     ./monitoring-stack.nix
-    ../../common/linux/lets-encrypt.nix
-    ../../common/linux/restic.nix
+    ../../../shared/nixos/lets-encrypt.nix
+    ../../../shared/nixos/restic.nix
   ];
 
   system.stateVersion = "23.11";

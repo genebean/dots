@@ -3,8 +3,8 @@
   restic_backup_time = "01:00";
 in {
   imports = [
-    ../../../common/linux/lets-encrypt.nix
-    ../../../common/linux/restic.nix
+    ../../../../shared/nixos/lets-encrypt.nix
+    ../../../../shared/nixos/restic.nix
     ./containers/emqx.nix
     ./matrix-synapse.nix
     ./monitoring.nix

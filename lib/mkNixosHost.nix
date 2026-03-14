@@ -19,8 +19,8 @@
           useGlobalPkgs = true;
           useUserPackages = true;
           users.${username}.imports = [
-            ../modules/hosts/common
-            ../modules/hosts/common/linux/home.nix
+            ../modules/shared/home/general
+            ../modules/shared/home/linux
             ../modules/hosts/nixos/${hostname}/home-${username}.nix
           ];
         };

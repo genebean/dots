@@ -1,6 +1,6 @@
 { ... }: {
   home.file = {
-    ".config/xfce4/terminal/accels.scm".source = ../../files/xfce4/terminal/accels.scm;
+    ".config/xfce4/terminal/accels.scm".source = ../../../files/xfce4/terminal/accels.scm;
   };
 
   xfconf.settings = {

@@ -10,8 +10,8 @@
 {
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ../../common/linux/flatpaks.nix
-    ../../common/linux/ripping.nix
+    ../../../shared/nixos/flatpaks.nix
+    ../../../shared/nixos/ripping.nix
   ];
 
   system.stateVersion = "24.11"; # Did you read the comment?

@@ -90,7 +90,7 @@
         path = "${config.users.users.${username}.home}/.private-env";
       };
       wifi_creds = {
-        sopsFile = ../../common/secrets.yaml;
+        sopsFile = ../../../shared/secrets.yaml;
         restartUnits = [
           "wpa_supplicant.service"
         ];

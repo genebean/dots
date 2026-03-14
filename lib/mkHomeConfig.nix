@@ -12,7 +12,7 @@
     # the path to your home.nix.
     modules = [
       ./nixpkgs-settings.nix
-      ../modules/hosts/common
+      ../modules/shared/home/general
       ../modules/hosts/home-manager-only
       ../modules/hosts/home-manager-only/home-${username}.nix
 

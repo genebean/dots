@@ -60,7 +60,7 @@ creation_rules:
     key_groups:
       - age:
           - *system_rainbow_planet
-  - path_regex: modules/hosts/common/secrets.yaml$
+  - path_regex: modules/shared/secrets.yaml$
     key_groups:
       - age:
           - *system_bigboy
