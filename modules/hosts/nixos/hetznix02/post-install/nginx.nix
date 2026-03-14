@@ -1,7 +1,8 @@
-
-{ pkgs, ... }: let
+{ pkgs, ... }:
+let
   domain = "genebean.me";
-in {
+in
+{
   environment.etc.nginx-littlelinks = {
     # Info generated via
     # nurl https://github.com/genebean/littlelink genebean-sometag

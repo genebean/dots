@@ -1,4 +1,11 @@
-{ config, lib, pkgs, username, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  username,
+  ...
+}:
+{
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
@@ -42,7 +49,7 @@
         # Home
         "Diagon Alley".pskRaw = "ext:psk_diagon_alley";
         # Public networks
-        "Gallery Row-GuestWiFi" = {};
+        "Gallery Row-GuestWiFi" = { };
         "LocalTies Guest".pskRaw = "ext:psk_local_ties";
       };
       secretsFile = "${config.sops.secrets.wifi_creds.path}";
@@ -51,25 +58,26 @@
 
   nixpkgs.overlays = [
     (final: super: {
-      makeModulesClosure = x:
-        super.makeModulesClosure (x // { allowMissing = true; });
+      makeModulesClosure = x: super.makeModulesClosure (x // { allowMissing = true; });
     })
   ];
 
   services = {
-    cage = let
-      kioskProgram = pkgs.writeShellScript "kiosk.sh" ''
-        WAYLAND_DISPLAY=wayland-0 wlr-randr --output HDMI-A-1
-        /etc/profiles/per-user/gene/bin/chromium-browser
-      '';
-    in {
-      enable = true;
-      program = kioskProgram;
-      user = "gene";
-      environment = {
-        WLR_LIBINPUT_NO_DEVICES = "1"; # boot up even if no mouse/keyboard connected
+    cage =
+      let
+        kioskProgram = pkgs.writeShellScript "kiosk.sh" ''
+          WAYLAND_DISPLAY=wayland-0 wlr-randr --output HDMI-A-1
+          /etc/profiles/per-user/gene/bin/chromium-browser
+        '';
+      in
+      {
+        enable = true;
+        program = kioskProgram;
+        user = "gene";
+        environment = {
+          WLR_LIBINPUT_NO_DEVICES = "1"; # boot up even if no mouse/keyboard connected
+        };
       };
-    };
     prometheus.exporters.node = {
       enable = true;
       enabledCollectors = [
@@ -115,7 +123,10 @@
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     linger = true;
   };
 
@@ -125,4 +136,3 @@
     memoryPercent = 90;
   };
 }
-

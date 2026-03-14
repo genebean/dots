@@ -1,4 +1,10 @@
-{ inputs, pkgs, username,  ... }: {
+{
+  inputs,
+  pkgs,
+  username,
+  ...
+}:
+{
   imports = [
     ../../../shared/nixos/nixroutes.nix
     ./disk-config.nix
@@ -24,14 +30,14 @@
   networking = {
     # Open ports in the firewall.
     firewall.allowedTCPPorts = [
-      22   # ssh
-      25   # SMTP (unencrypted)
-      80   # http to local Nginx
-      143  # imap
-      443  # https to local Nginx
-      465  # SMTP with TLS
-      587  # SMTP with STARTTLS
-      993  # imaps
+      22 # ssh
+      25 # SMTP (unencrypted)
+      80 # http to local Nginx
+      143 # imap
+      443 # https to local Nginx
+      465 # SMTP with TLS
+      587 # SMTP with STARTTLS
+      993 # imaps
       1883 # mqtt
       8333 # Bitcoin Core
       8448 # Matrix Synapse
@@ -88,7 +94,10 @@
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     linger = true;
   };
 }

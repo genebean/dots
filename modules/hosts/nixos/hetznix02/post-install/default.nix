@@ -1,4 +1,5 @@
-{ config, username, ... }: {
+{ config, username, ... }:
+{
   imports = [
     ../../../../shared/nixos/lets-encrypt.nix
     ./monitoring.nix
@@ -23,4 +24,3 @@
     };
   };
 }
-

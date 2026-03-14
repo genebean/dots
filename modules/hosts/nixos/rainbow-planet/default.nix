@@ -1,4 +1,11 @@
-{ inputs, config, pkgs, username, ... }: {
+{
+  inputs,
+  config,
+  pkgs,
+  username,
+  ...
+}:
+{
   imports = [
     ./hardware-configuration.nix
     ../../../shared/nixos/flatpaks.nix
@@ -14,7 +21,7 @@
     };
     loader = {
       efi.canTouchEfiVariables = true;
-      systemd-boot= {
+      systemd-boot = {
         enable = true;
         consoleMode = "1";
       };
@@ -179,7 +186,15 @@
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "adbusers" "dialout" "docker" "input" "networkmanager" "podman" "wheel" ];
+    extraGroups = [
+      "adbusers"
+      "dialout"
+      "docker"
+      "input"
+      "networkmanager"
+      "podman"
+      "wheel"
+    ];
     packages = with pkgs; [
       tailscale-systray
     ];

@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   environment.systemPackages = with pkgs; [
     gnome.gnome-tweaks
     gnome.nautilus
@@ -15,7 +16,7 @@
     gnome.gnome-keyring.enable = true; # Provides secret storage
     gvfs.enable = true; # Used by Nautilus
     xserver = {
-      enable = true;    # Enable the X11 windowing system.
+      enable = true; # Enable the X11 windowing system.
 
       # Configure keymap in X11
       xkb = {
@@ -33,4 +34,3 @@
     };
   };
 }
-

@@ -1,6 +1,8 @@
-{ config, pkgs, ... }: let
+{ config, pkgs, ... }:
+let
   metrics_server = "https://monitoring.home.technicalissues.us/remotewrite";
-in {
+in
+{
   services = {
     vmagent = {
       enable = true;
@@ -14,11 +16,11 @@ in {
           {
             job_name = "node";
             static_configs = [
-              { targets = ["127.0.0.1:9100"]; }
+              { targets = [ "127.0.0.1:9100" ]; }
             ];
             metric_relabel_configs = [
               {
-                source_labels = ["__name__"];
+                source_labels = [ "__name__" ];
                 regex = "go_.*";
                 action = "drop";
               }
@@ -35,11 +37,11 @@ in {
           {
             job_name = "nginx";
             static_configs = [
-              { targets = ["127.0.0.1:9113"]; }
+              { targets = [ "127.0.0.1:9113" ]; }
             ];
             metric_relabel_configs = [
               {
-                source_labels = ["__name__"];
+                source_labels = [ "__name__" ];
                 regex = "go_.*";
                 action = "drop";
               }
@@ -77,7 +79,7 @@ in {
     # ----------------------------
     # Exporters (using built-in NixOS modules)
     # ----------------------------
-    
+
     # Node exporter - using the built-in module
     prometheus.exporters.node = {
       enable = true;
@@ -110,7 +112,7 @@ in {
     group = "vmagent";
   };
 
-  users.groups.vmagent = {};
+  users.groups.vmagent = { };
 
   # ----------------------------
   # SOPS secrets configuration
@@ -119,10 +121,9 @@ in {
     secrets = {
       vmagent_push_pw = {
         owner = "vmagent";
-        restartUnits = ["vmagent.service"];
+        restartUnits = [ "vmagent.service" ];
         sopsFile = ../../../../shared/secrets.yaml;
       };
     };
   };
 }
-

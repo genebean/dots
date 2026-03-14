@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   home.stateVersion = "23.11";
   imports = [
     ../../../shared/home/general/all-gui.nix
@@ -10,12 +11,15 @@
   ];
 
   home.file = {
-    ".config/hypr/frappe.conf".source = (pkgs.fetchFromGitHub {
-      owner = "catppuccin";
-      repo = "hyprland";
-      rev = "99a88fd21fac270bd999d4a26cf0f4a4222c58be";
-      hash = "sha256-07B5QmQmsUKYf38oWU3+2C6KO4JvinuTwmW1Pfk8CT8=";
-    } + "/themes/frappe.conf");
+    ".config/hypr/frappe.conf".source = (
+      pkgs.fetchFromGitHub {
+        owner = "catppuccin";
+        repo = "hyprland";
+        rev = "99a88fd21fac270bd999d4a26cf0f4a4222c58be";
+        hash = "sha256-07B5QmQmsUKYf38oWU3+2C6KO4JvinuTwmW1Pfk8CT8=";
+      }
+      + "/themes/frappe.conf"
+    );
   };
 
   programs = {
@@ -32,7 +36,7 @@
     settings = {
       global = {
         frame_color = "#8CAAEE";
-        separator_color= "frame";
+        separator_color = "frame";
       };
 
       urgency_low = {

@@ -1,0 +1,27 @@
+name: Validate
+
+on:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v26
+        with:
+          extra_nix_config: |
+            trusted-users = root @runner
+
+      - name: Validate flake
+        run: nix flake show
+
+      - name: Check formatting
+        run: nix fmt --check .
+
+      - name: Run deadnix
+        run: deadnix ./modules ./lib
+
+      - name: Run statix
+        run: statix check ./modules ./lib

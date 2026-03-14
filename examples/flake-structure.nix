@@ -6,38 +6,41 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware";
   };
 
-  outputs = inputs@{ self, ... }: let
-    # Import helper functions from lib/
-    localLib = import ./lib { inherit inputs; };
-  in {
-    # Darwin (macOS) hosts
-    darwinConfigurations = {
-      mightymac = localLib.mkDarwinHost {
-        system = "aarch64-darwin";
-        hostname = "mightymac";
-        username = "gene.liverman";
+  outputs =
+    inputs@{ self, ... }:
+    let
+      # Import helper functions from lib/
+      localLib = import ./lib { inherit inputs; };
+    in
+    {
+      # Darwin (macOS) hosts
+      darwinConfigurations = {
+        mightymac = localLib.mkDarwinHost {
+          system = "aarch64-darwin";
+          hostname = "mightymac";
+          username = "gene.liverman";
+        };
       };
-    };
 
-    # NixOS hosts
-    nixosConfigurations = {
-      rainbow-planet = localLib.mkNixosHost {
-        system = "x86_64-linux";
-        hostname = "rainbow-planet";
-        username = "gene";
-        additionalModules = [
-          inputs.nixos-hardware.nixosModules.dell-xps-13-9360
-        ];
+      # NixOS hosts
+      nixosConfigurations = {
+        rainbow-planet = localLib.mkNixosHost {
+          system = "x86_64-linux";
+          hostname = "rainbow-planet";
+          username = "gene";
+          additionalModules = [
+            inputs.nixos-hardware.nixosModules.dell-xps-13-9360
+          ];
+        };
       };
-    };
 
-    # Home Manager (only) users
-    homeConfigurations = {
-      gene = localLib.mkHomeConfig {
-        system = "x86_64-linux";
-        homeDirectory = "/home/gene";
-        username = "gene";
+      # Home Manager (only) users
+      homeConfigurations = {
+        gene = localLib.mkHomeConfig {
+          system = "x86_64-linux";
+          homeDirectory = "/home/gene";
+          username = "gene";
+        };
       };
     };
-  };
 }

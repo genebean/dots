@@ -44,10 +44,10 @@
       content = {
         type = "gpt";
         partitions = {
-         nix = {
-           name = "nix";
-           size = "100%";
-           content = {
+          nix = {
+            name = "nix";
+            size = "100%";
+            content = {
               type = "filesystem";
               format = "ext4";
               mountpoint = "/nix";
