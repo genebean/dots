@@ -1,6 +1,8 @@
-{ config, username, ... }: let
+{ config, username, ... }:
+let
   volume_base = "/orico/mountain-mesh-bot-discord";
-in {
+in
+{
   # My mountain-mesh-bot-discord container
 
   virtualisation.oci-containers.containers = {
@@ -17,6 +19,8 @@ in {
 
   sops.secrets.mtnmesh_bot_dot_env = {
     path = "${volume_base}/.env";
-    restartUnits = [ "${config.virtualisation.oci-containers.containers.mtnmesh_bot_discord.serviceName}" ];
+    restartUnits = [
+      "${config.virtualisation.oci-containers.containers.mtnmesh_bot_discord.serviceName}"
+    ];
   };
 }

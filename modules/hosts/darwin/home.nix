@@ -1,4 +1,5 @@
-{ username, ... }: {
+{ username, ... }:
+{
   # dawrwin-specific shell config
   programs = {
     zsh = {

@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   system.stateVersion = 4;
 
   homebrew = {

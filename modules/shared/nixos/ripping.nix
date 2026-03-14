@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   # Be sure this is added if on NixOS
   # boot.kernelModules = [ "sg" ];
 
@@ -20,4 +21,3 @@
     mkvtoolnix-cli
   ];
 }
-

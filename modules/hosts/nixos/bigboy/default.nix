@@ -1,17 +1,23 @@
-{ config, pkgs, username, ... }:
-  let
-    libbluray = pkgs.libbluray.override {
-      withAACS = true;
-      withBDplus = true;
-      withJava = true;
-    };
-    vlc-with-decoding = pkgs.vlc.override { inherit libbluray; };
-  in
 {
-  imports = [ # Include the results of the hardware scan.
+  config,
+  pkgs,
+  username,
+  ...
+}:
+let
+  libbluray = pkgs.libbluray.override {
+    withAACS = true;
+    withBDplus = true;
+    withJava = true;
+  };
+  vlc-with-decoding = pkgs.vlc.override { inherit libbluray; };
+in
+{
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ../../common/linux/flatpaks.nix
-    ../../common/linux/ripping.nix
+    ../../../shared/nixos/flatpaks.nix
+    ../../../shared/nixos/ripping.nix
   ];
 
   system.stateVersion = "24.11"; # Did you read the comment?
@@ -43,7 +49,6 @@
     zoom-us
   ];
 
-  
   networking.networkmanager.enable = true;
 
   programs = {
@@ -118,10 +123,15 @@
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "networkmanager" "wheel" "dialout" "input" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "dialout"
+      "input"
+    ];
     packages = with pkgs; [
       kdePackages.kate
-    #  thunderbird
+      #  thunderbird
     ];
   };
 }

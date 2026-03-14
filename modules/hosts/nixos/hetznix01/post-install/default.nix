@@ -1,10 +1,18 @@
-{ config, lib, pkgs, username, ... }: let
+{
+  config,
+  lib,
+  pkgs,
+  username,
+  ...
+}:
+let
   domain = "technicalissues.us";
   restic_backup_time = "01:00";
-in {
+in
+{
   imports = [
-    ../../../common/linux/lets-encrypt.nix
-    ../../../common/linux/restic.nix
+    ../../../../shared/nixos/lets-encrypt.nix
+    ../../../../shared/nixos/restic.nix
     ./containers/emqx.nix
     ./matrix-synapse.nix
     ./monitoring.nix
@@ -26,7 +34,7 @@ in {
         # Listen on loopback interface only, and accept requests from ::1
         net = {
           listen = "loopback";
-          post_allow.host = ["::1"];
+          post_allow.host = [ "::1" ];
         };
 
         # Restrict loading documents from WOPI Host nextcloud.example.com
@@ -162,14 +170,14 @@ in {
       };
       matrix_secrets_yaml = {
         owner = config.users.users.matrix-synapse.name;
-        restartUnits = ["matrix-synapse.service"];
+        restartUnits = [ "matrix-synapse.service" ];
       };
       matrix_homeserver_signing_key.owner = config.users.users.matrix-synapse.name;
-      mqtt_recorder_pass.restartUnits = ["mosquitto.service"];
+      mqtt_recorder_pass.restartUnits = [ "mosquitto.service" ];
       nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
       owntracks_basic_auth = {
         owner = config.users.users.nginx.name;
-        restartUnits = ["nginx.service"];
+        restartUnits = [ "nginx.service" ];
       };
       plausible_admin_pass.owner = config.users.users.nginx.name;
       plausible_secret_key_base.owner = config.users.users.nginx.name;
@@ -180,31 +188,36 @@ in {
   };
 
   systemd.services = {
-    nextcloud-config-collabora = let
-      inherit (config.services.nextcloud) occ;
+    nextcloud-config-collabora =
+      let
+        inherit (config.services.nextcloud) occ;
 
-      wopi_url = "http://[::1]:${toString config.services.collabora-online.port}";
-      public_wopi_url = "https://collabora.pack1828.org";
-      wopi_allowlist = lib.concatStringsSep "," [
-        "127.0.0.1"
-        "::1"
-        "5.161.244.95"
-        "2a01:4ff:f0:977c::1"
-      ];
-    in {
-      wantedBy = ["multi-user.target"];
-      after = ["nextcloud-setup.service" "coolwsd.service"];
-      requires = ["coolwsd.service"];
-      script = ''
-        ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_url --value ${lib.escapeShellArg wopi_url}
-        ${occ}/bin/nextcloud-occ config:app:set richdocuments public_wopi_url --value ${lib.escapeShellArg public_wopi_url}
-        ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_allowlist --value ${lib.escapeShellArg wopi_allowlist}
-        ${occ}/bin/nextcloud-occ richdocuments:setup
-      '';
-      serviceConfig = {
-        Type = "oneshot";
+        wopi_url = "http://[::1]:${toString config.services.collabora-online.port}";
+        public_wopi_url = "https://collabora.pack1828.org";
+        wopi_allowlist = lib.concatStringsSep "," [
+          "127.0.0.1"
+          "::1"
+          "5.161.244.95"
+          "2a01:4ff:f0:977c::1"
+        ];
+      in
+      {
+        wantedBy = [ "multi-user.target" ];
+        after = [
+          "nextcloud-setup.service"
+          "coolwsd.service"
+        ];
+        requires = [ "coolwsd.service" ];
+        script = ''
+          ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_url --value ${lib.escapeShellArg wopi_url}
+          ${occ}/bin/nextcloud-occ config:app:set richdocuments public_wopi_url --value ${lib.escapeShellArg public_wopi_url}
+          ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_allowlist --value ${lib.escapeShellArg wopi_allowlist}
+          ${occ}/bin/nextcloud-occ richdocuments:setup
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+        };
       };
-    };
   };
 
   # Enable common container config files in /etc/containers

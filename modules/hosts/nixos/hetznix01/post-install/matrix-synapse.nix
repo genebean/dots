@@ -1,4 +1,5 @@
-{ config, ... }: {
+{ config, ... }:
+{
   services.matrix-synapse = {
     enable = true;
     configureRedisLocally = true;
@@ -33,7 +34,7 @@
       ];
       url_preview_enabled = true;
       enable_registration = false;
-      trusted_key_servers = [{ server_name = "matrix.org"; }];
+      trusted_key_servers = [ { server_name = "matrix.org"; } ];
     };
 
   };

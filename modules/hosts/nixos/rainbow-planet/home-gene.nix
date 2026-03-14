@@ -1,21 +1,24 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   home.stateVersion = "23.11";
   imports = [
-    ../../common/all-gui.nix
-    ../../common/linux/apps/hexchat.nix
-    ../../common/linux/apps/pidgin.nix
-    ../../common/linux/apps/tilix.nix
-    ../../common/linux/apps/waybar.nix
-    ../../common/linux/apps/xfce4-terminal.nix
+    ../../../shared/home/general/all-gui.nix
+    ../../../shared/home/linux/apps/hexchat.nix
+    ../../../shared/home/linux/apps/pidgin.nix
+    ../../../shared/home/linux/apps/tilix.nix
+    ../../../shared/home/linux/apps/waybar.nix
+    ../../../shared/home/linux/apps/xfce4-terminal.nix
   ];
 
   home.file = {
-    ".config/hypr/frappe.conf".source = (pkgs.fetchFromGitHub {
-      owner = "catppuccin";
-      repo = "hyprland";
-      rev = "99a88fd21fac270bd999d4a26cf0f4a4222c58be";
-      hash = "sha256-07B5QmQmsUKYf38oWU3+2C6KO4JvinuTwmW1Pfk8CT8=";
-    } + "/themes/frappe.conf");
+    ".config/hypr/frappe.conf".source =
+      pkgs.fetchFromGitHub {
+        owner = "catppuccin";
+        repo = "hyprland";
+        rev = "99a88fd21fac270bd999d4a26cf0f4a4222c58be";
+        hash = "sha256-07B5QmQmsUKYf38oWU3+2C6KO4JvinuTwmW1Pfk8CT8=";
+      }
+      + "/themes/frappe.conf";
   };
 
   programs = {
@@ -32,7 +35,7 @@
     settings = {
       global = {
         frame_color = "#8CAAEE";
-        separator_color= "frame";
+        separator_color = "frame";
       };
 
       urgency_low = {

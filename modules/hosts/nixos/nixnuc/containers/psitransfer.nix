@@ -1,8 +1,10 @@
-{ config, ... }: let
+{ config, ... }:
+let
   volume_base = "/orico/psitransfer";
   http_port = "3000";
   psitransfer_dot_env = "${config.sops.secrets.psitransfer_dot_env.path}";
-in {
+in
+{
 
   #############################################################################
   # My intent as of now is to only make this available to the outside world   #
@@ -29,4 +31,3 @@ in {
     };
   };
 }
-

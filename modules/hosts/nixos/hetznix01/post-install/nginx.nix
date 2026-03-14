@@ -1,9 +1,11 @@
-{ config, ... }: let
+{ config, ... }:
+let
   domain = "technicalissues.us";
   http_port = 80;
   https_port = 443;
   private_btc = "umbrel.atlas-snares.ts.net";
-in {
+in
+{
 
   services.nginx = {
     enable = true;
@@ -134,14 +136,36 @@ in {
       };
       "matrix.${domain}" = {
         listen = [
-          { port = http_port; addr = "0.0.0.0"; }
-          { port = http_port; addr = "[::]"; }
+          {
+            port = http_port;
+            addr = "0.0.0.0";
+          }
+          {
+            port = http_port;
+            addr = "[::]";
+          }
 
-          { port = https_port; addr = "0.0.0.0"; ssl = true; }
-          { port = https_port; addr = "[::]"; ssl = true; }
+          {
+            port = https_port;
+            addr = "0.0.0.0";
+            ssl = true;
+          }
+          {
+            port = https_port;
+            addr = "[::]";
+            ssl = true;
+          }
 
-          { port = 8448; addr = "0.0.0.0"; ssl = true; }
-          { port = 8448; addr = "[::]"; ssl = true; }
+          {
+            port = 8448;
+            addr = "0.0.0.0";
+            ssl = true;
+          }
+          {
+            port = 8448;
+            addr = "[::]";
+            ssl = true;
+          }
         ];
         enableACME = true;
         acmeRoot = null;
@@ -195,7 +219,8 @@ in {
           "/" = {
             proxyPass = "http://127.0.0.1:8083";
           };
-          "/pub" = { # Client apps need to point to this path
+          "/pub" = {
+            # Client apps need to point to this path
             extraConfig = "proxy_set_header X-Limit-U $remote_user;";
             proxyPass = "http://127.0.0.1:8083/pub";
           };

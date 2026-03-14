@@ -1,3 +1,3 @@
-{ ... }: {
-  home.stateVersion = "23.11";  
+_: {
+  home.stateVersion = "23.11";
 }

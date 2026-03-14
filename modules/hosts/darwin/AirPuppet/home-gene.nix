@@ -1,4 +1,5 @@
-{ username, ... }: {
+{ username, ... }:
+{
   home.stateVersion = "23.11";
 
   sops = {
