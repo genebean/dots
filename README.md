@@ -3,8 +3,8 @@
 This repo is a Nix flake that manages most of my setup on macOS and fully manages machines I have that run NixOS as their operating system.
 
 - [Flake structure](#flake-structure)
-- [Note](#note)
 - [Repo structure](#repo-structure)
+- [Hosts](#hosts)
 - [Historical bits](#historical-bits)
 - [Adding a new macOS host](#adding-a-new-macos-host)
   - [Extras steps not done by Nix and/or Homebrew and/or mas](#extras-steps-not-done-by-nix-andor-homebrew-andor-mas)
@@ -18,99 +18,118 @@ This repo is a Nix flake that manages most of my setup on macOS and fully manage
 
 ## Flake structure
 
-> **RESTRUCTURING IN PROGRESS**: please note, I am restructuring this to remove a lot of complexity. This first pass is done and moves home manager bits into modules that have home in the name. Things that apply to everything under a part of the tree are in a corresponding `default.nix`
+The Nix bits are driven by `flake.nix` which pulls in things under `modules/`. Both Intel and Apple Silicon macOS are supported, as is NixOS.
 
-The Nix bits are driven by `flake.nix` which pulls in things under `modules/`. Both Intel and Apple Silicon macOS are suppoted, as is NixOS. The flake is structured like so:
-
-- description: a human readable description of this flake
 - inputs: all the places things are pulled from
 - outputs:
   - all the outputs from the inputs
   - a `let` ... `in` block that contains:
-    - `darwinHostConfig` which takes a set of paramters as an attribute set and pulls in all the things needed to use Nix on a macOS host
-    - `mkNixosHost` which takes a set of parameters as an attribute set and pulls in all the things needed to configure a NixOS host
-    - `linuxHomeConfig` which takes a set of paramters as an attribute set and pulls in the things I manage on non-NixOS Linux hosts
+    - `mkDarwinHost` which takes a set of parameters and pulls in all the things needed to use Nix on a macOS host
+    - `mkNixosHost` which takes a set of parameters and pulls in all the things needed to configure a NixOS host
+    - `mkHomeConfig` which takes a set of parameters and pulls in things for standalone Home Manager (non-NixOS Linux)
   - the body of outputs that contains:
-    - `darwinConfigurations` contains is an attribute set that contains keys named for each macOS host set to the results of a call to `darwinHostConfig` with values for each of the required parameters
-    - `nixosConfigurations` contains is an attribute set that contains keys named for each NixOS host set to the results of a call to `darwinHostConfig` with values for each of the required parameters
-    - `homeConfigurations` contains an entry for each username set to the results of a call to `linuxHomeConfig` with values for each of the required parameters
+    - `darwinConfigurations` - an attribute set keyed by hostname for each macOS host
+    - `nixosConfigurations` - an attribute set keyed by hostname for each NixOS host
+    - `homeConfigurations` - an attribute set keyed by username for standalone HM users
 
-The parameters on `darwinHostConfig` & `mkNixosHost` are:
+The parameters on `mkDarwinHost`, `mkNixosHost`, and `mkHomeConfig` are:
 
-- `system:` the system definition to use for nixpkgs
+- `system:` the system definition to use for nixpkgs (e.g., "x86_64-linux", "aarch64-darwin")
 - `hostname:` the hostname of the machine being configured
 - `username:` the username being configured on the host (all code currently assumes there is a single human user managed by Nix)
-- `additionalModules:` any nix modules that are desired to supplement the default for the host. An example use case for this is adding in the hardware specific module from `nixos-hardware`.
-- `additionalSpecialArgs:` any supplemental arguments to be passed to `specialArgs`.
-
-The parameters on `linxuHomeConfig` are the same as the above.
-
-## Note
-
-> All the bits below here are useful, but may be slightly outdated... I have not done a good job of keeping them updated.
+- `additionalModules:` any nix modules that are desired to supplement the default for the host
+- `additionalSpecialArgs:` any supplemental arguments to be passed to `specialArgs`
 
 ## Repo structure
 
-The Nix stuff is structured like so, at least for now:
+Key files at the root level:
+- `flake.nix` - Main flake entry point, defines all hosts and inputs
+- `flake.lock` - Lock file for pinned dependencies
+- `lib/` - Helper functions (mkDarwinHost, mkNixosHost, mkHomeConfig)
+- `modules/hosts/` - All host configurations (see tree below)
+- `.sops.yaml` - SOPS secrets management configuration
+- `examples/flake-structure.nix` - Minimal example showing flake structure
+
+The Nix stuff is structured like so:
 
 ```bash
-$ tree . -I legacy* -I link* --gitignore --dirsfirst
-.
-├── modules
-│   ├── home-manager
-│   │   ├── common
-│   │   │   ├── linux-apps
-│   │   │   │   ├── tilix.nix
-│   │   │   │   ├── waybar.nix
-│   │   │   │   └── xfce4-terminal.nix
-│   │   │   ├── all-cli.nix
-│   │   │   ├── all-darwin.nix
-│   │   │   ├── all-gui.nix
-│   │   │   └── all-linux.nix
-│   │   ├── files
-│   │   │   ├── tilix
-│   │   │   │   └── Beanbag-Mathias.json
-│   │   │   ├── waybar
-│   │   │   │   ├── config
-│   │   │   │   └── style.css
-│   │   │   ├── xfce4
-│   │   │   │   └── terminal
-│   │   │   │       ├── accels.scm
-│   │   │   │       └── terminalrc
-│   │   │   └── Microsoft.PowerShell_profile.ps1
-│   │   └── hosts
-│   │       ├── Blue-Rock
-│   │       │   └── gene.liverman.nix
-│   │       ├── nixnuc
-│   │       │   └── gene.nix
-│   │       └── rainbow-planet
-│   │           └── gene.nix
-│   ├── hosts
-│   │   ├── darwin
-│   │   │   └── Blue-Rock
-│   │   │       └── default.nix
-│   │   └── nixos
-│   │       ├── nixnuc
-│   │       │   ├── default.nix
-│   │       │   └── hardware-configuration.nix
-│   │       └── rainbow-planet
-│   │           ├── default.nix
-│   │           └── hardware-configuration.nix
-│   └── system
-│       └── common
-│           ├── linux
-│           │   └── internationalisation.nix
-│           ├── all-darwin.nix
-│           └── all-nixos.nix
-├── LICENSE
-├── README.md
-├── Vagrantfile
-├── flake.lock
-└── flake.nix
-
-23 directories, 29 files
+$ tree modules -I secrets.yaml --dirsfirst
+modules
+├── shared                     # Shared configurations (formerly common)
+│   ├── all-gui.nix
+│   ├── default.nix
+│   ├── files                  # Home manager files (nvim, powershell, tilix, waybar, xfce4)
+│   ├── linux
+│   │   ├── apps              # Linux-specific apps (waybar, tilix, etc.)
+│   │   ├── home.nix
+│   │   ├── internationalisation.nix
+│   │   ├── lets-encrypt.nix
+│   │   ├── nixroutes.nix
+│   │   └── restic.nix
+│   └── linux-apps            # (deprecated, apps moved to linux/)
+└── hosts
+    ├── darwin                     # macOS system & home configs
+    │   ├── AirPuppet
+    │   │   └── home-gene.nix
+    │   ├── Blue-Rock
+    │   │   ├── default.nix
+    │   │   └── home-gene.liverman.nix
+    │   ├── default.nix
+    │   ├── home.nix
+    │   └── mightymac
+    │       ├── default.nix
+    │       └── home-gene.liverman.nix
+    ├── home-manager-only         # Standalone Home Manager (non-NixOS Linux)
+    │   ├── default.nix
+    │   ├── home-gene.liverman.nix
+    │   └── home-gene.nix
+    └── nixos                     # NixOS system & home configs
+        ├── bigboy
+        │   ├── default.nix
+        │   ├── hardware-configuration.nix
+        │   └── home-gene.nix
+        ├── default.nix
+        ├── hetznix01
+        │   ├── default.nix
+        │   ├── disk-config.nix
+        │   ├── hardware-configuration.nix
+        │   ├── home-gene.nix
+        │   ├── post-install       # Post-install services
+        │   │   ├── containers
+        │   │   ├── default.nix
+        │   │   ├── matrix-synapse.nix
+        │   │   ├── monitoring.nix
+        │   │   ├── mosquitto.nix
+        │   │   └── nginx.nix
+        │   └── secrets.yaml
+        ├── hetznix02
+        ├── kiosk-entryway
+        ├── kiosk-gene-desk
+        ├── nixnas1
+        │   ├── default.nix
+        │   ├── disk-config.nix
+        │   ├── hardware-configuration.nix
+        │   ├── home-gene.nix
+        │   └── secrets.yaml
+        ├── nixnuc
+        │   ├── containers
+        │   ├── default.nix
+        │   ├── hardware-configuration.nix
+        │   ├── home-gene.nix
+        │   └── monitoring-stack.nix
+        └── rainbow-planet
+            ├── default.nix
+            ├── gnome.nix
+            ├── hardware-configuration.nix
+            └── home-gene.nix
 
 ```
+
+## Hosts
+
+- **Darwin (macOS)**: AirPuppet, Blue-Rock, mightymac
+- **NixOS**: bigboy, hetznix01, hetznix02, kiosk-entryway, kiosk-gene-desk, nixnas1, nixnuc, rainbow-planet
+- **Home Manager only**: gene (x86_64-linux, aarch64-linux)
 
 ## Historical bits
 
