@@ -18,10 +18,10 @@ jobs:
         run: nix flake show
 
       - name: Check formatting
-        run: nix fmt --check .
+        run: nix fmt -- --ci .
 
       - name: Run deadnix
-        run: deadnix ./modules ./lib
+        run: nix run nixpkgs#deadnix ./modules ./lib
 
       - name: Run statix
-        run: statix check ./modules ./lib
+        run: nix run nixpkgs#statix check -- .
