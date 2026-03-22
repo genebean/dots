@@ -1,7 +1,9 @@
-{ ... }: let
+_:
+let
   volume_base = "/var/lib/audiobookshelf";
   http_port = "13378";
-in {
+in
+{
   # Audiobookshelf
 
   virtualisation.oci-containers.containers = {

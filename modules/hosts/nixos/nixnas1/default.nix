@@ -1,8 +1,14 @@
-{ config, pkgs, username, ... }: {
+{
+  config,
+  pkgs,
+  username,
+  ...
+}:
+{
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
-    ../../../system/common/linux/restic.nix
+    ../../../shared/nixos/restic.nix
   ];
 
   system.stateVersion = "24.05";
@@ -17,16 +23,16 @@
       device = "nodev";
       mirroredBoots = [
         {
-          devices = ["/dev/disk/by-uuid/02A5-6FCC"];
+          devices = [ "/dev/disk/by-uuid/02A5-6FCC" ];
           path = "/boot";
         }
         {
-          devices = ["/dev/disk/by-uuid/02F1-B12D"];
+          devices = [ "/dev/disk/by-uuid/02F1-B12D" ];
           path = "/boot-fallback";
         }
       ];
     };
-    supportedFilesystems = ["zfs"];
+    supportedFilesystems = [ "zfs" ];
     zfs = {
       extraPools = [ "storage" ];
       forceImportRoot = false;

@@ -1,62 +1,92 @@
-{ inputs, pkgs, username, ... }: let
-  sqlite_lib = if builtins.elem pkgs.stdenv.hostPlatform.system [
-                 "aarch64-darwin"
-                 "x86_64-darwin"
-               ]
-               then "libsqlite3.dylib"
-               else "libsqlite3.so";
-in {
-  home.packages = with pkgs; [
-    btop
-    bundix
-    cargo
-    cheat
-    colordiff
-    dogdns
-    dos2unix
-    duf
-    dust
-    fd
-    f2
-    git-filter-repo
-    glab
-    glow
-    gomuks
-    gotop
-    htop
-    httpie
-    hub
-    inputs.nix-auth.packages.${stdenv.hostPlatform.system}.default
-    jq
-    lazydocker
-    lazygit
-    lua-language-server
-    minicom
-    mtr
-    nil
-    nix-search
-    nix-zsh-completions
-    nodejs
-    nurl
-    nvd
-    onefetch
-    powershell
-    pre-commit
-    puppet-lint
-    rename
-    ruby
-    subversion
-    tldr
-    tree
-    trippy
-    vimv
-    watch
-    wget
-    yq-go
-  ];
-  home.sessionVariables = {
-    CLICLOLOR = 1;
-    PAGER = "less";
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
+let
+  sqlite_lib =
+    if
+      builtins.elem pkgs.stdenv.hostPlatform.system [
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ]
+    then
+      "libsqlite3.dylib"
+    else
+      "libsqlite3.so";
+in
+{
+  home = {
+    packages = with pkgs; [
+      btop
+      bundix
+      cargo
+      cheat
+      colordiff
+      deadnix
+      dogdns
+      dos2unix
+      duf
+      dust
+      fd
+      f2
+      git-filter-repo
+      glab
+      glow
+      gomuks
+      gotop
+      htop
+      httpie
+      hub
+      inputs.nix-auth.packages.${stdenv.hostPlatform.system}.default
+      jq
+      lazydocker
+      lazygit
+      lua-language-server
+      minicom
+      mtr
+      nil
+      nix-search
+      nix-zsh-completions
+      nodejs
+      nurl
+      nvd
+      nixfmt-tree
+      onefetch
+      powershell
+      pre-commit
+      puppet-lint
+      rename
+      ruby
+      subversion
+      statix
+      tldr
+      tree
+      trippy
+      vimv
+      watch
+      wget
+      yq-go
+    ];
+    sessionVariables = {
+      CLICLOLOR = 1;
+      PAGER = "less";
+    };
+    file = {
+      ".config/nvim/lua/config" = {
+        source = ../../files/nvim/lua/config;
+        recursive = true;
+      };
+      ".config/nvim/lua/plugins" = {
+        source = ../../files/nvim/lua/plugins;
+        recursive = true;
+      };
+      ".config/powershell/Microsoft.PowerShell_profile.ps1".source =
+        ../../files/Microsoft.PowerShell_profile.ps1;
+      ".config/powershell/Microsoft.VSCode_profile.ps1".source =
+        ../../files/Microsoft.PowerShell_profile.ps1;
+    };
   };
   programs = {
     atuin = {
@@ -111,7 +141,7 @@ in {
         "*.swp"
         ".DS_Store"
       ];
-      includes = [ { path = "~/.gitconfig-local"; }];
+      includes = [ { path = "~/.gitconfig-local"; } ];
       lfs.enable = true;
       package = pkgs.gitFull;
       settings = {
@@ -159,19 +189,23 @@ in {
 
       '';
       extraPackages = with pkgs; [
-        gcc    # needed so treesitter can do compiling
+        gcc # needed so treesitter can do compiling
         sqlite # needed by sqlite.lua used by telescope-cheat
       ];
       plugins = [ pkgs.vimPlugins.lazy-nvim ]; # let lazy.nvim manage every other plugin
     };
     nh = {
       enable = true;
-      flake = "/Users/${username}/repos/dots";
+      flake = "${config.home.homeDirectory}/repos/dots";
     };
     oh-my-posh = {
       enable = true;
       enableZshIntegration = true;
-      settings = builtins.fromJSON (builtins.unsafeDiscardStringContext (builtins.readFile (inputs.genebean-omp-themes + "/beanbag.omp.json")));
+      settings = builtins.fromJSON (
+        builtins.unsafeDiscardStringContext (
+          builtins.readFile (inputs.genebean-omp-themes + "/beanbag.omp.json")
+        )
+      );
       #useTheme = "amro";
       #useTheme = "montys";
     };
@@ -189,7 +223,7 @@ in {
             set -g @dracula-show-battery false
             set -g @dracula-show-powerline true
             set -g @dracula-refresh-rate 10
-            '';
+          '';
         }
       ];
       extraConfig = ''
@@ -350,17 +384,4 @@ in {
       };
     }; # end zsh
   }; # end programs
-
-  home.file = {
-    ".config/nvim/lua/config" = {
-      source = ./files/nvim/lua/config;
-      recursive = true;
-    };
-    ".config/nvim/lua/plugins" = {
-      source = ./files/nvim/lua/plugins;
-      recursive = true;
-    };
-    ".config/powershell/Microsoft.PowerShell_profile.ps1".source = ./files/Microsoft.PowerShell_profile.ps1;
-    ".config/powershell/Microsoft.VSCode_profile.ps1".source = ./files/Microsoft.PowerShell_profile.ps1;
-  };
 }

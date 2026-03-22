@@ -1,29 +1,39 @@
-{ inputs, ... }: {
-  mkHomeConfig = {
-    homeDirectory,
-    system,
-    username,
-  }: inputs.home-manager.lib.homeManagerConfiguration {
-    extraSpecialArgs = { inherit inputs homeDirectory system username; };
+{ inputs, ... }:
+{
+  mkHomeConfig =
+    {
+      homeDirectory,
+      system,
+      username,
+    }:
+    inputs.home-manager.lib.homeManagerConfiguration {
+      extraSpecialArgs = {
+        inherit
+          inputs
+          homeDirectory
+          system
+          username
+          ;
+      };
 
-    pkgs = inputs.nixpkgs.legacyPackages.${system};
+      pkgs = inputs.nixpkgs.legacyPackages.${system};
 
-    # Specify your home configuration modules here, for example,
-    # the path to your home.nix.
-    modules = [
-      ./nixpkgs-settings.nix
-      ../modules/hosts/common
-      ../modules/hosts/home-manager-only
-      ../modules/hosts/home-manager-only/home-${username}.nix
+      # Specify your home configuration modules here, for example,
+      # the path to your home.nix.
+      modules = [
+        ./nixpkgs-settings.nix
+        ../modules/shared/home/general
+        ../modules/hosts/home-manager-only
+        ../modules/hosts/home-manager-only/home-${username}.nix
 
-      {
-        home = {
-          username = "${username}";
-          homeDirectory = "${homeDirectory}";
-        };
-      }
+        {
+          home = {
+            username = "${username}";
+            homeDirectory = "${homeDirectory}";
+          };
+        }
 
-      inputs.sops-nix.homeManagerModules.sops
-    ];
-  };
+        inputs.sops-nix.homeManagerModules.sops
+      ];
+    };
 }

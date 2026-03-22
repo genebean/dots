@@ -1,6 +1,7 @@
-{ username, ... }: {
+{ username, ... }:
+{
   home.stateVersion = "23.11";
-    
+
   programs = {
     go = {
       enable = true;

@@ -1,0 +1,26 @@
+repos:
+  - repo: local
+    hooks:
+      - id: nixfmt
+        name: nixfmt
+        entry: nix
+        language: system
+        types: [nix]
+        pass_filenames: false
+        args: ["fmt"]
+
+      - id: deadnix
+        name: deadnix
+        entry: deadnix
+        language: system
+        types: [nix]
+        args: ["./modules", "./lib"]
+
+      - id: statix
+        name: statix
+        entry: statix
+        language: system
+        types: [nix]
+        pass_filenames: false
+        args: ["check", "."]
+

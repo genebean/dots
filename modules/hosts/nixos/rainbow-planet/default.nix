@@ -1,8 +1,15 @@
-{ inputs, config, pkgs, username, ... }: {
+{
+  inputs,
+  config,
+  pkgs,
+  username,
+  ...
+}:
+{
   imports = [
     ./hardware-configuration.nix
-    ../../common/linux/flatpaks.nix
-    ../../common/linux/ripping.nix
+    ../../../shared/nixos/flatpaks.nix
+    ../../../shared/nixos/ripping.nix
   ];
 
   system.stateVersion = "23.05";
@@ -14,7 +21,7 @@
     };
     loader = {
       efi.canTouchEfiVariables = true;
-      systemd-boot= {
+      systemd-boot = {
         enable = true;
         consoleMode = "1";
       };
@@ -108,9 +115,13 @@
     boinc.enable = true;
     bpftune.enable = true;
     dbus.implementation = "broker";
-    desktopManager.cosmic.enable = false;
-    desktopManager.cosmic.xwayland.enable = false;
-    desktopManager.plasma6.enable = true;
+    desktopManager = {
+      cosmic = {
+        enable = false;
+        xwayland.enable = false;
+      };
+      plasma6.enable = true;
+    };
     displayManager.cosmic-greeter.enable = false;
     displayManager.sddm = {
       enable = true;
@@ -179,7 +190,15 @@
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "adbusers" "dialout" "docker" "input" "networkmanager" "podman" "wheel" ];
+    extraGroups = [
+      "adbusers"
+      "dialout"
+      "docker"
+      "input"
+      "networkmanager"
+      "podman"
+      "wheel"
+    ];
     packages = with pkgs; [
       tailscale-systray
     ];

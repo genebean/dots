@@ -1,6 +1,6 @@
-{ ... }: {
+{
   home.file = {
-    ".config/xfce4/terminal/accels.scm".source = ../../files/xfce4/terminal/accels.scm;
+    ".config/xfce4/terminal/accels.scm".source = ../../../files/xfce4/terminal/accels.scm;
   };
 
   xfconf.settings = {
@@ -11,7 +11,8 @@
       "color-background" = "#08052b";
       "color-cursor" = "#ff7f7f";
       "color-cursor-use-default" = false;
-      "color-palette" = "#000000;#e52222;#a6e32d;#fc951e;#c48dff;#fa2573;#67d9f0;#f2f2f2;#555555;#ff5555;#55ff55;#ffff55;#5555ff;#ff55ff;#55ffff;#ffffff";
+      "color-palette" =
+        "#000000;#e52222;#a6e32d;#fc951e;#c48dff;#fa2573;#67d9f0;#f2f2f2;#555555;#ff5555;#55ff55;#ffff55;#5555ff;#ff55ff;#55ffff;#ffffff";
       "font-name" = "Hack Nerd Font Mono 12";
       "misc-always-show-tabs" = false;
       "misc-bell" = false;

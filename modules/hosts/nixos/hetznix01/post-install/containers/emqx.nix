@@ -1,6 +1,8 @@
-{ config, username, ... }: let
+{ config, username, ... }:
+let
   volume_base = "/var/lib/emqx";
-in {
+in
+{
   # Based on docs at https://docs.emqx.com/en/emqx/latest/deploy/install-docker.html
   virtualisation.oci-containers.containers = {
     "emqx" = {

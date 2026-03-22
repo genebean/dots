@@ -8,7 +8,7 @@
 
     compose2nix = {
       url = "github:aksiksi/compose2nix";
-      inputs.nixpkgs.follows ="nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Format disks with nix-config
@@ -79,122 +79,115 @@
     # Secrets managemnt
     sops-nix = {
       url = "github:mic92/sops-nix";
-      inputs.nixpkgs.follows ="nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Linting and formatting
+    deadnix.url = "github:astro/deadnix";
+    statix.url = "github:astro/statix";
+
   }; # end inputs
-  outputs = inputs@{ self, ... }: let
-    # Functions that setup systems
-    localLib = import ./lib { inherit inputs; };    
+  outputs =
+    inputs@{ self, nixpkgs, ... }:
+    let
+      # Functions that setup systems
+      localLib = import ./lib { inherit inputs; };
+      forAllSystems = nixpkgs.lib.genAttrs [
+        "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
+    in
+    {
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
 
-    linuxHomeConfig = { system, hostname, username, additionalModules, additionalSpecialArgs }: inputs.home-manager.lib.homeManagerConfiguration {
-      extraSpecialArgs = { inherit inputs hostname username;
-        pkgs = import inputs.nixpkgs {
-          inherit system;
-          config = {
-            allowUnfree = true;
-            permittedInsecurePackages = [ "olm-3.2.16" "electron-21.4.4" ];
-          };
+      # Darwin (macOS) hosts
+      darwinConfigurations = {
+        AirPuppet = localLib.mkDarwinHost {
+          system = "x86_64-darwin";
+          hostname = "AirPuppet";
         };
-      } // additionalSpecialArgs;
-      modules = [
-        ./modules/home-manager/hosts/${hostname}/${username}.nix
-        {
-          home = {
-            username = "${username}";
-            homeDirectory = "/home/${username}";
-          };
-        }
-        inputs.sops-nix.homeManagerModules.sops
-      ] ++ additionalModules;
-    }; # end homeManagerConfiguration
+        Blue-Rock = localLib.mkDarwinHost {
+          system = "x86_64-darwin";
+          hostname = "Blue-Rock";
+          username = "gene.liverman";
+        };
+        mightymac = localLib.mkDarwinHost {
+          hostname = "mightymac";
+          username = "gene.liverman";
+        };
+      }; # end darwinConfigurations
 
-  in {
-    # Darwin (macOS) hosts
-    darwinConfigurations = {
-      AirPuppet = localLib.mkDarwinHost {
-        system = "x86_64-darwin";
-        hostname = "AirPuppet";
-      };
-      Blue-Rock = localLib.mkDarwinHost {
-        system = "x86_64-darwin";
-        hostname = "Blue-Rock";
-        username = "gene.liverman";
-      };
-      mightymac = localLib.mkDarwinHost {
-        hostname = "mightymac";
-        username = "gene.liverman";
-      };
-    }; # end darwinConfigurations
+      # NixOS hosts
+      nixosConfigurations = {
+        bigboy = localLib.mkNixosHost {
+          hostname = "bigboy";
+          additionalModules = [
+            inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p52
+          ];
+        };
+        hetznix01 = localLib.mkNixosHost {
+          hostname = "hetznix01";
+          additionalModules = [
+            inputs.private-flake.nixosModules.private.hetznix01
+          ];
+        };
+        hetznix02 = localLib.mkNixosHost {
+          system = "aarch64-linux";
+          hostname = "hetznix02";
+          additionalModules = [
+            # inputs.simple-nixos-mailserver.nixosModule
+          ];
+        };
+        kiosk-entryway = localLib.mkNixosHost {
+          # Lenovo IdeaCentre Q190
+          hostname = "kiosk-entryway";
+        };
+        kiosk-gene-desk = localLib.mkNixosHost {
+          system = "aarch64-linux";
+          hostname = "kiosk-gene-desk";
+          additionalModules = [
+            inputs.nixos-hardware.nixosModules.raspberry-pi-4
+          ];
+        };
+        nixnas1 = localLib.mkNixosHost {
+          hostname = "nixnas1";
+          additionalModules = [
+            inputs.simple-nixos-mailserver.nixosModule
+          ];
+        };
+        nixnuc = localLib.mkNixosHost {
+          hostname = "nixnuc";
+          additionalModules = [
+            inputs.simple-nixos-mailserver.nixosModule
+          ];
+        };
+        rainbow-planet = localLib.mkNixosHost {
+          hostname = "rainbow-planet";
+          additionalModules = [
+            inputs.nixos-cosmic.nixosModules.default
+            inputs.nixos-hardware.nixosModules.dell-xps-13-9360
+          ];
+        };
+      }; # end nixosConfigurations
 
-    # NixOS hosts
-    nixosConfigurations = {
-      bigboy = localLib.mkNixosHost {
-        hostname = "bigboy";
-        additionalModules = [
-          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p52
-        ];
-      };
-      hetznix01 = localLib.mkNixosHost {
-        hostname = "hetznix01";
-        additionalModules = [
-          inputs.private-flake.nixosModules.private.hetznix01
-        ];
-      };
-      hetznix02 = localLib.mkNixosHost {
-        system = "aarch64-linux";
-        hostname = "hetznix02";
-        additionalModules = [
-          # inputs.simple-nixos-mailserver.nixosModule
-        ];
-      };
-      kiosk-entryway = localLib.mkNixosHost {
-        # Lenovo IdeaCentre Q190
-        hostname = "kiosk-entryway";
-      };
-      kiosk-gene-desk = localLib.mkNixosHost {
-        system = "aarch64-linux";
-        hostname = "kiosk-gene-desk";
-        additionalModules = [
-          inputs.nixos-hardware.nixosModules.raspberry-pi-4
-        ];
-      };
-      nixnas1 = localLib.mkNixosHost {
-        hostname = "nixnas1";
-        additionalModules = [
-          inputs.simple-nixos-mailserver.nixosModule
-        ];
-      };
-      nixnuc = localLib.mkNixosHost {
-        hostname = "nixnuc";
-        additionalModules = [
-          inputs.simple-nixos-mailserver.nixosModule
-        ];
-      };
-      rainbow-planet = localLib.mkNixosHost {
-        hostname = "rainbow-planet";
-        additionalModules = [
-          inputs.nixos-cosmic.nixosModules.default
-          inputs.nixos-hardware.nixosModules.dell-xps-13-9360
-        ];
-      };
-    }; # end nixosConfigurations
+      # Home Manager (only) users
+      homeConfigurations = {
+        gene-x86_64-linux = localLib.mkHomeConfig {
+          homeDirectory = "/home/gene";
+          username = "gene";
+          system = "x86_64-linux";
+        };
 
-    # Home Manager (only) users
-    homeConfigurations = {
-      gene-x86_64-linux = localLib.mkHomeConfig {
-        homeDirectory = "/home/gene";
-        username = "gene";
-        system = "x86_64-linux";
-      };
+        gene-aarch64-linux = localLib.mkHomeConfig {
+          homeDirectory = "/home/gene";
+          username = "gene";
+          system = "aarch64-linux";
+        };
+      }; # end homeConfigurations
 
-      gene-aarch64-linux = localLib.mkHomeConfig {
-        homeDirectory = "/home/gene";
-        username = "gene";
-        system = "aarch64-linux";
-      };
-    }; # end homeConfigurations
-
-    packages.aarch64-linux.kiosk-gene-desk-sdImage = self.nixosConfigurations.kiosk-gene-desk.config.system.build.sdImage;
-  };
+      packages.aarch64-linux.kiosk-gene-desk-sdImage =
+        self.nixosConfigurations.kiosk-gene-desk.config.system.build.sdImage;
+    };
 }
