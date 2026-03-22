@@ -89,7 +89,7 @@ in
       vmagent_push_pw = {
         owner = "vmagent";
         restartUnits = [ "vmagent.service" ];
-        sopsFile = ../../../../shared/secrets.yaml;
+        sopsFile = ../../../shared/secrets.yaml;
       };
     };
   };
