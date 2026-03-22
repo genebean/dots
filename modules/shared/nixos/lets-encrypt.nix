@@ -1,4 +1,5 @@
-{ config, username, ... }: {
+{ config, username, ... }:
+{
 
   ##########################################################################
   #                                                                        #
@@ -10,7 +11,9 @@
     acceptTerms = true;
     defaults = {
       email = "lets-encrypt@technicalissues.us";
-      credentialFiles = { "GANDIV5_PERSONAL_ACCESS_TOKEN_FILE" = "${config.sops.secrets.gandi_dns_pat.path}"; };
+      credentialFiles = {
+        "GANDIV5_PERSONAL_ACCESS_TOKEN_FILE" = "${config.sops.secrets.gandi_dns_pat.path}";
+      };
       dnsProvider = "gandiv5";
       dnsResolver = "ns1.gandi.net";
       # uncomment below for testing

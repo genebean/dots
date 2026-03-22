@@ -1,10 +1,17 @@
-{ inputs, config, pkgs, username,  ... }: let
-  http_port = 80;
+{
+  inputs,
+  config,
+  pkgs,
+  username,
+  ...
+}:
+let
   https_port = 443;
   home_domain = "home.technicalissues.us";
   backend_ip = "127.0.0.1";
   restic_backup_time = "02:00";
-in {
+in
+{
   imports = [
     ./hardware-configuration.nix
     ./containers/audiobookshelf.nix
@@ -31,7 +38,9 @@ in {
   };
 
   environment = {
-    sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; };
+    sessionVariables = {
+      LIBVA_DRIVER_NAME = "iHD";
+    };
     systemPackages = with pkgs; [
       inputs.compose2nix.packages.${pkgs.stdenv.hostPlatform.system}.default
       docker-compose
@@ -57,7 +66,7 @@ in {
       intel-ocl # Generic OpenCL support
     ];
   };
-  
+
   mailserver = {
     enable = true;
     enableImap = false;
@@ -81,26 +90,26 @@ in {
     # Open ports in the firewall.
     firewall = {
       allowedTCPPorts = [
-           22 # ssh
-           80 # http to local Nginx
-          443 # https to local Nginx
-         3000 # PsiTransfer in oci-container
-         3001 # immich-kiosk in compose
-         3002 # grafana
-         3005 # Firefly III
-         3006 # Firefly III Data Importer
-         3030 # Forgejo
-         3087 # Youtarr in docker compose
-         8001 # Tube Archivist
-         8384 # Syncthing gui
-         8888 # Atuin
-         8090 # Wallabag in docker compose
-         8945 # Pinchflat
+        22 # ssh
+        80 # http to local Nginx
+        443 # https to local Nginx
+        3000 # PsiTransfer in oci-container
+        3001 # immich-kiosk in compose
+        3002 # grafana
+        3005 # Firefly III
+        3006 # Firefly III Data Importer
+        3030 # Forgejo
+        3087 # Youtarr in docker compose
+        8001 # Tube Archivist
+        8384 # Syncthing gui
+        8888 # Atuin
+        8090 # Wallabag in docker compose
+        8945 # Pinchflat
         13378 # Audiobookshelf in oci-container
       ];
       allowedUDPPorts = [
-         1900 # Jellyfin service auto-discovery
-         7359 # Jellyfin auto-discovery
+        1900 # Jellyfin service auto-discovery
+        7359 # Jellyfin auto-discovery
       ];
     };
     # Or disable the firewall altogether.
@@ -112,23 +121,24 @@ in {
     networkmanager.enable = false;
     useNetworkd = true;
     vlans = {
-      vlan23 = { id = 23; interface = "eno1"; };
+      vlan23 = {
+        id = 23;
+        interface = "eno1";
+      };
     };
     interfaces = {
       eno1.useDHCP = true;
-      vlan23.ipv4.addresses = [{ address = "192.168.23.21"; prefixLength = 24; }];
+      vlan23.ipv4.addresses = [
+        {
+          address = "192.168.23.21";
+          prefixLength = 24;
+        }
+      ];
     };
   };
 
   # Enable sound with pipewire.
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
-  services.pulseaudio.enable = false;
 
   programs = {
     mtr.enable = true;
@@ -136,6 +146,13 @@ in {
 
   # List services that you want to enable:
   services = {
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+    pulseaudio.enable = false;
     atuin = {
       enable = true;
       host = "127.0.0.1";
@@ -311,7 +328,11 @@ in {
             "nix-tester.${home_domain}"
           ];
           listen = [
-            { port = https_port; addr = "0.0.0.0"; ssl = true; }
+            {
+              port = https_port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
           ];
           enableACME = true;
           acmeRoot = null;
@@ -331,7 +352,13 @@ in {
           };
         };
         "ab.${home_domain}" = {
-          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          listen = [
+            {
+              port = https_port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
@@ -342,17 +369,41 @@ in {
           '';
         };
         "atuin.${home_domain}" = {
-          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          listen = [
+            {
+              port = https_port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
           locations."/".proxyPass = "http://${backend_ip}:8888";
         };
         # budget.${home_domain}
-        "${config.services.firefly-iii.virtualHost}".listen = [{ port = 3005; addr = "0.0.0.0"; ssl = false; }];
-        "${config.services.firefly-iii-data-importer.virtualHost}".listen = [{ port = 3006; addr = "0.0.0.0"; ssl = false; }];
+        "${config.services.firefly-iii.virtualHost}".listen = [
+          {
+            port = 3005;
+            addr = "0.0.0.0";
+            ssl = false;
+          }
+        ];
+        "${config.services.firefly-iii-data-importer.virtualHost}".listen = [
+          {
+            port = 3006;
+            addr = "0.0.0.0";
+            ssl = false;
+          }
+        ];
         "git.${home_domain}" = {
-          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          listen = [
+            {
+              port = https_port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
@@ -362,7 +413,13 @@ in {
           '';
         };
         "id.${home_domain}" = {
-          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          listen = [
+            {
+              port = https_port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
@@ -374,7 +431,13 @@ in {
           '';
         };
         "immich.${home_domain}" = {
-          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          listen = [
+            {
+              port = https_port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
@@ -388,7 +451,13 @@ in {
           '';
         };
         "immich-kiosk.${home_domain}" = {
-          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          listen = [
+            {
+              port = https_port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
@@ -403,7 +472,13 @@ in {
           '';
         };
         "jellyfin.${home_domain}" = {
-          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          listen = [
+            {
+              port = https_port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
@@ -428,7 +503,13 @@ in {
           '';
         };
         "mealie.${home_domain}" = {
-          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          listen = [
+            {
+              port = https_port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
@@ -438,7 +519,13 @@ in {
           '';
         };
         "monitoring.${home_domain}" = {
-          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          listen = [
+            {
+              port = https_port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
@@ -469,7 +556,13 @@ in {
           '';
         };
         "readit.${home_domain}" = {
-          listen = [{ port = https_port; addr = "0.0.0.0"; ssl = true; }];
+          listen = [
+            {
+              port = https_port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
@@ -557,7 +650,7 @@ in {
     secrets = {
       firefly_app_key = {
         owner = config.services.firefly-iii.user;
-        restartUnits = ["nginx.service"];
+        restartUnits = [ "nginx.service" ];
       };
       firefly_pat_data_import = {
         owner = config.services.firefly-iii-data-importer.user;
@@ -582,7 +675,7 @@ in {
       };
       immich_kiosk_basic_auth = {
         owner = config.users.users.nginx.name;
-        restartUnits = ["nginx.service"];
+        restartUnits = [ "nginx.service" ];
       };
       local_git_config = {
         owner = "${username}";
@@ -594,12 +687,12 @@ in {
       };
       mealie = {
         mode = "0444";
-        restartUnits = ["mealie.service"];
+        restartUnits = [ "mealie.service" ];
       };
       nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
       nginx_basic_auth = {
         owner = "nginx";
-        restartUnits = ["nginx.service"];
+        restartUnits = [ "nginx.service" ];
       };
       tailscale_key = {
         restartUnits = [ "tailscaled-autoconnect.service" ];
@@ -610,38 +703,44 @@ in {
   systemd.services = {
     jellyfin.environment.LIBVA_DRIVER_NAME = "iHD";
     "mealie" = {
-      requires = ["postgresql.service"];
-      after = ["postgresql.service"];
+      requires = [ "postgresql.service" ];
+      after = [ "postgresql.service" ];
     };
     "nextcloud-setup" = {
-      requires = ["postgresql.service"];
-      after = ["postgresql.service"];
+      requires = [ "postgresql.service" ];
+      after = [ "postgresql.service" ];
     };
   };
 
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "docker" "podman" "networkmanager" "wheel" ];
+    extraGroups = [
+      "docker"
+      "podman"
+      "networkmanager"
+      "wheel"
+    ];
     linger = true;
   };
 
   # Enable common container config files in /etc/containers
-  virtualisation.containers.enable = true;
+  virtualisation = {
+    containers.enable = true;
+    oci-containers.backend = "podman";
+    # Compose based apps were crashing with podman compose, so back to Docker...
+    docker = {
+      enable = true;
+      package = pkgs.docker;
+    };
+    podman = {
+      enable = true;
+      autoPrune.enable = true;
+      #dockerCompat = true;
+      extraPackages = [ pkgs.zfs ]; # Required if the host is running ZFS
 
-  virtualisation.oci-containers.backend = "podman";
-
-  # Compose based apps were crashing with podman compose, so back to Docker...
-  virtualisation.docker.enable = true;
-  virtualisation.docker.package = pkgs.docker;
-
-  virtualisation.podman = {
-    enable = true;
-    autoPrune.enable = true;
-    #dockerCompat = true;
-    extraPackages = [ pkgs.zfs ]; # Required if the host is running ZFS
-
-    # Required for container networking to be able to use names.
-    defaultNetwork.settings.dns_enabled = true;
+      # Required for container networking to be able to use names.
+      defaultNetwork.settings.dns_enabled = true;
+    };
   };
 }

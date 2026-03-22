@@ -1,4 +1,10 @@
-{ inputs, pkgs, username,  ... }: {
+{
+  inputs,
+  pkgs,
+  username,
+  ...
+}:
+{
   imports = [
     ../../../shared/nixos/nixroutes.nix
     ./disk-config.nix
@@ -29,9 +35,9 @@
   networking = {
     # Open ports in the firewall.
     firewall.allowedTCPPorts = [
-      22   # ssh
-      80   # Nginx
-      443  # Nginx
+      22 # ssh
+      80 # Nginx
+      443 # Nginx
     ];
     # firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
@@ -56,7 +62,10 @@
   users.users.${username} = {
     isNormalUser = true;
     description = "Gene Liverman";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     linger = true;
   };
 

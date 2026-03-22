@@ -1,10 +1,19 @@
-{ hostname, pkgs, username, ... }: {
+{
+  hostname,
+  pkgs,
+  username,
+  ...
+}:
+{
   imports = [
-        ../../shared/nixos/internationalisation.nix
+    ../../shared/nixos/internationalisation.nix
   ];
 
   environment = {
-    shells = with pkgs; [ bash zsh ];
+    shells = with pkgs; [
+      bash
+      zsh
+    ];
     systemPackages = with pkgs; [
       age
       dconf2nix

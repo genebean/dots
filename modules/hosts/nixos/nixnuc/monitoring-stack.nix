@@ -1,6 +1,8 @@
-{ config, pkgs, ... }: let
+{ config, pkgs, ... }:
+let
   home_domain = "home.technicalissues.us";
-in {
+in
+{
   environment.systemPackages = with pkgs; [
     # Keeping empty for manual testing if needed
   ];
@@ -25,7 +27,7 @@ in {
     # ----------------------------
     victoriametrics = {
       enable = true;
-      stateDir = "victoriametrics";  # Just the directory name, module adds /var/lib/ prefix
+      stateDir = "victoriametrics"; # Just the directory name, module adds /var/lib/ prefix
       package = pkgs.victoriametrics;
     };
 
@@ -47,21 +49,24 @@ in {
             static_configs = [
               {
                 targets = [
-                  "127.0.0.1:9100"      # nixnuc
-                  "192.168.22.22:9100"  # home assistant
+                  "127.0.0.1:9100" # nixnuc
+                  "192.168.22.22:9100" # home assistant
                   "umbrel:9100"
                 ];
               }
             ];
             metric_relabel_configs = [
               {
-                source_labels = ["__name__" "nodename"];
+                source_labels = [
+                  "__name__"
+                  "nodename"
+                ];
                 regex = "node_uname_info;0d869efa-prometheus-node-exporter";
                 target_label = "nodename";
                 replacement = "homeassistant";
               }
               {
-                source_labels = ["__name__"];
+                source_labels = [ "__name__" ];
                 regex = "go_.*";
                 action = "drop";
               }
@@ -84,11 +89,11 @@ in {
           {
             job_name = "cadvisor";
             static_configs = [
-              { targets = ["127.0.0.1:8081"]; }
+              { targets = [ "127.0.0.1:8081" ]; }
             ];
             metric_relabel_configs = [
               {
-                source_labels = ["__name__"];
+                source_labels = [ "__name__" ];
                 regex = "go_.*";
                 action = "drop";
               }
@@ -105,11 +110,11 @@ in {
           {
             job_name = "nginx";
             static_configs = [
-              { targets = ["127.0.0.1:9113"]; }
+              { targets = [ "127.0.0.1:9113" ]; }
             ];
             metric_relabel_configs = [
               {
-                source_labels = ["__name__"];
+                source_labels = [ "__name__" ];
                 regex = "go_.*";
                 action = "drop";
               }
@@ -128,7 +133,7 @@ in {
             scrape_interval = "30s";
             metrics_path = "/api/prometheus";
             static_configs = [
-              { targets = ["192.168.22.22:8123"]; }
+              { targets = [ "192.168.22.22:8123" ]; }
             ];
             bearer_token_file = config.sops.secrets.home_assistant_token.path;
             relabel_configs = [
@@ -145,7 +150,7 @@ in {
             scheme = "https";
             scrape_interval = "30s";
             static_configs = [
-              { targets = ["utk.technicalissues.us"]; }
+              { targets = [ "utk.technicalissues.us" ]; }
             ];
             basic_auth = {
               password_file = config.sops.secrets.uptimekuma_grafana_api_key.path;
@@ -153,19 +158,19 @@ in {
             };
             metric_relabel_configs = [
               {
-                source_labels = ["monitor_hostname"];
+                source_labels = [ "monitor_hostname" ];
                 regex = "^null$";
                 replacement = "";
                 target_label = "monitor_hostname";
               }
               {
-                source_labels = ["monitor_port"];
+                source_labels = [ "monitor_port" ];
                 regex = "^null$";
                 replacement = "";
                 target_label = "monitor_port";
               }
               {
-                source_labels = ["monitor_url"];
+                source_labels = [ "monitor_url" ];
                 regex = "https:\/\/";
                 replacement = "";
                 target_label = "monitor_url";
@@ -211,16 +216,15 @@ in {
 
         datasources.settings.datasources = [
           {
-            name   = "VictoriaMetrics";
-            type   = "victoriametrics-metrics-datasource";
+            name = "VictoriaMetrics";
+            type = "victoriametrics-metrics-datasource";
             access = "proxy";
-            url    = "http://127.0.0.1:8428";
+            url = "http://127.0.0.1:8428";
             isDefault = true;
-            uid = "VictoriaMetrics";  # Set explicit UID for use in alert rules
+            uid = "VictoriaMetrics"; # Set explicit UID for use in alert rules
           }
         ];
       };
-
 
       settings = {
         auth = {
@@ -229,36 +233,36 @@ in {
         };
 
         "auth.generic_oauth" = {
-          name                       = "Pocket ID";
-          enabled                    = true;
+          name = "Pocket ID";
+          enabled = true;
 
           # Use Grafana's file reference syntax for secrets
-          client_id                  = "$__file{${config.sops.secrets.grafana_oauth_client_id.path}}";
-          client_secret              = "$__file{${config.sops.secrets.grafana_oauth_client_secret.path}}";
+          client_id = "$__file{${config.sops.secrets.grafana_oauth_client_id.path}}";
+          client_secret = "$__file{${config.sops.secrets.grafana_oauth_client_secret.path}}";
 
-          auth_style                 = "AutoDetect";
-          scopes                     = "openid email profile groups";
-          auth_url                   = "${config.services.pocket-id.settings.APP_URL}/authorize";
-          token_url                  = "${config.services.pocket-id.settings.APP_URL}/api/oidc/token";
-          allow_sign_up              = true;
-          auto_login                 = true;
-          name_attribute_path        = "display_name";
-          login_attribute_path       = "preferred_username";
-          email_attribute_name       = "email:primary";
-          email_attribute_path       = "email";
-          role_attribute_path        = "contains(groups[*], 'grafana_super_admin') && 'GrafanaAdmin' || contains(groups[*], 'grafana_admin') && 'Admin' || contains(groups[*], 'grafana_editor') && 'Editor' || 'Viewer'";
-          role_attribute_strict      = false;
+          auth_style = "AutoDetect";
+          scopes = "openid email profile groups";
+          auth_url = "${config.services.pocket-id.settings.APP_URL}/authorize";
+          token_url = "${config.services.pocket-id.settings.APP_URL}/api/oidc/token";
+          allow_sign_up = true;
+          auto_login = true;
+          name_attribute_path = "display_name";
+          login_attribute_path = "preferred_username";
+          email_attribute_name = "email:primary";
+          email_attribute_path = "email";
+          role_attribute_path = "contains(groups[*], 'grafana_super_admin') && 'GrafanaAdmin' || contains(groups[*], 'grafana_admin') && 'Admin' || contains(groups[*], 'grafana_editor') && 'Editor' || 'Viewer'";
+          role_attribute_strict = false;
           allow_assign_grafana_admin = true;
-          skip_org_role_sync         = false;
-          use_pkce                   = true;
-          use_refresh_token          = false;
-          tls_skip_verify_insecure   = false;
+          skip_org_role_sync = false;
+          use_pkce = true;
+          use_refresh_token = false;
+          tls_skip_verify_insecure = false;
         };
 
         # Database configuration - use PostgreSQL with peer authentication
         database = {
           type = "postgres";
-          host = "/run/postgresql";  # Use Unix socket instead of TCP
+          host = "/run/postgresql"; # Use Unix socket instead of TCP
           name = "grafana";
           user = "grafana";
           # No password needed - using peer authentication via Unix socket
@@ -266,10 +270,10 @@ in {
 
         # Server configuration
         server = {
-          domain             = "monitoring.${home_domain}";
-          http_addr          = "0.0.0.0";
-          http_port          = 3002;
-          root_url           = "https://monitoring.${home_domain}/grafana/";
+          domain = "monitoring.${home_domain}";
+          http_addr = "0.0.0.0";
+          http_port = 3002;
+          root_url = "https://monitoring.${home_domain}/grafana/";
           serve_from_sub_path = true;
         };
 
@@ -286,7 +290,7 @@ in {
     # ----------------------------
     # Exporters (using built-in NixOS modules)
     # ----------------------------
-    
+
     # Node exporter - using the built-in module
     prometheus.exporters.node = {
       enable = true;
@@ -332,7 +336,7 @@ in {
     group = "vmagent";
   };
 
-  users.groups.vmagent = {};
+  users.groups.vmagent = { };
 
   # ----------------------------
   # Systemd service dependencies
@@ -350,19 +354,19 @@ in {
     secrets = {
       grafana_oauth_client_id = {
         owner = "grafana";
-        restartUnits = ["grafana.service"];
+        restartUnits = [ "grafana.service" ];
       };
       grafana_oauth_client_secret = {
         owner = "grafana";
-        restartUnits = ["grafana.service"];
+        restartUnits = [ "grafana.service" ];
       };
       home_assistant_token = {
         owner = "vmagent";
-        restartUnits = ["vmagent.service"];
+        restartUnits = [ "vmagent.service" ];
       };
       uptimekuma_grafana_api_key = {
         owner = "vmagent";
-        restartUnits = ["vmagent.service"];
+        restartUnits = [ "vmagent.service" ];
         sopsFile = ../../../shared/secrets.yaml;
       };
     };
@@ -378,4 +382,3 @@ in {
     ];
   };
 }
-

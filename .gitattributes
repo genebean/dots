@@ -1,2 +1,3 @@
 *.yaml diff=sopsdiffer
+.pre-commit-config.yaml diff=default
 

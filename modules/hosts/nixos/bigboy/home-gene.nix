@@ -1,4 +1,5 @@
-{ ... }: {
+{ ... }:
+{
   home.stateVersion = "24.05";
   imports = [
     ../../../shared/home/general/all-gui.nix
@@ -27,4 +28,3 @@
     };
   };
 }
-

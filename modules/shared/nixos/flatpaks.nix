@@ -1,5 +1,4 @@
-
-{ ... }: {
+{
   services = {
     flatpak = {
       enable = true;
