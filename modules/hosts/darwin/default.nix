@@ -68,6 +68,7 @@
       "gitkraken-cli"
       "handbrake-app"
       "imageoptim"
+      "itermbrowserplugin"
       "iterm2"
       "keepingyouawake"
       "libreoffice"
