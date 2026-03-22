@@ -1,10 +1,9 @@
 # Dots
 
-This repo is a Nix flake that manages most of my setup on macOS and fully manages machines I have that run NixOS as their operating system.
+This repo is a Nix flake that manages most of my setup on macOS and fully manages machines I have that run NixOS as their operating system. It also contains as much configruation as I can make work on other Linux distros such as Ubuntu.
 
 - [Flake structure](#flake-structure)
-- [Note](#note)
-- [Repo structure](#repo-structure)
+- [Formatting and CI](#formatting-and-ci)
 - [Historical bits](#historical-bits)
 - [Adding a new macOS host](#adding-a-new-macos-host)
   - [Extras steps not done by Nix and/or Homebrew and/or mas](#extras-steps-not-done-by-nix-andor-homebrew-andor-mas)
@@ -15,102 +14,32 @@ This repo is a Nix flake that manages most of my setup on macOS and fully manage
 - [Adding a NixOS host](#adding-a-nixos-host)
   - [Post-install](#post-install)
 
-
 ## Flake structure
 
-> **RESTRUCTURING IN PROGRESS**: please note, I am restructuring this to remove a lot of complexity. This first pass is done and moves home manager bits into modules that have home in the name. Things that apply to everything under a part of the tree are in a corresponding `default.nix`
+- `flake.nix` defines inputs, outputs, and instantiates host configurations via `lib/` functions
+- `lib/` contains helper functions:
+  - `mkNixosHost` - constructs NixOS system configurations
+  - `mkDarwinHost` - constructs nix-darwin system configurations
+  - `mkHomeConfig` - constructs Home Manager configurations
+- `modules/` contains Nix modules organized by type:
+  - `modules/shared/` - shared modules imported by multiple hosts
+    - `modules/shared/home/general/` - Home Manager config for all GUI users
+    - `modules/shared/home/linux/` - Home Manager config for Linux-specific apps
+    - `modules/shared/nixos/` - NixOS modules (i18n, flatpaks, restic, etc.)
+  - `modules/hosts/` - host-specific configurations
+    - `modules/hosts/nixos/` - NixOS host configs and hardware configs
+    - `modules/hosts/darwin/` - macOS host configs
+    - `modules/hosts/home-manager-only/` - Home Manager-only configs
 
-The Nix bits are driven by `flake.nix` which pulls in things under `modules/`. Both Intel and Apple Silicon macOS are suppoted, as is NixOS. The flake is structured like so:
+## Formatting and CI
 
-- description: a human readable description of this flake
-- inputs: all the places things are pulled from
-- outputs:
-  - all the outputs from the inputs
-  - a `let` ... `in` block that contains:
-    - `darwinHostConfig` which takes a set of paramters as an attribute set and pulls in all the things needed to use Nix on a macOS host
-    - `mkNixosHost` which takes a set of parameters as an attribute set and pulls in all the things needed to configure a NixOS host
-    - `linuxHomeConfig` which takes a set of paramters as an attribute set and pulls in the things I manage on non-NixOS Linux hosts
-  - the body of outputs that contains:
-    - `darwinConfigurations` contains is an attribute set that contains keys named for each macOS host set to the results of a call to `darwinHostConfig` with values for each of the required parameters
-    - `nixosConfigurations` contains is an attribute set that contains keys named for each NixOS host set to the results of a call to `darwinHostConfig` with values for each of the required parameters
-    - `homeConfigurations` contains an entry for each username set to the results of a call to `linuxHomeConfig` with values for each of the required parameters
+This repo uses the following tools for code quality:
 
-The parameters on `darwinHostConfig` & `mkNixosHost` are:
+- **nixfmt** - Formats Nix files. Run `nix fmt .` to format all files.
+- **deadnix** - Finds unused code in Nix files.
+- **statix** - Checks Nix code for common issues and style problems.
 
-- `system:` the system definition to use for nixpkgs
-- `hostname:` the hostname of the machine being configured
-- `username:` the username being configured on the host (all code currently assumes there is a single human user managed by Nix)
-- `additionalModules:` any nix modules that are desired to supplement the default for the host. An example use case for this is adding in the hardware specific module from `nixos-hardware`.
-- `additionalSpecialArgs:` any supplemental arguments to be passed to `specialArgs`.
-
-The parameters on `linxuHomeConfig` are the same as the above.
-
-## Note
-
-> All the bits below here are useful, but may be slightly outdated... I have not done a good job of keeping them updated.
-
-## Repo structure
-
-The Nix stuff is structured like so, at least for now:
-
-```bash
-$ tree . -I legacy* -I link* --gitignore --dirsfirst
-.
-├── modules
-│   ├── home-manager
-│   │   ├── common
-│   │   │   ├── linux-apps
-│   │   │   │   ├── tilix.nix
-│   │   │   │   ├── waybar.nix
-│   │   │   │   └── xfce4-terminal.nix
-│   │   │   ├── all-cli.nix
-│   │   │   ├── all-darwin.nix
-│   │   │   ├── all-gui.nix
-│   │   │   └── all-linux.nix
-│   │   ├── files
-│   │   │   ├── tilix
-│   │   │   │   └── Beanbag-Mathias.json
-│   │   │   ├── waybar
-│   │   │   │   ├── config
-│   │   │   │   └── style.css
-│   │   │   ├── xfce4
-│   │   │   │   └── terminal
-│   │   │   │       ├── accels.scm
-│   │   │   │       └── terminalrc
-│   │   │   └── Microsoft.PowerShell_profile.ps1
-│   │   └── hosts
-│   │       ├── Blue-Rock
-│   │       │   └── gene.liverman.nix
-│   │       ├── nixnuc
-│   │       │   └── gene.nix
-│   │       └── rainbow-planet
-│   │           └── gene.nix
-│   ├── hosts
-│   │   ├── darwin
-│   │   │   └── Blue-Rock
-│   │   │       └── default.nix
-│   │   └── nixos
-│   │       ├── nixnuc
-│   │       │   ├── default.nix
-│   │       │   └── hardware-configuration.nix
-│   │       └── rainbow-planet
-│   │           ├── default.nix
-│   │           └── hardware-configuration.nix
-│   └── system
-│       └── common
-│           ├── linux
-│           │   └── internationalisation.nix
-│           ├── all-darwin.nix
-│           └── all-nixos.nix
-├── LICENSE
-├── README.md
-├── Vagrantfile
-├── flake.lock
-└── flake.nix
-
-23 directories, 29 files
-
-```
+Pre-commit hooks are configured in `.pre-commit-config.yaml` and run automatically before commits. CI validation is defined in `.github/workflows/validate.yml`.
 
 ## Historical bits
 
