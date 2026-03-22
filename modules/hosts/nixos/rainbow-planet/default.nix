@@ -1,8 +1,8 @@
 { inputs, config, pkgs, username, ... }: {
   imports = [
     ./hardware-configuration.nix
-    ../../common/linux/flatpaks.nix
-    ../../common/linux/ripping.nix
+    ../../../shared/nixos/flatpaks.nix
+    ../../../shared/nixos/ripping.nix
   ];
 
   system.stateVersion = "23.05";

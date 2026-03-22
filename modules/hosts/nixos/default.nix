@@ -1,6 +1,6 @@
 { hostname, pkgs, username, ... }: {
   imports = [
-    ../common/linux/internationalisation.nix
+        ../../shared/nixos/internationalisation.nix
   ];
 
   environment = {

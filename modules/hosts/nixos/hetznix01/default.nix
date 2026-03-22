@@ -1,6 +1,6 @@
 { inputs, pkgs, username,  ... }: {
   imports = [
-    ../../common/linux/nixroutes.nix
+    ../../../shared/nixos/nixroutes.nix
     ./disk-config.nix
     ./hardware-configuration.nix
     ./post-install

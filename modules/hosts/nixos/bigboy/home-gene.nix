@@ -1,9 +1,9 @@
 { ... }: {
   home.stateVersion = "24.05";
   imports = [
-    ../../common/all-gui.nix
-    ../../common/linux/apps/tilix.nix
-    ../../common/linux/apps/xfce4-terminal.nix
+    ../../../shared/home/general/all-gui.nix
+    ../../../shared/home/linux/apps/tilix.nix
+    ../../../shared/home/linux/apps/xfce4-terminal.nix
   ];
 
   programs = {

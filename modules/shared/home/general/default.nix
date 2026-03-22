@@ -1,4 +1,4 @@
-{ inputs, pkgs, username, ... }: let
+{ config, inputs, pkgs, ... }: let
   sqlite_lib = if builtins.elem pkgs.stdenv.hostPlatform.system [
                  "aarch64-darwin"
                  "x86_64-darwin"
@@ -166,7 +166,7 @@ in {
     };
     nh = {
       enable = true;
-      flake = "/Users/${username}/repos/dots";
+      flake = "${config.home.homeDirectory}/repos/dots";
     };
     oh-my-posh = {
       enable = true;
@@ -353,14 +353,14 @@ in {
 
   home.file = {
     ".config/nvim/lua/config" = {
-      source = ./files/nvim/lua/config;
+      source = ../../files/nvim/lua/config;
       recursive = true;
     };
     ".config/nvim/lua/plugins" = {
-      source = ./files/nvim/lua/plugins;
+      source = ../../files/nvim/lua/plugins;
       recursive = true;
     };
-    ".config/powershell/Microsoft.PowerShell_profile.ps1".source = ./files/Microsoft.PowerShell_profile.ps1;
-    ".config/powershell/Microsoft.VSCode_profile.ps1".source = ./files/Microsoft.PowerShell_profile.ps1;
+    ".config/powershell/Microsoft.PowerShell_profile.ps1".source = ../../files/Microsoft.PowerShell_profile.ps1;
+    ".config/powershell/Microsoft.VSCode_profile.ps1".source = ../../files/Microsoft.PowerShell_profile.ps1;
   };
 }
