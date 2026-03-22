@@ -32,27 +32,6 @@ in
               }
             ];
           }
-
-          # Nginx exporter
-          {
-            job_name = "nginx";
-            static_configs = [
-              { targets = [ "127.0.0.1:9113" ]; }
-            ];
-            metric_relabel_configs = [
-              {
-                source_labels = [ "__name__" ];
-                regex = "go_.*";
-                action = "drop";
-              }
-            ];
-            relabel_configs = [
-              {
-                target_label = "instance";
-                replacement = "${config.networking.hostName}";
-              }
-            ];
-          }
         ];
       };
 
@@ -85,22 +64,10 @@ in
       enable = true;
       listenAddress = "127.0.0.1";
       port = 9100;
-      enabledCollectors = [
-        "systemd"
-      ];
       extraFlags = [
         "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|run|tmp|var/lib/docker/.+)($|/)"
         "--collector.diskstats.device-exclude=^(loop|ram|fd|sr|dm-|nvme[0-9]n[0-9]p[0-9]+_crypt)$"
       ];
-    };
-
-    # Nginx exporter - using the built-in module
-    prometheus.exporters.nginx = {
-      enable = true;
-      listenAddress = "127.0.0.1";
-      port = 9113;
-      scrapeUri = "https://127.0.0.1/server_status";
-      sslVerify = false;
     };
   };
 
