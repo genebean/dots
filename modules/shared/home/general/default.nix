@@ -158,6 +158,11 @@ in
         user = {
           name = "Gene Liverman";
         };
+        signing = {
+          format = "ssh";
+          key = "${config.home.homeDirectory}/.ssh/id_ed25519";
+          signByDefault = true;
+        };
       };
     }; # end git
     irssi.enable = true;
