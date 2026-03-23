@@ -22,9 +22,10 @@
       # the path to your home.nix.
       modules = [
         ./nixpkgs-settings.nix
-        ../modules/shared/home/general
         ../modules/hosts/home-manager-only
         ../modules/hosts/home-manager-only/home-${username}.nix
+        ../modules/shared/home/general
+        ../modules/shared/linux/flatpaks.nix
 
         {
           home = {
@@ -33,6 +34,7 @@
           };
         }
 
+        inputs.nix-flatpak.homeManagerModules.nix-flatpak
         inputs.sops-nix.homeManagerModules.sops
       ];
     };

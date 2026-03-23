@@ -8,7 +8,7 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../../shared/nixos/flatpaks.nix
+    ../../../shared/linux/flatpaks.nix
     ../../../shared/nixos/ripping.nix
   ];
 
