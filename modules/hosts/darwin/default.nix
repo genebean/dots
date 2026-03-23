@@ -21,7 +21,6 @@
       bandwhich
       coreutils
       hugo
-      mas
       nmap
       openjdk
       sops
@@ -45,6 +44,7 @@
       "fastfetch"
       "ffmpeg"
       #"firefox-profile-switcher-connector" # having had this on seems to mean I need to toggle browser.profiles.enabled to true in about:config for the new built in version
+      "mas"
       "ssh-askpass"
       "telnet"
     ];
