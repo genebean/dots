@@ -11,6 +11,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Linting and formatting
+    deadnix = {
+      url = "github:astro/deadnix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Format disks with nix-config
     disko = {
       url = "github:nix-community/disko";
@@ -83,8 +89,10 @@
     };
 
     # Linting and formatting
-    deadnix.url = "github:astro/deadnix";
-    statix.url = "github:astro/statix";
+    statix = {
+      url = "github:astro/statix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
   }; # end inputs
   outputs =
