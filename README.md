@@ -39,7 +39,10 @@ This repo uses the following tools for code quality:
 - **deadnix** - Finds unused code in Nix files.
 - **statix** - Checks Nix code for common issues and style problems.
 
-Pre-commit hooks are configured in `.pre-commit-config.yaml` and run automatically before commits. CI validation is defined in `.github/workflows/validate.yml`.
+Pre-commit hooks are configured in `.pre-commit-config.yaml` and run automatically before commits. 
+Run `pre-commit install` after checkout to make sure it gets used.
+
+CI validation is defined in `.github/workflows/validate.yml` and mirrors what is done by pre-commit.
 
 ## Historical bits
 
