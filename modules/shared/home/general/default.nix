@@ -133,9 +133,6 @@ in
     gh.enable = true;
     git = {
       enable = true;
-      settings = {
-        diff.sopsdiffer.textconv = "sops --config /dev/null --decrypt";
-      };
       ignores = [
         "*~"
         "*.swp"
@@ -145,8 +142,16 @@ in
       lfs.enable = true;
       package = pkgs.gitFull;
       settings = {
+        diff.sopsdiffer.textconv = "sops --config /dev/null --decrypt";
+
         init = {
           defaultBranch = "main";
+        };
+        commit = {
+          gpgsign = true;
+        };
+        gpg = {
+          format = "ssh";
         };
         merge = {
           conflictStyle = "diff3";
@@ -157,11 +162,7 @@ in
         };
         user = {
           name = "Gene Liverman";
-        };
-        signing = {
-          format = "ssh";
-          key = "${config.home.homeDirectory}/.ssh/id_ed25519";
-          signByDefault = true;
+          signingkey = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
         };
       };
     }; # end git
