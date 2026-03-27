@@ -35,6 +35,7 @@ in
     filezilla
     gitkraken
     kdePackages.ksshaskpass
+    libbdplus
     libreoffice
     meld
     mumble
