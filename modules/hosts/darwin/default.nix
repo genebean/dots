@@ -37,12 +37,16 @@
     };
     taps = [
       "homebrew/cask-fonts"
+      "homebrew-ffmpeg/ffmpeg"
       #"null-dev/firefox-profile-switcher"
       "theseal/ssh-askpass"
     ];
     brews = [
       "fastfetch"
-      "ffmpeg"
+      {
+        name = "homebrew-ffmpeg/ffmpeg/ffmpeg";
+        args = [ "with-srt" ];
+      }
       #"firefox-profile-switcher-connector" # having had this on seems to mean I need to toggle browser.profiles.enabled to true in about:config for the new built in version
       "mas"
       "ssh-askpass"
