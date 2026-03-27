@@ -109,20 +109,18 @@
         "flakes"
         "nix-command"
       ];
-      # extra-substituters = [
-      # ];
-      # extra-trusted-public-keys = [
-      # ];
       substituters = [
         "https://cache.nixos.org" # default one
         "https://cache.flox.dev"
+        "https://cache.numtide.com"
         "https://cache.thalheim.io"
         "https://nix-community.cachix.org"
       ];
       trusted-public-keys = [
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" # default one
-        "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
+        "cache.numtide.com-1:GF3TabtFocLtonIGfz3PD61AgIO8GmjCYhEAmYy4VPY="
         "cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc="
+        "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCUSDs="
       ];
       trusted-users = [
