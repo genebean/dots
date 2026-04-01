@@ -10,6 +10,7 @@
   imports = [
     # SD card image
     "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
+    ./read-only-root.nix
   ];
 
   system.stateVersion = "24.11";
@@ -47,6 +48,29 @@
       };
       secretsFile = "${config.sops.secrets.wifi_creds.path}";
     };
+  };
+
+  nix = {
+    distributedBuilds = true;
+    buildMachines = [
+      {
+        hostName = "hetznix02.technicalissues.us";
+        system = "aarch64-linux";
+        protocol = "ssh-ng";
+        maxJobs = 4;
+        speedFactor = 2;
+        supportedFeatures = [
+          "nixos-test"
+          "benchmark"
+          "big-parallel"
+        ];
+        sshUser = "gene";
+        sshKey = "/root/.ssh/id_ed25519";
+      }
+    ];
+    extraOptions = ''
+      builders-use-substitutes = true
+    '';
   };
 
   nixpkgs.overlays = [
