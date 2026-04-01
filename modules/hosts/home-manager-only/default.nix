@@ -10,6 +10,7 @@
   home.packages = with pkgs; [
     age
     home-manager
+    r10k
     sops
     ssh-to-age
   ];
