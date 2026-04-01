@@ -5,14 +5,18 @@ This repo is a Nix flake that manages most of my setup on macOS and fully manage
 - [Flake structure](#flake-structure)
 - [Formatting and CI](#formatting-and-ci)
 - [Historical bits](#historical-bits)
-- [Adding a new macOS host](#adding-a-new-macos-host)
-  - [Extras steps not done by Nix and/or Homebrew and/or mas](#extras-steps-not-done-by-nix-andor-homebrew-andor-mas)
-    - [Firefox profile switcher](#firefox-profile-switcher)
-    - [Setup sudo via  Touch ID](#setup-sudo-via--touch-id)
-    - [Atuin](#atuin)
-    - [Mouse support](#mouse-support)
-- [Adding a NixOS host](#adding-a-nixos-host)
-  - [Post-install](#post-install)
+- [Host Bootstrapping](#host-bootstrapping)
+  - [Replacements](#replacements)
+    - [Image-based Systems](#image-based-systems)
+    - [Other Systems](#other-systems)
+  - [Net-new Hosts](#net-new-hosts)
+    - [Adding a new macOS host](#adding-a-new-macos-host)
+      - [Extras steps not done by Nix and/or Homebrew and/or mas](#extras-steps-not-done-by-nix-andor-homebrew-andor-mas)
+        - [Setup sudo via Touch ID](#setup-sudo-via-touch-id)
+        - [Atuin](#atuin)
+        - [Mouse support](#mouse-support)
+    - [Adding a NixOS host](#adding-a-nixos-host)
+      - [Post-install](#post-install)
 
 ## Flake structure
 
@@ -48,7 +52,44 @@ CI validation is defined in `.github/workflows/validate.yml` and mirrors what is
 
 This repo historically contained my dot files. Historically symlinked files on Windows are still in `windows/`. Everything else is just in git history now.
 
-## Adding a new macOS host
+## Host Bootstrapping
+
+### Replacements
+
+Sometimes hosts, or their storage, need replacing... sepcially ones that run on SD cards like `kiosk-gene-desk`. When that time comes, here is how to get it back up and running.
+
+#### Image-based Systems
+
+1. install image
+2. boot with wired connection
+3. ssh in but don’t use known hosts file
+4. restore user and host ssh keys
+5. run `mkdir -p ~/.config/sops/age && ssh-to-age -private-key -i ~/.ssh/id_ed25519 > ~/.config/sops/age/keys.txt && ssh-to-age -i ~/.ssh/id_ed25519.pub  > ~/.config/sops/age/pub-keys.txt`
+6. reboot
+7. ssh in as normal
+8. run these commands:
+
+   ```bash
+   mkdir repos
+   cd repos
+   git clone git@github.com:genebean/dots
+   cd dots
+   nix-auth login
+   nix flake update private-flake # needed so private bits are cached properly
+   nixup
+   ```
+
+9. reboot
+
+#### Other Systems
+
+Yeah.... this is not something I have properly documented. Best guess: install like a net-new host but then restore keys and such like on an image based system. Supplement that with restores from restic backups.
+
+### Net-new Hosts
+
+The directions below are all a bit dated and likely incomplete 😔 They will be updated as time make practical.
+
+#### Adding a new macOS host
 
 1. run `xcode-select --install` to install the command-line developer tools (this includes the Apple's stock version of Git).
 2. create ed25519 ssh key via `ssh-keygen -t ed25519`
@@ -108,19 +149,15 @@ This repo historically contained my dot files. Historically symlinked files on W
 26. After the nix command finally works, open a new iTerm window and it should have all the nixified settings in it.
 27. Go into iTerm2's preferences and use the Hack Nerd Mono font so that the prompt and other things look right. You will likely also want to adjust the size of the font.
 
-### Extras steps not done by Nix and/or Homebrew and/or mas
+##### Extras steps not done by Nix and/or Homebrew and/or mas
 
-#### Firefox profile switcher
-
-You will need to link `firefox-profile-switcher-connector` for it to work. The easiest way to do this is to run `brew reinstall firefox-profile-switcher-connector` and follow the directions printed in the terminal.
-
-#### Setup sudo via  Touch ID
+###### Setup sudo via Touch ID
 
 1. run `sudo cp /etc/pam.d/sudo_local{.template,}` - this will generate a popup asking permission
 2. run `sudo nvim /etc/pam.d/sudo_local` and uncomment line as directed by top comments
 3. save via `!w` which will generate a popup asking permission
 
-#### Atuin
+###### Atuin
 
 Nix installs and configures Atuin, but you still need to log into the server:
 
@@ -129,13 +166,13 @@ Nix installs and configures Atuin, but you still need to log into the server:
 3. run `read -s apass` and enter the user password
 4. run `atuin login --key=$akey --password=$apass --username=gene`
 
-#### Mouse support
+###### Mouse support
 
 - [Logitech M720 Triathlon mouse](https://support.logi.com/hc/en-us/articles/360024698414--Downloads-M720-Triathlon-Multi-Device-Mouse)
 
-## Adding a NixOS host
+#### Adding a NixOS host
 
-### Post-install
+##### Post-install
 
 1. clone this repo
 2. create keys for [SOPS](https://georgheiler.com/post/sops/) via `mkdir -p ~/.config/sops/age && nix run nixpkgs#ssh-to-age -- -private-key -i ~/.ssh/id_ed25519 > ~/.config/sops/age/keys.txt && nix run nixpkgs#ssh-to-age --  -i ~/.ssh/id_ed25519.pub  > ~/.config/sops/age/pub-keys.txt`
