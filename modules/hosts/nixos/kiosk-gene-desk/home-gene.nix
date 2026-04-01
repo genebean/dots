@@ -17,6 +17,7 @@
         "--hide-crash-restore-bubble"
       ];
     };
+    zsh.history.path = "/tmp/zsh_history_gene"; # needed becaues of read only fs
   };
 
 }
