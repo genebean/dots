@@ -17,7 +17,7 @@ vim.opt.mouse = "a"
 
 vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>")
 
-vim.wo.relativenumber = true
+vim.wo.number = true
 
 vim.o.termguicolors = true
 
