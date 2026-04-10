@@ -34,7 +34,6 @@
     age.sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
     defaultSopsFile = ./secrets.yaml;
     secrets = {
-      local_git_config.path = "${config.home.homeDirectory}/.gitconfig-local";
       local_private_env.path = "${config.home.homeDirectory}/.private-env";
     };
   };

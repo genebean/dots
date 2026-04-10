@@ -107,11 +107,6 @@ The directions below are all a bit dated and likely incomplete 😔 They will be
 11. run `mkdir modules/home-manager/hosts/$(hostname -s)`
 12. run `nix run nixpkgs#sops -- modules/home-manager/hosts/$(hostname -s)/secrets.yaml`
 13. Add entries for 
-    - `local_git_config` containing something like this:
-      ```
-      [user]
-        email = me@example.com
-      ```
     - `local_private_env` containing anything you want exported as env vars or local aliases that you want to keep private
     - `tailscale_key`
 14. create `modules/home-manager/hosts/darwin/$(hostname -s)/<username>.nix` based on needs for this machine
