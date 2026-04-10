@@ -29,6 +29,9 @@
               ../modules/shared/home/general
               ../modules/shared/home/linux
               ../modules/hosts/nixos/${hostname}/home-${username}.nix
+
+              inputs.private-flake.homeManagerModules.private.git
+              (inputs.private-flake.homeManagerModules.private.${hostname} or { })
             ];
           };
         }

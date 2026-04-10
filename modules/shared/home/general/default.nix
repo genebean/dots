@@ -138,7 +138,6 @@ in
         "*.swp"
         ".DS_Store"
       ];
-      includes = [ { path = "~/.gitconfig-local"; } ];
       lfs.enable = true;
       package = pkgs.gitFull;
       settings = {
@@ -152,6 +151,9 @@ in
         };
         gpg = {
           format = "ssh";
+          ssh = {
+            allowedSignersFile = "${config.home.homeDirectory}/.config/git/allowed_signers";
+          };
         };
         merge = {
           conflictStyle = "diff3";
@@ -316,7 +318,6 @@ in
       history.size = 1000000;
       initContent = ''
         [ -f ~/.private-env ] && source ~/.private-env || echo '~/.private-env is missing'
-        [ -f ~/.gitconfig-local ] || echo '~/.gitconfig-local is missing. Create it and set user.email'
 
         # Start GPG agent
         # Some tips from https://hedberg.io/yubikey-for-ssh/ helped simplify this:
