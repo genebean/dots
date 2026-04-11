@@ -34,6 +34,7 @@
           };
         }
 
+        inputs.genebean-neovim.homeManagerModules.default
         inputs.nix-flatpak.homeManagerModules.nix-flatpak
         inputs.private-flake.homeManagerModules.private.git
         inputs.sops-nix.homeManagerModules.sops

@@ -258,6 +258,27 @@
         "type": "github"
       }
     },
+    "genebean-neovim": {
+      "inputs": {
+        "nix-wrapper-modules": "nix-wrapper-modules",
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1775875603,
+        "narHash": "sha256-U3pv5uw/V0STc+osvb+QOlAuQ4ROZ5nu83i5yyj6WWo=",
+        "owner": "genebean",
+        "repo": "neovim-flake",
+        "rev": "baf7503fe8f4f8749253033d01620ff5dd52641b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "genebean",
+        "repo": "neovim-flake",
+        "type": "github"
+      }
+    },
     "genebean-omp-themes": {
       "flake": false,
       "locked": {
@@ -480,6 +501,27 @@
         "type": "github"
       }
     },
+    "nix-wrapper-modules": {
+      "inputs": {
+        "nixpkgs": [
+          "genebean-neovim",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1775724285,
+        "narHash": "sha256-/ukfzDYzcuz7i+unH7XioPS3Acam6FC935XsOCaJDmY=",
+        "owner": "BirdeeHub",
+        "repo": "nix-wrapper-modules",
+        "rev": "d79d2f910dd0d8bffd11113865923199cb304f86",
+        "type": "github"
+      },
+      "original": {
+        "owner": "BirdeeHub",
+        "repo": "nix-wrapper-modules",
+        "type": "github"
+      }
+    },
     "nixos-cosmic": {
       "inputs": {
         "flake-compat": "flake-compat_2",
@@ -677,6 +719,7 @@
         "deadnix": "deadnix",
         "disko": "disko",
         "flox": "flox",
+        "genebean-neovim": "genebean-neovim",
         "genebean-omp-themes": "genebean-omp-themes",
         "home-manager": "home-manager",
         "nix-auth": "nix-auth",
