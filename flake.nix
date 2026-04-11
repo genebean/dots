@@ -27,6 +27,11 @@
       url = "github:flox/flox/v1.4.4";
     };
 
+    genebean-neovim = {
+      url = "github:genebean/neovim-flake";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     # My oh-my-posh theme
     genebean-omp-themes = {
       url = "github:genebean/my-oh-my-posh-themes";

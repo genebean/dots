@@ -4,18 +4,6 @@
   pkgs,
   ...
 }:
-let
-  sqlite_lib =
-    if
-      builtins.elem pkgs.stdenv.hostPlatform.system [
-        "aarch64-darwin"
-        "x86_64-darwin"
-      ]
-    then
-      "libsqlite3.dylib"
-    else
-      "libsqlite3.so";
-in
 {
   home = {
     packages = with pkgs; [
@@ -74,14 +62,6 @@ in
       PAGER = "less";
     };
     file = {
-      ".config/nvim/lua/config" = {
-        source = ../../files/nvim/lua/config;
-        recursive = true;
-      };
-      ".config/nvim/lua/plugins" = {
-        source = ../../files/nvim/lua/plugins;
-        recursive = true;
-      };
       ".config/powershell/Microsoft.PowerShell_profile.ps1".source =
         ../../files/Microsoft.PowerShell_profile.ps1;
       ".config/powershell/Microsoft.VSCode_profile.ps1".source =
@@ -130,6 +110,7 @@ in
     };
     eza.enable = true;
     fzf.enable = true;
+    genebean-neovim.enable = true;
     gh.enable = true;
     git = {
       enable = true;
@@ -170,38 +151,6 @@ in
     }; # end git
     irssi.enable = true;
     jq.enable = true;
-    neovim = {
-      enable = true;
-      defaultEditor = true;
-      extraLuaConfig = ''
-        -- NOTE: This will get the OS from Lua:
-        -- print(vim.loop.os_uname().sysname)
-
-        -- setup lazy.nvim
-        local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-        vim.opt.rtp:prepend(lazypath)
-
-        -- hack to deal with bug in telescope-cheat.nvim
-        -- https://github.com/nvim-telescope/telescope-cheat.nvim/issues/7
-        local cheat_dbdir = vim.fn.stdpath "data" .. "/databases"
-        if not vim.loop.fs_stat(cheat_dbdir) then
-          vim.loop.fs_mkdir(cheat_dbdir, 493)
-        end
-
-        -- load additional settings
-        require("config.vim-options")
-        require("lazy").setup("plugins")
-
-        -- tell sqlite.lua where to find the bits it needs
-        vim.g.sqlite_clib_path = '${pkgs.sqlite.out}/lib/${sqlite_lib}'
-
-      '';
-      extraPackages = with pkgs; [
-        gcc # needed so treesitter can do compiling
-        sqlite # needed by sqlite.lua used by telescope-cheat
-      ];
-      plugins = [ pkgs.vimPlugins.lazy-nvim ]; # let lazy.nvim manage every other plugin
-    };
     nh = {
       enable = true;
       flake = "${config.home.homeDirectory}/repos/dots";
