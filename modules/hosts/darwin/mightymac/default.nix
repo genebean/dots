@@ -5,6 +5,7 @@
   environment = {
     systemPackages = with pkgs; [
       chart-testing
+      golangci-lint
       goreleaser
       inputs.flox.packages.${pkgs.stdenv.hostPlatform.system}.default
       kopia
