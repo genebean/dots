@@ -173,6 +173,7 @@
         nixnuc = localLib.mkNixosHost {
           hostname = "nixnuc";
           additionalModules = [
+            inputs.private-flake.nixosModules.private.nixnuc
             inputs.simple-nixos-mailserver.nixosModule
           ];
         };
