@@ -9,7 +9,7 @@ in
   virtualisation.oci-containers.containers = {
     "audiobookshelf" = {
       autoStart = true;
-      image = "ghcr.io/advplyr/audiobookshelf:2.33.1";
+      image = "ghcr.io/advplyr/audiobookshelf:2.34.0";
       environment = {
         AUDIOBOOKSHELF_UID = "99";
         AUDIOBOOKSHELF_GID = "100";
