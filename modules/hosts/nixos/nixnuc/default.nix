@@ -278,10 +278,16 @@ in
       #  inherit calendar contacts cookbook maps notes tasks;
       #};
       #extraAppsEnable = true;
+      fastcgiTimeout = 3600;
       home = "/orico/nextcloud";
       https = true;
       maxUploadSize = "100G"; # Increase the PHP maximum file upload size
-      phpOptions."opcache.interned_strings_buffer" = "16"; # Suggested by Nextcloud's health check.
+      phpOptions = {
+        "max_execution_time" = "3600";
+        "max_input_time" = "3600";
+        "opcache.interned_strings_buffer" = "16"; # Suggested by Nextcloud's health check.
+        "upload_tmp_dir" = "/orico/nextcloud/php-upload-tmp";
+      };
       settings = {
         default_phone_region = "US";
         # https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#enabledpreviewproviders
