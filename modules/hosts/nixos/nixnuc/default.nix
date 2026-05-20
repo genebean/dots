@@ -17,6 +17,7 @@ in
     ./containers/audiobookshelf.nix
     ./containers/mountain-mesh-bot-discord.nix
     ./containers/psitransfer.nix
+    ./cup-collector.nix
     ./monitoring-stack.nix
     ../../../shared/nixos/lets-encrypt.nix
     ../../../shared/nixos/restic.nix
@@ -98,12 +99,14 @@ in
         3002 # grafana
         3005 # Firefly III
         3006 # Firefly III Data Importer
+        3010 # Cup Collector
         3030 # Forgejo
         3087 # Youtarr in docker compose
         8001 # Tube Archivist
         8384 # Syncthing gui
         8888 # Atuin
         8090 # Wallabag in docker compose
+        8091 # PocketBase
         8945 # Pinchflat
         13378 # Audiobookshelf in oci-container
       ];
@@ -146,13 +149,6 @@ in
 
   # List services that you want to enable:
   services = {
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-    };
-    pulseaudio.enable = false;
     atuin = {
       enable = true;
       host = "127.0.0.1";
@@ -594,6 +590,12 @@ in
       selfhosted = true; # Only because this is not exsposed to the web
       user = "jellyfin";
     };
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
     pocket-id = {
       enable = true;
       settings = {
@@ -617,6 +619,7 @@ in
       backupAll = true;
       startAt = "*-*-* 23:00:00";
     };
+    pulseaudio.enable = false;
     resolved.enable = true;
     restic.backups.daily = {
       paths = [

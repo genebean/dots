@@ -99,6 +99,7 @@
       "BetterSnapTool" = 417375580;
       "Brother iPrint&Scan" = 1193539993;
       "Home Assistant" = 1099568401;
+      "LocalSend" = 1661733229;
       "MQTT Explorer" = 1455214828;
     };
   };
@@ -109,6 +110,7 @@
     settings = {
       bash-prompt-prefix = "(nix:$name)\040";
       build-users-group = "nixbld";
+      download-buffer-size = 524288000;
       experimental-features = [
         "auto-allocate-uids"
         "flakes"
