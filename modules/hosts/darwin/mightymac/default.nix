@@ -21,7 +21,6 @@
     taps = [
       "hashicorp/tap"
       "openvoxproject/openvox"
-      "puppetlabs/puppet"
       "wouterdebie/repo"
     ];
     brews = [
@@ -49,7 +48,6 @@
       "obs"
       "openvox8-agent"
       "openvox8-openbolt"
-      "pdk"
       "podman-desktop"
       "qmk-toolbox"
       "raspberry-pi-imager"

@@ -21,6 +21,7 @@
       bandwhich
       coreutils
       hugo
+      mas
       nmap
       openjdk
       sops
@@ -31,7 +32,7 @@
   homebrew = {
     enable = true;
     onActivation = {
-      autoUpdate = true;
+      autoUpdate = false; # was true but https://github.com/zhaofengli/nix-homebrew/issues/131
       cleanup = "zap";
       upgrade = true;
     };
@@ -48,7 +49,6 @@
         args = [ "with-srt" ];
       }
       #"firefox-profile-switcher-connector" # having had this on seems to mean I need to toggle browser.profiles.enabled to true in about:config for the new built in version
-      "mas"
       "ssh-askpass"
       "telnet"
     ];
