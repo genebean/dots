@@ -276,6 +276,20 @@
         fi
 
         export GPG_TTY=$(tty)
+
+        # gfr = git fetch rebase and functions on default branch
+        gfr() {
+          local default_branch
+          default_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
+
+          if [ -z "$default_branch" ]; then
+            echo "Error: Default branch not found. Run 'git remote set-head origin -a' first."
+            return 1
+          fi
+
+          git fetch origin "$default_branch":"$default_branch" && git rebase "$default_branch"
+        }
+
         function nv() {
           # Assumes all configs exist in directories named ~/.config/nvim-*
           local config=$(fd --max-depth 1 --glob 'nvim*' ~/.config | fzf --prompt="Neovim Configs > " --height=~50% --layout=reverse --border --exit-0)
