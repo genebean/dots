@@ -31,7 +31,6 @@
       "google-drive"
       "kopiaui"
       "obs"
-      "pdk"
       "puppet-agent"
       "puppet-bolt"
       "qmk-toolbox"

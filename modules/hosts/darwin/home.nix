@@ -13,7 +13,6 @@
 
         # Include Puppet's normal bin folder since it is installed via Homebrew
         export PATH=$PATH:/opt/puppetlabs/bin
-        export PATH=$PATH:/opt/puppetlabs/pdk/bin
         export PATH=$PATH:/opt/puppetlabs/puppet/bin
 
         # Podman installer pkg for the cli places podman here
