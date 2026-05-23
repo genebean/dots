@@ -11,7 +11,6 @@ local is_mac = wezterm.target_triple:find('darwin') ~= nil
 -- ==========================================
 config.font = wezterm.font('Hack Nerd Font')
 config.font_size = 13.0
-config.window_decorations = "RESIZE" -- Removes the bulky macOS title bar
 config.bold_brightens_ansi_colors = false
 config.enable_scroll_bar = true
 
