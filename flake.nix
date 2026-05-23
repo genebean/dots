@@ -11,6 +11,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    cup-collector = {
+      url = "github:genebean/cup-collector";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Linting and formatting
     deadnix = {
       url = "github:astro/deadnix";
@@ -173,6 +178,7 @@
         nixnuc = localLib.mkNixosHost {
           hostname = "nixnuc";
           additionalModules = [
+            inputs.cup-collector.nixosModules.default
             inputs.private-flake.nixosModules.private.nixnuc
             inputs.simple-nixos-mailserver.nixosModule
           ];
