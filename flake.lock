@@ -77,11 +77,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779592630,
-        "narHash": "sha256-rRqvFOgcpWubza7kXwedHHQuVmnjwZ3ftsaLAH0qAyw=",
+        "lastModified": 1779744774,
+        "narHash": "sha256-KeIQvXbDYq7tZqtE+oAD5ootIWeoEq9HovNX+e/ly68=",
         "owner": "genebean",
         "repo": "cup-collector",
-        "rev": "14276604e62c2acd9211a5fcf1dae01d93b98588",
+        "rev": "4be6baf241794dd63ead477a2918bb83a5c061a5",
         "type": "github"
       },
       "original": {
