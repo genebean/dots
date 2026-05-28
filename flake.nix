@@ -180,7 +180,6 @@
           additionalModules = [
             inputs.cup-collector.nixosModules.default
             inputs.private-flake.nixosModules.private.nixnuc
-            inputs.simple-nixos-mailserver.nixosModule
           ];
         };
         # This machines is currently running Ubuntu and

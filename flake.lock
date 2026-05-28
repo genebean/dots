@@ -740,11 +740,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1777743346,
-        "narHash": "sha256-gJ0aOSvmr1g06oSKGNDlIvfex7BVVxyP3txQ9gg2fdQ=",
+        "lastModified": 1779934676,
+        "narHash": "sha256-wp/K//HuAPN0TureyV342zjoee+vSq64+guX35X7DMU=",
         "owner": "genebean",
         "repo": "private-flake",
-        "rev": "8a0c1d3cf8a4eee614ac8c665dce70794de5f973",
+        "rev": "7ad20ffceb1b6e48af13b2207241441a2cafa97e",
         "type": "github"
       },
       "original": {
