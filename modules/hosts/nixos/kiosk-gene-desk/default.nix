@@ -39,13 +39,6 @@
     useNetworkd = true;
     wireless = {
       enable = true;
-      networks = {
-        # Home
-        "Diagon Alley".pskRaw = "ext:psk_diagon_alley";
-        # Public networks
-        "Gallery Row-GuestWiFi" = { };
-        "LocalTies Guest".pskRaw = "ext:psk_local_ties";
-      };
       secretsFile = "${config.sops.secrets.wifi_creds.path}";
     };
   };
