@@ -51,8 +51,8 @@ in
       enable = true;
       configureNginx = true;
       environment = {
-        NOMINATIM_API_HOST = "nominatim.home.technicalissues.us";
-        NOMINATIM_API_USE_HTTPS = "true";
+        PHOTON_API_HOST = "nixnuc.atlas-snares.ts.net:2322";
+        PHOTON_API_USE_HTTPS = "false";
       };
       extraEnvFiles = [
         "${config.sops.secrets.dawarich_env.path}"
