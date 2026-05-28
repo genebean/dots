@@ -68,25 +68,6 @@ in
     ];
   };
 
-  mailserver = {
-    enable = true;
-    enableImap = false;
-    enableImapSsl = false;
-    fqdn = "mail.${home_domain}";
-    domains = [
-      home_domain
-    ];
-    forwards = {
-      "${username}@localhost" = "${username}@technicalissues.us";
-      "root@localhost" = "root@technicalissues.us";
-      "root@${config.networking.hostName}" = "root@technicalissues.us";
-    };
-    stateVersion = 3;
-
-    # Use Let's Encrypt certificates from Nginx
-    certificateScheme = "acme";
-  };
-
   networking = {
     # Open ports in the firewall.
     firewall = {
@@ -326,7 +307,6 @@ in
         "${home_domain}" = {
           default = true;
           serverAliases = [
-            "mail.${home_domain}"
             "nix-tester.${home_domain}"
           ];
           listen = [
