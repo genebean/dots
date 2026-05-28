@@ -15,6 +15,7 @@ in
       image = "docker.io/rtuszik/photon-docker:latest";
       environment = {
         REGION = "planet";
+        SUPPRESS_BOLTDB_WARNING = "1";
         UPDATE_STRATEGY = "PARALLEL";
         UPDATE_INTERVAL = "30d";
       };
