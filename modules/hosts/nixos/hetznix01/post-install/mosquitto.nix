@@ -51,7 +51,7 @@ in
       homeassistant = {
         addresses = [
           {
-            address = "homeasistant-lc.atlas-snares.ts.net";
+            address = "homeasistant-lc.${config.private-flake.tailnetDomain}";
             port = 1883;
           }
         ];

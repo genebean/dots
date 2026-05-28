@@ -161,12 +161,16 @@
         kiosk-entryway = localLib.mkNixosHost {
           # Lenovo IdeaCentre Q190
           hostname = "kiosk-entryway";
+          additionalModules = [
+            inputs.private-flake.nixosModules.private.kiosk
+          ];
         };
         kiosk-gene-desk = localLib.mkNixosHost {
           system = "aarch64-linux";
           hostname = "kiosk-gene-desk";
           additionalModules = [
             inputs.nixos-hardware.nixosModules.raspberry-pi-4
+            inputs.private-flake.nixosModules.private.kiosk
           ];
         };
         nixnas1 = localLib.mkNixosHost {

@@ -51,7 +51,7 @@ in
       enable = true;
       configureNginx = true;
       environment = {
-        PHOTON_API_HOST = "nixnuc.atlas-snares.ts.net:2322";
+        PHOTON_API_HOST = "nixnuc.${config.private-flake.tailnetDomain}:2322";
         PHOTON_API_USE_HTTPS = "false";
       };
       extraEnvFiles = [
