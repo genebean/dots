@@ -16,9 +16,11 @@ in
     ./hardware-configuration.nix
     ./containers/audiobookshelf.nix
     ./containers/mountain-mesh-bot-discord.nix
+    ./containers/photon.nix
     ./containers/psitransfer.nix
     ./cup-collector.nix
     ./monitoring-stack.nix
+    ./zfs-datasets.nix
     ../../../shared/nixos/lets-encrypt.nix
     ../../../shared/nixos/restic.nix
   ];
@@ -75,6 +77,7 @@ in
         22 # ssh
         80 # http to local Nginx
         443 # https to local Nginx
+        2322 # Photon geocoder in oci-container
         3000 # PsiTransfer in oci-container
         3001 # immich-kiosk in compose
         3002 # grafana
@@ -525,18 +528,6 @@ in
           acmeRoot = null;
           forceSSL = true;
         };
-        "nominatim.${home_domain}" = {
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          extraConfig = ''
-            allow 127.0.0.1;
-            allow ::1;
-            allow 2600:1700:1712:880f:8eee:4ba4:75dc:f39c;
-            allow 100.64.0.0/10;
-            deny all;
-          '';
-        };
         "readit.${home_domain}" = {
           listen = [
             {
@@ -551,17 +542,6 @@ in
           locations."/".proxyPass = "http://${backend_ip}:8090";
         };
       };
-    };
-    nominatim = {
-      enable = true;
-      hostName = "nominatim.home.technicalissues.us";
-      settings = {
-        NOMINATIM_PROJECT_DIR = "/var/lib/nominatim/project";
-      };
-      ui.config = ''
-        Nominatim_Config.Page_Title="Beantown's Nominatim";
-        Nominatim_Config.Nominatim_API_Endpoint='https://${config.services.nominatim.hostName}/';
-      '';
     };
     pinchflat = {
       enable = true;
@@ -586,13 +566,6 @@ in
     postgresql = {
       enable = true;
       package = pkgs.postgresql_16;
-      ensureUsers = [
-        {
-          # Required by Nominatim
-          name = "www-data";
-          ensureDBOwnership = false;
-        }
-      ];
     };
     postgresqlBackup = {
       enable = true;
