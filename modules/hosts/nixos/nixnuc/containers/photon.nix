@@ -1,7 +1,6 @@
 { config, ... }:
 let
   volume_base = "/orico/photon";
-  http_port = "2322";
 in
 {
   systemd.services."${config.virtualisation.oci-containers.containers.photon.serviceName}" = {
@@ -19,7 +18,7 @@ in
         UPDATE_STRATEGY = "PARALLEL";
         UPDATE_INTERVAL = "30d";
       };
-      ports = [ "${http_port}:2322" ];
+      ports = [ "${toString config.dots.ports.photon.port}:2322" ];
       volumes = [
         "${volume_base}:/photon/data"
       ];

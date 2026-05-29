@@ -22,9 +22,9 @@ in
       ];
       migrationsDir = inputs.cup-collector.packages.${pkgs.stdenv.hostPlatform.system}.migrations;
       pbBindIp = "0.0.0.0";
-      pbPort = 8091; # override default due to conflict
+      pbPort = config.dots.ports.pocketbase.port; # override default due to conflict
       pocketidIssuerUrl = config.services.pocket-id.settings.APP_URL;
-      port = 3010; # override default due to conflict
+      inherit (config.dots.ports.cup-collector) port; # override default due to conflict
     };
 
     restic.backups.daily = {

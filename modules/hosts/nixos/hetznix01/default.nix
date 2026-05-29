@@ -1,4 +1,6 @@
 {
+  config,
+  lib,
   pkgs,
   username,
   ...
@@ -6,8 +8,10 @@
 {
   imports = [
     ../../../shared/nixos/nixroutes.nix
+    ../../../shared/nixos/ports.nix
     ./disk-config.nix
     ./hardware-configuration.nix
+    ./ports.nix
     ./post-install
   ];
 
@@ -27,27 +31,18 @@
   ];
 
   networking = {
-    # Open ports in the firewall.
-    firewall.allowedTCPPorts = [
-      22 # ssh
-      25 # SMTP (unencrypted)
-      80 # http to local Nginx
-      143 # imap
-      443 # https to local Nginx
-      465 # SMTP with TLS
-      587 # SMTP with STARTTLS
-      993 # imaps
-      1883 # mqtt
-      8333 # Bitcoin Core
-      8448 # Matrix Synapse
-      8883 # mqtt over tls
-      9001 # mqtt websockets over tls
-      9333 # Bitcoin Knots
-      9735 # LND
-    ];
-    # firewall.allowedUDPPorts = [ ... ];
-    # Or disable the firewall altogether.
-    # firewall.enable = false;
+    firewall = {
+      allowedTCPPorts = lib.pipe config.dots.ports [
+        builtins.attrValues
+        (builtins.filter (e: e.openFirewall && e.protocol == "tcp"))
+        (map (e: e.port))
+      ];
+      allowedUDPPorts = lib.pipe config.dots.ports [
+        builtins.attrValues
+        (builtins.filter (e: e.openFirewall && e.protocol == "udp"))
+        (map (e: e.port))
+      ];
+    };
 
     hostId = "85d0e6cb"; # head -c4 /dev/urandom | od -A none -t x4
 

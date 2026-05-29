@@ -1,12 +1,12 @@
 {
   inputs,
   config,
+  lib,
   pkgs,
   username,
   ...
 }:
 let
-  https_port = 443;
   home_domain = "home.technicalissues.us";
   backend_ip = "127.0.0.1";
   restic_backup_time = "02:00";
@@ -20,8 +20,10 @@ in
     ./containers/psitransfer.nix
     ./cup-collector.nix
     ./monitoring-stack.nix
+    ./ports.nix
     ./zfs-datasets.nix
     ../../../shared/nixos/lets-encrypt.nix
+    ../../../shared/nixos/ports.nix
     ../../../shared/nixos/restic.nix
   ];
 
@@ -71,36 +73,18 @@ in
   };
 
   networking = {
-    # Open ports in the firewall.
     firewall = {
-      allowedTCPPorts = [
-        22 # ssh
-        80 # http to local Nginx
-        443 # https to local Nginx
-        2322 # Photon geocoder in oci-container
-        3000 # PsiTransfer in oci-container
-        3001 # immich-kiosk in compose
-        3002 # grafana
-        3005 # Firefly III
-        3006 # Firefly III Data Importer
-        3010 # Cup Collector
-        3030 # Forgejo
-        3087 # Youtarr in docker compose
-        8001 # Tube Archivist
-        8384 # Syncthing gui
-        8888 # Atuin
-        8090 # Wallabag in docker compose
-        8091 # PocketBase
-        8945 # Pinchflat
-        13378 # Audiobookshelf in oci-container
+      allowedTCPPorts = lib.pipe config.dots.ports [
+        builtins.attrValues
+        (builtins.filter (e: e.openFirewall && e.protocol == "tcp"))
+        (map (e: e.port))
       ];
-      allowedUDPPorts = [
-        1900 # Jellyfin service auto-discovery
-        7359 # Jellyfin auto-discovery
+      allowedUDPPorts = lib.pipe config.dots.ports [
+        builtins.attrValues
+        (builtins.filter (e: e.openFirewall && e.protocol == "udp"))
+        (map (e: e.port))
       ];
     };
-    # Or disable the firewall altogether.
-    # firewall.enable = false;
 
     hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4
 
@@ -177,7 +161,7 @@ in
       enable = true;
       enableNginx = true;
       settings = {
-        FIREFLY_III_URL = "http://localhost:3005";
+        FIREFLY_III_URL = "http://localhost:${toString config.dots.ports.fireflyiii.port}";
         VANITY_URL_FILE = "${config.sops.secrets.firefly_vanity_url.path}";
         FIREFLY_III_ACCESS_TOKEN_FILE = "${config.sops.secrets.firefly_pat_data_import.path}";
         SIMPLEFIN_TOKEN_FILE = "${config.sops.secrets.firefly_simplefin_token.path}";
@@ -203,7 +187,7 @@ in
         };
         server = {
           DOMAIN = "git.${home_domain}";
-          HTTP_PORT = 3030;
+          HTTP_PORT = config.dots.ports.forgejo.port;
           LANDING_PAGE = "explore";
           ROOT_URL = "https://git.${home_domain}/";
         };
@@ -222,7 +206,7 @@ in
       enable = true;
       credentialsFile = config.sops.secrets.mealie.path;
       listenAddress = "0.0.0.0";
-      port = 9000;
+      inherit (config.dots.ports.mealie) port;
       settings = {
         ALLOW_SIGNUP = "false";
         BASE_URL = "https://mealie.${home_domain}";
@@ -314,7 +298,7 @@ in
           ];
           listen = [
             {
-              port = https_port;
+              inherit (config.dots.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -339,7 +323,7 @@ in
         "ab.${home_domain}" = {
           listen = [
             {
-              port = https_port;
+              inherit (config.dots.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -348,7 +332,7 @@ in
           acmeRoot = null;
           forceSSL = true;
           locations."/".proxyWebsockets = true;
-          locations."/".proxyPass = "http://${backend_ip}:13378";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.audiobookshelf.port}";
           extraConfig = ''
             client_max_body_size 0;
           '';
@@ -356,7 +340,7 @@ in
         "atuin.${home_domain}" = {
           listen = [
             {
-              port = https_port;
+              inherit (config.dots.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -364,19 +348,19 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:8888";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.atuin.port}";
         };
         # budget.${home_domain}
         "${config.services.firefly-iii.virtualHost}".listen = [
           {
-            port = 3005;
+            inherit (config.dots.ports.fireflyiii) port;
             addr = "0.0.0.0";
             ssl = false;
           }
         ];
         "${config.services.firefly-iii-data-importer.virtualHost}".listen = [
           {
-            port = 3006;
+            inherit (config.dots.ports.fireflyiii-importer) port;
             addr = "0.0.0.0";
             ssl = false;
           }
@@ -384,7 +368,7 @@ in
         "git.${home_domain}" = {
           listen = [
             {
-              port = https_port;
+              inherit (config.dots.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -392,7 +376,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:3030";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.forgejo.port}";
           extraConfig = ''
             client_max_body_size 0;
           '';
@@ -400,7 +384,7 @@ in
         "id.${home_domain}" = {
           listen = [
             {
-              port = https_port;
+              inherit (config.dots.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -408,7 +392,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:1411";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.pocket-id.port}";
           extraConfig = ''
             proxy_busy_buffers_size   512k;
             proxy_buffers           4 512k;
@@ -418,7 +402,7 @@ in
         "immich.${home_domain}" = {
           listen = [
             {
-              port = https_port;
+              inherit (config.dots.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -426,7 +410,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:2283";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.immich.port}";
           locations."/".proxyWebsockets = true;
           extraConfig = ''
             client_max_body_size 0;
@@ -438,7 +422,7 @@ in
         "immich-kiosk.${home_domain}" = {
           listen = [
             {
-              port = https_port;
+              inherit (config.dots.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -447,7 +431,7 @@ in
           acmeRoot = null;
           forceSSL = true;
           basicAuthFile = config.sops.secrets.immich_kiosk_basic_auth.path;
-          locations."/".proxyPass = "http://${backend_ip}:3001";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.immich-kiosk.port}";
           locations."/".proxyWebsockets = true;
           extraConfig = ''
             client_max_body_size 0;
@@ -459,7 +443,7 @@ in
         "jellyfin.${home_domain}" = {
           listen = [
             {
-              port = https_port;
+              inherit (config.dots.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -469,14 +453,14 @@ in
           forceSSL = true;
           locations = {
             "/" = {
-              proxyPass = "http://${backend_ip}:8096";
+              proxyPass = "http://${backend_ip}:${toString config.dots.ports.jellyfin.port}";
               extraConfig = ''
                 proxy_buffering off;
                 proxy_set_header X-Forwarded-Protocol $scheme;
               '';
             };
             "/socket" = {
-              proxyPass = "http://${backend_ip}:8096";
+              proxyPass = "http://${backend_ip}:${toString config.dots.ports.jellyfin.port}";
               proxyWebsockets = true;
               extraConfig = ''
                 proxy_set_header X-Forwarded-Protocol $scheme;
@@ -490,7 +474,7 @@ in
         "mealie.${home_domain}" = {
           listen = [
             {
-              port = https_port;
+              inherit (config.dots.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -498,7 +482,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:9000";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.mealie.port}";
           extraConfig = ''
             client_max_body_size 10M;
           '';
@@ -506,7 +490,7 @@ in
         "monitoring.${home_domain}" = {
           listen = [
             {
-              port = https_port;
+              inherit (config.dots.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -515,10 +499,10 @@ in
           acmeRoot = null;
           forceSSL = true;
           locations = {
-            "/grafana/".proxyPass = "http://${backend_ip}:3002/grafana/";
+            "/grafana/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.grafana.port}/grafana/";
             "/remotewrite" = {
               basicAuthFile = config.sops.secrets.nginx_basic_auth.path;
-              proxyPass = "http://127.0.0.1:8428/api/v1/write";
+              proxyPass = "http://127.0.0.1:${toString config.dots.ports.victoriametrics.port}/api/v1/write";
               proxyWebsockets = true;
             };
           };
@@ -531,7 +515,7 @@ in
         "readit.${home_domain}" = {
           listen = [
             {
-              port = https_port;
+              inherit (config.dots.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -539,7 +523,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:8090";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.wallabag.port}";
         };
       };
     };
