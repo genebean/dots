@@ -16,10 +16,10 @@ in
       ];
       hostname = "emqx1.hetznix01.technicalissues.us";
       ports = [
-        "1883:1883"
+        "${toString config.dots.ports.mqtt.port}:1883"
         #"8083:8083"
         #"8084:8084"
-        "18083:18083"
+        "${toString config.dots.ports.emqx-admin.port}:18083"
       ];
       volumes = [
         "${volume_base}/data:/opt/emqx/data"

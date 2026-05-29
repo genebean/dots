@@ -13,7 +13,7 @@
       signing_key_path = config.sops.secrets.matrix_homeserver_signing_key.path;
       listeners = [
         {
-          port = 8008;
+          inherit (config.dots.ports.matrix-synapse) port;
           tls = false;
           type = "http";
           x_forwarded = true;

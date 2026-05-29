@@ -1,7 +1,6 @@
-_:
+{ config, ... }:
 let
   volume_base = "/var/lib/audiobookshelf";
-  http_port = "13378";
 in
 {
   # Audiobookshelf
@@ -14,7 +13,7 @@ in
         AUDIOBOOKSHELF_UID = "99";
         AUDIOBOOKSHELF_GID = "100";
       };
-      ports = [ "${http_port}:80" ];
+      ports = [ "${toString config.dots.ports.audiobookshelf.port}:80" ];
       volumes = [
         "${volume_base}/audiobooks:/audiobooks"
         "${volume_base}/podcasts:/podcasts"

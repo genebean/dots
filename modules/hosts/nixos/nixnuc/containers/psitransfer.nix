@@ -1,7 +1,6 @@
 { config, ... }:
 let
   volume_base = "/orico/psitransfer";
-  http_port = "3000";
   psitransfer_dot_env = "${config.sops.secrets.psitransfer_dot_env.path}";
 in
 {
@@ -24,7 +23,7 @@ in
       autoStart = true;
       image = "psitrax/psitransfer";
       environmentFiles = [ psitransfer_dot_env ];
-      ports = [ "${http_port}:3000" ];
+      ports = [ "${toString config.dots.ports.psitransfer.port}:3000" ];
       volumes = [
         "${volume_base}/data:/data"
       ];
