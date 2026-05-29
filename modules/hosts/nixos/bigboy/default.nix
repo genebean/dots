@@ -97,6 +97,17 @@ in
     printing.enable = true; # Enable CUPS
     pulseaudio.enable = false;
     smartd.enable = true;
+    tailscale = {
+      enable = true;
+      authKeyFile = config.sops.secrets.tailscale_key.path;
+      extraUpFlags = [
+        "--operator"
+        "${username}"
+        "--ssh"
+      ];
+      useRoutingFeatures = "client";
+    };
+    thermald.enable = true;
     xserver = {
       enable = true;
       xkb = {
@@ -113,6 +124,9 @@ in
       local_private_env = {
         owner = "${username}";
         path = "${config.users.users.${username}.home}/.private-env";
+      };
+      tailscale_key = {
+        restartUnits = [ "tailscaled-autoconnect.service" ];
       };
     };
   };
@@ -131,5 +145,10 @@ in
       kdePackages.kate
       #  thunderbird
     ];
+  };
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
   };
 }
