@@ -19,6 +19,10 @@ in
           name = "Liverman Family";
           slug = "liverman_family";
         }
+        {
+          name = "Bragg Family";
+          slug = "bragg_family";
+        }
       ];
       migrationsDir = inputs.cup-collector.packages.${pkgs.stdenv.hostPlatform.system}.migrations;
       pbBindIp = "0.0.0.0";

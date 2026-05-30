@@ -12,7 +12,7 @@
     };
 
     cup-collector = {
-      url = "github:genebean/cup-collector/v1.0.0";
+      url = "github:genebean/cup-collector/v1.1.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
