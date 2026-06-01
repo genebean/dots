@@ -7,6 +7,7 @@
 }:
 {
   imports = [
+    ../../../shared/nixos/ports.nix
     ./disk-config.nix
     ./hardware-configuration.nix
     ./monitoring.nix
