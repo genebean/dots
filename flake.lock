@@ -275,6 +275,24 @@
         "type": "github"
       }
     },
+    "flake-utils_3": {
+      "inputs": {
+        "systems": "systems_3"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "flox": {
       "inputs": {
         "crane": "crane",
@@ -774,7 +792,8 @@
         "private-flake": "private-flake",
         "simple-nixos-mailserver": "simple-nixos-mailserver",
         "sops-nix": "sops-nix",
-        "statix": "statix"
+        "statix": "statix",
+        "viscosity-cli": "viscosity-cli"
       }
     },
     "rust-analyzer-src": {
@@ -927,6 +946,21 @@
         "type": "github"
       }
     },
+    "systems_3": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
     "treefmt-nix": {
       "inputs": {
         "nixpkgs": "nixpkgs_2"
@@ -960,6 +994,28 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "viscosity-cli": {
+      "inputs": {
+        "flake-utils": "flake-utils_3",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1780329762,
+        "narHash": "sha256-M3oXGATtDnZk/lwIW8K9PlWA1gKY0XhNfqM/1MeouZI=",
+        "owner": "genebean",
+        "repo": "viscosity-cli",
+        "rev": "ebc2d35382f85fbe39863c04cb8c2effc9d6ffd7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "genebean",
+        "ref": "nix-flake",
+        "repo": "viscosity-cli",
         "type": "github"
       }
     }

@@ -8,6 +8,7 @@
       golangci-lint
       goreleaser
       inputs.flox.packages.${pkgs.stdenv.hostPlatform.system}.default
+      inputs.viscosity-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
       kopia
       kubectx
       #reposurgeon # Nix is a major version behind brew

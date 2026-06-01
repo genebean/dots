@@ -104,6 +104,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    viscosity-cli = {
+      url = "github:genebean/viscosity-cli/nix-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   }; # end inputs
   outputs =
     inputs@{ self, nixpkgs, ... }:
