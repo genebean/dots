@@ -10,6 +10,7 @@
   imports = [
     # SD card image
     "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
+    ../../../shared/nixos/ports.nix
     ./read-only-root.nix
   ];
 
@@ -92,6 +93,7 @@
       };
     prometheus.exporters.node = {
       enable = true;
+      inherit (config.dots.ports.node-exporter) port;
       enabledCollectors = [
         "logind"
         "systemd"

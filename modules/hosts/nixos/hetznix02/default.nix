@@ -1,5 +1,7 @@
 {
+  config,
   inputs,
+  lib,
   pkgs,
   username,
   ...
@@ -7,6 +9,7 @@
 {
   imports = [
     ../../../shared/nixos/nixroutes.nix
+    ../../../shared/nixos/ports.nix
     ./disk-config.nix
     ./hardware-configuration.nix
     ./post-install
@@ -33,15 +36,18 @@
   ];
 
   networking = {
-    # Open ports in the firewall.
-    firewall.allowedTCPPorts = [
-      22 # ssh
-      80 # Nginx
-      443 # Nginx
-    ];
-    # firewall.allowedUDPPorts = [ ... ];
-    # Or disable the firewall altogether.
-    # firewall.enable = false;
+    firewall = {
+      allowedTCPPorts = lib.pipe config.dots.ports [
+        builtins.attrValues
+        (builtins.filter (e: e.openFirewall && e.protocol == "tcp"))
+        (map (e: e.port))
+      ];
+      allowedUDPPorts = lib.pipe config.dots.ports [
+        builtins.attrValues
+        (builtins.filter (e: e.openFirewall && e.protocol == "udp"))
+        (map (e: e.port))
+      ];
+    };
 
     hostId = "89bbb3e6"; # head -c4 /dev/urandom | od -A none -t x4
 
