@@ -3,7 +3,7 @@
   inputs = {
     # Where we get most of our software. Giant mono repo with recipes
     # called derivations that say how to build software.
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     compose2nix = {
@@ -12,7 +12,7 @@
     };
 
     cup-collector = {
-      url = "github:genebean/cup-collector/v1.0.0";
+      url = "github:genebean/cup-collector/v1.1.2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -45,7 +45,7 @@
 
     # Manages things in home directory
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -56,7 +56,7 @@
 
     # Controls system level software and settings including fonts on macOS
     nix-darwin = {
-      url = "github:lnl7/nix-darwin/nix-darwin-25.11";
+      url = "github:lnl7/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -79,7 +79,7 @@
 
     # Private flake for sensitive configs
     private-flake = {
-      url = "github:genebean/private-flake";
+      url = "github:genebean/private-flake/nix26.05";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         simple-nixos-mailserver.follows = "simple-nixos-mailserver";
@@ -88,7 +88,7 @@
     };
 
     simple-nixos-mailserver = {
-      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-25.11";
+      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

@@ -542,6 +542,9 @@ in
     };
     pocket-id = {
       enable = true;
+      credentials = {
+        ENCRYPTION_KEY = config.sops.secrets.pocketid_encryption_key.path;
+      };
       settings = {
         APP_URL = "https://id.${home_domain}";
         TRUST_PROXY = true;
@@ -635,6 +638,9 @@ in
       nginx_basic_auth = {
         owner = "nginx";
         restartUnits = [ "nginx.service" ];
+      };
+      pocketid_encryption_key = {
+        restartUnits = [ "pocket-id.service" ];
       };
       tailscale_key = {
         restartUnits = [ "tailscaled-autoconnect.service" ];

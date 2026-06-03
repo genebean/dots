@@ -24,7 +24,6 @@
       lsof
       mosquitto
       net-tools
-      neofetch
       python3
       rclone
       smartmontools

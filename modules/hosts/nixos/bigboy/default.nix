@@ -10,7 +10,11 @@ let
     withBDplus = true;
     withJava = true;
   };
-  vlc-with-decoding = pkgs.vlc.override { inherit libbluray; };
+  vlc-with-decoding = pkgs.vlc.overrideAttrs (oldAttrs: {
+    buildInputs = map (dep: if dep.pname or "" == "libbluray" then libbluray else dep) (
+      oldAttrs.buildInputs or [ ]
+    );
+  });
 in
 {
   imports = [
@@ -28,7 +32,10 @@ in
     efi.canTouchEfiVariables = true;
   };
 
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  environment.sessionVariables = {
+    JAVA_HOME = "${pkgs.jdk}/lib/openjdk";
+    NIXOS_OZONE_WL = "1";
+  };
 
   environment.systemPackages = with pkgs; [
     #angryipscanner
@@ -47,8 +54,8 @@ in
     vivaldi
     vlc-with-decoding
     wezterm
-    xorg.xf86videofbdev
-    xfce.xfce4-terminal
+    xf86-video-fbdev
+    xfce4-terminal
     zoom-us
   ];
 

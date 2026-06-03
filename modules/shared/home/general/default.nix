@@ -13,10 +13,12 @@
       cheat
       colordiff
       deadnix
-      dogdns
+      # dogdns # seems this is now unmaintained :(
+      doggo
       dos2unix
       duf
       dust
+      (fastfetch.override { enlightenmentSupport = false; })
       fd
       f2
       git-filter-repo
@@ -261,6 +263,7 @@
     };
     zsh = {
       enable = true;
+      dotDir = config.home.homeDirectory;
       enableCompletion = true;
       autosuggestion.enable = true;
       history.save = 1000000;

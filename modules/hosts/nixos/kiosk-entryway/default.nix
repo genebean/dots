@@ -46,6 +46,10 @@
     useNetworkd = true;
     wireless = {
       enable = true;
+      # Specify the interface explicitly so wpa_supplicant doesn't try to
+      # auto-detect via /sys/class/net, which is not mounted in the 26.05
+      # hardening sandbox (RootDirectory=/run/wpa_supplicant).
+      interfaces = [ "wlp3s0" ];
       secretsFile = "${config.sops.secrets.wifi_creds.path}";
     };
   };
@@ -96,8 +100,9 @@
       };
       wifi_creds = {
         sopsFile = ../../../shared/secrets.yaml;
+        owner = "wpa_supplicant";
         restartUnits = [
-          "wpa_supplicant.service"
+          "wpa_supplicant-wlp3s0.service"
         ];
       };
     };
@@ -105,7 +110,7 @@
 
   systemd.services.cage-tty1 = {
     wants = [
-      "wpa_supplicant.service"
+      "wpa_supplicant-wlp3s0.service"
       "network-online.target"
     ];
   };
