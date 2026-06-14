@@ -268,6 +268,8 @@ in
           # No password needed - using peer authentication via Unix socket
         };
 
+        security.secret_key = "$__file{${config.sops.secrets.grafana_secret_key.path}}";
+
         # Server configuration
         server = {
           domain = "monitoring.${home_domain}";
@@ -357,6 +359,10 @@ in
         restartUnits = [ "grafana.service" ];
       };
       grafana_oauth_client_secret = {
+        owner = "grafana";
+        restartUnits = [ "grafana.service" ];
+      };
+      grafana_secret_key = {
         owner = "grafana";
         restartUnits = [ "grafana.service" ];
       };

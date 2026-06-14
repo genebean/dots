@@ -43,7 +43,7 @@
       "theseal/ssh-askpass"
     ];
     brews = [
-      "fastfetch"
+      # "fastfetch"
       {
         name = "homebrew-ffmpeg/ffmpeg/ffmpeg";
         args = [ "with-srt" ];

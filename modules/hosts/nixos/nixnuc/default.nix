@@ -525,6 +525,19 @@ in
           forceSSL = true;
           locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.wallabag.port}";
         };
+        "ytdlfin.${home_domain}" = {
+          listen = [
+            {
+              inherit (config.dots.ports.https) port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.ytdlfin.port}";
+        };
       };
     };
     pinchflat = {
@@ -542,6 +555,9 @@ in
     };
     pocket-id = {
       enable = true;
+      credentials = {
+        ENCRYPTION_KEY = config.sops.secrets.pocketid_encryption_key.path;
+      };
       settings = {
         APP_URL = "https://id.${home_domain}";
         TRUST_PROXY = true;
@@ -586,6 +602,21 @@ in
         "--advertise-routes=192.168.20.0/22"
       ];
       useRoutingFeatures = "both";
+    };
+    ytdlfin = {
+      enable = true;
+      user = config.services.jellyfin.user;
+      group = config.services.jellyfin.group;
+      port = config.dots.ports.ytdlfin.port;
+      stagingDir = "/orico/jellyfin/staging/.ytdlfin-staging";
+      environmentFile = config.sops.secrets.ytdlfin-env.path;
+      settings = {
+        oidcIssuerUrl = "https://id.${home_domain}";
+        oidcRedirectUri = "https://ytdlfin.${home_domain}/auth/callback";
+        oidcAdminGroup = "ytdlfin_admins";
+        oidcUserGroup = "ytdlfin_users";
+        mediaDirectories = [ "/orico/jellyfin/data" ];
+      };
     };
     zfs.autoScrub.enable = true;
   };
@@ -636,8 +667,15 @@ in
         owner = "nginx";
         restartUnits = [ "nginx.service" ];
       };
+      pocketid_encryption_key = {
+        restartUnits = [ "pocket-id.service" ];
+      };
       tailscale_key = {
         restartUnits = [ "tailscaled-autoconnect.service" ];
+      };
+      ytdlfin-env = {
+        owner = config.services.ytdlfin.user;
+        restartUnits = [ config.systemd.services.ytdlfin.name ];
       };
     };
   };

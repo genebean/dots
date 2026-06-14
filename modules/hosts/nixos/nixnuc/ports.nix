@@ -74,6 +74,9 @@
     immich = {
       port = 2283;
     };
+    ytdlfin = {
+      port = 8001;
+    };
     cadvisor = {
       port = 8081;
     };
