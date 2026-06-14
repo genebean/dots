@@ -810,7 +810,8 @@
         "simple-nixos-mailserver": "simple-nixos-mailserver",
         "sops-nix": "sops-nix",
         "statix": "statix",
-        "viscosity-cli": "viscosity-cli"
+        "viscosity-cli": "viscosity-cli",
+        "ytdlfin": "ytdlfin"
       }
     },
     "rust-analyzer-src": {
@@ -1033,6 +1034,26 @@
         "owner": "genebean",
         "ref": "nix-flake",
         "repo": "viscosity-cli",
+        "type": "github"
+      }
+    },
+    "ytdlfin": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781406295,
+        "narHash": "sha256-nJebrqSTVYpuxNEcClNOkzre7aPZ9M/NP+g+JpbCQKE=",
+        "owner": "genebean",
+        "repo": "ytdlfin",
+        "rev": "ba22b27fa3f762ef25fb44058a018fab23769ba8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "genebean",
+        "repo": "ytdlfin",
         "type": "github"
       }
     }

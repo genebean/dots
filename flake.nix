@@ -109,6 +109,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    ytdlfin = {
+      url = "github:genebean/ytdlfin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   }; # end inputs
   outputs =
     inputs@{ self, nixpkgs, ... }:
@@ -183,6 +188,7 @@
           additionalModules = [
             inputs.cup-collector.nixosModules.default
             inputs.private-flake.nixosModules.private.nixnuc
+            inputs.ytdlfin.nixosModules.default
           ];
         };
         # This machines is currently running Ubuntu and
