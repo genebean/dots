@@ -178,12 +178,6 @@
             inputs.private-flake.nixosModules.private.kiosk
           ];
         };
-        nixnas1 = localLib.mkNixosHost {
-          hostname = "nixnas1";
-          additionalModules = [
-            inputs.simple-nixos-mailserver.nixosModule
-          ];
-        };
         nixnuc = localLib.mkNixosHost {
           hostname = "nixnuc";
           additionalModules = [
