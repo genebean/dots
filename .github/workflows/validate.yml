@@ -7,12 +7,9 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: cachix/install-nix-action@v26
-        with:
-          extra_nix_config: |
-            trusted-users = root @runner
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/magic-nix-cache-action@v14
 
       - name: Validate flake
         run: nix flake show
@@ -21,7 +18,7 @@ jobs:
         run: nix fmt -- --ci .
 
       - name: Run deadnix
-        run: nix run nixpkgs#deadnix ./modules ./lib
+        run: nix run nixpkgs#deadnix -- ./modules ./lib
 
       - name: Run statix
-        run: nix run nixpkgs#statix check -- .
+        run: nix run nixpkgs#statix -- check .
