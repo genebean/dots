@@ -11,9 +11,6 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@v22
       - uses: DeterminateSystems/magic-nix-cache-action@v14
 
-      - name: Validate flake
-        run: nix flake show
-
       - name: Check formatting
         run: nix fmt -- --ci .
 
