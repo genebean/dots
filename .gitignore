@@ -11,29 +11,7 @@
 # From running nixos-rebuild build-vm
 *.qcow2
 
-# Config files that are not suitable to add to version control:
-link/nix/config/.mono/
-link/nix/config/asciinema/
-link/nix/config/configstore/nodemon.json
-link/nix/config/configstore/snyk.json
-link/nix/config/configstore/update-notifier-nodemon.json
-link/nix/config/configstore/update-notifier-npm.json
-link/nix/config/configstore/update-notifier-yo.json
-link/nix/config/filezilla
-link/nix/config/fluidkeys/
-link/nix/config/fontforge/
-link/nix/config/gcloud/
-link/nix/config/grv/
-link/nix/config/gtk-2.0/
-link/nix/config/htop/
-link/nix/config/hub
-link/nix/config/iterm2/
-link/nix/config/Microsoft\\VisualStudio Services/
-link/nix/config/NuGet/nuget.config
-link/nix/config/powershell/powershellget/
-link/nix/config/puppet/
-link/nix/config/QtProject/
-link/nix/config/rclone/
-link/nix/config/tmuxinator/
-link/nix/config/wireshark/
-link/nix/config/linode-cli
+.claude/*
+!.claude/skills/
+!.claude/skills/**
+
