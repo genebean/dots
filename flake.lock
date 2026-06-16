@@ -776,15 +776,15 @@
       "locked": {
         "lastModified": 1781634558,
         "narHash": "sha256-JNbti1zopVDTxMJaZ16H4zIE2SUHgffLbsDdDyjbMdM=",
-        "owner": "genebean",
-        "repo": "private-flake",
+        "ref": "refs/heads/main",
         "rev": "64e9fc6716caa3a5a768a648953f907a35a4cfa0",
-        "type": "github"
+        "revCount": 22,
+        "type": "git",
+        "url": "ssh://git@github.com/genebean/private-flake"
       },
       "original": {
-        "owner": "genebean",
-        "repo": "private-flake",
-        "type": "github"
+        "type": "git",
+        "url": "ssh://git@github.com/genebean/private-flake"
       }
     },
     "root": {
