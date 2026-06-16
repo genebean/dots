@@ -1,6 +1,6 @@
 {
-  pkgs,
   hostname,
+  pkgs,
   username,
   ...
 }:
@@ -37,9 +37,7 @@
       upgrade = true;
     };
     taps = [
-      "homebrew/cask-fonts"
       "homebrew-ffmpeg/ffmpeg"
-      #"null-dev/firefox-profile-switcher"
       "theseal/ssh-askpass"
     ];
     brews = [
@@ -77,7 +75,7 @@
       "keepingyouawake"
       "libreoffice"
       "logseq"
-      "makemkv"
+      #"makemkv" See https://github.com/Homebrew/homebrew-cask/issues/269960
       "meld"
       "mkvtoolnix-app"
       "nextcloud"
@@ -139,6 +137,15 @@
       # Uncoment below after validation bug is fixed
       #upgrade-nix-store-path-url = https://install.determinate.systems/nix-upgrade/stable/universal
     '';
+  };
+
+  nix-homebrew = {
+    trust = {
+      taps = [
+        "homebrew-ffmpeg/ffmpeg"
+        "theseal/ssh-askpass"
+      ];
+    };
   };
 
   programs = {

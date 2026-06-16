@@ -39,6 +39,7 @@
     casks = [
       "antigravity"
       "boinc"
+      "claude-code"
       "discord"
       "elgato-stream-deck"
       "google-drive"
@@ -72,6 +73,16 @@
       "Telegram" = 747648890;
       "WhatsApp Messenger" = 310633997;
       "Xcode" = 497799835;
+    };
+  };
+
+  nix-homebrew = {
+    trust = {
+      taps = [
+        "hashicorp/tap"
+        "openvoxproject/openvox"
+        "wouterdebie/repo"
+      ];
     };
   };
 
