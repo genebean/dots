@@ -1043,11 +1043,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781406295,
-        "narHash": "sha256-nJebrqSTVYpuxNEcClNOkzre7aPZ9M/NP+g+JpbCQKE=",
+        "lastModified": 1781662824,
+        "narHash": "sha256-LEZgzFduFkny6jK5woKUKV6bhGfNfNnYJOeLOEGEiEI=",
         "owner": "genebean",
         "repo": "ytdlfin",
-        "rev": "ba22b27fa3f762ef25fb44058a018fab23769ba8",
+        "rev": "d0f276e62a5e233a9e8a3cf5c1ab7799eda35209",
         "type": "github"
       },
       "original": {
