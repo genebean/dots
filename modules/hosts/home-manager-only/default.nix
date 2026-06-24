@@ -23,6 +23,8 @@
     ssh-to-age
   ];
 
+  programs.codex.enable = true;
+
   # home-manager switch --flake ~/repos/dots
   programs.zsh.shellAliases = {
     nixdiff = "cd ~/repos/dots && home-manager build --flake .#${username}-${system} && nvd diff ${config.home.homeDirectory}/.local/state/nix/profiles/home-manager result";
