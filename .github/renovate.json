@@ -1,0 +1,30 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "America/New_York",
+  "schedule": ["before 6am on thursday"],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "description": "Group GitHub Actions updates into a single PR",
+      "groupName": "GitHub Actions",
+      "matchManagers": ["github-actions"]
+    },
+    {
+      "description": "Group OCI container image updates into a single PR",
+      "groupName": "OCI container images",
+      "matchManagers": ["custom.regex"]
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Track OCI container image versions in NixOS container definitions",
+      "managerFilePatterns": [
+        "/^modules/hosts/nixos/.*containers/.*\\.nix$/"
+      ],
+      "matchStrings": ["image = \"(?<depName>[^\"]+):(?<currentValue>[^\"\\s]+)\""],
+      "datasourceTemplate": "docker"
+    }
+  ]
+}
