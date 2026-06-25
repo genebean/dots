@@ -11,7 +11,7 @@ in
   virtualisation.oci-containers.containers = {
     "photon" = {
       autoStart = true;
-      image = "docker.io/rtuszik/photon-docker:latest";
+      image = "docker.io/rtuszik/photon-docker:2.3.0";
       environment = {
         REGION = "planet";
         SUPPRESS_BOLTDB_WARNING = "1";

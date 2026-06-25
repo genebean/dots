@@ -21,7 +21,7 @@ in
   virtualisation.oci-containers.containers = {
     "psitransfer" = {
       autoStart = true;
-      image = "psitrax/psitransfer";
+      image = "psitrax/psitransfer:v2.4.4";
       environmentFiles = [ psitransfer_dot_env ];
       ports = [ "${toString config.dots.ports.psitransfer.port}:3000" ];
       volumes = [
