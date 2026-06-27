@@ -289,6 +289,11 @@ in
             https   "max-age=31536000;";
         }
         add_header Strict-Transport-Security $hsts_header;
+
+        # Rate-limit the ytdlfin health endpoint so unauthenticated bots
+        # can't hammer it.  Uptime Kuma polls once per minute; 6r/m gives
+        # comfortable headroom while still blocking floods.
+        limit_req_zone $binary_remote_addr zone=ytdlfin_health:1m rate=6r/m;
       '';
       virtualHosts = {
         "${home_domain}" = {
@@ -537,6 +542,12 @@ in
           acmeRoot = null;
           forceSSL = true;
           locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.ytdlfin.port}";
+          locations."= /health" = {
+            proxyPass = "http://${backend_ip}:${toString config.dots.ports.ytdlfin.port}";
+            extraConfig = ''
+              limit_req zone=ytdlfin_health burst=3 nodelay;
+            '';
+          };
         };
       };
     };
