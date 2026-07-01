@@ -47,6 +47,7 @@ in
       LIBVA_DRIVER_NAME = "iHD";
     };
     systemPackages = with pkgs; [
+      claude-code
       inputs.compose2nix.packages.${pkgs.stdenv.hostPlatform.system}.default
       docker-compose
       intel-gpu-tools
