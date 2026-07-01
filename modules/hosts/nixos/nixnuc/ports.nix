@@ -1,3 +1,4 @@
+# Entries within each section are sorted by port number in ascending order.
 {
   config.dots.ports = {
     # Override global photon default: open the firewall on this host
@@ -6,6 +7,14 @@
     };
 
     # Firewalled TCP services
+    smb-netbios-session = {
+      port = 139;
+      openFirewall = true;
+    };
+    smb = {
+      port = 445;
+      openFirewall = true;
+    };
     psitransfer = {
       port = 3000;
       openFirewall = true;
@@ -42,20 +51,20 @@
       port = 8001;
       openFirewall = true;
     };
-    syncthing-gui = {
-      port = 8384;
-      openFirewall = true;
-    };
-    atuin = {
-      port = 8888;
-      openFirewall = true;
-    };
     wallabag = {
       port = 8090;
       openFirewall = true;
     };
     pocketbase = {
       port = 8091;
+      openFirewall = true;
+    };
+    syncthing-gui = {
+      port = 8384;
+      openFirewall = true;
+    };
+    atuin = {
+      port = 8888;
       openFirewall = true;
     };
     pinchflat = {
@@ -80,17 +89,27 @@
     cadvisor = {
       port = 8081;
     };
-    victoriametrics = {
-      port = 8428;
-    };
     jellyfin = {
       port = 8096;
+    };
+    victoriametrics = {
+      port = 8428;
     };
     mealie = {
       port = 9000;
     };
 
     # UDP services
+    smb-netbios-ns = {
+      port = 137;
+      protocol = "udp";
+      openFirewall = true;
+    };
+    smb-netbios-dgram = {
+      port = 138;
+      protocol = "udp";
+      openFirewall = true;
+    };
     jellyfin-ssdp = {
       port = 1900;
       protocol = "udp";
