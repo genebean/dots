@@ -47,6 +47,7 @@ in
       LIBVA_DRIVER_NAME = "iHD";
     };
     systemPackages = with pkgs; [
+      claude-code
       inputs.compose2nix.packages.${pkgs.stdenv.hostPlatform.system}.default
       docker-compose
       intel-gpu-tools
@@ -599,6 +600,31 @@ in
       timerConfig = {
         OnCalendar = restic_backup_time;
         Persistent = true;
+      };
+    };
+    samba = {
+      enable = true;
+      settings = {
+        global = {
+          "workgroup" = "BEANTOWN";
+          "server string" = "nixnuc";
+          "server role" = "standalone server";
+          "map to guest" = "never";
+          "hosts allow" = "192.168.20.0/22 100.64.0.0/10 127.0.0.1";
+          "hosts deny" = "0.0.0.0/0";
+          "unix password sync" = "yes";
+          "pam password change" = "yes";
+          "passwd program" = "/run/wrappers/bin/passwd %u";
+        };
+        "jellyfin-staging" = {
+          path = "/orico/jellyfin/staging";
+          "read only" = "no";
+          "guest ok" = "no";
+          "browseable" = "yes";
+          "valid users" = username;
+          "create mask" = "0644";
+          "directory mask" = "0755";
+        };
       };
     };
     smartd.enable = true;
