@@ -42,6 +42,8 @@ in
     displaylink
     filezilla
     gitkraken
+    kdePackages.bluedevil
+    kdePackages.bluez-qt
     kdePackages.ksshaskpass
     libbdplus
     libreoffice
@@ -58,6 +60,11 @@ in
     xfce4-terminal
     zoom-us
   ];
+
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
 
   networking.networkmanager.enable = true;
 
