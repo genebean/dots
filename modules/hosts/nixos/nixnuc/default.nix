@@ -742,7 +742,10 @@ in
 
   # Enable common container config files in /etc/containers
   virtualisation = {
-    containers.enable = true;
+    containers = {
+      enable = true;
+      containersConf.settings.engine.database_backend = "sqlite";
+    };
     oci-containers.backend = "podman";
     # Compose based apps were crashing with podman compose, so back to Docker...
     docker = {
