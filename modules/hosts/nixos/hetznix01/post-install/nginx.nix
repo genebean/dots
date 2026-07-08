@@ -191,51 +191,12 @@ in
         forceSSL = true;
         locations."/".return = "301 https://beanbag.technicalissues.us";
       };
-      "ot.${domain}" = {
-        enableACME = true;
-        acmeRoot = null;
-        forceSSL = true;
-        basicAuthFile = config.sops.secrets.owntracks_basic_auth.path;
-        # OwnTracks Frontend container
-        locations."/".proxyPass = "http://127.0.0.1:${toString config.dots.ports.owntracks-frontend.port}";
-      };
       "pack1828.org" = {
         enableACME = true;
         acmeRoot = null;
         forceSSL = true;
         locations."/" = {
           return = "307 https://cloud.pack1828.org";
-        };
-      };
-      "recorder.${domain}" = {
-        enableACME = true;
-        acmeRoot = null;
-        forceSSL = true;
-        basicAuthFile = config.sops.secrets.owntracks_basic_auth.path;
-        locations = {
-          # OwnTracks Recorder
-          "/" = {
-            proxyPass = "http://127.0.0.1:${toString config.dots.ports.owntracks-recorder.port}";
-          };
-          "/pub" = {
-            # Client apps need to point to this path
-            extraConfig = "proxy_set_header X-Limit-U $remote_user;";
-            proxyPass = "http://127.0.0.1:${toString config.dots.ports.owntracks-recorder.port}/pub";
-          };
-          "/static/" = {
-            proxyPass = "http://127.0.0.1:${toString config.dots.ports.owntracks-recorder.port}/static/";
-          };
-          "/utils/" = {
-            proxyPass = "http://127.0.0.1:${toString config.dots.ports.owntracks-recorder.port}/utils/";
-          };
-          "/view/" = {
-            extraConfig = "proxy_buffering off;";
-            proxyPass = "http://127.0.0.1:${toString config.dots.ports.owntracks-recorder.port}/view/";
-          };
-          "/ws" = {
-            extraConfig = "rewrite ^/(.*) /$1 break;";
-            proxyPass = "http://127.0.0.1:${toString config.dots.ports.owntracks-recorder.port}";
-          };
         };
       };
       "stats.${domain}" = {
