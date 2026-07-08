@@ -140,7 +140,6 @@ in
     };
     restic.backups.daily = {
       paths = [
-        "${config.users.users.${username}.home}/compose-files/owntracks"
         "/var/backup/postgresql"
         "/var/lib/uptime-kuma"
       ];
@@ -181,10 +180,6 @@ in
       matrix_homeserver_signing_key.owner = config.users.users.matrix-synapse.name;
       mqtt_recorder_pass.restartUnits = [ "mosquitto.service" ];
       nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
-      owntracks_basic_auth = {
-        owner = config.users.users.nginx.name;
-        restartUnits = [ "nginx.service" ];
-      };
       plausible_admin_pass.owner = config.users.users.nginx.name;
       plausible_secret_key_base.owner = config.users.users.nginx.name;
       tailscale_key = {

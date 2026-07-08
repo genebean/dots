@@ -60,12 +60,6 @@
     matrix-synapse = {
       port = 8008;
     };
-    owntracks-frontend = {
-      port = 8082;
-    };
-    owntracks-recorder = {
-      port = 8083;
-    };
     plausible = {
       port = 8001;
     };
