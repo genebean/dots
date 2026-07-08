@@ -16,6 +16,7 @@
     ];
     systemPackages = with pkgs; [
       age
+      claude-code
       dconf2nix
       file
       iftop
