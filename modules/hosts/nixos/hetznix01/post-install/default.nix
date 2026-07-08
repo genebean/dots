@@ -21,6 +21,16 @@ in
   ];
 
   services = {
+    clickhouse.serverConfig = {
+      # pulled in by plausible
+      trace_log.ttl = "event_date + INTERVAL 14 DAY DELETE";
+      metric_log.ttl = "event_date + INTERVAL 14 DAY DELETE";
+      asynchronous_metric_log.ttl = "event_date + INTERVAL 14 DAY DELETE";
+      part_log.ttl = "event_date + INTERVAL 30 DAY DELETE";
+      query_log.ttl = "event_date + INTERVAL 30 DAY DELETE";
+      query_thread_log.ttl = "event_date + INTERVAL 30 DAY DELETE";
+      text_log.ttl = "event_date + INTERVAL 14 DAY DELETE";
+    };
     collabora-online = {
       enable = true;
       inherit (config.dots.ports.collabora) port;
@@ -183,37 +193,62 @@ in
     };
   };
 
-  systemd.services = {
-    nextcloud-config-collabora =
-      let
-        inherit (config.services.nextcloud) occ;
-
-        wopi_url = "http://[::1]:${toString config.services.collabora-online.port}";
-        public_wopi_url = "https://collabora.pack1828.org";
-        wopi_allowlist = lib.concatStringsSep "," [
-          "127.0.0.1"
-          "::1"
-          "5.161.244.95"
-          "2a01:4ff:f0:977c::1"
-        ];
-      in
-      {
-        wantedBy = [ "multi-user.target" ];
-        after = [
-          "nextcloud-setup.service"
-          "coolwsd.service"
-        ];
-        requires = [ "coolwsd.service" ];
+  systemd = {
+    services = {
+      clickhouse-drop-orphaned-logs = {
+        description = "Drop orphaned numbered ClickHouse system log tables";
+        after = [ "clickhouse.service" ];
+        requires = [ "clickhouse.service" ];
+        serviceConfig.Type = "oneshot";
         script = ''
-          ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_url --value ${lib.escapeShellArg wopi_url}
-          ${occ}/bin/nextcloud-occ config:app:set richdocuments public_wopi_url --value ${lib.escapeShellArg public_wopi_url}
-          ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_allowlist --value ${lib.escapeShellArg wopi_allowlist}
-          ${occ}/bin/nextcloud-occ richdocuments:setup
+          ${pkgs.clickhouse}/bin/clickhouse-client \
+            --query "SELECT concat('DROP TABLE IF EXISTS system.', name, ';') \
+                     FROM system.tables \
+                     WHERE database = 'system' \
+                     AND match(name, '^[a-z_]+_log_[0-9]+')" \
+            | ${pkgs.clickhouse}/bin/clickhouse-client --multiquery
         '';
-        serviceConfig = {
-          Type = "oneshot";
-        };
       };
+
+      nextcloud-config-collabora =
+        let
+          inherit (config.services.nextcloud) occ;
+
+          wopi_url = "http://[::1]:${toString config.services.collabora-online.port}";
+          public_wopi_url = "https://collabora.pack1828.org";
+          wopi_allowlist = lib.concatStringsSep "," [
+            "127.0.0.1"
+            "::1"
+            "5.161.244.95"
+            "2a01:4ff:f0:977c::1"
+          ];
+        in
+        {
+          wantedBy = [ "multi-user.target" ];
+          after = [
+            "nextcloud-setup.service"
+            "coolwsd.service"
+          ];
+          requires = [ "coolwsd.service" ];
+          script = ''
+            ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_url --value ${lib.escapeShellArg wopi_url}
+            ${occ}/bin/nextcloud-occ config:app:set richdocuments public_wopi_url --value ${lib.escapeShellArg public_wopi_url}
+            ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_allowlist --value ${lib.escapeShellArg wopi_allowlist}
+            ${occ}/bin/nextcloud-occ richdocuments:setup
+          '';
+          serviceConfig = {
+            Type = "oneshot";
+          };
+        };
+    };
+
+    timers.clickhouse-drop-orphaned-logs = {
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnCalendar = "monthly";
+        Persistent = true;
+      };
+    };
   };
 
   # Enable common container config files in /etc/containers
