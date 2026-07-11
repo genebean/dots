@@ -7,6 +7,12 @@
     ../../../shared/home/linux/apps/xfce4-terminal.nix
   ];
 
+  genebean = {
+    programs = {
+      askpass.enable = true;
+    };
+  };
+
   programs = {
     plasma = {
       enable = true;

@@ -38,7 +38,6 @@
     };
     taps = [
       "homebrew-ffmpeg/ffmpeg"
-      "theseal/ssh-askpass"
     ];
     brews = [
       # "fastfetch"
@@ -46,8 +45,7 @@
         name = "homebrew-ffmpeg/ffmpeg/ffmpeg";
         args = [ "with-srt" ];
       }
-      #"firefox-profile-switcher-connector" # having had this on seems to mean I need to toggle browser.profiles.enabled to true in about:config for the new built in version
-      "ssh-askpass"
+      #"firefox-profile-switcher-connector" # having had this on seems to mean I need to toggle browser.profiles.enabled to true in about:config for the new built in profile
       "telnet"
     ];
     casks = [
@@ -142,7 +140,6 @@
     trust = {
       taps = [
         "homebrew-ffmpeg/ffmpeg"
-        "theseal/ssh-askpass"
       ];
     };
   };

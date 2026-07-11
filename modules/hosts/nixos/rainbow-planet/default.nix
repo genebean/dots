@@ -103,8 +103,6 @@
     firefox.enable = true;
     #hyprland.enable = true;
 
-    ssh.askPassword = "ssh-askpass";
-
     thunderbird.enable = true;
 
     # common programs that really should be in another file

@@ -21,6 +21,12 @@
       + "/themes/frappe.conf";
   };
 
+  genebean = {
+    programs = {
+      askpass.enable = true;
+    };
+  };
+
   programs = {
     ghostty = {
       enable = true;

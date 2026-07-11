@@ -2,6 +2,7 @@
 {
   genebean = {
     programs = {
+      askpass.enable = true;
       ghostty.enable = true;
     };
   };
