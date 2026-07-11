@@ -232,35 +232,45 @@ adding a service local to one host, declare it in that host's `ports.nix`.
 
 ## genebean Module Pattern
 
-`modules/genebean/` holds reusable, option-driven modules namespaced under
-`genebean.*`. This is the home for any config that needs to behave differently
-across platforms (NixOS / macOS / Ubuntu) without requiring `lib.mkForce` at
-the call site.
+`modules/genebean/` holds reusable, option-driven modules where platform
+differences (NixOS / macOS / Ubuntu) are handled inside the module, not at the
+call site. The goal is a Puppet-like abstraction: declare what you want once,
+and the module figures out how to deliver it on each OS.
 
 ### Structure
 
 ```
 modules/genebean/
-  home/
-    default.nix         — imports all home-manager modules in this directory
+  home/                  — home-manager layer (all platforms)
+    default.nix          — { imports = [ ... ]; } — add new modules here
+    plasma.nix           — genebean.plasma (desktop env, top-level namespace)
     programs/
-      ghostty.nix       — example: genebean.programs.ghostty options
-  darwin/
-    default.nix         — imports all nix-darwin companion modules
+      askpass.nix        — genebean.programs.askpass
+      ghostty.nix        — genebean.programs.ghostty
+      wezterm.nix        — genebean.programs.wezterm
+    services/
+      tailscale.nix      — genebean.services.tailscale
+  darwin/                — nix-darwin system layer (macOS only)
+    default.nix
     programs/
-      ghostty.nix       — example: drives homebrew.casks from the home-manager option
-  nixos/
-    default.nix         — imports all NixOS system-level companion modules
+      ghostty.nix        — adds Homebrew cask when installViaHomebrew = true
+      wezterm.nix
+    services/
+      tailscale.nix      — adds tailscale-app cask
+  nixos/                 — NixOS system layer (NixOS only)
+    default.nix
+    plasma.nix           — enables plasma6, SDDM, KDE packages, xdg portal
+    programs/
+      askpass.nix        — sets programs.ssh.askPassword
+    services/
+      tailscale.nix      — configures services.tailscale + sops secret
 ```
 
-Each directory's `default.nix` is an `{ imports = [ ... ]; }` list. **Adding a
-new module means creating the file and adding one line to `default.nix` — the
-flake output and all lib consumers stay unchanged.**
+Each `default.nix` is a plain `{ imports = [ ... ]; }` list. **Adding a module
+means creating the file and one line in `default.nix` — flake outputs and lib
+helpers stay unchanged.**
 
 ### Flake outputs and consumption
-
-Both directories are exposed as flake outputs pointing at the directory (not
-individual files):
 
 ```nix
 homeManagerModules.genebean = ./modules/genebean/home;
@@ -268,40 +278,38 @@ darwinModules.genebean      = ./modules/genebean/darwin;
 nixosModules.genebean       = ./modules/genebean/nixos;
 ```
 
-All three lib helpers (`mkNixosHost`, `mkDarwinHost`, `mkHomeConfig`) import
-`inputs.self.homeManagerModules.genebean` into the home-manager module list.
-`mkDarwinHost` additionally imports `inputs.self.darwinModules.genebean` as a
-nix-darwin system module. `mkNixosHost` additionally imports
-`inputs.self.nixosModules.genebean` as a NixOS system module.
+- All three lib helpers import `homeManagerModules.genebean` into the HM module list.
+- `mkDarwinHost` additionally imports `darwinModules.genebean` as a nix-darwin system module.
+- `mkNixosHost` additionally imports `nixosModules.genebean` as a NixOS system module.
 
 Consumers set options — they never import module files directly.
 
+### Namespacing conventions
+
+Options mirror upstream naming to keep call sites readable:
+
+| Namespace | Use for | Example |
+|---|---|---|
+| `genebean.programs.<name>` | User-facing applications | `genebean.programs.ghostty` |
+| `genebean.services.<name>` | Background services | `genebean.services.tailscale` |
+| `genebean.<name>` | Desktop environments and future meta-modules | `genebean.plasma` |
+
 ### Platform detection
 
-`genebeanLib` is an attrset defined in `lib/default.nix` and passed as
-`extraSpecialArgs` by all three lib helpers. Use it inside any home-manager
-module instead of raw builtins:
+`genebeanLib` is passed as `extraSpecialArgs` by all three lib helpers and is
+available in any home-manager module:
 
 ```nix
 { genebeanLib, lib, pkgs, ... }:
 ```
 
-Current helpers:
-
 | Helper | Value | Use for |
 |---|---|---|
 | `genebeanLib.isNixOS` | `true` in `mkNixosHost`, `false` elsewhere | NixOS vs other Linux |
-| `pkgs.stdenv.isDarwin` | stdlib | macOS detection (no lib wrapper needed) |
+| `pkgs.stdenv.isDarwin` | stdlib | macOS detection |
 
-`genebeanLib.isNixOS` is set explicitly by each builder rather than probed at
-evaluation time — `mkNixosHost` overrides it to `true` via
-`genebeanLib // { isNixOS = true; }` in `extraSpecialArgs`; `mkDarwinHost` and
-`mkHomeConfig` pass the base `genebeanLib` which defaults `isNixOS` to `false`.
-This avoids the impure `builtins.pathExists /etc/NIXOS` probe, which is
-unreliable in flake pure-eval mode and when building for a remote target.
-
-Options that vary by platform should use these as their `default`, so no
-host-level overrides are needed:
+`genebeanLib.isNixOS` is set explicitly per builder (not via `builtins.pathExists`)
+to keep evaluation pure. Use it as the `default` for platform-varying options:
 
 ```nix
 installViaNix = lib.mkOption {
@@ -310,33 +318,54 @@ installViaNix = lib.mkOption {
 };
 ```
 
+For apps available as both a Nix package and a Flatpak, expose a
+`linuxInstallMethod` option:
+
+```nix
+linuxInstallMethod = lib.mkOption {
+  type    = lib.types.enum [ "flatpak" "nixpkgs" "none" ];
+  default = "flatpak";  # or "nixpkgs" if no flatpak exists for this app
+};
+```
+
+The module then acts on that option rather than installing via both paths.
+
 ### Darwin companion modules
 
-When a feature requires a nix-darwin system-level action (e.g. adding a
-Homebrew cask), create a companion module under `modules/genebean/darwin/`.
-The companion reads the home-manager option via
-`config.home-manager.users.${username}.genebean.<module>.<option>` and acts on
-it — the consumer only ever sets the home-manager option. `username` is
-available as a specialArg in all darwin system modules.
+When a feature needs a nix-darwin system-level action (e.g. adding a Homebrew
+cask or MAS app), create a companion under `modules/genebean/darwin/`. The
+companion reads the home-manager option via:
 
-### Namespacing conventions
+```nix
+config.home-manager.users.${username}.genebean.<namespace>.<option>
+```
 
-Options live under one of three sub-namespaces mirroring upstream conventions:
+`username` is available as a `specialArg` in all darwin system modules.
 
-- `genebean.programs.<name>` — individual user-facing applications (mirrors HM `programs.*`)
-- `genebean.services.<name>` — background services (mirrors NixOS/HM `services.*`)
-- `genebean.<name>` — desktop environments and higher-order meta-modules (e.g. `genebean.plasma`)
+### NixOS companion modules
+
+When a feature needs a NixOS system-level action (e.g. enabling a service,
+setting system programs, configuring polkit), create a companion under
+`modules/genebean/nixos/`. NixOS companions also read the home-manager option
+via `config.home-manager.users.${username}.genebean.*` — the consumer only ever
+sets the home-manager option, both layers respond automatically.
 
 ### Adding a new genebean module
 
-1. Create `modules/genebean/home/programs/<name>.nix` (or `services/`) — define
-   `options.genebean.programs.<name>` and `config = lib.mkIf cfg.enable { ... }`
-2. Add `./programs/<name>.nix` to `modules/genebean/home/default.nix`
-3. If a darwin system action is needed, create `modules/genebean/darwin/programs/<name>.nix`
-   and add it to `modules/genebean/darwin/default.nix`
-4. If a NixOS system-level action is needed, create `modules/genebean/nixos/programs/<name>.nix`
-   and add it to `modules/genebean/nixos/default.nix`
-5. Set options at the call site (`all-gui.nix`, a host file, etc.) — no imports
+1. **Home layer** — `modules/genebean/home/programs/<name>.nix`:
+   define `options.genebean.programs.<name>.*` and
+   `config = lib.mkIf cfg.enable { ... }`. Add to `home/default.nix`.
+
+2. **Darwin companion** (if needed) — `modules/genebean/darwin/programs/<name>.nix`:
+   read `config.home-manager.users.${username}.genebean.programs.<name>.*`,
+   add Homebrew cask/formula/MAS entry. Add to `darwin/default.nix`.
+
+3. **NixOS companion** (if needed) — `modules/genebean/nixos/programs/<name>.nix`:
+   read the same HM option path, configure system-level NixOS options.
+   Add to `nixos/default.nix`.
+
+4. **Call site** — set `genebean.programs.<name>.enable = true` in `all-gui.nix`,
+   a shared module, or a host file. No imports needed.
 
 ---
 
