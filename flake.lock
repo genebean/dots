@@ -340,11 +340,11 @@
     "genebean-omp-themes": {
       "flake": false,
       "locked": {
-        "lastModified": 1775590646,
-        "narHash": "sha256-0kr+6Kgb6W6aRYXewqna+Qpq7PF7g5wq7rwEy6k+i2E=",
+        "lastModified": 1783793741,
+        "narHash": "sha256-3P6AvInE+cQwLhq8KQVhdcDkVgAXwKo9fzsBH1w2hMU=",
         "owner": "genebean",
         "repo": "my-oh-my-posh-themes",
-        "rev": "f93d5921f624ac9a3416807a43c13918f945d5d2",
+        "rev": "d4df6be1e5fd2ebfa34992bb4c824c0a4c16f28b",
         "type": "github"
       },
       "original": {
