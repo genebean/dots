@@ -8,6 +8,7 @@
       audacity.enable = true;
       element.enable = true;
       firefox.enable = true;
+      fractal.enable = true;
       ghostty.enable = true;
       gitkraken.enable = true;
       handbrake.enable = true;

@@ -6,7 +6,6 @@
       enable = true;
       packages = [
         "com.cassidyjames.butler"
-        "org.gnome.Fractal"
       ];
       uninstallUnmanaged = true;
       update.auto = {

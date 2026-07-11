@@ -7,6 +7,7 @@
     ./programs/audacity.nix
     ./programs/element.nix
     ./programs/firefox.nix
+    ./programs/fractal.nix
     ./programs/ghostty.nix
     ./programs/gitkraken.nix
     ./programs/handbrake.nix
