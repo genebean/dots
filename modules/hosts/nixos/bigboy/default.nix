@@ -43,7 +43,6 @@ in
     filezilla
     gitkraken
     libbdplus
-    libreoffice
     meld
     mumble
     networkmanager-openvpn

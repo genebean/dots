@@ -75,7 +75,6 @@
     # common gui apps that really should be in another file
     angryipscanner
     gitkraken
-    libreoffice
     meld
     slack
     tilix
