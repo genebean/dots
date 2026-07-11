@@ -5,6 +5,7 @@
       askpass.enable = true;
       firefox.enable = true;
       ghostty.enable = true;
+      vscode.enable = true;
       wezterm.enable = true;
     };
   };

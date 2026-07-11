@@ -32,9 +32,6 @@
     ghostty = {
       enable = true;
     };
-    vscode = {
-      enable = true;
-    };
   };
 
   services.dunst = {

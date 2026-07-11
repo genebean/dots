@@ -82,7 +82,6 @@
       "sonos"
       "todoist-app"
       "transmission"
-      "visual-studio-code"
       "vivaldi"
       "zoom"
     ];

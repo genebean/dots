@@ -14,9 +14,4 @@
     };
   };
 
-  programs = {
-    vscode = {
-      enable = true;
-    };
-  };
 }
