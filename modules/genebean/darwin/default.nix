@@ -10,6 +10,7 @@
     ./programs/logseq.nix
     ./programs/onepassword.nix
     ./programs/signal.nix
+    ./programs/telegram.nix
     ./programs/vivaldi.nix
     ./programs/vscode.nix
     ./programs/wezterm.nix

@@ -12,6 +12,7 @@
       logseq.enable = true;
       onepassword.enable = true;
       signal.enable = true;
+      telegram.enable = true;
       vivaldi.enable = true;
       vscode.enable = true;
       wezterm.enable = true;

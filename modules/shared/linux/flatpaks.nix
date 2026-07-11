@@ -9,7 +9,6 @@
         "io.github.sigmasd.stimulator"
         "io.github.ungoogled_software.ungoogled_chromium"
         "org.gnome.Fractal"
-        "org.telegram.desktop"
       ];
       uninstallUnmanaged = true;
       update.auto = {
