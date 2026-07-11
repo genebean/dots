@@ -13,6 +13,7 @@
     ./programs/telegram.nix
     ./programs/vivaldi.nix
     ./programs/vscode.nix
+    ./programs/zoom.nix
     ./programs/wezterm.nix
     ./services/tailscale.nix
   ];

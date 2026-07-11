@@ -52,7 +52,6 @@ in
     vlc-with-decoding
     xf86-video-fbdev
     xfce4-terminal
-    zoom-us
   ];
 
   hardware.bluetooth = {

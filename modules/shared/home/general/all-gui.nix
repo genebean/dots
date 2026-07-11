@@ -16,6 +16,7 @@
       vivaldi.enable = true;
       vscode.enable = true;
       wezterm.enable = true;
+      zoom.enable = true;
     };
   };
 

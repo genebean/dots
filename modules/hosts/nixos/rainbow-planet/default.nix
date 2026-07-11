@@ -79,7 +79,6 @@
     slack
     tilix
     xfce.xfce4-terminal
-    zoom-us
   ];
 
   networking = {

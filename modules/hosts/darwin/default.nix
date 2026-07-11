@@ -76,7 +76,6 @@
       "sonos"
       "todoist-app"
       "transmission"
-      "zoom"
     ];
     masApps = {
       "BetterSnapTool" = 417375580;
