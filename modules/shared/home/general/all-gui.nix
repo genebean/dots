@@ -17,6 +17,7 @@
       mumble.enable = true;
       nextcloud-client.enable = true;
       onepassword.enable = true;
+      onlyoffice.enable = true;
       signal.enable = true;
       slack.enable = true;
       telegram.enable = true;

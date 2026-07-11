@@ -16,6 +16,7 @@
     ./programs/mumble.nix
     ./programs/nextcloud-client.nix
     ./programs/onepassword.nix
+    ./programs/onlyoffice.nix
     ./programs/signal.nix
     ./programs/slack.nix
     ./programs/telegram.nix
