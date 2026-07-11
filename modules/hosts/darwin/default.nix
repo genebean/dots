@@ -63,7 +63,6 @@
       "iterm2"
       "keepingyouawake"
       #"makemkv" See https://github.com/Homebrew/homebrew-cask/issues/269960
-      "mkvtoolnix-app"
       "raycast"
       "sonos"
       "todoist-app"

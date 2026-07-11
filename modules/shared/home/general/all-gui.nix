@@ -14,6 +14,7 @@
       localsend.enable = true;
       logseq.enable = true;
       meld.enable = true;
+      mkvtoolnix.enable = true;
       mumble.enable = true;
       nextcloud-client.enable = true;
       onepassword.enable = true;
