@@ -25,6 +25,7 @@
     plasma.enable = true;
     programs = {
       askpass.enable = true;
+      thunderbird.enable = true;
     };
   };
 

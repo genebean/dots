@@ -12,6 +12,7 @@
     ./programs/onepassword.nix
     ./programs/signal.nix
     ./programs/telegram.nix
+    ./programs/thunderbird.nix
     ./programs/vivaldi.nix
     ./programs/vscode.nix
     ./programs/zoom.nix

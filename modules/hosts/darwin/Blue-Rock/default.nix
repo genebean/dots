@@ -33,7 +33,6 @@
       "puppet-agent"
       "puppet-bolt"
       "qmk-toolbox"
-      "thunderbird"
       "vagrant"
       "vial"
       "virtualbox"

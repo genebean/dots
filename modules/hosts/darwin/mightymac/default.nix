@@ -52,7 +52,6 @@
       "podman-desktop"
       "qmk-toolbox"
       "raspberry-pi-imager"
-      "thunderbird"
       "thunderbird@daily"
       "ungoogled-chromium"
       #"utm"

@@ -2,6 +2,12 @@
 {
   home.stateVersion = "23.11";
 
+  genebean = {
+    programs = {
+      thunderbird.enable = true;
+    };
+  };
+
   programs = {
     go = {
       enable = true;
