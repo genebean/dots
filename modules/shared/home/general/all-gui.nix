@@ -7,6 +7,7 @@
       firefox.enable = true;
       ghostty.enable = true;
       libreoffice.enable = true;
+      logseq.enable = true;
       onepassword.enable = true;
       signal.enable = true;
       vivaldi.enable = true;

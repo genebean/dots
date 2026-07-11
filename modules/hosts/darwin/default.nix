@@ -66,7 +66,6 @@
       "itermbrowserplugin"
       "iterm2"
       "keepingyouawake"
-      "logseq"
       #"makemkv" See https://github.com/Homebrew/homebrew-cask/issues/269960
       "meld"
       "mkvtoolnix-app"
