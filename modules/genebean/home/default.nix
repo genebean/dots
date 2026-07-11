@@ -1,1 +1,7 @@
-{ imports = [ ./ghostty.nix ]; }
+{
+  imports = [
+    ./programs/askpass.nix
+    ./programs/ghostty.nix
+    ./services/tailscale.nix
+  ];
+}

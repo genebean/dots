@@ -242,11 +242,15 @@ the call site.
 ```
 modules/genebean/
   home/
-    default.nix    — imports all home-manager modules in this directory
-    ghostty.nix    — example: genebean.ghostty options
+    default.nix         — imports all home-manager modules in this directory
+    programs/
+      ghostty.nix       — example: genebean.programs.ghostty options
   darwin/
-    default.nix    — imports all nix-darwin companion modules
-    ghostty.nix    — example: drives homebrew.casks from the home-manager option
+    default.nix         — imports all nix-darwin companion modules
+    programs/
+      ghostty.nix       — example: drives homebrew.casks from the home-manager option
+  nixos/
+    default.nix         — imports all NixOS system-level companion modules
 ```
 
 Each directory's `default.nix` is an `{ imports = [ ... ]; }` list. **Adding a
@@ -261,12 +265,14 @@ individual files):
 ```nix
 homeManagerModules.genebean = ./modules/genebean/home;
 darwinModules.genebean      = ./modules/genebean/darwin;
+nixosModules.genebean       = ./modules/genebean/nixos;
 ```
 
 All three lib helpers (`mkNixosHost`, `mkDarwinHost`, `mkHomeConfig`) import
 `inputs.self.homeManagerModules.genebean` into the home-manager module list.
 `mkDarwinHost` additionally imports `inputs.self.darwinModules.genebean` as a
-nix-darwin system module.
+nix-darwin system module. `mkNixosHost` additionally imports
+`inputs.self.nixosModules.genebean` as a NixOS system module.
 
 Consumers set options — they never import module files directly.
 
@@ -313,13 +319,24 @@ The companion reads the home-manager option via
 it — the consumer only ever sets the home-manager option. `username` is
 available as a specialArg in all darwin system modules.
 
+### Namespacing conventions
+
+Options live under one of three sub-namespaces mirroring upstream conventions:
+
+- `genebean.programs.<name>` — individual user-facing applications (mirrors HM `programs.*`)
+- `genebean.services.<name>` — background services (mirrors NixOS/HM `services.*`)
+- `genebean.<name>` — desktop environments and higher-order meta-modules (e.g. `genebean.plasma`)
+
 ### Adding a new genebean module
 
-1. Create `modules/genebean/home/<name>.nix` — define `options.genebean.<name>`
-   and `config = lib.mkIf cfg.enable { ... }`
-2. Add `./name.nix` to `modules/genebean/home/default.nix`
-3. If a darwin system action is needed, repeat for `modules/genebean/darwin/`
-4. Set options at the call site (`all-gui.nix`, a host file, etc.) — no imports
+1. Create `modules/genebean/home/programs/<name>.nix` (or `services/`) — define
+   `options.genebean.programs.<name>` and `config = lib.mkIf cfg.enable { ... }`
+2. Add `./programs/<name>.nix` to `modules/genebean/home/default.nix`
+3. If a darwin system action is needed, create `modules/genebean/darwin/programs/<name>.nix`
+   and add it to `modules/genebean/darwin/default.nix`
+4. If a NixOS system-level action is needed, create `modules/genebean/nixos/programs/<name>.nix`
+   and add it to `modules/genebean/nixos/default.nix`
+5. Set options at the call site (`all-gui.nix`, a host file, etc.) — no imports
 
 ---
 

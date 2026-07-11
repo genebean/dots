@@ -6,10 +6,10 @@
   ...
 }:
 let
-  cfg = config.genebean.ghostty;
+  cfg = config.genebean.programs.ghostty;
 in
 {
-  options.genebean.ghostty = {
+  options.genebean.programs.ghostty = {
     enable = lib.mkEnableOption "Ghostty terminal";
     installViaHomebrew = lib.mkOption {
       type = lib.types.bool;
@@ -29,7 +29,7 @@ in
     home.file = lib.mkIf pkgs.stdenv.isDarwin {
       "Library/Application Support/com.mitchellh.ghostty/config".text = ''
         # Ghostty configuration is managed by home-manager.
-        # Settings are in modules/genebean/home/ghostty.nix in the dots repo.
+        # Settings are in modules/genebean/home/programs/ghostty.nix in the dots repo.
       '';
     };
 
