@@ -39,7 +39,6 @@
     casks = [
       "antigravity"
       "boinc"
-      "claude-code"
       "discord"
       "elgato-stream-deck"
       "google-drive"

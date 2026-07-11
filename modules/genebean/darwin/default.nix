@@ -4,6 +4,7 @@
     ./programs/askpass.nix
     ./programs/caffeine.nix
     ./programs/audacity.nix
+    ./programs/claude-code.nix
     ./programs/element.nix
     ./programs/firefox.nix
     ./programs/ghostty.nix
