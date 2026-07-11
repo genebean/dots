@@ -6,6 +6,7 @@
     ./programs/firefox.nix
     ./programs/ghostty.nix
     ./programs/gitkraken.nix
+    ./programs/handbrake.nix
     ./programs/kopiaui.nix
     ./programs/libreoffice.nix
     ./programs/localsend.nix

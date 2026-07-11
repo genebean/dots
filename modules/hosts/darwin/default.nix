@@ -58,7 +58,6 @@
       "font-hack-nerd-font"
       "font-inconsolata-g-for-powerline"
       "font-source-code-pro-for-powerline"
-      "handbrake-app"
       "imageoptim"
       "itermbrowserplugin"
       "iterm2"

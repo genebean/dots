@@ -8,6 +8,7 @@
       firefox.enable = true;
       ghostty.enable = true;
       gitkraken.enable = true;
+      handbrake.enable = true;
       kopiaui.enable = true;
       libreoffice.enable = true;
       localsend.enable = true;
