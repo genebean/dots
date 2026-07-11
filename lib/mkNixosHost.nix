@@ -44,6 +44,7 @@ in
               ../modules/hosts/nixos/${hostname}/home-${username}.nix
 
               inputs.genebean-neovim.homeManagerModules.default
+              inputs.plasma-manager.homeModules.plasma-manager
               inputs.private-flake.homeManagerModules.private.git
               (inputs.private-flake.homeManagerModules.private.${hostname} or { })
               inputs.self.homeManagerModules.genebean

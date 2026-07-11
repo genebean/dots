@@ -22,6 +22,7 @@
   };
 
   genebean = {
+    plasma.enable = true;
     programs = {
       askpass.enable = true;
     };

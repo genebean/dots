@@ -17,6 +17,7 @@
   };
 
   genebean = {
+    plasma.enable = true;
     programs = {
       ghostty.enable = true;
     };
@@ -31,13 +32,6 @@
 
   programs = {
     codex.enable = true;
-
-    plasma = {
-      enable = true;
-      shortcuts = {
-        kwin."Show Desktop" = [ ];
-      };
-    };
 
     # home-manager switch --flake ~/repos/dots
     zsh.shellAliases = {

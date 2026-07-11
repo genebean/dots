@@ -42,9 +42,6 @@ in
     displaylink
     filezilla
     gitkraken
-    kdePackages.bluedevil
-    kdePackages.bluez-qt
-    kdePackages.ksshaskpass
     libbdplus
     libreoffice
     meld
@@ -94,11 +91,6 @@ in
   security.rtkit.enable = true;
 
   services = {
-    displayManager.sddm = {
-      enable = true;
-      wayland.enable = true;
-    };
-    desktopManager.plasma6.enable = true;
     fstrim.enable = true;
     fwupd.enable = true;
     pipewire = {
@@ -147,8 +139,4 @@ in
     ];
   };
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
-  };
 }

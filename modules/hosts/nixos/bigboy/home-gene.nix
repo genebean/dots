@@ -8,18 +8,13 @@
   ];
 
   genebean = {
+    plasma.enable = true;
     programs = {
       askpass.enable = true;
     };
   };
 
   programs = {
-    plasma = {
-      enable = true;
-      shortcuts = {
-        kwin."Show Desktop" = [ ];
-      };
-    };
     vscode = {
       enable = true;
     };

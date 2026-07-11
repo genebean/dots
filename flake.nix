@@ -163,9 +163,6 @@
       nixosConfigurations = {
         bigboy = localLib.mkNixosHost {
           hostname = "bigboy";
-          additionalHomeModules = [
-            inputs.plasma-manager.homeModules.plasma-manager
-          ];
           additionalModules = [
             inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p52
           ];

@@ -45,8 +45,6 @@
     hubble
     hugo
     inputs.flox.packages.${pkgs.stdenv.hostPlatform.system}.default
-    kdePackages.bluedevil
-    kdePackages.bluez-qt
     kdePackages.kdenlive
     kubectl
     kubectx
@@ -57,7 +55,6 @@
     mumble
     networkmanager-openvpn
     pavucontrol
-    kdePackages.polkit-kde-agent-1
     #ulauncher
     podman-compose
     podman-tui # status of containers in the terminal
@@ -114,18 +111,11 @@
     boinc.enable = true;
     bpftune.enable = true;
     dbus.implementation = "broker";
-    desktopManager = {
-      cosmic = {
-        enable = false;
-        xwayland.enable = false;
-      };
-      plasma6.enable = true;
+    desktopManager.cosmic = {
+      enable = false;
+      xwayland.enable = false;
     };
     displayManager.cosmic-greeter.enable = false;
-    displayManager.sddm = {
-      enable = true;
-      wayland.enable = true;
-    };
     flatpak = {
       enable = true;
       packages = [
