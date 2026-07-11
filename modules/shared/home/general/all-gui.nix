@@ -6,6 +6,7 @@
       element.enable = true;
       firefox.enable = true;
       ghostty.enable = true;
+      gitkraken.enable = true;
       kopiaui.enable = true;
       libreoffice.enable = true;
       localsend.enable = true;
@@ -24,11 +25,5 @@
   home.packages = with pkgs; [
     esptool
   ];
-
-  programs = {
-    git.settings.aliases = {
-      kraken = "!gitkraken -p $(cd \"\${1:-.}\" && git rev-parse --show-toplevel)";
-    };
-  };
 
 }

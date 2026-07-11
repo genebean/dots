@@ -41,7 +41,6 @@ in
     #angryipscanner
     displaylink
     filezilla
-    gitkraken
     libbdplus
     mumble
     networkmanager-openvpn

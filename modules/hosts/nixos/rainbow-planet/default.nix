@@ -74,7 +74,6 @@
 
     # common gui apps that really should be in another file
     angryipscanner
-    gitkraken
     slack
     tilix
     xfce.xfce4-terminal

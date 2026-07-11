@@ -4,6 +4,7 @@
     ./programs/element.nix
     ./programs/firefox.nix
     ./programs/ghostty.nix
+    ./programs/gitkraken.nix
     ./programs/kopiaui.nix
     ./programs/libreoffice.nix
     ./programs/localsend.nix
