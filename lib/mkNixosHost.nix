@@ -8,6 +8,7 @@ in
       system ? "x86_64-linux",
       hostname,
       username ? "gene",
+      additionalHomeModules ? [ ],
       additionalModules ? [ ],
       additionalSpecialArgs ? { },
     }:
@@ -46,7 +47,8 @@ in
               inputs.private-flake.homeManagerModules.private.git
               (inputs.private-flake.homeManagerModules.private.${hostname} or { })
               inputs.self.homeManagerModules.genebean
-            ];
+            ]
+            ++ additionalHomeModules;
           };
         }
 

@@ -40,6 +40,7 @@ in
 
         inputs.genebean-neovim.homeManagerModules.default
         inputs.nix-flatpak.homeManagerModules.nix-flatpak
+        inputs.plasma-manager.homeModules.plasma-manager
         inputs.private-flake.homeManagerModules.private.git
         inputs.self.homeManagerModules.genebean
         inputs.sops-nix.homeManagerModules.sops
