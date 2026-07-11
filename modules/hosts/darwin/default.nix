@@ -68,7 +68,6 @@
     masApps = {
       "BetterSnapTool" = 417375580;
       "Brother iPrint&Scan" = 1193539993;
-      "Home Assistant" = 1099568401;
     };
   };
 

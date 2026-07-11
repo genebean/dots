@@ -12,6 +12,7 @@
       ghostty.enable = true;
       gitkraken.enable = true;
       handbrake.enable = true;
+      home-assistant-companion.enable = true;
       kopiaui.enable = true;
       libreoffice.enable = true;
       localsend.enable = true;

@@ -5,7 +5,6 @@
     flatpak = {
       enable = true;
       packages = [
-        "com.cassidyjames.butler"
       ];
       uninstallUnmanaged = true;
       update.auto = {

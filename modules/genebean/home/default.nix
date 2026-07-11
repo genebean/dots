@@ -11,6 +11,7 @@
     ./programs/ghostty.nix
     ./programs/gitkraken.nix
     ./programs/handbrake.nix
+    ./programs/home-assistant-companion.nix
     ./programs/kopiaui.nix
     ./programs/libreoffice.nix
     ./programs/localsend.nix
