@@ -14,6 +14,7 @@
     ./programs/logseq.nix
     ./programs/meld.nix
     ./programs/mkvtoolnix.nix
+    ./programs/mqtt-explorer.nix
     ./programs/mumble.nix
     ./programs/nextcloud-client.nix
     ./programs/onepassword.nix

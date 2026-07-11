@@ -51,7 +51,6 @@
     kubernetes-helm
     kubeseal
     mediawriter
-    mqtt-explorer
     networkmanager-openvpn
     pavucontrol
     #ulauncher

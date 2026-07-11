@@ -16,6 +16,7 @@
       logseq.enable = true;
       meld.enable = true;
       mkvtoolnix.enable = true;
+      mqtt-explorer.enable = true;
       mumble.enable = true;
       nextcloud-client.enable = true;
       onepassword.enable = true;
