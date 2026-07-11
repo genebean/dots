@@ -15,7 +15,6 @@
         "org.libreoffice.LibreOffice"
         "org.localsend.localsend_app"
         "org.gnome.Fractal"
-        "org.signal.Signal"
         "org.telegram.desktop"
       ];
       uninstallUnmanaged = true;

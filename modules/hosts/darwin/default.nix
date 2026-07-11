@@ -75,7 +75,6 @@
       "nextcloud"
       "onlyoffice"
       "raycast"
-      "signal"
       "slack"
       "sonos"
       "todoist-app"

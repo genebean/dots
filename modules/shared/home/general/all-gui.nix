@@ -6,6 +6,7 @@
       firefox.enable = true;
       ghostty.enable = true;
       onepassword.enable = true;
+      signal.enable = true;
       vscode.enable = true;
       wezterm.enable = true;
     };
