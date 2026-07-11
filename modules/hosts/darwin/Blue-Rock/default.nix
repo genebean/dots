@@ -29,7 +29,6 @@
       "discord"
       "elgato-stream-deck"
       "google-drive"
-      "kopiaui"
       "obs"
       "puppet-agent"
       "puppet-bolt"

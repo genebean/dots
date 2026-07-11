@@ -44,7 +44,6 @@
       "elgato-stream-deck"
       "google-drive"
       "gpg-suite"
-      "kopiaui"
       "multipass"
       "mumble"
       "obs"

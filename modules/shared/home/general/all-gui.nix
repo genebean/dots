@@ -6,6 +6,7 @@
       element.enable = true;
       firefox.enable = true;
       ghostty.enable = true;
+      kopiaui.enable = true;
       libreoffice.enable = true;
       localsend.enable = true;
       logseq.enable = true;

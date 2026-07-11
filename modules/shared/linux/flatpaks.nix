@@ -6,7 +6,6 @@
       enable = true;
       packages = [
         "com.cassidyjames.butler"
-        "io.kopia.KopiaUI"
         "io.github.sigmasd.stimulator"
         "io.github.ungoogled_software.ungoogled_chromium"
         "org.gnome.Fractal"
