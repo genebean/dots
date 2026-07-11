@@ -78,7 +78,6 @@
       "sonos"
       "todoist-app"
       "transmission"
-      "vivaldi"
       "zoom"
     ];
     masApps = {

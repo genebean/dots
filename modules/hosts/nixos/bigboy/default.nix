@@ -50,7 +50,6 @@ in
     rclone-browser
     slack
     tilix
-    vivaldi
     vlc-with-decoding
     xf86-video-fbdev
     xfce4-terminal

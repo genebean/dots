@@ -7,6 +7,7 @@
     ./programs/ghostty.nix
     ./programs/onepassword.nix
     ./programs/signal.nix
+    ./programs/vivaldi.nix
     ./programs/vscode.nix
     ./programs/wezterm.nix
     ./services/tailscale.nix
