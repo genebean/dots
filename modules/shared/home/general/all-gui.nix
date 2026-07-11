@@ -19,6 +19,7 @@
       signal.enable = true;
       slack.enable = true;
       telegram.enable = true;
+      transmission.enable = true;
       vivaldi.enable = true;
       vscode.enable = true;
       wezterm.enable = true;

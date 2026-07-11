@@ -69,7 +69,6 @@
       "raycast"
       "sonos"
       "todoist-app"
-      "transmission"
     ];
     masApps = {
       "BetterSnapTool" = 417375580;
