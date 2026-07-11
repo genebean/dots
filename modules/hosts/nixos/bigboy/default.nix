@@ -73,8 +73,6 @@ in
       polkitPolicyOwners = [ "${username}" ];
     };
 
-    firefox.enable = true;
-
     java = {
       enable = true; # Needed for some Blu-ray disk menus
       package = pkgs.jdk17;

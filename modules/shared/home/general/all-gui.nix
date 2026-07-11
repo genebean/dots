@@ -3,6 +3,7 @@
   genebean = {
     programs = {
       askpass.enable = true;
+      firefox.enable = true;
       ghostty.enable = true;
       wezterm.enable = true;
     };

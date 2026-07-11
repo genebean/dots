@@ -97,7 +97,6 @@
       polkitPolicyOwners = [ "${username}" ];
     };
     adb.enable = true;
-    firefox.enable = true;
     #hyprland.enable = true;
 
     thunderbird.enable = true;
