@@ -3,6 +3,7 @@
   genebean = {
     programs = {
       askpass.enable = true;
+      element.enable = true;
       firefox.enable = true;
       ghostty.enable = true;
       onepassword.enable = true;

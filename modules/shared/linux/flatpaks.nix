@@ -8,7 +8,6 @@
         "com.cassidyjames.butler"
         "com.logseq.Logseq"
         "com.vivaldi.Vivaldi"
-        "im.riot.Riot"
         "io.kopia.KopiaUI"
         "io.github.sigmasd.stimulator"
         "io.github.ungoogled_software.ungoogled_chromium"

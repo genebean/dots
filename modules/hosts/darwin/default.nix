@@ -56,7 +56,6 @@
       "balenaetcher"
       "bartender"
       #"displaylink"
-      "element"
       "font-hack-nerd-font"
       "font-inconsolata-g-for-powerline"
       "font-source-code-pro-for-powerline"
