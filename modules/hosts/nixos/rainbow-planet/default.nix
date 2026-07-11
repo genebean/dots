@@ -139,16 +139,6 @@
     printing.enable = true; # Enable CUPS
     resolved.enable = true;
     smartd.enable = true;
-    tailscale = {
-      enable = true;
-      authKeyFile = config.sops.secrets.tailscale_key.path;
-      extraUpFlags = [
-        "--operator"
-        "${username}"
-        "--ssh"
-      ];
-      useRoutingFeatures = "client";
-    };
     thermald.enable = true;
   };
 
@@ -170,9 +160,6 @@
       local_private_env = {
         owner = "${username}";
         path = "${config.users.users.${username}.home}/.private-env";
-      };
-      tailscale_key = {
-        restartUnits = [ "tailscaled-autoconnect.service" ];
       };
     };
   };

@@ -148,17 +148,6 @@ in
         Persistent = true;
       };
     };
-    tailscale = {
-      enable = true;
-      authKeyFile = config.sops.secrets.tailscale_key.path;
-      extraUpFlags = [
-        "--advertise-exit-node"
-        "--operator"
-        "${username}"
-        "--ssh"
-      ];
-      useRoutingFeatures = "both";
-    };
   };
 
   sops = {
@@ -182,9 +171,6 @@ in
       nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
       plausible_admin_pass.owner = config.users.users.nginx.name;
       plausible_secret_key_base.owner = config.users.users.nginx.name;
-      tailscale_key = {
-        restartUnits = [ "tailscaled-autoconnect.service" ];
-      };
     };
   };
 

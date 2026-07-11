@@ -81,7 +81,6 @@
       "signal"
       "slack"
       "sonos"
-      "tailscale-app"
       "todoist-app"
       "transmission"
       "visual-studio-code"

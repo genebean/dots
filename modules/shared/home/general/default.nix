@@ -5,6 +5,12 @@
   ...
 }:
 {
+  genebean = {
+    services = {
+      tailscale.enable = true;
+    };
+  };
+
   home = {
     packages = with pkgs; [
       btop
