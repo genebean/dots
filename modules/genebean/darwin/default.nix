@@ -1,6 +1,7 @@
 {
   imports = [
     ./programs/askpass.nix
+    ./programs/audacity.nix
     ./programs/element.nix
     ./programs/firefox.nix
     ./programs/ghostty.nix
