@@ -1,5 +1,9 @@
 { pkgs, ... }:
 {
+  genebean = {
+    ghostty.enable = true;
+  };
+
   home.packages = with pkgs; [
     esptool
   ];

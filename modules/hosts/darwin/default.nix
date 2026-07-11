@@ -65,7 +65,6 @@
       "font-hack-nerd-font"
       "font-inconsolata-g-for-powerline"
       "font-source-code-pro-for-powerline"
-      "ghostty"
       "gitkraken"
       "gitkraken-cli"
       "handbrake-app"

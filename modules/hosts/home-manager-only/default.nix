@@ -16,6 +16,10 @@
     };
   };
 
+  genebean = {
+    ghostty.enable = true;
+  };
+
   home.packages = with pkgs; [
     age
     home-manager

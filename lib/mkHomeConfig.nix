@@ -1,4 +1,7 @@
 { inputs, ... }:
+let
+  inherit (import ./default.nix { inherit inputs; }) genebeanLib;
+in
 {
   mkHomeConfig =
     {
@@ -10,6 +13,7 @@
       extraSpecialArgs = {
         inherit
           inputs
+          genebeanLib
           homeDirectory
           system
           username
@@ -37,6 +41,7 @@
         inputs.genebean-neovim.homeManagerModules.default
         inputs.nix-flatpak.homeManagerModules.nix-flatpak
         inputs.private-flake.homeManagerModules.private.git
+        inputs.self.homeManagerModules.genebean
         inputs.sops-nix.homeManagerModules.sops
       ];
     };

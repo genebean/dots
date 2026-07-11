@@ -1,6 +1,6 @@
 { username, ... }:
 {
-  # dawrwin-specific shell config
+  # darwin-specific shell config
   programs = {
     zsh = {
       initContent = ''

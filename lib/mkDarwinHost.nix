@@ -1,4 +1,7 @@
 { inputs, ... }:
+let
+  inherit (import ./default.nix { inherit inputs; }) genebeanLib;
+in
 {
   mkDarwinHost =
     {
@@ -29,7 +32,7 @@
         inputs.home-manager.darwinModules.home-manager
         {
           home-manager = {
-            extraSpecialArgs = { inherit inputs username; };
+            extraSpecialArgs = { inherit inputs genebeanLib username; };
             useGlobalPkgs = true;
             useUserPackages = true;
             users.${username}.imports = [
@@ -41,11 +44,13 @@
               inputs.genebean-neovim.homeManagerModules.default
               inputs.private-flake.homeManagerModules.private.git
               (inputs.private-flake.homeManagerModules.private.${hostname} or { })
+              inputs.self.homeManagerModules.genebean
               inputs.sops-nix.homeManagerModule # user-level secrets management
             ];
           };
         }
 
+        inputs.self.darwinModules.genebean
         ../modules/hosts/darwin # system-wide stuff
         ../modules/hosts/darwin/${hostname} # host specific stuff
       ]

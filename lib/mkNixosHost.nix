@@ -1,4 +1,7 @@
 { inputs, ... }:
+let
+  inherit (import ./default.nix { inherit inputs; }) genebeanLib;
+in
 {
   mkNixosHost =
     {
@@ -22,7 +25,16 @@
         inputs.home-manager.nixosModules.home-manager
         {
           home-manager = {
-            extraSpecialArgs = { inherit inputs hostname username; };
+            extraSpecialArgs = {
+              inherit
+                inputs
+                hostname
+                username
+                ;
+              genebeanLib = genebeanLib // {
+                isNixOS = true;
+              };
+            };
             useGlobalPkgs = true;
             useUserPackages = true;
             users.${username}.imports = [
@@ -33,6 +45,7 @@
               inputs.genebean-neovim.homeManagerModules.default
               inputs.private-flake.homeManagerModules.private.git
               (inputs.private-flake.homeManagerModules.private.${hostname} or { })
+              inputs.self.homeManagerModules.genebean
             ];
           };
         }

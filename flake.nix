@@ -128,6 +128,9 @@
       ];
     in
     {
+      darwinModules.genebean = ./modules/genebean/darwin;
+      homeManagerModules.genebean = ./modules/genebean/home;
+
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
 
       # Darwin (macOS) hosts
