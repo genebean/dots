@@ -5,6 +5,7 @@
     ./programs/firefox.nix
     ./programs/ghostty.nix
     ./programs/libreoffice.nix
+    ./programs/localsend.nix
     ./programs/logseq.nix
     ./programs/onepassword.nix
     ./programs/signal.nix

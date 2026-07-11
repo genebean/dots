@@ -9,7 +9,6 @@
         "io.kopia.KopiaUI"
         "io.github.sigmasd.stimulator"
         "io.github.ungoogled_software.ungoogled_chromium"
-        "org.localsend.localsend_app"
         "org.gnome.Fractal"
         "org.telegram.desktop"
       ];
