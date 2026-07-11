@@ -52,7 +52,6 @@
       "qmk-toolbox"
       "raspberry-pi-imager"
       "thunderbird@daily"
-      "ungoogled-chromium"
       #"utm"
       # "vagrant"
       "vial"

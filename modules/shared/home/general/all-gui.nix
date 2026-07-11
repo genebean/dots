@@ -23,6 +23,7 @@
       slack.enable = true;
       telegram.enable = true;
       transmission.enable = true;
+      ungoogled-chromium.enable = true;
       vivaldi.enable = true;
       vscode.enable = true;
       wezterm.enable = true;

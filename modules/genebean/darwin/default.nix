@@ -22,6 +22,7 @@
     ./programs/telegram.nix
     ./programs/thunderbird.nix
     ./programs/transmission.nix
+    ./programs/ungoogled-chromium.nix
     ./programs/vivaldi.nix
     ./programs/vscode.nix
     ./programs/zoom.nix
