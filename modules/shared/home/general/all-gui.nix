@@ -14,6 +14,7 @@
       meld.enable = true;
       onepassword.enable = true;
       signal.enable = true;
+      slack.enable = true;
       telegram.enable = true;
       vivaldi.enable = true;
       vscode.enable = true;

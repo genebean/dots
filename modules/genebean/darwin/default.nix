@@ -12,6 +12,7 @@
     ./programs/meld.nix
     ./programs/onepassword.nix
     ./programs/signal.nix
+    ./programs/slack.nix
     ./programs/telegram.nix
     ./programs/thunderbird.nix
     ./programs/vivaldi.nix

@@ -45,7 +45,6 @@ in
     mumble
     networkmanager-openvpn
     rclone-browser
-    slack
     tilix
     vlc-with-decoding
     xf86-video-fbdev
