@@ -43,7 +43,6 @@ in
     filezilla
     gitkraken
     libbdplus
-    meld
     mumble
     networkmanager-openvpn
     rclone-browser

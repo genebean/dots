@@ -10,6 +10,7 @@
       libreoffice.enable = true;
       localsend.enable = true;
       logseq.enable = true;
+      meld.enable = true;
       onepassword.enable = true;
       signal.enable = true;
       telegram.enable = true;

@@ -8,6 +8,7 @@
     ./programs/libreoffice.nix
     ./programs/localsend.nix
     ./programs/logseq.nix
+    ./programs/meld.nix
     ./programs/onepassword.nix
     ./programs/signal.nix
     ./programs/telegram.nix
