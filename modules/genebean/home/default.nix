@@ -5,6 +5,7 @@
     ./programs/askpass.nix
     ./programs/caffeine.nix
     ./programs/audacity.nix
+    ./programs/claude-code.nix
     ./programs/element.nix
     ./programs/firefox.nix
     ./programs/fractal.nix
@@ -25,6 +26,7 @@
     ./programs/onlyoffice.nix
     ./programs/signal.nix
     ./programs/slack.nix
+    ./programs/sops.nix
     ./programs/telegram.nix
     ./programs/thunderbird.nix
     ./programs/transmission.nix

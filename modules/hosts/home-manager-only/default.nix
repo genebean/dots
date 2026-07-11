@@ -24,10 +24,7 @@
   };
 
   home.packages = with pkgs; [
-    age
     home-manager
-    sops
-    ssh-to-age
   ];
 
   programs = {
