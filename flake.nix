@@ -77,6 +77,14 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
+    };
+
     # Private flake for sensitive configs
     private-flake = {
       url = "github:genebean/private-flake";
@@ -128,6 +136,9 @@
       ];
     in
     {
+      darwinModules.genebean = ./modules/genebean/darwin;
+      homeManagerModules.genebean = ./modules/genebean/home;
+
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
 
       # Darwin (macOS) hosts
@@ -151,6 +162,9 @@
       nixosConfigurations = {
         bigboy = localLib.mkNixosHost {
           hostname = "bigboy";
+          additionalHomeModules = [
+            inputs.plasma-manager.homeModules.plasma-manager
+          ];
           additionalModules = [
             inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p52
           ];

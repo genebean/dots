@@ -54,6 +54,9 @@ read-only lookups or when self-hosting is genuinely impractical.
 flake.nix                    — inputs, outputs, host wiring
 lib/                         — mkNixosHost / mkDarwinHost / mkHomeConfig helpers
 modules/
+  genebean/                  — reusable namespaced modules (see genebean Module Pattern below)
+    home/                    — home-manager modules; options live under genebean.*
+    darwin/                  — nix-darwin companion modules (e.g. Homebrew cask wiring)
   hosts/                     - host-specific modules
     nixos/<hostname>/        — per-host NixOS config + hardware + secrets.yaml
     darwin/<hostname>/       — per-host nix-darwin config
@@ -224,6 +227,99 @@ inherit (config.dots.ports.grafana) port;
 When adding a service that other hosts need to know about (e.g. a shared API
 endpoint referenced across hosts), declare it in the shared registry. When
 adding a service local to one host, declare it in that host's `ports.nix`.
+
+---
+
+## genebean Module Pattern
+
+`modules/genebean/` holds reusable, option-driven modules namespaced under
+`genebean.*`. This is the home for any config that needs to behave differently
+across platforms (NixOS / macOS / Ubuntu) without requiring `lib.mkForce` at
+the call site.
+
+### Structure
+
+```
+modules/genebean/
+  home/
+    default.nix    — imports all home-manager modules in this directory
+    ghostty.nix    — example: genebean.ghostty options
+  darwin/
+    default.nix    — imports all nix-darwin companion modules
+    ghostty.nix    — example: drives homebrew.casks from the home-manager option
+```
+
+Each directory's `default.nix` is an `{ imports = [ ... ]; }` list. **Adding a
+new module means creating the file and adding one line to `default.nix` — the
+flake output and all lib consumers stay unchanged.**
+
+### Flake outputs and consumption
+
+Both directories are exposed as flake outputs pointing at the directory (not
+individual files):
+
+```nix
+homeManagerModules.genebean = ./modules/genebean/home;
+darwinModules.genebean      = ./modules/genebean/darwin;
+```
+
+All three lib helpers (`mkNixosHost`, `mkDarwinHost`, `mkHomeConfig`) import
+`inputs.self.homeManagerModules.genebean` into the home-manager module list.
+`mkDarwinHost` additionally imports `inputs.self.darwinModules.genebean` as a
+nix-darwin system module.
+
+Consumers set options — they never import module files directly.
+
+### Platform detection
+
+`genebeanLib` is an attrset defined in `lib/default.nix` and passed as
+`extraSpecialArgs` by all three lib helpers. Use it inside any home-manager
+module instead of raw builtins:
+
+```nix
+{ genebeanLib, lib, pkgs, ... }:
+```
+
+Current helpers:
+
+| Helper | Value | Use for |
+|---|---|---|
+| `genebeanLib.isNixOS` | `true` in `mkNixosHost`, `false` elsewhere | NixOS vs other Linux |
+| `pkgs.stdenv.isDarwin` | stdlib | macOS detection (no lib wrapper needed) |
+
+`genebeanLib.isNixOS` is set explicitly by each builder rather than probed at
+evaluation time — `mkNixosHost` overrides it to `true` via
+`genebeanLib // { isNixOS = true; }` in `extraSpecialArgs`; `mkDarwinHost` and
+`mkHomeConfig` pass the base `genebeanLib` which defaults `isNixOS` to `false`.
+This avoids the impure `builtins.pathExists /etc/NIXOS` probe, which is
+unreliable in flake pure-eval mode and when building for a remote target.
+
+Options that vary by platform should use these as their `default`, so no
+host-level overrides are needed:
+
+```nix
+installViaNix = lib.mkOption {
+  type    = lib.types.bool;
+  default = genebeanLib.isNixOS;
+};
+```
+
+### Darwin companion modules
+
+When a feature requires a nix-darwin system-level action (e.g. adding a
+Homebrew cask), create a companion module under `modules/genebean/darwin/`.
+The companion reads the home-manager option via
+`config.home-manager.users.${username}.genebean.<module>.<option>` and acts on
+it — the consumer only ever sets the home-manager option. `username` is
+available as a specialArg in all darwin system modules.
+
+### Adding a new genebean module
+
+1. Create `modules/genebean/home/<name>.nix` — define `options.genebean.<name>`
+   and `config = lib.mkIf cfg.enable { ... }`
+2. Add `./name.nix` to `modules/genebean/home/default.nix`
+3. If a darwin system action is needed, repeat for `modules/genebean/darwin/`
+4. Set options at the call site (`all-gui.nix`, a host file, etc.) — no imports
 
 ---
 

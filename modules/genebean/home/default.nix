@@ -1,0 +1,1 @@
+{ imports = [ ./ghostty.nix ]; }

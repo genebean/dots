@@ -8,6 +8,12 @@
   ];
 
   programs = {
+    plasma = {
+      enable = true;
+      shortcuts = {
+        kwin."Show Desktop" = [ ];
+      };
+    };
     vscode = {
       enable = true;
     };

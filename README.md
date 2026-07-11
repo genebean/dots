@@ -25,7 +25,11 @@ This repo is a Nix flake that manages most of my setup on macOS and fully manage
   - `mkNixosHost` - constructs NixOS system configurations
   - `mkDarwinHost` - constructs nix-darwin system configurations
   - `mkHomeConfig` - constructs Home Manager configurations
+  - `genebeanLib` - shared platform-detection helpers passed to all modules via `extraSpecialArgs`
 - `modules/` contains Nix modules organized by type:
+  - `modules/genebean/` - reusable, option-driven modules under the `genebean.*` namespace
+    - `modules/genebean/home/` - Home Manager modules; exposed as `homeManagerModules.genebean`
+    - `modules/genebean/darwin/` - nix-darwin companion modules; exposed as `darwinModules.genebean`
   - `modules/shared/` - shared modules imported by multiple hosts
     - `modules/shared/home/general/` - Home Manager config for all GUI users
     - `modules/shared/home/linux/` - Home Manager config for Linux-specific apps
