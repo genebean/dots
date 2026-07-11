@@ -6,7 +6,6 @@
       enable = true;
       packages = [
         "com.cassidyjames.butler"
-        "io.github.sigmasd.stimulator"
         "org.gnome.Fractal"
       ];
       uninstallUnmanaged = true;
