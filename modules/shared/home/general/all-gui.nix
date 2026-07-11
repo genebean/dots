@@ -2,6 +2,7 @@
 {
   genebean = {
     programs = {
+      angry-ip-scanner.enable = true;
       askpass.enable = true;
       audacity.enable = true;
       element.enable = true;

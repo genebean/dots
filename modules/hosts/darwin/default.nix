@@ -50,7 +50,6 @@
     ];
     casks = [
       "amethyst"
-      "angry-ip-scanner"
       "appcleaner"
       "balenaetcher"
       "bartender"
