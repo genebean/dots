@@ -4,6 +4,7 @@
 
   genebean = {
     programs = {
+      mumble.enable = true;
       thunderbird.enable = true;
     };
   };

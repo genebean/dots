@@ -11,6 +11,7 @@
     ./programs/localsend.nix
     ./programs/logseq.nix
     ./programs/meld.nix
+    ./programs/mumble.nix
     ./programs/onepassword.nix
     ./programs/signal.nix
     ./programs/slack.nix

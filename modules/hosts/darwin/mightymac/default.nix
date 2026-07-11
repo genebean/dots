@@ -45,7 +45,6 @@
       "google-drive"
       "gpg-suite"
       "multipass"
-      "mumble"
       "obs"
       "openvox8-agent"
       "openvox8-openbolt"

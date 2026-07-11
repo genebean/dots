@@ -42,7 +42,6 @@ in
     displaylink
     filezilla
     libbdplus
-    mumble
     networkmanager-openvpn
     rclone-browser
     tilix

@@ -12,6 +12,7 @@
       localsend.enable = true;
       logseq.enable = true;
       meld.enable = true;
+      mumble.enable = true;
       onepassword.enable = true;
       signal.enable = true;
       slack.enable = true;

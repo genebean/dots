@@ -52,7 +52,6 @@
     kubeseal
     mediawriter
     mqtt-explorer
-    mumble
     networkmanager-openvpn
     pavucontrol
     #ulauncher
