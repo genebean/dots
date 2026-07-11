@@ -4,6 +4,7 @@
     programs = {
       askpass.enable = true;
       ghostty.enable = true;
+      wezterm.enable = true;
     };
   };
 
@@ -17,5 +18,4 @@
     };
   };
 
-  xdg.configFile."wezterm/wezterm.lua".source = ../../files/wezterm/wezterm.lua;
 }

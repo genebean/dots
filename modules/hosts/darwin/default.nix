@@ -85,7 +85,6 @@
       "transmission"
       "visual-studio-code"
       "vivaldi"
-      "wezterm"
       "zoom"
     ];
     masApps = {

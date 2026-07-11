@@ -49,5 +49,4 @@
     };
   };
 
-  xdg.configFile."wezterm/wezterm.lua".source = ../../shared/files/wezterm/wezterm.lua;
 }

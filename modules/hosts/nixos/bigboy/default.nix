@@ -52,7 +52,6 @@ in
     tilix
     vivaldi
     vlc-with-decoding
-    wezterm
     xf86-video-fbdev
     xfce4-terminal
     zoom-us
