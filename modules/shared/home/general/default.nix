@@ -8,6 +8,7 @@
   genebean = {
     programs = {
       claude-code.enable = true;
+      git.enable = true;
       nixdiff.enable = true;
       powershell.enable = true;
       sops.enable = true;
@@ -35,7 +36,6 @@
       (fastfetch.override { enlightenmentSupport = false; })
       fd
       f2
-      git-filter-repo
       glab
       glow
       gomuks
@@ -121,43 +121,6 @@
     fzf.enable = true;
     genebean-neovim.enable = true;
     gh.enable = true;
-    git = {
-      enable = true;
-      ignores = [
-        "*~"
-        "*.swp"
-        ".DS_Store"
-      ];
-      lfs.enable = true;
-      package = pkgs.gitFull;
-      settings = {
-        diff.sopsdiffer.textconv = "sops --config /dev/null --decrypt";
-
-        init = {
-          defaultBranch = "main";
-        };
-        commit = {
-          gpgsign = true;
-        };
-        gpg = {
-          format = "ssh";
-          ssh = {
-            allowedSignersFile = "${config.home.homeDirectory}/.config/git/allowed_signers";
-          };
-        };
-        merge = {
-          conflictStyle = "diff3";
-          tool = "meld";
-        };
-        pull = {
-          rebase = false;
-        };
-        user = {
-          name = "Gene Liverman";
-          signingkey = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
-        };
-      };
-    }; # end git
     irssi.enable = true;
     jq.enable = true;
     nh = {

@@ -13,6 +13,7 @@
     ./programs/firefox.nix
     ./programs/fractal.nix
     ./programs/ghostty.nix
+    ./programs/git.nix
     ./programs/gitkraken.nix
     ./programs/hexchat.nix
     ./programs/handbrake.nix
