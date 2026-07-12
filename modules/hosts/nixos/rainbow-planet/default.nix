@@ -39,7 +39,6 @@
     chirp
     cilium-cli
     displaylink
-    filezilla
     go
     hubble
     hugo

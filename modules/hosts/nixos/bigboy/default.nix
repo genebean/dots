@@ -28,7 +28,6 @@
   environment.systemPackages = with pkgs; [
     #angryipscanner
     displaylink
-    filezilla
     networkmanager-openvpn
     rclone-browser
     xf86-video-fbdev

@@ -9,6 +9,7 @@
     ./programs/claude-code.nix
     ./programs/discord.nix
     ./programs/element.nix
+    ./programs/filezilla.nix
     ./programs/firefox.nix
     ./programs/fractal.nix
     ./programs/ghostty.nix

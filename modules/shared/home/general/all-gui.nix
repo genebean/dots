@@ -9,6 +9,7 @@
       audacity.enable = true;
       discord.enable = true;
       element.enable = true;
+      filezilla.enable = true;
       firefox.enable = true;
       fractal.enable = true;
       ghostty.enable = true;
