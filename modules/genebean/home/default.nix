@@ -42,6 +42,7 @@
     ./programs/transmission.nix
     ./programs/xfce4-terminal
     ./programs/ungoogled-chromium.nix
+    ./programs/vim.nix
     ./programs/vivaldi.nix
     ./programs/vlc.nix
     ./programs/waybar
