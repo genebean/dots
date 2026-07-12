@@ -64,7 +64,6 @@
     trezor-suite
     trezor-udev-rules
     virt-manager
-    vlc
     whalebird
     wmctrl
 

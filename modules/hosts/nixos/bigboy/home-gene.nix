@@ -10,6 +10,7 @@
     programs = {
       askpass.enable = true;
       tilix.enable = true;
+      vlc.enable = true;
       xfce4-terminal.enable = true;
     };
   };

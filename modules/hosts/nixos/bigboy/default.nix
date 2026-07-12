@@ -4,18 +4,6 @@
   username,
   ...
 }:
-let
-  libbluray = pkgs.libbluray.override {
-    withAACS = true;
-    withBDplus = true;
-    withJava = true;
-  };
-  vlc-with-decoding = pkgs.vlc.overrideAttrs (oldAttrs: {
-    buildInputs = map (dep: if dep.pname or "" == "libbluray" then libbluray else dep) (
-      oldAttrs.buildInputs or [ ]
-    );
-  });
-in
 {
   imports = [
     # Include the results of the hardware scan.
@@ -41,10 +29,8 @@ in
     #angryipscanner
     displaylink
     filezilla
-    libbdplus
     networkmanager-openvpn
     rclone-browser
-    vlc-with-decoding
     xf86-video-fbdev
   ];
 

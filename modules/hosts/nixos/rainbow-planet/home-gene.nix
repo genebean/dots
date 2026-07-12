@@ -25,6 +25,7 @@
       askpass.enable = true;
       thunderbird.enable = true;
       tilix.enable = true;
+      vlc.enable = true;
       xfce4-terminal.enable = true;
     };
   };

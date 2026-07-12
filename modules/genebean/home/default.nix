@@ -35,6 +35,7 @@
     ./programs/xfce4-terminal.nix
     ./programs/ungoogled-chromium.nix
     ./programs/vivaldi.nix
+    ./programs/vlc.nix
     ./programs/vscode.nix
     ./programs/zoom.nix
     ./programs/wezterm.nix
