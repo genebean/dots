@@ -42,7 +42,6 @@
       "google-drive"
       "gpg-suite"
       "multipass"
-      "obs"
       "openvox8-agent"
       "openvox8-openbolt"
       "podman-desktop"

@@ -24,6 +24,7 @@
       mqtt-explorer.enable = true;
       mumble.enable = true;
       nextcloud-client.enable = true;
+      obs.enable = true;
       onepassword.enable = true;
       onlyoffice.enable = true;
       signal.enable = true;

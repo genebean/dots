@@ -24,6 +24,7 @@
     ./programs/mqtt-explorer.nix
     ./programs/mumble.nix
     ./programs/nextcloud-client.nix
+    ./programs/obs.nix
     ./programs/onepassword.nix
     ./programs/onlyoffice.nix
     ./programs/signal.nix

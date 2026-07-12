@@ -27,7 +27,6 @@
       "asana"
       "elgato-stream-deck"
       "google-drive"
-      "obs"
       "puppet-agent"
       "puppet-bolt"
       "qmk-toolbox"
