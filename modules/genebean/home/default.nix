@@ -14,6 +14,7 @@
     ./programs/fractal.nix
     ./programs/ghostty.nix
     ./programs/gitkraken.nix
+    ./programs/hexchat.nix
     ./programs/handbrake.nix
     ./programs/home-assistant-companion.nix
     ./programs/kopiaui.nix
@@ -29,6 +30,7 @@
     ./programs/obs.nix
     ./programs/onepassword.nix
     ./programs/onlyoffice.nix
+    ./programs/pidgin.nix
     ./programs/signal.nix
     ./programs/slack.nix
     ./programs/sops.nix
@@ -40,6 +42,7 @@
     ./programs/ungoogled-chromium.nix
     ./programs/vivaldi.nix
     ./programs/vlc.nix
+    ./programs/waybar
     ./programs/vscode.nix
     ./programs/zoom.nix
     ./programs/wezterm
