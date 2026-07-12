@@ -38,6 +38,7 @@
     ./programs/telegram.nix
     ./programs/thunderbird.nix
     ./programs/tilix
+    ./programs/tmux.nix
     ./programs/transmission.nix
     ./programs/xfce4-terminal
     ./programs/ungoogled-chromium.nix
