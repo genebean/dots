@@ -162,17 +162,6 @@
       enable = true;
       flake = "${config.home.homeDirectory}/repos/dots";
     };
-    oh-my-posh = {
-      enable = true;
-      enableZshIntegration = true;
-      settings = builtins.fromJSON (
-        builtins.unsafeDiscardStringContext (
-          builtins.readFile (inputs.genebean-omp-themes + "/beanbag.omp.json")
-        )
-      );
-      #useTheme = "amro";
-      #useTheme = "montys";
-    };
     ripgrep.enable = true;
     tmux = {
       enable = true;
