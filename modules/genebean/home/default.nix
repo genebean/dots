@@ -31,6 +31,7 @@
     ./programs/thunderbird.nix
     ./programs/tilix.nix
     ./programs/transmission.nix
+    ./programs/xfce4-terminal.nix
     ./programs/ungoogled-chromium.nix
     ./programs/vivaldi.nix
     ./programs/vscode.nix

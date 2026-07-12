@@ -6,7 +6,6 @@
     ../../../shared/home/linux/apps/hexchat.nix
     ../../../shared/home/linux/apps/pidgin.nix
     ../../../shared/home/linux/apps/waybar.nix
-    ../../../shared/home/linux/apps/xfce4-terminal.nix
   ];
 
   home.file = {
@@ -26,6 +25,7 @@
       askpass.enable = true;
       thunderbird.enable = true;
       tilix.enable = true;
+      xfce4-terminal.enable = true;
     };
   };
 

@@ -69,8 +69,6 @@
     whalebird
     wmctrl
 
-    # common gui apps that really should be in another file
-    xfce.xfce4-terminal
   ];
 
   networking = {
@@ -81,10 +79,6 @@
   programs = {
     adb.enable = true;
     #hyprland.enable = true;
-
-    # common programs that really should be in another file
-    # required for setting to be picked up by xfce4-terminal
-    xfconf.enable = true;
   };
 
   services = {

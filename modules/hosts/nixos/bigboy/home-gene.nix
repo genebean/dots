@@ -3,7 +3,6 @@
   home.stateVersion = "24.05";
   imports = [
     ../../../shared/home/general/all-gui.nix
-    ../../../shared/home/linux/apps/xfce4-terminal.nix
   ];
 
   genebean = {
@@ -11,6 +10,7 @@
     programs = {
       askpass.enable = true;
       tilix.enable = true;
+      xfce4-terminal.enable = true;
     };
   };
 

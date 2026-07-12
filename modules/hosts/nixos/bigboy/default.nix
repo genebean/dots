@@ -46,7 +46,6 @@ in
     rclone-browser
     vlc-with-decoding
     xf86-video-fbdev
-    xfce4-terminal
   ];
 
   hardware.bluetooth = {
@@ -63,10 +62,6 @@ in
     };
 
     kdeconnect.enable = true;
-
-    # common programs that really should be in another file
-    # required for setting to be picked up by xfce4-terminal
-    xfconf.enable = true;
   };
 
   security.rtkit.enable = true;
