@@ -5,9 +5,7 @@
     ../../../shared/home/general/all-gui.nix
     ../../../shared/home/linux/apps/hexchat.nix
     ../../../shared/home/linux/apps/pidgin.nix
-    ../../../shared/home/linux/apps/tilix.nix
     ../../../shared/home/linux/apps/waybar.nix
-    ../../../shared/home/linux/apps/xfce4-terminal.nix
   ];
 
   home.file = {
@@ -21,11 +19,19 @@
       + "/themes/frappe.conf";
   };
 
+  genebean = {
+    plasma.enable = true;
+    programs = {
+      askpass.enable = true;
+      thunderbird.enable = true;
+      tilix.enable = true;
+      vlc.enable = true;
+      xfce4-terminal.enable = true;
+    };
+  };
+
   programs = {
     ghostty = {
-      enable = true;
-    };
-    vscode = {
       enable = true;
     };
   };

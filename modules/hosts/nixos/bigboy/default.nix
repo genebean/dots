@@ -4,18 +4,6 @@
   username,
   ...
 }:
-let
-  libbluray = pkgs.libbluray.override {
-    withAACS = true;
-    withBDplus = true;
-    withJava = true;
-  };
-  vlc-with-decoding = pkgs.vlc.overrideAttrs (oldAttrs: {
-    buildInputs = map (dep: if dep.pname or "" == "libbluray" then libbluray else dep) (
-      oldAttrs.buildInputs or [ ]
-    );
-  });
-in
 {
   imports = [
     # Include the results of the hardware scan.
@@ -40,25 +28,9 @@ in
   environment.systemPackages = with pkgs; [
     #angryipscanner
     displaylink
-    filezilla
-    gitkraken
-    kdePackages.bluedevil
-    kdePackages.bluez-qt
-    kdePackages.ksshaskpass
-    libbdplus
-    libreoffice
-    meld
-    mumble
     networkmanager-openvpn
     rclone-browser
-    slack
-    tilix
-    vivaldi
-    vlc-with-decoding
-    wezterm
     xf86-video-fbdev
-    xfce4-terminal
-    zoom-us
   ];
 
   hardware.bluetooth = {
@@ -69,38 +41,17 @@ in
   networking.networkmanager.enable = true;
 
   programs = {
-    _1password.enable = true;
-    _1password-gui = {
-      enable = true;
-      # Certain features, including CLI integration and system authentication support,
-      # require enabling PolKit integration on some desktop environments (e.g. Plasma).
-      polkitPolicyOwners = [ "${username}" ];
-    };
-
-    firefox.enable = true;
-
     java = {
       enable = true; # Needed for some Blu-ray disk menus
       package = pkgs.jdk17;
     };
 
     kdeconnect.enable = true;
-
-    ssh.askPassword = "ssh-askpass";
-
-    # common programs that really should be in another file
-    # required for setting to be picked up by xfce4-terminal
-    xfconf.enable = true;
   };
 
   security.rtkit.enable = true;
 
   services = {
-    displayManager.sddm = {
-      enable = true;
-      wayland.enable = true;
-    };
-    desktopManager.plasma6.enable = true;
     fstrim.enable = true;
     fwupd.enable = true;
     pipewire = {
@@ -112,16 +63,6 @@ in
     printing.enable = true; # Enable CUPS
     pulseaudio.enable = false;
     smartd.enable = true;
-    tailscale = {
-      enable = true;
-      authKeyFile = config.sops.secrets.tailscale_key.path;
-      extraUpFlags = [
-        "--operator"
-        "${username}"
-        "--ssh"
-      ];
-      useRoutingFeatures = "client";
-    };
     thermald.enable = true;
     xserver = {
       enable = true;
@@ -139,9 +80,6 @@ in
       local_private_env = {
         owner = "${username}";
         path = "${config.users.users.${username}.home}/.private-env";
-      };
-      tailscale_key = {
-        restartUnits = [ "tailscaled-autoconnect.service" ];
       };
     };
   };
@@ -162,8 +100,4 @@ in
     ];
   };
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
-  };
 }

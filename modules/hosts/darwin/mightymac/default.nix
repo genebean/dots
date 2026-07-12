@@ -38,24 +38,16 @@
     ];
     casks = [
       "antigravity"
-      "boinc"
-      "claude-code"
-      "discord"
       "elgato-stream-deck"
       "google-drive"
       "gpg-suite"
-      "kopiaui"
       "multipass"
-      "mumble"
-      "obs"
       "openvox8-agent"
       "openvox8-openbolt"
       "podman-desktop"
       "qmk-toolbox"
       "raspberry-pi-imager"
-      "thunderbird"
       "thunderbird@daily"
-      "ungoogled-chromium"
       #"utm"
       # "vagrant"
       "vial"
@@ -70,7 +62,6 @@
       "Meshtastic" = 1586432531;
       "Messenger" = 1480068668;
       "Microsoft Remote Desktop" = 1295203466;
-      "Telegram" = 747648890;
       "WhatsApp Messenger" = 310633997;
       "Xcode" = 497799835;
     };

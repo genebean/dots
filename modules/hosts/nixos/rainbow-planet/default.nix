@@ -33,31 +33,24 @@
 
   environment.systemPackages = with pkgs; [
     # host specific apps
-    boinc
     brightnessctl
     butane
     caligula
     chirp
     cilium-cli
     displaylink
-    filezilla
     go
     hubble
     hugo
     inputs.flox.packages.${pkgs.stdenv.hostPlatform.system}.default
-    kdePackages.bluedevil
-    kdePackages.bluez-qt
     kdePackages.kdenlive
     kubectl
     kubectx
     kubernetes-helm
     kubeseal
     mediawriter
-    mqtt-explorer
-    mumble
     networkmanager-openvpn
     pavucontrol
-    kdePackages.polkit-kde-agent-1
     #ulauncher
     podman-compose
     podman-tui # status of containers in the terminal
@@ -69,21 +62,10 @@
     step-cli
     trezor-suite
     trezor-udev-rules
-    ungoogled-chromium
     virt-manager
-    vlc
     whalebird
     wmctrl
 
-    # common gui apps that really should be in another file
-    angryipscanner
-    gitkraken
-    libreoffice
-    meld
-    slack
-    tilix
-    xfce.xfce4-terminal
-    zoom-us
   ];
 
   networking = {
@@ -92,47 +74,22 @@
   };
 
   programs = {
-    _1password.enable = true;
-    _1password-gui = {
-      enable = true;
-      # Certain features, including CLI integration and system authentication support,
-      # require enabling PolKit integration on some desktop environments (e.g. Plasma).
-      polkitPolicyOwners = [ "${username}" ];
-    };
     adb.enable = true;
-    firefox.enable = true;
     #hyprland.enable = true;
-
-    ssh.askPassword = "ssh-askpass";
-
-    thunderbird.enable = true;
-
-    # common programs that really should be in another file
-    # required for setting to be picked up by xfce4-terminal
-    xfconf.enable = true;
   };
 
   services = {
-    boinc.enable = true;
     bpftune.enable = true;
     dbus.implementation = "broker";
-    desktopManager = {
-      cosmic = {
-        enable = false;
-        xwayland.enable = false;
-      };
-      plasma6.enable = true;
+    desktopManager.cosmic = {
+      enable = false;
+      xwayland.enable = false;
     };
     displayManager.cosmic-greeter.enable = false;
-    displayManager.sddm = {
-      enable = true;
-      wayland.enable = true;
-    };
     flatpak = {
       enable = true;
       packages = [
         "com.blockstream.Green"
-        "com.discordapp.Discord"
       ];
     };
     fstrim.enable = true;
@@ -141,16 +98,6 @@
     printing.enable = true; # Enable CUPS
     resolved.enable = true;
     smartd.enable = true;
-    tailscale = {
-      enable = true;
-      authKeyFile = config.sops.secrets.tailscale_key.path;
-      extraUpFlags = [
-        "--operator"
-        "${username}"
-        "--ssh"
-      ];
-      useRoutingFeatures = "client";
-    };
     thermald.enable = true;
   };
 
@@ -172,9 +119,6 @@
       local_private_env = {
         owner = "${username}";
         path = "${config.users.users.${username}.home}/.private-env";
-      };
-      tailscale_key = {
-        restartUnits = [ "tailscaled-autoconnect.service" ];
       };
     };
   };

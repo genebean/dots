@@ -44,6 +44,8 @@ in
               ../modules/hosts/nixos/${hostname}/home-${username}.nix
 
               inputs.genebean-neovim.homeManagerModules.default
+              inputs.nix-flatpak.homeManagerModules.nix-flatpak
+              inputs.plasma-manager.homeModules.plasma-manager
               inputs.private-flake.homeManagerModules.private.git
               (inputs.private-flake.homeManagerModules.private.${hostname} or { })
               inputs.self.homeManagerModules.genebean
@@ -54,6 +56,7 @@ in
 
         inputs.nix-flatpak.nixosModules.nix-flatpak
         inputs.private-flake.nixosModules.private.ssh-keys
+        inputs.self.nixosModules.genebean
         inputs.sops-nix.nixosModules.sops # system wide secrets management
         ../modules/hosts/nixos # system-wide stuff
         ../modules/hosts/nixos/${hostname} # host specific stuff

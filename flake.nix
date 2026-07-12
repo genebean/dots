@@ -138,6 +138,7 @@
     {
       darwinModules.genebean = ./modules/genebean/darwin;
       homeManagerModules.genebean = ./modules/genebean/home;
+      nixosModules.genebean = ./modules/genebean/nixos;
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
 
@@ -162,9 +163,6 @@
       nixosConfigurations = {
         bigboy = localLib.mkNixosHost {
           hostname = "bigboy";
-          additionalHomeModules = [
-            inputs.plasma-manager.homeModules.plasma-manager
-          ];
           additionalModules = [
             inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p52
           ];

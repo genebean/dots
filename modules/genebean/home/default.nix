@@ -1,1 +1,47 @@
-{ imports = [ ./ghostty.nix ]; }
+{
+  imports = [
+    ./plasma.nix
+    ./programs/angry-ip-scanner.nix
+    ./programs/askpass.nix
+    ./programs/boinc.nix
+    ./programs/caffeine.nix
+    ./programs/audacity.nix
+    ./programs/claude-code.nix
+    ./programs/discord.nix
+    ./programs/element.nix
+    ./programs/filezilla.nix
+    ./programs/firefox.nix
+    ./programs/fractal.nix
+    ./programs/ghostty.nix
+    ./programs/gitkraken.nix
+    ./programs/handbrake.nix
+    ./programs/home-assistant-companion.nix
+    ./programs/kopiaui.nix
+    ./programs/libreoffice.nix
+    ./programs/localsend.nix
+    ./programs/logseq.nix
+    ./programs/meld.nix
+    ./programs/mkvtoolnix.nix
+    ./programs/mqtt-explorer.nix
+    ./programs/mumble.nix
+    ./programs/nextcloud-client.nix
+    ./programs/obs.nix
+    ./programs/onepassword.nix
+    ./programs/onlyoffice.nix
+    ./programs/signal.nix
+    ./programs/slack.nix
+    ./programs/sops.nix
+    ./programs/telegram.nix
+    ./programs/thunderbird.nix
+    ./programs/tilix.nix
+    ./programs/transmission.nix
+    ./programs/xfce4-terminal.nix
+    ./programs/ungoogled-chromium.nix
+    ./programs/vivaldi.nix
+    ./programs/vlc.nix
+    ./programs/vscode.nix
+    ./programs/zoom.nix
+    ./programs/wezterm.nix
+    ./services/tailscale.nix
+  ];
+}

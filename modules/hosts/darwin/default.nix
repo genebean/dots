@@ -17,15 +17,12 @@
       "/share/zsh"
     ];
     systemPackages = with pkgs; [
-      age
       bandwhich
       coreutils
       hugo
       mas
       nmap
       openjdk
-      sops
-      ssh-to-age
     ];
   };
 
@@ -38,7 +35,6 @@
     };
     taps = [
       "homebrew-ffmpeg/ffmpeg"
-      "theseal/ssh-askpass"
     ];
     brews = [
       # "fastfetch"
@@ -46,58 +42,29 @@
         name = "homebrew-ffmpeg/ffmpeg/ffmpeg";
         args = [ "with-srt" ];
       }
-      #"firefox-profile-switcher-connector" # having had this on seems to mean I need to toggle browser.profiles.enabled to true in about:config for the new built in version
-      "ssh-askpass"
+      #"firefox-profile-switcher-connector" # having had this on seems to mean I need to toggle browser.profiles.enabled to true in about:config for the new built in profile
       "telnet"
     ];
     casks = [
-      "1password"
-      "1password-cli"
       "amethyst"
-      "angry-ip-scanner"
       "appcleaner"
-      "audacity"
       "balenaetcher"
       "bartender"
       #"displaylink"
-      "element"
-      "firefox"
       "font-hack-nerd-font"
       "font-inconsolata-g-for-powerline"
       "font-source-code-pro-for-powerline"
-      "gitkraken"
-      "gitkraken-cli"
-      "handbrake-app"
       "imageoptim"
       "itermbrowserplugin"
       "iterm2"
-      "keepingyouawake"
-      "libreoffice"
-      "logseq"
       #"makemkv" See https://github.com/Homebrew/homebrew-cask/issues/269960
-      "meld"
-      "mkvtoolnix-app"
-      "nextcloud"
-      "onlyoffice"
       "raycast"
-      "signal"
-      "slack"
       "sonos"
-      "tailscale-app"
       "todoist-app"
-      "transmission"
-      "visual-studio-code"
-      "vivaldi"
-      "wezterm"
-      "zoom"
     ];
     masApps = {
-      "1Password for Safari" = 1569813296;
       "BetterSnapTool" = 417375580;
       "Brother iPrint&Scan" = 1193539993;
-      "Home Assistant" = 1099568401;
-      "LocalSend" = 1661733229;
-      "MQTT Explorer" = 1455214828;
     };
   };
 
@@ -142,7 +109,6 @@
     trust = {
       taps = [
         "homebrew-ffmpeg/ffmpeg"
-        "theseal/ssh-askpass"
       ];
     };
   };

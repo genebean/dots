@@ -627,18 +627,6 @@ in
       };
     };
     smartd.enable = true;
-    tailscale = {
-      enable = true;
-      authKeyFile = config.sops.secrets.tailscale_key.path;
-      extraUpFlags = [
-        "--advertise-exit-node"
-        "--operator"
-        "${username}"
-        "--ssh"
-        "--advertise-routes=192.168.20.0/22"
-      ];
-      useRoutingFeatures = "both";
-    };
     ytdlfin = {
       enable = true;
       user = config.services.jellyfin.user;
@@ -705,9 +693,6 @@ in
       };
       pocketid_encryption_key = {
         restartUnits = [ "pocket-id.service" ];
-      };
-      tailscale_key = {
-        restartUnits = [ "tailscaled-autoconnect.service" ];
       };
       ytdlfin-env = {
         owner = config.services.ytdlfin.user;

@@ -4,6 +4,7 @@ let
   mkHomeConfig = import ./mkHomeConfig.nix { inherit inputs; };
   mkNixosHost = import ./mkNixosHost.nix { inherit inputs; };
   genebeanLib = {
+    isDarwin = false;
     isNixOS = false;
   };
 in

@@ -5,18 +5,6 @@
     flatpak = {
       enable = true;
       packages = [
-        "com.cassidyjames.butler"
-        "com.logseq.Logseq"
-        "com.vivaldi.Vivaldi"
-        "im.riot.Riot"
-        "io.kopia.KopiaUI"
-        "io.github.sigmasd.stimulator"
-        "io.github.ungoogled_software.ungoogled_chromium"
-        "org.libreoffice.LibreOffice"
-        "org.localsend.localsend_app"
-        "org.gnome.Fractal"
-        "org.signal.Signal"
-        "org.telegram.desktop"
       ];
       uninstallUnmanaged = true;
       update.auto = {

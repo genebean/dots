@@ -5,6 +5,16 @@
   ...
 }:
 {
+  genebean = {
+    programs = {
+      claude-code.enable = true;
+      sops.enable = true;
+    };
+    services = {
+      tailscale.enable = true;
+    };
+  };
+
   home = {
     packages = with pkgs; [
       btop

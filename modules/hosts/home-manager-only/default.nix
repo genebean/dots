@@ -17,25 +17,18 @@
   };
 
   genebean = {
-    ghostty.enable = true;
+    plasma.enable = true;
+    programs = {
+      ghostty.enable = true;
+    };
   };
 
   home.packages = with pkgs; [
-    age
     home-manager
-    sops
-    ssh-to-age
   ];
 
   programs = {
     codex.enable = true;
-
-    plasma = {
-      enable = true;
-      shortcuts = {
-        kwin."Show Desktop" = [ ];
-      };
-    };
 
     # home-manager switch --flake ~/repos/dots
     zsh.shellAliases = {
@@ -53,5 +46,4 @@
     };
   };
 
-  xdg.configFile."wezterm/wezterm.lua".source = ../../shared/files/wezterm/wezterm.lua;
 }
