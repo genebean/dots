@@ -38,7 +38,6 @@
     ];
     casks = [
       "antigravity"
-      "boinc"
       "discord"
       "elgato-stream-deck"
       "google-drive"

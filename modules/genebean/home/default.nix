@@ -3,6 +3,7 @@
     ./plasma.nix
     ./programs/angry-ip-scanner.nix
     ./programs/askpass.nix
+    ./programs/boinc.nix
     ./programs/caffeine.nix
     ./programs/audacity.nix
     ./programs/claude-code.nix

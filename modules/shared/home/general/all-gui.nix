@@ -4,6 +4,7 @@
     programs = {
       angry-ip-scanner.enable = true;
       askpass.enable = true;
+      boinc.enable = true;
       caffeine.enable = true;
       audacity.enable = true;
       element.enable = true;

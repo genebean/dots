@@ -33,7 +33,6 @@
 
   environment.systemPackages = with pkgs; [
     # host specific apps
-    boinc
     brightnessctl
     butane
     caligula
@@ -82,7 +81,6 @@
   };
 
   services = {
-    boinc.enable = true;
     bpftune.enable = true;
     dbus.implementation = "broker";
     desktopManager.cosmic = {

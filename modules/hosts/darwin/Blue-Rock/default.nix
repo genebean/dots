@@ -25,7 +25,6 @@
     ];
     casks = [
       "asana"
-      "boinc"
       "discord"
       "elgato-stream-deck"
       "google-drive"
