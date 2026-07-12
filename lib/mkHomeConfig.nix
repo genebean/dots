@@ -13,11 +13,13 @@ in
       extraSpecialArgs = {
         inherit
           inputs
-          genebeanLib
           homeDirectory
           system
           username
           ;
+        genebeanLib = genebeanLib // {
+          isHMOnly = true;
+        };
       };
 
       pkgs = inputs.nixpkgs.legacyPackages.${system};

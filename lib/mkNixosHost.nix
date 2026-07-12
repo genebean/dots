@@ -40,7 +40,6 @@ in
             useUserPackages = true;
             users.${username}.imports = [
               ../modules/shared/home/general
-              ../modules/shared/home/linux
               ../modules/hosts/nixos/${hostname}/home-${username}.nix
 
               inputs.genebean-neovim.homeManagerModules.default

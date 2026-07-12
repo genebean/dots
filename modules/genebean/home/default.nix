@@ -47,6 +47,7 @@
     ./programs/vscode.nix
     ./programs/zoom.nix
     ./programs/wezterm
+    ./programs/zsh.nix
     ./services/flatpak.nix
     ./services/tailscale.nix
   ];

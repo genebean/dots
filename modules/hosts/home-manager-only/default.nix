@@ -32,12 +32,6 @@
 
   programs = {
     codex.enable = true;
-
-    # home-manager switch --flake ~/repos/dots
-    zsh.shellAliases = {
-      nixup = "home-manager switch --flake ~/repos/dots#${username}-${system}";
-      pbcopy = "wl-copy";
-    };
   };
 
   sops = {
