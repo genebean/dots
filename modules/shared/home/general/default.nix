@@ -8,6 +8,7 @@
   genebean = {
     programs = {
       claude-code.enable = true;
+      diff.enable = true;
       git.enable = true;
       nixdiff.enable = true;
       powershell.enable = true;
@@ -26,7 +27,6 @@
       bundix
       cargo
       cheat
-      colordiff
       deadnix
       # dogdns # seems this is now unmaintained :(
       doggo
@@ -108,10 +108,6 @@
     };
     bottom.enable = true;
     broot.enable = true;
-    diff-so-fancy = {
-      enable = true;
-      enableGitIntegration = true;
-    };
     direnv = {
       enable = true;
       enableZshIntegration = true;

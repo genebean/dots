@@ -63,14 +63,6 @@ in
             NVIM_APPNAME=$(basename $config) nvim $*
           }
 
-          function svndiffless() {
-            svn diff "$@" |diff-so-fancy |less -R
-          }
-
-          function svndiffless-nows() {
-            svn diff -x -w "$@" |diff-so-fancy |less -R
-          }
-
           # unset oh-my-zsh's gk so that gk can refer to the gitkraken-cli
           unalias gk
         ''
