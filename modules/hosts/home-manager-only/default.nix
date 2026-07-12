@@ -21,6 +21,9 @@
     programs = {
       ghostty.enable = true;
     };
+    services = {
+      flatpak.enable = true;
+    };
   };
 
   home.packages = with pkgs; [

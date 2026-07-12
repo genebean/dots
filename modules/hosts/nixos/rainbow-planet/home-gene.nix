@@ -28,6 +28,9 @@
       waybar.enable = true;
       xfce4-terminal.enable = true;
     };
+    services = {
+      flatpak.enable = true;
+    };
   };
 
   programs = {

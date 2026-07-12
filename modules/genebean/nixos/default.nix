@@ -7,6 +7,7 @@
     ./programs/onepassword.nix
     ./programs/thunderbird.nix
     ./programs/xfce4-terminal.nix
+    ./services/flatpak.nix
     ./services/tailscale.nix
   ];
 }

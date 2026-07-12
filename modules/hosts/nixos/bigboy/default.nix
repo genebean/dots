@@ -8,7 +8,6 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ../../../shared/linux/flatpaks.nix
     ../../../shared/nixos/ports.nix
     ../../../shared/nixos/ripping.nix
   ];
