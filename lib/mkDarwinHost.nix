@@ -32,7 +32,12 @@ in
         inputs.home-manager.darwinModules.home-manager
         {
           home-manager = {
-            extraSpecialArgs = { inherit inputs genebeanLib username; };
+            extraSpecialArgs = {
+              inherit inputs username;
+              genebeanLib = genebeanLib // {
+                isDarwin = true;
+              };
+            };
             useGlobalPkgs = true;
             useUserPackages = true;
             users.${username}.imports = [
