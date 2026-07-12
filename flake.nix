@@ -230,7 +230,12 @@
         };
       }; # end homeConfigurations
 
-      packages.aarch64-linux.kiosk-gene-desk-sdImage =
-        self.nixosConfigurations.kiosk-gene-desk.config.system.build.sdImage;
+      packages = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        import ./pkgs { inherit pkgs self; }
+      );
     };
 }
