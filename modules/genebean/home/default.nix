@@ -31,6 +31,7 @@
     ./programs/onepassword.nix
     ./programs/onlyoffice.nix
     ./programs/pidgin.nix
+    ./programs/powershell
     ./programs/signal.nix
     ./programs/slack.nix
     ./programs/sops.nix

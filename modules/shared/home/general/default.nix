@@ -9,6 +9,7 @@
     programs = {
       claude-code.enable = true;
       nixdiff.enable = true;
+      powershell.enable = true;
       sops.enable = true;
     };
     services = {
@@ -55,7 +56,6 @@
       nvd
       nixfmt-tree
       onefetch
-      powershell
       pre-commit
       puppet-lint
       rename
@@ -73,12 +73,6 @@
     sessionVariables = {
       CLICLOLOR = 1;
       PAGER = "less";
-    };
-    file = {
-      ".config/powershell/Microsoft.PowerShell_profile.ps1".source =
-        ../../files/Microsoft.PowerShell_profile.ps1;
-      ".config/powershell/Microsoft.VSCode_profile.ps1".source =
-        ../../files/Microsoft.PowerShell_profile.ps1;
     };
   };
   programs = {
