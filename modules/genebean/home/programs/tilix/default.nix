@@ -51,8 +51,7 @@ with lib.hm.gvariant;
     home = {
       packages = [ pkgs.tilix ];
       file = {
-        ".config/tilix/schemes/Beanbag-Mathias.json".source =
-          ../../../shared/files/tilix/Beanbag-Mathias.json;
+        ".config/tilix/schemes/Beanbag-Mathias.json".source = ./Beanbag-Mathias.json;
         ".config/tilix/schemes/Catppuccin-Frappe.json".source =
           pkgs.fetchFromGitHub {
             owner = "catppuccin";

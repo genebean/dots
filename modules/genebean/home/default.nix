@@ -34,15 +34,15 @@
     ./programs/sops.nix
     ./programs/telegram.nix
     ./programs/thunderbird.nix
-    ./programs/tilix.nix
+    ./programs/tilix
     ./programs/transmission.nix
-    ./programs/xfce4-terminal.nix
+    ./programs/xfce4-terminal
     ./programs/ungoogled-chromium.nix
     ./programs/vivaldi.nix
     ./programs/vlc.nix
     ./programs/vscode.nix
     ./programs/zoom.nix
-    ./programs/wezterm.nix
+    ./programs/wezterm
     ./services/tailscale.nix
   ];
 }

@@ -16,7 +16,7 @@ in
     home = {
       packages = [ pkgs.xfce4-terminal ];
       file = {
-        ".config/xfce4/terminal/accels.scm".source = ../../../shared/files/xfce4/terminal/accels.scm;
+        ".config/xfce4/terminal/accels.scm".source = ./accels.scm;
       };
     };
 

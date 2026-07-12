@@ -23,14 +23,13 @@ in
   config = lib.mkIf cfg.enable (
     lib.mkMerge [
       (lib.mkIf cfg.installViaHomebrew {
-        xdg.configFile."wezterm/wezterm.lua".text =
-          builtins.readFile ../../../shared/files/wezterm/wezterm.lua;
+        xdg.configFile."wezterm/wezterm.lua".text = builtins.readFile ./wezterm.lua;
       })
       (lib.mkIf cfg.installViaNix {
         programs.wezterm = {
           enable = true;
           package = pkgs.wezterm;
-          extraConfig = builtins.readFile ../../../shared/files/wezterm/wezterm.lua;
+          extraConfig = builtins.readFile ./wezterm.lua;
         };
       })
     ]
