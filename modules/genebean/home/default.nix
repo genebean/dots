@@ -7,6 +7,7 @@
     ./programs/caffeine.nix
     ./programs/audacity.nix
     ./programs/claude-code.nix
+    ./programs/discord.nix
     ./programs/element.nix
     ./programs/firefox.nix
     ./programs/fractal.nix

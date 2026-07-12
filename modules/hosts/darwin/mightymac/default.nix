@@ -38,7 +38,6 @@
     ];
     casks = [
       "antigravity"
-      "discord"
       "elgato-stream-deck"
       "google-drive"
       "gpg-suite"

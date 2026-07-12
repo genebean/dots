@@ -91,7 +91,6 @@
       enable = true;
       packages = [
         "com.blockstream.Green"
-        "com.discordapp.Discord"
       ];
     };
     fstrim.enable = true;

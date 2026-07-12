@@ -7,6 +7,7 @@
       boinc.enable = true;
       caffeine.enable = true;
       audacity.enable = true;
+      discord.enable = true;
       element.enable = true;
       firefox.enable = true;
       fractal.enable = true;
