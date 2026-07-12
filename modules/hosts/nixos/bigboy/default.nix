@@ -44,7 +44,6 @@ in
     libbdplus
     networkmanager-openvpn
     rclone-browser
-    tilix
     vlc-with-decoding
     xf86-video-fbdev
     xfce4-terminal

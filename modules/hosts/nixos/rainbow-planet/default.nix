@@ -70,7 +70,6 @@
     wmctrl
 
     # common gui apps that really should be in another file
-    tilix
     xfce.xfce4-terminal
   ];
 

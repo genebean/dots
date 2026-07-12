@@ -29,6 +29,7 @@
     ./programs/sops.nix
     ./programs/telegram.nix
     ./programs/thunderbird.nix
+    ./programs/tilix.nix
     ./programs/transmission.nix
     ./programs/ungoogled-chromium.nix
     ./programs/vivaldi.nix
