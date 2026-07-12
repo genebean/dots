@@ -8,6 +8,7 @@
   genebean = {
     programs = {
       claude-code.enable = true;
+      nixdiff.enable = true;
       sops.enable = true;
     };
     services = {

@@ -22,6 +22,7 @@
     ./programs/logseq.nix
     ./programs/meld.nix
     ./programs/mkvtoolnix.nix
+    ./programs/nixdiff.nix
     ./programs/mqtt-explorer.nix
     ./programs/mumble.nix
     ./programs/nextcloud-client.nix
