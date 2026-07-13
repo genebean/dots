@@ -15,6 +15,7 @@ in
   imports = [
     ./hardware-configuration.nix
     ./containers/audiobookshelf.nix
+    ./karakeep.nix
     ./containers/mountain-mesh-bot-discord.nix
     ./containers/photon.nix
     ./containers/psitransfer.nix
@@ -445,6 +446,25 @@ in
             send_timeout       600s;
           '';
         };
+        "karakeep.${home_domain}" = {
+          listen = [
+            {
+              inherit (config.dots.ports.https) port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:${toString config.dots.ports.karakeep.port}";
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 100M;
+          '';
+        };
         "jellyfin.${home_domain}" = {
           listen = [
             {
@@ -672,6 +692,13 @@ in
         restartUnits = [
           "firefly-iii-data-importer-setup.service"
           "phpfpm-firefly-iii-data-importer.service"
+        ];
+      };
+      karakeep_env = {
+        owner = "karakeep";
+        restartUnits = [
+          "karakeep-web.service"
+          "karakeep-workers.service"
         ];
       };
       immich_kiosk_basic_auth = {
