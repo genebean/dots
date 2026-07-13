@@ -7,7 +7,6 @@
 }:
 {
   imports = [
-    ../../../shared/nixos/ports.nix
     ./disk-config.nix
     ./hardware-configuration.nix
     ./ports.nix
@@ -31,12 +30,12 @@
 
   networking = {
     firewall = {
-      allowedTCPPorts = lib.pipe config.dots.ports [
+      allowedTCPPorts = lib.pipe config.genebean.ports [
         builtins.attrValues
         (builtins.filter (e: e.openFirewall && e.protocol == "tcp"))
         (map (e: e.port))
       ];
-      allowedUDPPorts = lib.pipe config.dots.ports [
+      allowedUDPPorts = lib.pipe config.genebean.ports [
         builtins.attrValues
         (builtins.filter (e: e.openFirewall && e.protocol == "udp"))
         (map (e: e.port))

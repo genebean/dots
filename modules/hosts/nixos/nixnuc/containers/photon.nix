@@ -18,7 +18,7 @@ in
         UPDATE_STRATEGY = "PARALLEL";
         UPDATE_INTERVAL = "30d";
       };
-      ports = [ "${toString config.dots.ports.photon.port}:2322" ];
+      ports = [ "${toString config.genebean.ports.photon.port}:2322" ];
       volumes = [
         "${volume_base}:/photon/data"
       ];

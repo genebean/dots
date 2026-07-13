@@ -1,6 +1,6 @@
 { lib, ... }:
 {
-  options.dots.ports = lib.mkOption {
+  options.genebean.ports = lib.mkOption {
     description = "Fleet-wide service port registry";
     default = { };
     type = lib.types.attrsOf (
@@ -32,7 +32,7 @@
   # by multiple hosts (e.g. hetznix01 references photon to configure Dawarich).
   # openFirewall is false by default; each host's ports.nix sets it to true
   # for the ports that host actually exposes.
-  config.dots.ports = {
+  config.genebean.ports = {
     ssh = {
       port = 22;
       openFirewall = true;

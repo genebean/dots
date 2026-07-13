@@ -16,7 +16,7 @@ in
           {
             job_name = "node";
             static_configs = [
-              { targets = [ "127.0.0.1:${toString config.dots.ports.node-exporter.port}" ]; }
+              { targets = [ "127.0.0.1:${toString config.genebean.ports.node-exporter.port}" ]; }
             ];
             metric_relabel_configs = [
               {
@@ -37,7 +37,7 @@ in
           {
             job_name = "nginx";
             static_configs = [
-              { targets = [ "127.0.0.1:${toString config.dots.ports.nginx-exporter.port}" ]; }
+              { targets = [ "127.0.0.1:${toString config.genebean.ports.nginx-exporter.port}" ]; }
             ];
             metric_relabel_configs = [
               {
@@ -84,7 +84,7 @@ in
     prometheus.exporters.node = {
       enable = true;
       listenAddress = "127.0.0.1";
-      inherit (config.dots.ports.node-exporter) port;
+      inherit (config.genebean.ports.node-exporter) port;
       enabledCollectors = [
         "systemd"
       ];
@@ -98,7 +98,7 @@ in
     prometheus.exporters.nginx = {
       enable = true;
       listenAddress = "127.0.0.1";
-      inherit (config.dots.ports.nginx-exporter) port;
+      inherit (config.genebean.ports.nginx-exporter) port;
       scrapeUri = "https://127.0.0.1/server_status";
       sslVerify = false;
     };

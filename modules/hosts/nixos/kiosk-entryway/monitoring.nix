@@ -16,7 +16,7 @@ in
           {
             job_name = "node";
             static_configs = [
-              { targets = [ "127.0.0.1:${toString config.dots.ports.node-exporter.port}" ]; }
+              { targets = [ "127.0.0.1:${toString config.genebean.ports.node-exporter.port}" ]; }
             ];
             metric_relabel_configs = [
               {
@@ -63,7 +63,7 @@ in
     prometheus.exporters.node = {
       enable = true;
       listenAddress = "127.0.0.1";
-      inherit (config.dots.ports.node-exporter) port;
+      inherit (config.genebean.ports.node-exporter) port;
       extraFlags = [
         "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|run|tmp|var/lib/docker/.+)($|/)"
         "--collector.diskstats.device-exclude=^(loop|ram|fd|sr|dm-|nvme[0-9]n[0-9]p[0-9]+_crypt)$"

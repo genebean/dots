@@ -33,7 +33,7 @@ in
     };
     collabora-online = {
       enable = true;
-      inherit (config.dots.ports.collabora) port;
+      inherit (config.genebean.ports.collabora) port;
       settings = {
         # Rely on reverse proxy for SSL
         ssl = {
@@ -61,7 +61,7 @@ in
       enable = true;
       configureNginx = true;
       environment = {
-        PHOTON_API_HOST = "nixnuc.${config.private-flake.tailnetDomain}:${toString config.dots.ports.photon.port}";
+        PHOTON_API_HOST = "nixnuc.${config.private-flake.tailnetDomain}:${toString config.genebean.ports.photon.port}";
         PHOTON_API_USE_HTTPS = "false";
       };
       extraEnvFiles = [
@@ -132,7 +132,7 @@ in
       server = {
         baseUrl = "https://stats.${domain}";
         disableRegistration = true;
-        inherit (config.dots.ports.plausible) port;
+        inherit (config.genebean.ports.plausible) port;
         # secretKeybaseFile is a path to the file which contains the secret generated
         # with openssl as described above.
         secretKeybaseFile = config.sops.secrets.plausible_secret_key_base.path;

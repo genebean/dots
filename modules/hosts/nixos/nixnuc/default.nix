@@ -23,7 +23,6 @@ in
     ./ports.nix
     ./zfs-datasets.nix
     ../../../shared/nixos/lets-encrypt.nix
-    ../../../shared/nixos/ports.nix
     ../../../shared/nixos/restic.nix
   ];
 
@@ -74,12 +73,12 @@ in
 
   networking = {
     firewall = {
-      allowedTCPPorts = lib.pipe config.dots.ports [
+      allowedTCPPorts = lib.pipe config.genebean.ports [
         builtins.attrValues
         (builtins.filter (e: e.openFirewall && e.protocol == "tcp"))
         (map (e: e.port))
       ];
-      allowedUDPPorts = lib.pipe config.dots.ports [
+      allowedUDPPorts = lib.pipe config.genebean.ports [
         builtins.attrValues
         (builtins.filter (e: e.openFirewall && e.protocol == "udp"))
         (map (e: e.port))
@@ -161,7 +160,7 @@ in
       enable = true;
       enableNginx = true;
       settings = {
-        FIREFLY_III_URL = "http://localhost:${toString config.dots.ports.fireflyiii.port}";
+        FIREFLY_III_URL = "http://localhost:${toString config.genebean.ports.fireflyiii.port}";
         VANITY_URL_FILE = "${config.sops.secrets.firefly_vanity_url.path}";
         FIREFLY_III_ACCESS_TOKEN_FILE = "${config.sops.secrets.firefly_pat_data_import.path}";
         SIMPLEFIN_TOKEN_FILE = "${config.sops.secrets.firefly_simplefin_token.path}";
@@ -187,7 +186,7 @@ in
         };
         server = {
           DOMAIN = "git.${home_domain}";
-          HTTP_PORT = config.dots.ports.forgejo.port;
+          HTTP_PORT = config.genebean.ports.forgejo.port;
           LANDING_PAGE = "explore";
           ROOT_URL = "https://git.${home_domain}/";
         };
@@ -206,7 +205,7 @@ in
       enable = true;
       credentialsFile = config.sops.secrets.mealie.path;
       listenAddress = "0.0.0.0";
-      inherit (config.dots.ports.mealie) port;
+      inherit (config.genebean.ports.mealie) port;
       settings = {
         ALLOW_SIGNUP = "false";
         BASE_URL = "https://mealie.${home_domain}";
@@ -303,7 +302,7 @@ in
           ];
           listen = [
             {
-              inherit (config.dots.ports.https) port;
+              inherit (config.genebean.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -328,7 +327,7 @@ in
         "ab.${home_domain}" = {
           listen = [
             {
-              inherit (config.dots.ports.https) port;
+              inherit (config.genebean.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -337,7 +336,8 @@ in
           acmeRoot = null;
           forceSSL = true;
           locations."/".proxyWebsockets = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.audiobookshelf.port}";
+          locations."/".proxyPass =
+            "http://${backend_ip}:${toString config.genebean.ports.audiobookshelf.port}";
           extraConfig = ''
             client_max_body_size 0;
           '';
@@ -345,7 +345,7 @@ in
         "atuin.${home_domain}" = {
           listen = [
             {
-              inherit (config.dots.ports.https) port;
+              inherit (config.genebean.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -353,19 +353,19 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.atuin.port}";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.atuin.port}";
         };
         # budget.${home_domain}
         "${config.services.firefly-iii.virtualHost}".listen = [
           {
-            inherit (config.dots.ports.fireflyiii) port;
+            inherit (config.genebean.ports.fireflyiii) port;
             addr = "0.0.0.0";
             ssl = false;
           }
         ];
         "${config.services.firefly-iii-data-importer.virtualHost}".listen = [
           {
-            inherit (config.dots.ports.fireflyiii-importer) port;
+            inherit (config.genebean.ports.fireflyiii-importer) port;
             addr = "0.0.0.0";
             ssl = false;
           }
@@ -373,7 +373,7 @@ in
         "git.${home_domain}" = {
           listen = [
             {
-              inherit (config.dots.ports.https) port;
+              inherit (config.genebean.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -381,7 +381,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.forgejo.port}";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.forgejo.port}";
           extraConfig = ''
             client_max_body_size 0;
           '';
@@ -389,7 +389,7 @@ in
         "id.${home_domain}" = {
           listen = [
             {
-              inherit (config.dots.ports.https) port;
+              inherit (config.genebean.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -397,7 +397,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.pocket-id.port}";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.pocket-id.port}";
           extraConfig = ''
             proxy_busy_buffers_size   512k;
             proxy_buffers           4 512k;
@@ -407,7 +407,7 @@ in
         "immich.${home_domain}" = {
           listen = [
             {
-              inherit (config.dots.ports.https) port;
+              inherit (config.genebean.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -415,7 +415,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.immich.port}";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.immich.port}";
           locations."/".proxyWebsockets = true;
           extraConfig = ''
             client_max_body_size 0;
@@ -427,7 +427,7 @@ in
         "immich-kiosk.${home_domain}" = {
           listen = [
             {
-              inherit (config.dots.ports.https) port;
+              inherit (config.genebean.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -436,7 +436,8 @@ in
           acmeRoot = null;
           forceSSL = true;
           basicAuthFile = config.sops.secrets.immich_kiosk_basic_auth.path;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.immich-kiosk.port}";
+          locations."/".proxyPass =
+            "http://${backend_ip}:${toString config.genebean.ports.immich-kiosk.port}";
           locations."/".proxyWebsockets = true;
           extraConfig = ''
             client_max_body_size 0;
@@ -448,7 +449,7 @@ in
         "jellyfin.${home_domain}" = {
           listen = [
             {
-              inherit (config.dots.ports.https) port;
+              inherit (config.genebean.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -458,14 +459,14 @@ in
           forceSSL = true;
           locations = {
             "/" = {
-              proxyPass = "http://${backend_ip}:${toString config.dots.ports.jellyfin.port}";
+              proxyPass = "http://${backend_ip}:${toString config.genebean.ports.jellyfin.port}";
               extraConfig = ''
                 proxy_buffering off;
                 proxy_set_header X-Forwarded-Protocol $scheme;
               '';
             };
             "/socket" = {
-              proxyPass = "http://${backend_ip}:${toString config.dots.ports.jellyfin.port}";
+              proxyPass = "http://${backend_ip}:${toString config.genebean.ports.jellyfin.port}";
               proxyWebsockets = true;
               extraConfig = ''
                 proxy_set_header X-Forwarded-Protocol $scheme;
@@ -479,7 +480,7 @@ in
         "mealie.${home_domain}" = {
           listen = [
             {
-              inherit (config.dots.ports.https) port;
+              inherit (config.genebean.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -487,7 +488,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.mealie.port}";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.mealie.port}";
           extraConfig = ''
             client_max_body_size 10M;
           '';
@@ -495,7 +496,7 @@ in
         "monitoring.${home_domain}" = {
           listen = [
             {
-              inherit (config.dots.ports.https) port;
+              inherit (config.genebean.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -504,10 +505,11 @@ in
           acmeRoot = null;
           forceSSL = true;
           locations = {
-            "/grafana/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.grafana.port}/grafana/";
+            "/grafana/".proxyPass =
+              "http://${backend_ip}:${toString config.genebean.ports.grafana.port}/grafana/";
             "/remotewrite" = {
               basicAuthFile = config.sops.secrets.nginx_basic_auth.path;
-              proxyPass = "http://127.0.0.1:${toString config.dots.ports.victoriametrics.port}/api/v1/write";
+              proxyPass = "http://127.0.0.1:${toString config.genebean.ports.victoriametrics.port}/api/v1/write";
               proxyWebsockets = true;
             };
           };
@@ -520,7 +522,7 @@ in
         "readit.${home_domain}" = {
           listen = [
             {
-              inherit (config.dots.ports.https) port;
+              inherit (config.genebean.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -528,12 +530,12 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.wallabag.port}";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.wallabag.port}";
         };
         "ytdlfin.${home_domain}" = {
           listen = [
             {
-              inherit (config.dots.ports.https) port;
+              inherit (config.genebean.ports.https) port;
               addr = "0.0.0.0";
               ssl = true;
             }
@@ -541,9 +543,9 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.dots.ports.ytdlfin.port}";
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.ytdlfin.port}";
           locations."= /health" = {
-            proxyPass = "http://${backend_ip}:${toString config.dots.ports.ytdlfin.port}";
+            proxyPass = "http://${backend_ip}:${toString config.genebean.ports.ytdlfin.port}";
             extraConfig = ''
               limit_req zone=ytdlfin_health burst=3 nodelay;
             '';
@@ -631,7 +633,7 @@ in
       enable = true;
       user = config.services.jellyfin.user;
       group = config.services.jellyfin.group;
-      port = config.dots.ports.ytdlfin.port;
+      port = config.genebean.ports.ytdlfin.port;
       stagingDir = "/orico/jellyfin/staging/.ytdlfin-staging";
       environmentFile = config.sops.secrets.ytdlfin-env.path;
       settings = {

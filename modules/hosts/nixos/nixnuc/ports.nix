@@ -1,6 +1,6 @@
 # Entries within each section are sorted by port number in ascending order.
 {
-  config.dots.ports = {
+  config.genebean.ports = {
     # Override global photon default: open the firewall on this host
     photon = {
       openFirewall = true;
