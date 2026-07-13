@@ -8,5 +8,10 @@
         "python3.12-ecdsa-0.19.1"
       ];
     };
+    overlays = [
+      (final: prev: {
+        nixdiff = prev.callPackage ../pkgs/nixdiff { };
+      })
+    ];
   };
 }

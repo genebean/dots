@@ -13,11 +13,13 @@ in
       extraSpecialArgs = {
         inherit
           inputs
-          genebeanLib
           homeDirectory
           system
           username
           ;
+        genebeanLib = genebeanLib // {
+          isHMOnly = true;
+        };
       };
 
       pkgs = inputs.nixpkgs.legacyPackages.${system};
@@ -29,7 +31,6 @@ in
         ../modules/hosts/home-manager-only
         ../modules/hosts/home-manager-only/home-${username}.nix
         ../modules/shared/home/general
-        ../modules/shared/linux/flatpaks.nix
 
         {
           home = {

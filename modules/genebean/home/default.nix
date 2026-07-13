@@ -7,13 +7,16 @@
     ./programs/caffeine.nix
     ./programs/audacity.nix
     ./programs/claude-code.nix
+    ./programs/diff.nix
     ./programs/discord.nix
     ./programs/element.nix
     ./programs/filezilla.nix
     ./programs/firefox.nix
     ./programs/fractal.nix
     ./programs/ghostty.nix
+    ./programs/git.nix
     ./programs/gitkraken.nix
+    ./programs/hexchat.nix
     ./programs/handbrake.nix
     ./programs/home-assistant-companion.nix
     ./programs/kopiaui.nix
@@ -22,26 +25,34 @@
     ./programs/logseq.nix
     ./programs/meld.nix
     ./programs/mkvtoolnix.nix
+    ./programs/nixdiff.nix
     ./programs/mqtt-explorer.nix
     ./programs/mumble.nix
     ./programs/nextcloud-client.nix
     ./programs/obs.nix
     ./programs/onepassword.nix
     ./programs/onlyoffice.nix
+    ./programs/pidgin.nix
+    ./programs/powershell
     ./programs/signal.nix
     ./programs/slack.nix
     ./programs/sops.nix
     ./programs/telegram.nix
     ./programs/thunderbird.nix
-    ./programs/tilix.nix
+    ./programs/tilix
+    ./programs/tmux.nix
     ./programs/transmission.nix
-    ./programs/xfce4-terminal.nix
+    ./programs/xfce4-terminal
     ./programs/ungoogled-chromium.nix
+    ./programs/vim.nix
     ./programs/vivaldi.nix
     ./programs/vlc.nix
+    ./programs/waybar
     ./programs/vscode.nix
     ./programs/zoom.nix
-    ./programs/wezterm.nix
+    ./programs/wezterm
+    ./programs/zsh.nix
+    ./services/flatpak.nix
     ./services/tailscale.nix
   ];
 }

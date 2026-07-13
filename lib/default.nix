@@ -5,6 +5,7 @@ let
   mkNixosHost = import ./mkNixosHost.nix { inherit inputs; };
   genebeanLib = {
     isDarwin = false;
+    isHMOnly = false;
     isNixOS = false;
   };
 in

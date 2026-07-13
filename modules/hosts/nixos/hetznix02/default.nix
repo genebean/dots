@@ -8,7 +8,6 @@
 }:
 {
   imports = [
-    ../../../shared/nixos/nixroutes.nix
     ../../../shared/nixos/ports.nix
     ./disk-config.nix
     ./hardware-configuration.nix

@@ -3,9 +3,6 @@
   home.stateVersion = "23.11";
   imports = [
     ../../../shared/home/general/all-gui.nix
-    ../../../shared/home/linux/apps/hexchat.nix
-    ../../../shared/home/linux/apps/pidgin.nix
-    ../../../shared/home/linux/apps/waybar.nix
   ];
 
   home.file = {
@@ -23,10 +20,16 @@
     plasma.enable = true;
     programs = {
       askpass.enable = true;
+      hexchat.enable = true;
+      pidgin.enable = true;
       thunderbird.enable = true;
       tilix.enable = true;
       vlc.enable = true;
+      waybar.enable = true;
       xfce4-terminal.enable = true;
+    };
+    services = {
+      flatpak.enable = true;
     };
   };
 

@@ -8,7 +8,13 @@
   genebean = {
     programs = {
       claude-code.enable = true;
+      diff.enable = true;
+      git.enable = true;
+      nixdiff.enable = true;
+      powershell.enable = true;
       sops.enable = true;
+      tmux.enable = true;
+      vim.enable = true;
     };
     services = {
       tailscale.enable = true;
@@ -21,7 +27,6 @@
       bundix
       cargo
       cheat
-      colordiff
       deadnix
       # dogdns # seems this is now unmaintained :(
       doggo
@@ -31,7 +36,6 @@
       (fastfetch.override { enlightenmentSupport = false; })
       fd
       f2
-      git-filter-repo
       glab
       glow
       gomuks
@@ -54,7 +58,6 @@
       nvd
       nixfmt-tree
       onefetch
-      powershell
       pre-commit
       puppet-lint
       rename
@@ -72,12 +75,6 @@
     sessionVariables = {
       CLICLOLOR = 1;
       PAGER = "less";
-    };
-    file = {
-      ".config/powershell/Microsoft.PowerShell_profile.ps1".source =
-        ../../files/Microsoft.PowerShell_profile.ps1;
-      ".config/powershell/Microsoft.VSCode_profile.ps1".source =
-        ../../files/Microsoft.PowerShell_profile.ps1;
     };
   };
   programs = {
@@ -111,10 +108,6 @@
     };
     bottom.enable = true;
     broot.enable = true;
-    diff-so-fancy = {
-      enable = true;
-      enableGitIntegration = true;
-    };
     direnv = {
       enable = true;
       enableZshIntegration = true;
@@ -124,247 +117,16 @@
     fzf.enable = true;
     genebean-neovim.enable = true;
     gh.enable = true;
-    git = {
-      enable = true;
-      ignores = [
-        "*~"
-        "*.swp"
-        ".DS_Store"
-      ];
-      lfs.enable = true;
-      package = pkgs.gitFull;
-      settings = {
-        diff.sopsdiffer.textconv = "sops --config /dev/null --decrypt";
-
-        init = {
-          defaultBranch = "main";
-        };
-        commit = {
-          gpgsign = true;
-        };
-        gpg = {
-          format = "ssh";
-          ssh = {
-            allowedSignersFile = "${config.home.homeDirectory}/.config/git/allowed_signers";
-          };
-        };
-        merge = {
-          conflictStyle = "diff3";
-          tool = "meld";
-        };
-        pull = {
-          rebase = false;
-        };
-        user = {
-          name = "Gene Liverman";
-          signingkey = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
-        };
-      };
-    }; # end git
     irssi.enable = true;
     jq.enable = true;
     nh = {
       enable = true;
       flake = "${config.home.homeDirectory}/repos/dots";
     };
-    oh-my-posh = {
-      enable = true;
-      enableZshIntegration = true;
-      settings = builtins.fromJSON (
-        builtins.unsafeDiscardStringContext (
-          builtins.readFile (inputs.genebean-omp-themes + "/beanbag.omp.json")
-        )
-      );
-      #useTheme = "amro";
-      #useTheme = "montys";
-    };
     ripgrep.enable = true;
-    tmux = {
-      enable = true;
-      historyLimit = 100000;
-      mouse = true;
-      tmuxinator.enable = true;
-      plugins = with pkgs.tmuxPlugins; [
-        vim-tmux-navigator
-        {
-          plugin = dracula;
-          extraConfig = ''
-            set -g @dracula-show-battery false
-            set -g @dracula-show-powerline true
-            set -g @dracula-refresh-rate 10
-          '';
-        }
-      ];
-      extraConfig = ''
-        set -g status-position top
-      '';
-    };
-    vim = {
-      enable = true;
-      defaultEditor = false;
-      plugins = with pkgs.vimPlugins; [
-        syntastic
-        tabular
-        tlib_vim
-        vim-addon-mw-utils
-        vim-airline
-        vim-airline-themes
-        vim-flog
-        vim-fugitive
-        vim-json
-        vim-markdown
-        vim-nix
-        vim-puppet
-        vim-ruby
-        vim-snipmate
-        vim-snippets
-        vim-tmux-navigator
-        vim-yaml
-      ];
-      settings = {
-        background = "dark";
-        expandtab = true;
-      };
-      extraConfig = ''
-        set nocompatible                              " be iMproved, required
-        filetype plugin indent on                     " required for plugins to be able to adjust indent
-        syntax on                                     " enable syntax highlighting
-        set encoding=utf-8
-        set termencoding=utf-8
-        set t_Co=256                                  " tell vim we have 256 colors to work with
-
-        set autoindent                                " automatically indent new lines
-        set backspace=2                               " make backspace work like most other programs
-        set fillchars+=stl:\ ,stlnc:\                 " fix added per powerline troubleshooting docs
-        set laststatus=2                              " Always display the status line in all windows
-        set noshowmode                                " Hide the default mode text (e.g. -- INSERT -- below the status line)
-        set smarttab                                  " helps with expanding tabs to spaces (I think)
-        set statusline+=%{FugitiveStatusline()}       " get git info via fugitive plugin
-        set statusline+=%#warningmsg#                 " recommended setting from syntastic plugin
-        set statusline+=%{SyntasticStatuslineFlag()}  " recommended setting from syntastic plugin
-        set statusline+=%*                            " recommended setting from syntastic plugin
-
-        " This has to come after colorscheme, if defined, to not be masked
-        highlight ColorColumn ctermbg=232             " set the color to be used for guidelines
-        let &colorcolumn=join(range(81,999),",")      " change the background color of everything beyond 80 characters
-
-        let g:snipMate = { 'snippet_version' : 1 }
-
-        " settings for the syntastic plugin
-        let g:syntastic_always_populate_loc_list = 1
-        let g:syntastic_auto_loc_list            = 1
-        let g:syntastic_check_on_open            = 1
-        let g:syntastic_check_on_wq              = 0
-        let g:syntastic_enable_signs             = 1
-        let g:syntastic_ruby_checkers            = ['rubocop']
-        let g:syntastic_quiet_messages           = {'level': 'warnings'}
-
-        " don't wrap text in markdown files
-        let g:vim_markdown_folding_disabled      = 1
-
-        " settings for vim-airline
-        let g:airline_theme='badwolf'
-        let g:airline_powerline_fonts = 1
-      '';
-    };
     zellij = {
       enable = true;
       enableZshIntegration = false;
     };
-    zsh = {
-      enable = true;
-      dotDir = config.home.homeDirectory;
-      enableCompletion = true;
-      autosuggestion.enable = true;
-      history.save = 1000000;
-      history.size = 1000000;
-      initContent = ''
-        [ -f ~/.private-env ] && source ~/.private-env || echo '~/.private-env is missing'
-
-        # Start GPG agent
-        # Some tips from https://hedberg.io/yubikey-for-ssh/ helped simplify this:
-        if [[ $(uname) == 'Darwin' ]]; then
-          # Add GPG Suite binaries to the path:
-          export PATH=/usr/local/MacGPG2/bin:$PATH
-        fi
-
-        export GPG_TTY=$(tty)
-
-        # gfr = git fetch rebase and functions on default branch
-        gfr() {
-          local default_branch
-          default_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
-
-          if [ -z "$default_branch" ]; then
-            echo "Error: Default branch not found. Run 'git remote set-head origin -a' first."
-            return 1
-          fi
-
-          git fetch origin "$default_branch":"$default_branch" && git rebase "$default_branch"
-        }
-
-        function nv() {
-          # Assumes all configs exist in directories named ~/.config/nvim-*
-          local config=$(fd --max-depth 1 --glob 'nvim*' ~/.config | fzf --prompt="Neovim Configs > " --height=~50% --layout=reverse --border --exit-0)
-
-          # If I exit fzf without selecting a config, don't open Neovim
-          [[ -z $config ]] && echo "No config selected" && return
-
-          # Open Neovim with the selected config
-          NVIM_APPNAME=$(basename $config) nvim $*
-        }
-
-        function svndiffless() {
-          svn diff "$@" |diff-so-fancy |less -R
-        }
-
-        function svndiffless-nows() {
-          svn diff -x -w "$@" |diff-so-fancy |less -R
-        }
-
-        # unset oh-my-zsh's gk so that gk can refer to the gitkraken-cli
-        unalias gk
-      '';
-      oh-my-zsh = {
-        enable = true;
-        plugins = [
-          "bundler"
-          "gem"
-          "git"
-          "github"
-          "history"
-          "kubectl"
-          "pip"
-          "terraform"
-          "vagrant"
-          "vscode"
-        ];
-      };
-      shellAliases = {
-        bcrr = "bolt command run --run-as root --sudo-password-prompt";
-        bcrrs = "bcrr --stream --no-verbose";
-        beo = "bundle exec onceover run spec --trace --force";
-        biv = "bundle install --path=vendor/bundle";
-        bottom = "echo 'To run bottom, the command is btm'";
-        ce = "code-exploration";
-        dots = "cd ~/repos/dots";
-        gbc = ''
-          git branch --merged | command grep -vE "^(\*|\s*(main|master|develop|production|qa)\s*$)" | command xargs -n 1 git branch -d
-        '';
-        gitextract = "git log --pretty=email --patch-with-stat --reverse --full-index --binary --";
-        gpge = "gpg2 --encrypt --sign --armor -r ";
-        hubpr = "hub pull-request --push --browse";
-        nvdots = "NVIM_APPNAME=nvim-dots nvim";
-        nve = "nvdots ~/repos/dots/modules/home-manager/files/nvim/lua";
-        pssh = "ssh -o 'UserKnownHostsFile /dev/null' -o 'StrictHostKeyChecking no' -o PubkeyAcceptedKeyTypes=+ssh-rsa -o HostKeyAlgorithms=+ssh-rsa -o KexAlgorithms=+diffie-hellman-group1-sha1 -i ~/.ssh/id_rsa-acceptance";
-        sal = "ssh-add -L";
-        sshnull = "ssh -o UserKnownHostsFile=/dev/null";
-        st = "open -a SourceTree";
-        sz = "source ~/.zshrc";
-        trippy = "echo 'To run trippy, the command is trip'";
-        usegpg = "killall ssh-agent; export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket) && gpgconf --launch gpg-agent";
-        usessh = "gpgconf --kill gpg-agent";
-      };
-    }; # end zsh
   }; # end programs
 }
