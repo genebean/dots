@@ -23,7 +23,7 @@ in
       autoStart = true;
       image = "psitrax/psitransfer:v2.4.4";
       environmentFiles = [ psitransfer_dot_env ];
-      ports = [ "${toString config.dots.ports.psitransfer.port}:3000" ];
+      ports = [ "${toString config.genebean.ports.psitransfer.port}:3000" ];
       volumes = [
         "${volume_base}/data:/data"
       ];

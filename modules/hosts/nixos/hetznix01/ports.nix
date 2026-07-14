@@ -1,5 +1,5 @@
 {
-  config.dots.ports = {
+  config.genebean.ports = {
     # Firewalled TCP services (email)
     smtp = {
       port = 25;

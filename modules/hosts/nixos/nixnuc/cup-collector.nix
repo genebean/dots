@@ -22,9 +22,9 @@ in
       ];
       migrationsDir = inputs.cup-collector.packages.${pkgs.stdenv.hostPlatform.system}.migrations;
       pbBindIp = "0.0.0.0";
-      pbPort = config.dots.ports.pocketbase.port; # override default due to conflict
+      pbPort = config.genebean.ports.pocketbase.port; # override default due to conflict
       pocketidIssuerUrl = config.services.pocket-id.settings.APP_URL;
-      inherit (config.dots.ports.cup-collector) port; # override default due to conflict
+      inherit (config.genebean.ports.cup-collector) port; # override default due to conflict
     };
 
     restic.backups.daily = {

@@ -23,13 +23,13 @@ in
     streamConfig = ''
       server {
         # https://docs.emqx.com/en/emqx/latest/deploy/cluster/lb-nginx.html
-        listen ${toString config.dots.ports.mqtt-tls.port} ssl;
+        listen ${toString config.genebean.ports.mqtt-tls.port} ssl;
         ssl_session_timeout 10m;
         ssl_certificate ${config.security.acme.certs."mqtt.${domain}".directory}/fullchain.pem;
         ssl_certificate_key ${config.security.acme.certs."mqtt.${domain}".directory}/key.pem;
         ssl_protocols TLSv1.2 TLSv1.3;
         ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-CHACHA20-POLY1305;
-        proxy_pass 127.0.0.0:${toString config.dots.ports.mqtt.port};
+        proxy_pass 127.0.0.0:${toString config.genebean.ports.mqtt.port};
         proxy_protocol on;
         proxy_connect_timeout 10s;
         # Default keep-alive time is 10 minutes
@@ -39,17 +39,17 @@ in
       }
 
       server {
-        listen 0.0.0.0:${toString config.dots.ports.bitcoin-core.port};
-        listen 0.0.0.0:${toString config.dots.ports.bitcoin-knots.port};
-        listen [::]:${toString config.dots.ports.bitcoin-core.port};
-        listen [::]:${toString config.dots.ports.bitcoin-knots.port};
-        proxy_pass ${private_btc}:${toString config.dots.ports.bitcoin-core.port};
+        listen 0.0.0.0:${toString config.genebean.ports.bitcoin-core.port};
+        listen 0.0.0.0:${toString config.genebean.ports.bitcoin-knots.port};
+        listen [::]:${toString config.genebean.ports.bitcoin-core.port};
+        listen [::]:${toString config.genebean.ports.bitcoin-knots.port};
+        proxy_pass ${private_btc}:${toString config.genebean.ports.bitcoin-core.port};
       }
 
       server {
-        listen 0.0.0.0:${toString config.dots.ports.lnd.port};
-        listen [::]:${toString config.dots.ports.lnd.port};
-        proxy_pass ${private_btc}:${toString config.dots.ports.lnd.port};
+        listen 0.0.0.0:${toString config.genebean.ports.lnd.port};
+        listen [::]:${toString config.genebean.ports.lnd.port};
+        proxy_pass ${private_btc}:${toString config.genebean.ports.lnd.port};
       }
     '';
     virtualHosts = {
@@ -135,32 +135,32 @@ in
       "matrix.${domain}" = {
         listen = [
           {
-            inherit (config.dots.ports.http) port;
+            inherit (config.genebean.ports.http) port;
             addr = "0.0.0.0";
           }
           {
-            inherit (config.dots.ports.http) port;
+            inherit (config.genebean.ports.http) port;
             addr = "[::]";
           }
 
           {
-            inherit (config.dots.ports.https) port;
+            inherit (config.genebean.ports.https) port;
             addr = "0.0.0.0";
             ssl = true;
           }
           {
-            inherit (config.dots.ports.https) port;
+            inherit (config.genebean.ports.https) port;
             addr = "[::]";
             ssl = true;
           }
 
           {
-            inherit (config.dots.ports.matrix-federation) port;
+            inherit (config.genebean.ports.matrix-federation) port;
             addr = "0.0.0.0";
             ssl = true;
           }
           {
-            inherit (config.dots.ports.matrix-federation) port;
+            inherit (config.genebean.ports.matrix-federation) port;
             addr = "[::]";
             ssl = true;
           }
@@ -180,9 +180,9 @@ in
           };
           # Forward all Matrix API calls to the synapse Matrix homeserver. A trailing slash
           # *must not* be used here.
-          "/_matrix".proxyPass = "http://[::1]:${toString config.dots.ports.matrix-synapse.port}";
+          "/_matrix".proxyPass = "http://[::1]:${toString config.genebean.ports.matrix-synapse.port}";
           # Forward requests for e.g. SSO and password-resets.
-          "/_synapse/client".proxyPass = "http://[::1]:${toString config.dots.ports.matrix-synapse.port}";
+          "/_synapse/client".proxyPass = "http://[::1]:${toString config.genebean.ports.matrix-synapse.port}";
         };
       };
       "mqtt.${domain}" = {
@@ -203,7 +203,7 @@ in
         enableACME = true;
         acmeRoot = null;
         forceSSL = true;
-        locations."/".proxyPass = "http://127.0.0.1:${toString config.dots.ports.plausible.port}";
+        locations."/".proxyPass = "http://127.0.0.1:${toString config.genebean.ports.plausible.port}";
         locations."/".proxyWebsockets = true;
         extraConfig = ''
           access_log /var/log/nginx/stats.${domain}.log;
@@ -218,7 +218,7 @@ in
         acmeRoot = null;
         forceSSL = true;
         locations."/".proxyWebsockets = true;
-        locations."/".proxyPass = "http://127.0.0.1:${toString config.dots.ports.uptime-kuma.port}";
+        locations."/".proxyPass = "http://127.0.0.1:${toString config.genebean.ports.uptime-kuma.port}";
       };
     }; # end virtualHosts
   }; # end nginx

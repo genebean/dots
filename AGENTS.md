@@ -184,9 +184,9 @@ When writing NixOS modules:
 Service ports are managed through a two-level registry rather than scattered
 magic numbers:
 
-- `modules/shared/nixos/ports.nix` — defines the `dots.ports` option type and
+- `modules/genebean/nixos/ports.nix` — defines the `genebean.ports` option type and
   declares fleet-wide ports (ssh, http, https, shared service ports). All entries
-  default to `openFirewall = false`.
+  default to `openFirewall = false`. Imported automatically via `nixosModules.genebean`.
 - `modules/hosts/nixos/<hostname>/ports.nix` — host-specific ports plus any
   fleet-wide overrides (e.g. setting `openFirewall = true` for a port only that
   host exposes).
@@ -196,12 +196,12 @@ wire it directly to `networking.firewall` via `lib.pipe`:
 
 ```nix
 networking.firewall = {
-  allowedTCPPorts = lib.pipe config.dots.ports [
+  allowedTCPPorts = lib.pipe config.genebean.ports [
     builtins.attrValues
     (builtins.filter (e: e.openFirewall && e.protocol == "tcp"))
     (map (e: e.port))
   ];
-  allowedUDPPorts = lib.pipe config.dots.ports [
+  allowedUDPPorts = lib.pipe config.genebean.ports [
     builtins.attrValues
     (builtins.filter (e: e.openFirewall && e.protocol == "udp"))
     (map (e: e.port))
@@ -209,7 +209,7 @@ networking.firewall = {
 };
 ```
 
-Reference ports in config as `config.dots.ports.<name>.port` rather than
+Reference ports in config as `config.genebean.ports.<name>.port` rather than
 hardcoding numbers — this applies everywhere: service configs, nginx proxy
 targets, container definitions, and the firewall. When the surrounding attrset
 attribute name is already `port`, use `inherit` — statix rules W03/W04
@@ -218,10 +218,10 @@ if you use the verbose form where `inherit` would work:
 
 ```nix
 # rejected by statix W04
-port = config.dots.ports.grafana.port;
+port = config.genebean.ports.grafana.port;
 
 # correct
-inherit (config.dots.ports.grafana) port;
+inherit (config.genebean.ports.grafana) port;
 ```
 
 When adding a service that other hosts need to know about (e.g. a shared API

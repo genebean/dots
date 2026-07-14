@@ -13,7 +13,7 @@ in
         AUDIOBOOKSHELF_UID = "99";
         AUDIOBOOKSHELF_GID = "100";
       };
-      ports = [ "${toString config.dots.ports.audiobookshelf.port}:80" ];
+      ports = [ "${toString config.genebean.ports.audiobookshelf.port}:80" ];
       volumes = [
         "${volume_base}/audiobooks:/audiobooks"
         "${volume_base}/podcasts:/podcasts"

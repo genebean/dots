@@ -49,9 +49,9 @@ in
             static_configs = [
               {
                 targets = [
-                  "127.0.0.1:${toString config.dots.ports.node-exporter.port}" # nixnuc
-                  "192.168.22.22:${toString config.dots.ports.node-exporter.port}" # home assistant
-                  "umbrel:${toString config.dots.ports.node-exporter.port}"
+                  "127.0.0.1:${toString config.genebean.ports.node-exporter.port}" # nixnuc
+                  "192.168.22.22:${toString config.genebean.ports.node-exporter.port}" # home assistant
+                  "umbrel:${toString config.genebean.ports.node-exporter.port}"
                 ];
               }
             ];
@@ -89,7 +89,7 @@ in
           {
             job_name = "cadvisor";
             static_configs = [
-              { targets = [ "127.0.0.1:${toString config.dots.ports.cadvisor.port}" ]; }
+              { targets = [ "127.0.0.1:${toString config.genebean.ports.cadvisor.port}" ]; }
             ];
             metric_relabel_configs = [
               {
@@ -110,7 +110,7 @@ in
           {
             job_name = "nginx";
             static_configs = [
-              { targets = [ "127.0.0.1:${toString config.dots.ports.nginx-exporter.port}" ]; }
+              { targets = [ "127.0.0.1:${toString config.genebean.ports.nginx-exporter.port}" ]; }
             ];
             metric_relabel_configs = [
               {
@@ -181,7 +181,7 @@ in
       };
 
       # Remote write to VictoriaMetrics
-      remoteWrite.url = "http://127.0.0.1:${toString config.dots.ports.victoriametrics.port}/api/v1/write";
+      remoteWrite.url = "http://127.0.0.1:${toString config.genebean.ports.victoriametrics.port}/api/v1/write";
 
       extraArgs = [
         # Pass other remote write flags the module does not expose natively:
@@ -219,7 +219,7 @@ in
             name = "VictoriaMetrics";
             type = "victoriametrics-metrics-datasource";
             access = "proxy";
-            url = "http://127.0.0.1:${toString config.dots.ports.victoriametrics.port}";
+            url = "http://127.0.0.1:${toString config.genebean.ports.victoriametrics.port}";
             isDefault = true;
             uid = "VictoriaMetrics"; # Set explicit UID for use in alert rules
           }
@@ -274,7 +274,7 @@ in
         server = {
           domain = "monitoring.${home_domain}";
           http_addr = "0.0.0.0";
-          http_port = config.dots.ports.grafana.port;
+          http_port = config.genebean.ports.grafana.port;
           root_url = "https://monitoring.${home_domain}/grafana/";
           serve_from_sub_path = true;
         };
@@ -297,7 +297,7 @@ in
     prometheus.exporters.node = {
       enable = true;
       listenAddress = "127.0.0.1";
-      inherit (config.dots.ports.node-exporter) port;
+      inherit (config.genebean.ports.node-exporter) port;
       enabledCollectors = [
         "zfs"
         "systemd"
@@ -312,7 +312,7 @@ in
     prometheus.exporters.nginx = {
       enable = true;
       listenAddress = "127.0.0.1";
-      inherit (config.dots.ports.nginx-exporter) port;
+      inherit (config.genebean.ports.nginx-exporter) port;
       scrapeUri = "https://127.0.0.1/server_status";
       sslVerify = false;
     };
@@ -321,7 +321,7 @@ in
     cadvisor = {
       enable = true;
       listenAddress = "127.0.0.1";
-      inherit (config.dots.ports.cadvisor) port;
+      inherit (config.genebean.ports.cadvisor) port;
       extraOptions = [
         "--docker_only=true"
         "--housekeeping_interval=30s"

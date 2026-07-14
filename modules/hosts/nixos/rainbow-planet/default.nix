@@ -8,7 +8,6 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../../shared/nixos/ports.nix
     ../../../shared/nixos/ripping.nix
   ];
 
