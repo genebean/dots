@@ -7,6 +7,8 @@
 {
   genebean = {
     programs = {
+      atuin-client.enable = true;
+      bat.enable = true;
       claude-code.enable = true;
       diff.enable = true;
       git.enable = true;
@@ -78,34 +80,6 @@
     };
   };
   programs = {
-    atuin = {
-      enable = true;
-      settings = {
-        ctrl_n_shortcuts = true; # Use Ctrl-0 .. Ctrl-9 instead of Alt-0 .. Alt-9 UI shortcuts
-        enter_accept = true; # press tab to edit command before running
-        filter_mode_shell_up_key_binding = "host"; # or global, host, directory, etc
-        sync_address = "https://atuin.home.technicalissues.us";
-        sync_frequency = "15m";
-
-      };
-    };
-    bat = {
-      enable = true;
-      config = {
-        theme = "Catppuccin-frappe";
-      };
-      themes = {
-        Catppuccin-frappe = {
-          src = pkgs.fetchFromGitHub {
-            owner = "catppuccin";
-            repo = "bat";
-            rev = "ba4d16880d63e656acced2b7d4e034e4a93f74b1";
-            hash = "sha256-6WVKQErGdaqb++oaXnY3i6/GuH2FhTgK0v4TN4Y0Wbw=";
-          };
-          file = "Catppuccin-frappe.tmTheme";
-        };
-      };
-    };
     bottom.enable = true;
     broot.enable = true;
     direnv = {

@@ -3,6 +3,8 @@
     ./plasma.nix
     ./programs/angry-ip-scanner.nix
     ./programs/askpass.nix
+    ./programs/atuin-client.nix
+    ./programs/bat.nix
     ./programs/boinc.nix
     ./programs/caffeine.nix
     ./programs/audacity.nix
