@@ -76,6 +76,12 @@
       openFirewall = true;
     };
 
+    # Firewalled TCP services continued
+    social-reader-mcp = {
+      port = 8787;
+      openFirewall = true;
+    };
+
     # Internal-only TCP services (proxied via nginx, not firewalled)
     pocket-id = {
       port = 1411;

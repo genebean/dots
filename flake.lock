@@ -423,6 +423,26 @@
         "type": "github"
       }
     },
+    "hermes-social-summerizer": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784171483,
+        "narHash": "sha256-I63JtT1voBxBwDnF0zBOa78u9b7udL7ymbI2cZa0tzo=",
+        "owner": "genebean",
+        "repo": "HermesSocialSummerizer",
+        "rev": "fc2d6255b3333fa0c35612235576232d6097ed0e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "genebean",
+        "repo": "HermesSocialSummerizer",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -819,6 +839,7 @@
         "flox": "flox",
         "genebean-neovim": "genebean-neovim",
         "genebean-omp-themes": "genebean-omp-themes",
+        "hermes-social-summerizer": "hermes-social-summerizer",
         "home-manager": "home-manager",
         "nix-auth": "nix-auth",
         "nix-darwin": "nix-darwin",

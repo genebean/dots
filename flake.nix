@@ -43,6 +43,11 @@
       flake = false;
     };
 
+    hermes-social-summerizer = {
+      url = "github:genebean/HermesSocialSummerizer";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Manages things in home directory
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
@@ -199,6 +204,7 @@
           hostname = "nixnuc";
           additionalModules = [
             inputs.cup-collector.nixosModules.default
+            inputs.hermes-social-summerizer.nixosModules.default
             inputs.private-flake.nixosModules.private.nixnuc
             inputs.ytdlfin.nixosModules.default
           ];
