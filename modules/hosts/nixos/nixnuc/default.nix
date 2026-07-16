@@ -21,6 +21,7 @@ in
     ./cup-collector.nix
     ./monitoring-stack.nix
     ./ports.nix
+    ./social-reader-mcp.nix
     ./zfs-datasets.nix
     ../../../shared/nixos/lets-encrypt.nix
     ../../../shared/nixos/restic.nix
