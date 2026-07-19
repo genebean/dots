@@ -1,5 +1,17 @@
 {
   description = "A flake for all my stuff";
+  # nixos-raspberrypi's own binary cache (pre-built vendor kernel/firmware
+  # for kiosk-gene-desk). Only inherited automatically when building *from
+  # their flake directly*, not when consumed as an input like here - hence
+  # declaring it ourselves. This is a build-time/client-side setting; it
+  # does not help kiosk-gene-desk's own future rebuilds once deployed -
+  # see its nix.settings.extra-substituters for that.
+  nixConfig = {
+    extra-substituters = [ "https://nixos-raspberrypi.cachix.org" ];
+    extra-trusted-public-keys = [
+      "nixos-raspberrypi.cachix.org-1:4iMO9LXa8BqhU+Rpg6LQKiGa2lsNh/j2oiYLNOQ5sPI="
+    ];
+  };
   inputs = {
     # Where we get most of our software. Giant mono repo with recipes
     # called derivations that say how to build software.
@@ -54,6 +66,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Wipes / to tmpfs on every boot, bind-mounting an explicit allowlist
+    # of paths back in from a persistent partition
+    impermanence = {
+      url = "github:nix-community/impermanence";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
+    };
+
     nix-auth = {
       url = "github:numtide/nix-auth";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -73,6 +95,11 @@
       url = "github:zhaofengli-wip/nix-homebrew";
     };
 
+    nixos-anywhere = {
+      url = "github:nix-community/nixos-anywhere";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixos-cosmic = {
       url = "github:lilyinstarlight/nixos-cosmic";
       inputs.nixpkgs-stable.follows = "nixpkgs";
@@ -81,6 +108,14 @@
     };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
+    # Raspberry Pi hardware support: vendor kernel/firmware packages and a
+    # proper declarative bootloader (boot.loader.raspberry-pi) that keeps
+    # /boot/firmware in sync on every switch, instead of the one-shot
+    # image population nixpkgs' own sd-image module does. Deliberately
+    # not following our nixpkgs - its vendor kernel/firmware overlays are
+    # pinned to whatever nixpkgs revision it ships with.
+    nixos-raspberrypi.url = "github:nvmd/nixos-raspberrypi";
 
     plasma-manager = {
       url = "github:nix-community/plasma-manager";
@@ -196,9 +231,20 @@
           system = "aarch64-linux";
           hostname = "kiosk-gene-desk";
           additionalModules = [
-            inputs.nixos-hardware.nixosModules.raspberry-pi-4
+            inputs.impermanence.nixosModules.impermanence
+            inputs.nixos-raspberrypi.lib.inject-overlays
+            inputs.nixos-raspberrypi.nixosModules.nixpkgs-rpi
+            # Replaces inputs.nixos-hardware.nixosModules.raspberry-pi-4 -
+            # nixos-raspberrypi provides the same hardware support plus the
+            # declarative boot.loader.raspberry-pi module disko needs.
+            inputs.nixos-raspberrypi.nixosModules.raspberry-pi-4.base
+            inputs.nixos-raspberrypi.nixosModules.raspberry-pi-4.display-vc4
+            inputs.nixos-raspberrypi.nixosModules.trusted-nix-caches
             inputs.private-flake.nixosModules.private.kiosk
           ];
+          additionalSpecialArgs = {
+            inherit (inputs) nixos-raspberrypi;
+          };
         };
         nixnuc = localLib.mkNixosHost {
           hostname = "nixnuc";
@@ -241,7 +287,7 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
         in
-        import ./pkgs { inherit pkgs self; }
+        import ./pkgs { inherit inputs pkgs; }
       );
     };
 }

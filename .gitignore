@@ -11,6 +11,9 @@
 # From running nixos-rebuild build-vm
 *.qcow2
 
+# From scripts/prep-install-bootstrap.sh - contains a decrypted age key
+/nixos-anywhere-extras*
+
 .claude/*
 !.claude/skills/
 !.claude/skills/**
