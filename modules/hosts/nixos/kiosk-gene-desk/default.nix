@@ -9,11 +9,17 @@
   imports = [
     ./disko.nix
     ./persistence.nix
+    ../../../shared/nixos/restic.nix
   ];
 
   system.stateVersion = "24.11";
 
   boot = {
+    # Independent of the GUI's own rotation (kiosk.sh's `wlr-randr
+    # --output HDMI-A-1 --transform 90`, which only affects the
+    # Wayland/cage compositor output) - this is the text console (fbcon),
+    # visible before/outside of cage. 0=normal, 1=90cw, 2=180, 3=270cw.
+    kernelParams = [ "fbcon=rotate:3" ];
     loader.raspberry-pi = {
       enable = true;
       variant = "4";

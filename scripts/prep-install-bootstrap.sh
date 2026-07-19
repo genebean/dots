@@ -30,9 +30,21 @@ out_dir="${repo_root}/nixos-anywhere-extras-${hostname}"
 # fix it after the fact ("Detected unsafe path transition"). See the
 # comment on sops.age.keyFile in kiosk-gene-desk/default.nix.
 age_key_path="${out_dir}/persist/home/gene/.sops-age-key"
+# No RTC on these Pis, so without a persisted clock file, systemd-
+# timesyncd has no floor and every boot starts from whatever fallback the
+# kernel/image build defaults to until NTP catches up moments later - a
+# real window where cert/timestamp validation could see the wrong time,
+# not just cosmetic log confusion. mightymac's own clock is already
+# NTP-correct, so touching this file here (content doesn't matter, only
+# its mtime) gives the very first boot a reasonable floor immediately,
+# before that boot's own NTP sync has had a chance to run. Persistence.nix
+# then keeps that floor accurate on every subsequent boot - see the
+# comment there. Harmless if the target host doesn't persist this path.
+timesync_clock_path="${out_dir}/persist/var/lib/systemd/timesync/clock"
 
 ssh_key_tmp="$(mktemp)"
-trap 'rm -f "$ssh_key_tmp"' EXIT
+restic_env_tmp="$(mktemp)"
+trap 'rm -f "$ssh_key_tmp" "$restic_env_tmp"' EXIT
 
 # Wiped fresh, not just mkdir -p'd: out_dir persists between runs, so a
 # stale file from a previous run's now-changed layout would otherwise
@@ -48,9 +60,42 @@ mkdir -p "$(dirname "$age_key_path")"
 nix run nixpkgs#ssh-to-age -- -private-key -i "$ssh_key_tmp" > "$age_key_path"
 chmod 600 "$age_key_path"
 
+mkdir -p "$(dirname "$timesync_clock_path")"
+touch "$timesync_clock_path"
+
 recipient="$(nix shell nixpkgs#age --command age-keygen -y "$age_key_path")"
 echo "Derived age recipient: ${recipient}"
 echo "(confirm this matches ${hostname}'s recipient in .sops.yaml before installing)"
+
+# Best-effort: tag this host's last 5 restic snapshots as pre-reinstall
+# before the reinstall wipes it, so kiosk-restic-full-restore has known-
+# good state to fall back on even if a boot-triggered catch-up backup on
+# the fresh install captures empty state first and would otherwise get
+# treated as "latest". Talks to the repo directly rather than over SSH to
+# the device being reinstalled - mightymac is already a valid recipient
+# for these same restic secrets in modules/shared/secrets.yaml, and this
+# way it still works even if the device's own SSH/network is flaky right
+# before a reinstall. See modules/shared/nixos/restic.nix and
+# kiosk-gene-desk/persistence.nix for the retention side of this.
+sops decrypt --extract '["restic_env"]' "${repo_root}/modules/shared/secrets.yaml" > "$restic_env_tmp"
+set -a
+# shellcheck disable=SC1090
+source "$restic_env_tmp"
+set +a
+export RESTIC_REPOSITORY
+RESTIC_REPOSITORY="$(sops decrypt --extract '["restic_repo"]' "${repo_root}/modules/shared/secrets.yaml")"
+export RESTIC_PASSWORD
+RESTIC_PASSWORD="$(sops decrypt --extract '["restic_password"]' "${repo_root}/modules/shared/secrets.yaml")"
+
+echo "Tagging ${hostname}'s last 5 restic snapshots as pre-reinstall..."
+snapshot_ids="$(nix run nixpkgs#restic -- snapshots --host "${hostname}" --latest 5 --json | nix run nixpkgs#jq -- -r '.[].short_id')"
+if [ -n "$snapshot_ids" ]; then
+  # shellcheck disable=SC2086
+  nix run nixpkgs#restic -- tag --add pre-reinstall $snapshot_ids
+  echo "Tagged: $(echo "$snapshot_ids" | tr '\n' ' ')"
+else
+  echo "No existing snapshots found for ${hostname} - nothing to tag."
+fi
 
 echo ""
 echo "Ready. Run:"
