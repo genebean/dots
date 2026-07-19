@@ -9,6 +9,7 @@
     ./programs/onepassword.nix
     ./programs/thunderbird.nix
     ./programs/xfce4-terminal.nix
+    ./services/chromium-kiosk.nix
     ./services/flatpak.nix
     ./services/tailscale.nix
   ];

@@ -35,7 +35,6 @@
   environment.systemPackages = with pkgs; [
     libraspberrypi
     raspberrypi-eeprom
-    wlr-randr
   ];
 
   hardware = {
@@ -86,21 +85,6 @@
   ];
 
   services = {
-    cage =
-      let
-        kioskProgram = pkgs.writeShellScript "kiosk.sh" ''
-          WAYLAND_DISPLAY=wayland-0 wlr-randr --output HDMI-A-1 --transform 90
-          /etc/profiles/per-user/gene/bin/chromium-browser
-        '';
-      in
-      {
-        enable = true;
-        program = kioskProgram;
-        user = "gene";
-        environment = {
-          WLR_LIBINPUT_NO_DEVICES = "1"; # boot up even if no mouse/keyboard connected
-        };
-      };
     prometheus.exporters.node = {
       enable = true;
       inherit (config.genebean.ports.node-exporter) port;
@@ -180,13 +164,6 @@
         ];
       };
     };
-  };
-
-  systemd.services.cage-tty1 = {
-    wants = [
-      "wpa_supplicant-wlan0.service"
-      "network-online.target"
-    ];
   };
 
   users.users.${username} = {

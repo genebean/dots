@@ -54,6 +54,7 @@
     ./programs/zoom.nix
     ./programs/wezterm
     ./programs/zsh.nix
+    ./services/chromium-kiosk.nix
     ./services/flatpak.nix
     ./services/tailscale.nix
   ];
