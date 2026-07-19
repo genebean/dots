@@ -1,25 +1,15 @@
 {
   home.stateVersion = "24.11";
 
-  genebean.services.tailscale.enable = true;
-
-  programs = {
-    chromium = {
+  genebean.services = {
+    chromium-kiosk = {
       enable = true;
-      commandLineArgs = [
-        "--app=http://192.168.22.22:8123/kiosk-gene-desk/immich?kiosk"
-        "--kiosk"
-        "--noerrdialogs"
-        "--disable-infobars"
-        "--no-first-run"
-        "--ozone-platform=wayland"
-        "--enable-features=OverlayScrollbar"
-        "--start-maximized"
-        "--force-dark-mode"
-        "--hide-crash-restore-bubble"
-      ];
+      dashboardUrl = "http://192.168.22.22:8123/kiosk-gene-desk/immich?kiosk";
+      rotate = "90";
     };
-    zsh.history.path = "/tmp/zsh_history_gene"; # needed becaues of read only fs
+    tailscale.enable = true;
   };
+
+  programs.zsh.history.path = "/tmp/zsh_history_gene"; # needed becaues of read only fs
 
 }
