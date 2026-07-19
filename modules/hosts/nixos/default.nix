@@ -1,5 +1,6 @@
 {
   hostname,
+  lib,
   pkgs,
   username,
   ...
@@ -86,6 +87,31 @@
   };
 
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+
+  # dbus-broker's unit is Type=notify-reload, but it doesn't send the
+  # RELOADING=1/READY=1 handshake systemd expects for that type - every
+  # `nixos-rebuild switch`/deploy that touches its config hangs for the
+  # full TimeoutStartSec (90s) then fails the whole activation. This is
+  # an upstream systemd/dbus-broker bug (systemd/systemd#37515), not
+  # anything host-specific - confirmed reproduced on nixnuc, but every
+  # host is equally exposed once something changes dbus-broker's
+  # config.
+  #
+  # Restarting instead of reloading isn't safe either - also confirmed
+  # on nixnuc: switch-to-configuration's own remaining steps (starting
+  # other changed units) talk to systemd over D-Bus, so stopping
+  # dbus-broker mid-switch stranded the activation script with "Failed
+  # to process dbus messages... disconnected from D-Bus?" and left the
+  # bus down until a manual `systemctl start dbus.socket` - a real
+  # outage on a host running "most services" (see AGENTS.md). Since
+  # this is such a foundational service, the safe answer is to leave it
+  # untouched by every switch entirely (neither reload nor restart) and
+  # let it only actually pick up a new dbus-broker on the next real
+  # reboot, same as how systemd itself is typically treated.
+  systemd.services.dbus-broker = {
+    reloadIfChanged = lib.mkForce false;
+    restartIfChanged = lib.mkForce false;
+  };
 
   time.timeZone = "America/New_York";
 
