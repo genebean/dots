@@ -7,8 +7,7 @@ This repo is a Nix flake that manages most of my setup on macOS and fully manage
 - [Historical bits](#historical-bits)
 - [Host Bootstrapping](#host-bootstrapping)
   - [Replacements](#replacements)
-    - [Image-based Systems](#image-based-systems)
-    - [Other Systems](#other-systems)
+    - [Raspberry Pi kiosks (`kiosk-gene-desk`, and any future host built the same way)](#raspberry-pi-kiosks-kiosk-gene-desk-and-any-future-host-built-the-same-way)
   - [Net-new Hosts](#net-new-hosts)
     - [Adding a new macOS host](#adding-a-new-macos-host)
       - [Extras steps not done by Nix and/or Homebrew and/or mas](#extras-steps-not-done-by-nix-andor-homebrew-andor-mas)
@@ -62,32 +61,89 @@ This repo historically contained my dot files. Historically symlinked files on W
 
 Sometimes hosts, or their storage, need replacing... sepcially ones that run on SD cards like `kiosk-gene-desk`. When that time comes, here is how to get it back up and running.
 
-#### Image-based Systems
+#### Raspberry Pi kiosks (`kiosk-gene-desk`, and any future host built the same way)
 
-1. install image
-2. boot with wired connection
-3. ssh in but don’t use known hosts file
-4. restore user and host ssh keys
-5. run `mkdir -p ~/.config/sops/age && ssh-to-age -private-key -i ~/.ssh/id_ed25519 > ~/.config/sops/age/keys.txt && ssh-to-age -i ~/.ssh/id_ed25519.pub  > ~/.config/sops/age/pub-keys.txt`
-6. reboot
-7. ssh in as normal
-8. run these commands:
+These hosts use `disko` for partitioning, `impermanence` for a tmpfs root
+(wiped every boot, with an explicit persist allowlist), and
+`nixos-anywhere` for install - not a flashed system image. `disko` wipes
+the target disk from scratch every time, so this is the same process for
+a first-time install and a full replacement (dead SD card, etc).
+
+1. **Build the installer image** (on mightymac, or anywhere with the
+   flake): `nix build .#rpi4-installer`. This is a generic
+   `nixos-raspberrypi` installer image, pre-decompressed so Raspberry Pi
+   Imager can flash it directly - it silently corrupts the card if you
+   hand it the raw `.img.zst` instead, since Imager doesn't decompress
+   zstd itself. `result` is the flashable `.img` file.
+
+2. **Flash it to a USB drive**, not the SD card - Raspberry Pi Imager,
+   "Use custom image", pick `result`.
+
+3. **Connect a display and boot the Pi from that USB drive with the SD
+   card removed.** Both matter: `nixos-anywhere`/`disko` can't
+   repartition a disk the system is currently running from, and a Pi's
+   boot order can prefer the SD card over USB if one's already inserted -
+   booting from USB with no SD card present avoids that ambiguity
+   entirely. A display is required too: the installer sets a random root
+   password on boot and prints it on screen along with its IP - read both
+   off the display. You'll need the password again for `nixos-anywhere`
+   in step 5. Once it's up, insert the SD card - it's just a second,
+   currently-empty disk to the running installer at this point, safe to
+   insert at any time after boot.
+
+4. **Seed the bootstrap files.** `disko` wipes `/persist` from scratch,
+   so the sops age key has to exist on the target *before*
+   `nixos-install`'s activation runs, or `sops-install-secrets` fails on
+   first boot with no way to recover short of a manual SSH patch. From
+   the repo root:
 
    ```bash
-   mkdir repos
-   cd repos
-   git clone git@github.com:genebean/dots
-   cd dots
-   nix-auth login
-   nix flake update private-flake # needed so private bits are cached properly
-   nixup
+   scripts/prep-install-bootstrap.sh <hostname>
    ```
 
-9. reboot
+   This derives the age key from a per-host SSH key already in
+   `modules/shared/secrets.yaml`, seeds a clock file so the fresh boot's
+   NTP sync starts from a real floor instead of the image build's
+   fallback date (no RTC on these Pis), and tags the last 5 restic
+   snapshots already in the backup repo for that hostname as
+   `pre-reinstall`, so they survive the fresh install's own backup
+   rotation - this talks to the repo directly (mightymac is already a
+   valid recipient for the restic secrets), so it works regardless of
+   whether the host being replaced is still reachable. Confirm the
+   derived age recipient printed at the end matches the host's entry in
+   `.sops.yaml` before continuing.
 
-#### Other Systems
+5. **Install:**
 
-Yeah.... this is not something I have properly documented. Best guess: install like a net-new host but then restore keys and such like on an image based system. Supplement that with restores from restic backups.
+   ```bash
+   nixos-anywhere --flake ~/repos/dots#<hostname> \
+     --extra-files ./nixos-anywhere-extras-<hostname> root@<installer-ip>
+   ```
+
+   It'll prompt for the root password from step 3 to make its initial SSH
+   connection, then reboots into the real system when done.
+
+6. **Restore state.** SSH in once it's back up, then:
+
+   ```bash
+   sudo kiosk-restic-full-restore          # lists available snapshots
+   sudo kiosk-restic-full-restore <id>     # restores from a specific one
+   ```
+
+   Use the specific `pre-reinstall`-tagged snapshot ID from step 4, not
+   whatever's newest - a boot-triggered catch-up backup on the fresh
+   install can capture empty state and become "latest" before you get a
+   chance to restore, so the tool never guesses for you. This restores
+   Home Assistant's `hass-browser_mod` chromium registration, atuin's
+   sync-server login, and the tailscale node identity, and stops/starts
+   the affected services itself.
+
+7. Verify: chromium shows the kiosk page (browser_mod registered in Home
+   Assistant), `atuin status` shows a recent sync, `tailscale status`
+   shows the expected node name (if it comes up suffixed like
+   `<hostname>-1`, the old pre-replacement node is probably still listed
+   as active in the Tailscale admin console under the plain name - remove
+   it there).
 
 ### Net-new Hosts
 

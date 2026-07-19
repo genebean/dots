@@ -1,11 +1,9 @@
-{ pkgs, self }:
+{ inputs, pkgs }:
 let
   nixdiff = pkgs.callPackage ./nixdiff { };
+  rpi4-installer = pkgs.callPackage ./rpi4-installer { inherit inputs; };
 in
 {
-  inherit nixdiff;
+  inherit nixdiff rpi4-installer;
   default = nixdiff;
-}
-// pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "aarch64-linux") {
-  kiosk-gene-desk-sdImage = pkgs.callPackage ./kiosk-gene-desk-sdImage.nix { inherit self; };
 }

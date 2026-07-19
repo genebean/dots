@@ -1,6 +1,8 @@
 {
   home.stateVersion = "24.11";
 
+  genebean.services.tailscale.enable = true;
+
   programs = {
     chromium = {
       enable = true;
