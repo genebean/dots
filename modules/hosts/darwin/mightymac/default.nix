@@ -123,5 +123,37 @@
     };
   };
 
-  security.pam.services.sudo_local.enable = false;
+  security = {
+    pam.services.sudo_local.enable = false;
+    # nix-darwin has no wheelNeedsPassword-style toggle like NixOS
+    # (security.sudo only exposes extraConfig/keepTerminfo), so this is
+    # a raw sudoers rule - needed for deploy-rs's non-interactive sudo
+    # activation over SSH, which would otherwise hang on a password
+    # prompt with no way to answer it. Scoped to deploy-rs's own two
+    # sudo command patterns rather than blanket NOPASSWD: ALL (confirmed
+    # by reading deploy-rs's src/deploy.rs and its activate.custom
+    # builder in flake.nix):
+    #   1. `sudo -u root <closure>/activate-rs ...` - the actual
+    #      activation/wait/revoke entrypoint. That single already-root
+    #      process is what runs nix-darwin's own activation - including
+    #      its Homebrew steps - so this one rule covers the whole flake
+    #      switch, not just the non-Homebrew parts.
+    #   2. `sudo -u root rm /tmp/deploy-rs-canary-<hash>` - a *separate*
+    #      command deploy-rs's magic-rollback confirmation step runs
+    #      after a successful activation, to tell the target "keep this
+    #      generation, don't roll back". Missing this one still lets
+    #      activation succeed but makes confirmation hang on a password
+    #      prompt, which deploy-rs correctly treats as a failure and
+    #      rolls back - confirmed on hardware. deploy-rs passes bare
+    #      `rm`, not a full path, and sudo resolves that via the
+    #      invoking user's own PATH (no secure_path override in macOS's
+    #      default sudoers) - which for gene.liverman is the Nix-managed
+    #      coreutils at /run/current-system/sw/bin/rm, not /bin/rm.
+    #      That symlink's path is stable across generations (only its
+    #      target changes), so it's safe to hardcode here.
+    sudo.extraConfig = ''
+      gene.liverman ALL=(root) NOPASSWD: /nix/store/*/activate-rs *
+      gene.liverman ALL=(root) NOPASSWD: /run/current-system/sw/bin/rm /tmp/deploy-rs-canary-*
+    '';
+  };
 }

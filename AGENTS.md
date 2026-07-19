@@ -112,10 +112,23 @@ nixup   # NixOS:            sudo nixos-rebuild switch --flake ~/repos/dots
 There is also `nixboot` on NixOS hosts to stage a change for the next reboot
 without switching immediately.
 
-### Build here, deploy to a remote NixOS host
+### Deploy to a remote host
 
-`nixos-rebuild` is available natively on NixOS hosts but not on home-manager-only
-or nix-darwin hosts. When deploying from one of those, bring it in via `nix shell`:
+Preferred: [deploy-rs](https://github.com/serokell/deploy-rs), which handles
+build/copy/activate and automatically rolls back if the new generation breaks
+SSH connectivity. See the [Deploying](README.md#deploying) section of
+`README.md` for full details, usage, and scope.
+
+```bash
+nix run .#deploy-rs -- .#<hostname>                # build, copy, activate, confirm
+nix run .#deploy-rs -- .#<hostname> --dry-activate # preview without switching
+nix run .#deploy-rs -- .#<hostname> --skip-checks  # required when running from mightymac (see README)
+```
+
+For hosts/scenarios outside deploy-rs's scope, or as a manual fallback,
+`nixos-rebuild` can also be invoked directly - available natively on NixOS
+hosts but not on home-manager-only or nix-darwin hosts, where it needs to be
+brought in via `nix shell`:
 
 ```bash
 nix shell nixpkgs#nixos-rebuild -c nixos-rebuild switch \

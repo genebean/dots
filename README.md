@@ -3,6 +3,7 @@
 This repo is a Nix flake that manages most of my setup on macOS and fully manages machines I have that run NixOS as their operating system. It also contains as much configruation as I can make work on other Linux distros such as Ubuntu.
 
 - [Flake structure](#flake-structure)
+- [Deploying](#deploying)
 - [Formatting and CI](#formatting-and-ci)
 - [Historical bits](#historical-bits)
 - [Host Bootstrapping](#host-bootstrapping)
@@ -37,6 +38,40 @@ This repo is a Nix flake that manages most of my setup on macOS and fully manage
     - `modules/hosts/nixos/` - NixOS host configs and hardware configs
     - `modules/hosts/darwin/` - macOS host configs
     - `modules/hosts/home-manager-only/` - Home Manager-only configs
+
+## Deploying
+
+Local changes are applied with the `nixup`/`nixdiff` aliases (see `AGENTS.md`
+for the exact commands they wrap). For deploying to a remote host without
+SSHing in and running `nixup` by hand, use
+[deploy-rs](https://github.com/serokell/deploy-rs):
+
+```bash
+nix run .#deploy-rs -- .#<host>                # build, copy, activate, confirm
+nix run .#deploy-rs -- .#<host> --dry-activate # preview without switching
+```
+
+Every node in `deploy.nodes` (`flake.nix`) builds itself (`remoteBuild =
+true`), so this can be run from any machine that can reach the target over
+SSH - not just `mightymac`. Hostnames are resolved via Tailscale MagicDNS, so
+no domain needs to be configured anywhere in this repo.
+
+deploy-rs's automatic rollback (magic-rollback) is the main reason to use it
+over a manual `nixos-rebuild switch --target-host`: if the new generation
+breaks SSH connectivity, it rolls back on its own - important for
+`kiosk-entryway` and `kiosk-gene-desk`, which have no keyboard normally
+attached and would otherwise need a physical visit to recover.
+
+`--skip-checks` is required when deploying from `mightymac` specifically:
+deploy-rs's own pre-deploy `nix flake check` tries to build every system's
+derivations locally regardless of any node's `remoteBuild` setting, and
+mightymac can't build `x86_64-linux` at all (no local builder for it). Run
+`nix flake check` separately beforehand instead - it validates the same
+things without attempting to build anything locally that can't be.
+
+Scope: all NixOS hosts plus `mightymac`. `AirPuppet`/`Blue-Rock` and
+home-manager-only hosts stay on their existing `darwin-rebuild`/`home-manager
+switch` workflows.
 
 ## Formatting and CI
 

@@ -40,6 +40,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Codified remote deploys (build/copy/activate + automatic rollback)
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     flox = {
       url = "github:flox/flox/v1.4.4";
     };
@@ -267,6 +273,62 @@
         #};
       }; # end nixosConfigurations
 
+      # Codified remote deploys (`nix run .#deploy-rs -- .#<host>`) - see
+      # sshUser/profiles.system wiring in lib/mkDeployNode.nix. Every node
+      # builds itself (remoteBuild = true) so the deploy can be invoked
+      # from any machine that can reach the target over SSH, not just
+      # mightymac. `hostname` is used directly as the SSH target, resolved
+      # via Tailscale MagicDNS - deliberately not a hardcoded FQDN (e.g.
+      # private-flake's own config.private-flake.tailnetDomain), since a
+      # baked-in default read at flake-eval time wouldn't reflect a
+      # per-host override of that setting anyway.
+      deploy.nodes = {
+        bigboy = localLib.mkDeployNode {
+          hostname = "bigboy";
+          system = "x86_64-linux";
+          fastConnection = true;
+          remoteBuild = true;
+        };
+        hetznix01 = localLib.mkDeployNode {
+          hostname = "hetznix01";
+          system = "x86_64-linux";
+          fastConnection = false;
+          remoteBuild = true;
+        };
+        hetznix02 = localLib.mkDeployNode {
+          hostname = "hetznix02";
+          system = "aarch64-linux";
+          fastConnection = false;
+          remoteBuild = true;
+        };
+        kiosk-entryway = localLib.mkDeployNode {
+          hostname = "kiosk-entryway";
+          system = "x86_64-linux";
+          fastConnection = true;
+          remoteBuild = true;
+        };
+        kiosk-gene-desk = localLib.mkDeployNode {
+          hostname = "kiosk-gene-desk";
+          system = "aarch64-linux";
+          fastConnection = true;
+          remoteBuild = true;
+        };
+        mightymac = localLib.mkDeployNode {
+          hostname = "mightymac";
+          system = "aarch64-darwin";
+          fastConnection = true;
+          remoteBuild = true;
+          darwin = true;
+          sshUser = "gene.liverman"; # matches mkDarwinHost's username override for this host below
+        };
+        nixnuc = localLib.mkDeployNode {
+          hostname = "nixnuc";
+          system = "x86_64-linux";
+          fastConnection = true;
+          remoteBuild = true;
+        };
+      }; # end deploy.nodes
+
       # Home Manager (only) users
       homeConfigurations = {
         gene-x86_64-linux = localLib.mkHomeConfig {
@@ -288,6 +350,15 @@
           pkgs = nixpkgs.legacyPackages.${system};
         in
         import ./pkgs { inherit inputs pkgs; }
+        // {
+          deploy-rs = inputs.deploy-rs.packages.${system}.deploy-rs;
+        }
       );
+
+      # Validates every deploy.nodes entry builds (nix flake check) -
+      # pure evaluation, zero deploy risk.
+      checks = builtins.mapAttrs (
+        system: deployLib: deployLib.deployChecks self.deploy
+      ) inputs.deploy-rs.lib;
     };
 }
