@@ -1,7 +1,5 @@
 {
   config,
-  lib,
-  pkgs,
   username,
   ...
 }:
@@ -10,45 +8,17 @@
     ./disk-config.nix
     ./hardware-configuration.nix
     ./monitoring.nix
+    ../../../shared/nixos/restic.nix
   ];
 
   system.stateVersion = "24.11";
 
-  boot.supportedFilesystems = lib.mkForce [
-    "vfat"
-    "ext4"
-  ];
-
-  fonts = {
-    fontconfig = {
-      enable = true;
-      useEmbeddedBitmaps = true;
-    };
-    packages = with pkgs; [
-      noto-fonts
-      noto-fonts-color-emoji
-      noto-fonts-cjk-sans
-    ];
-  };
-
-  hardware = {
-    enableRedistributableFirmware = true;
-    graphics.enable = true;
-  };
-
-  networking = {
-    firewall.enable = false;
-    useNetworkd = true;
-    wireless = {
-      enable = true;
-      # Specify the interface explicitly so wpa_supplicant doesn't try to
-      # auto-detect via /sys/class/net, which is not mounted in the 26.05
-      # hardening sandbox (RootDirectory=/run/wpa_supplicant).
-      interfaces = [ "wlp3s0" ];
-      secretsFile = "${config.sops.secrets.wifi_creds.path}";
-    };
-  };
-
+  # Not part of genebean.kiosk-hardware: nixpkgs.overlays helps construct
+  # `pkgs` itself, so gating it behind a home-manager-sourced cfg.enable
+  # check creates a genuine circular dependency (evaluating cfg.enable
+  # pulls in pkgs, which depends on nixpkgs.overlays, which is what we're
+  # trying to compute) - confirmed via a real "infinite recursion" eval
+  # error when this was tried. Stays per-host, unconditional.
   nixpkgs.overlays = [
     (_final: super: {
       makeModulesClosure = x: super.makeModulesClosure (x // { allowMissing = true; });
@@ -78,29 +48,6 @@
         owner = "${username}";
         path = "${config.users.users.${username}.home}/.private-env";
       };
-      wifi_creds = {
-        sopsFile = ../../../shared/secrets.yaml;
-        owner = "wpa_supplicant";
-        restartUnits = [
-          "wpa_supplicant-wlp3s0.service"
-        ];
-      };
     };
-  };
-
-  users.users.${username} = {
-    isNormalUser = true;
-    description = "Gene Liverman";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-    ];
-    linger = true;
-  };
-
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
-    memoryPercent = 90;
   };
 }

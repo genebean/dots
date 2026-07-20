@@ -7,11 +7,22 @@
 }:
 let
   cfg = config.home-manager.users.${username}.genebean.services.chromium-kiosk;
-  wifiInterface = lib.elemAt config.networking.wireless.interfaces 0;
 in
 {
   config = lib.mkIf cfg.enable {
     environment.systemPackages = [ pkgs.wlr-randr ];
+
+    fonts = {
+      fontconfig = {
+        enable = true;
+        useEmbeddedBitmaps = true;
+      };
+      packages = with pkgs; [
+        noto-fonts
+        noto-fonts-color-emoji
+        noto-fonts-cjk-sans
+      ];
+    };
 
     services.cage = {
       enable = true;
@@ -56,7 +67,7 @@ in
         # chromium/cage instance running.
         restartIfChanged = lib.mkForce true;
         wants = [
-          "wpa_supplicant-${wifiInterface}.service"
+          "wpa_supplicant-${cfg.wirelessInterface}.service"
           "network-online.target"
         ];
       };

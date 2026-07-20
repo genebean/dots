@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   username,
   ...
@@ -25,35 +24,12 @@
       variant = "4";
       # bootloader defaults to "uboot" for variant 4
     };
-    supportedFilesystems = lib.mkForce [
-      "ext4"
-      "f2fs" # /persist
-      "vfat"
-    ];
   };
 
   environment.systemPackages = with pkgs; [
     libraspberrypi
     raspberrypi-eeprom
   ];
-
-  hardware = {
-    enableRedistributableFirmware = true; # wifi firmware, not boot firmware
-    graphics.enable = true;
-  };
-
-  networking = {
-    firewall.enable = false;
-    useNetworkd = true;
-    wireless = {
-      enable = true;
-      # Specify the interface explicitly so wpa_supplicant doesn't try to
-      # auto-detect via /sys/class/net, which is not mounted in the 26.05
-      # hardening sandbox (RootDirectory=/run/wpa_supplicant).
-      interfaces = [ "wlan0" ];
-      secretsFile = "${config.sops.secrets.wifi_creds.path}";
-    };
-  };
 
   nix = {
     distributedBuilds = true;
@@ -78,6 +54,12 @@
     '';
   };
 
+  # Not part of genebean.kiosk-hardware: nixpkgs.overlays helps construct
+  # `pkgs` itself, so gating it behind a home-manager-sourced cfg.enable
+  # check creates a genuine circular dependency (evaluating cfg.enable
+  # pulls in pkgs, which depends on nixpkgs.overlays, which is what we're
+  # trying to compute) - confirmed via a real "infinite recursion" eval
+  # error when this was tried. Stays per-host, unconditional.
   nixpkgs.overlays = [
     (_final: super: {
       makeModulesClosure = x: super.makeModulesClosure (x // { allowMissing = true; });
@@ -156,29 +138,6 @@
         mode = "0600";
         restartUnits = [ "sshd.service" ];
       };
-      wifi_creds = {
-        sopsFile = ../../../shared/secrets.yaml;
-        owner = "wpa_supplicant";
-        restartUnits = [
-          "wpa_supplicant-wlan0.service"
-        ];
-      };
     };
-  };
-
-  users.users.${username} = {
-    isNormalUser = true;
-    description = "Gene Liverman";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-    ];
-    linger = true;
-  };
-
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
-    memoryPercent = 90;
   };
 }

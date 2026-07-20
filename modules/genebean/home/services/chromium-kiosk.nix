@@ -25,6 +25,12 @@ in
       description = "wlr-randr --transform value (e.g. \"90\", \"flipped-90\"). null = no --transform flag.";
     };
 
+    wirelessInterface = lib.mkOption {
+      type = lib.types.str;
+      description = "Wireless interface name (e.g. wlan0, wlp3s0) - the NixOS side depends on wpa_supplicant-<interface>.service before starting the kiosk. Normally set to config.genebean.kiosk-hardware.wirelessInterface at the call site rather than duplicated.";
+      example = "wlan0";
+    };
+
     wlrRandrOutput = lib.mkOption {
       type = lib.types.str;
       default = "HDMI-A-1";
