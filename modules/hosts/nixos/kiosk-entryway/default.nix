@@ -8,7 +8,6 @@
     ./disk-config.nix
     ./hardware-configuration.nix
     ./monitoring.nix
-    ../../../shared/nixos/restic.nix
   ];
 
   system.stateVersion = "24.11";

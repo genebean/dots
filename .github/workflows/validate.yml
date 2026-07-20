@@ -19,3 +19,6 @@ jobs:
 
       - name: Run statix
         run: nix run nixpkgs#statix -- check .
+
+      - name: Check restic prune singleton
+        run: scripts/check-restic-prune-singleton.sh

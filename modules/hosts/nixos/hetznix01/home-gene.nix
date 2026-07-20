@@ -3,6 +3,8 @@
 
   genebean = {
     services = {
+      restic.enable = true;
+
       tailscale = {
         advertiseExitNode = true;
         useRoutingFeatures = "both";

@@ -24,3 +24,10 @@ repos:
         pass_filenames: false
         args: ["check", "."]
 
+      - id: check-restic-prune-singleton
+        name: check-restic-prune-singleton
+        entry: scripts/check-restic-prune-singleton.sh
+        language: system
+        files: ^modules/hosts/.*\.nix$
+        pass_filenames: false
+

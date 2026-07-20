@@ -58,6 +58,7 @@
     ./services/chromium-kiosk.nix
     ./services/flatpak.nix
     ./services/kiosk-backups.nix
+    ./services/restic.nix
     ./services/tailscale.nix
   ];
 }

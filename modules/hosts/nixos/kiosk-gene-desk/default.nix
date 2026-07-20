@@ -8,7 +8,6 @@
   imports = [
     ./disko.nix
     ./persistence.nix
-    ../../../shared/nixos/restic.nix
   ];
 
   system.stateVersion = "24.11";
