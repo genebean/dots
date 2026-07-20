@@ -113,6 +113,18 @@
     restartIfChanged = lib.mkForce false;
   };
 
+  # Same bug, same fix, but for the per-user session bus - confirmed
+  # separately on nixnuc: its user-session dbus-broker (distinct systemd
+  # instance from the system one above) hit the identical reload hang
+  # during a deploy, which cascaded into the whole activation failing and
+  # even the automatic rollback tripping over the same hang on its way
+  # back to the previous generation. NixOS's systemd.user.services.* mirrors
+  # systemd.services.* for the user instance, so the same override applies.
+  systemd.user.services.dbus-broker = {
+    reloadIfChanged = lib.mkForce false;
+    restartIfChanged = lib.mkForce false;
+  };
+
   time.timeZone = "America/New_York";
 
   users.defaultUserShell = pkgs.zsh;
