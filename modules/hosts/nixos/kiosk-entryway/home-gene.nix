@@ -19,6 +19,7 @@
         wirelessInterface = config.genebean.kiosk-hardware.wirelessInterface;
       };
       kiosk-backups.enable = true;
+      restic.enable = true;
     };
   };
 }

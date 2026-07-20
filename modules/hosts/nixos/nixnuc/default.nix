@@ -24,7 +24,6 @@ in
     ./social-reader-mcp.nix
     ./zfs-datasets.nix
     ../../../shared/nixos/lets-encrypt.nix
-    ../../../shared/nixos/restic.nix
   ];
 
   system.stateVersion = "23.11";

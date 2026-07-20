@@ -12,7 +12,6 @@ in
 {
   imports = [
     ../../../../shared/nixos/lets-encrypt.nix
-    ../../../../shared/nixos/restic.nix
     ./containers/emqx.nix
     ./matrix-synapse.nix
     ./monitoring.nix
