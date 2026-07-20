@@ -84,82 +84,11 @@
     "/persist".neededForBoot = true;
   };
 
-  # Recovery tool for the restic paths below - see modules/genebean/nixos/
-  # programs/kiosk-restic-full-restore.nix. Shared across every kiosk
-  # running this same cage+chromium(+tailscale) setup, not just this host.
-  genebean.programs.kiosk-restic-full-restore = {
-    enable = true;
-    restorePaths = config.services.restic.backups.daily.paths;
-    stopServices = [
-      "cage-tty1"
-      "tailscaled"
-    ];
-  };
-
+  # Backup policy (paths, pre-reinstall-cleanup, kiosk-restic-full-restore
+  # wiring) now lives in genebean.services.kiosk-backups - see
+  # ./home-gene.nix and modules/genebean/nixos/services/kiosk-backups.nix.
   # What's persisted above survives a reboot (still on the same SD card),
-  # but not a card death - only what's backed up here does. Everything
-  # else in the persist allowlist above either comes from sops/git
-  # (ssh host key, gene's ssh key, wifi creds - already safe, backed up
-  # by the repo itself) or is cheap to lose (.ssh/known_hosts, uid/gid
-  # allocations). These three are the ones that would actually be a
-  # hassle to reconstruct by hand on a kiosk with no keyboard normally
-  # attached:
-  #   - .config/chromium: hass-browser_mod's device registration
-  #   - .local/share/atuin: sync-server login session/key
-  #   - /var/lib/tailscale: node identity (else: re-approve in the
-  #     Tailscale admin console)
-  # All backed up from their real /persist-side paths directly rather
-  # than the impermanence bind-mounted aliases under $HOME, matching
-  # sops.age.keyFile's precedent in ./default.nix of preferring the real
-  # path over the alias.
-  services.restic.backups = {
-    daily = {
-      paths = [
-        "/persist${config.users.users.${username}.home}/.config/chromium"
-        "/persist${config.users.users.${username}.home}/.local/share/atuin"
-        "/persist/var/lib/tailscale"
-      ];
-
-      # The shared module's default (Persistent = true) fires a catch-up
-      # backup right after every boot if the last scheduled run was
-      # missed - which, on a host that gets reinstalled/rebooted a lot,
-      # means it nearly always fires before there's a chance to restore
-      # fresh state after a reinstall. Confirmed on hardware: that catch-
-      # up run captured the empty post-reinstall chromium/atuin/tailscale
-      # state as today's newest snapshot, and --keep-daily 7 then
-      # legitimately forgot the real (pre-reinstall) same-day snapshot as
-      # superseded before a restore could happen. A missed day here is a
-      # non-issue, so just wait for the next scheduled run instead.
-      timerConfig = {
-        OnCalendar = "daily";
-        Persistent = false;
-      };
-    };
-
-    # Companion prune-only job (no `paths` - see the shared restic
-    # module's own docs on that) so pre-reinstall-tagged snapshots don't
-    # just pile up forever: anything tagged pre-reinstall older than 45
-    # days is fair game again. --tag and --host together scope this
-    # forget run to ONLY this host's pre-reinstall-tagged snapshots -
-    # everything else (including any other host that might someday reuse
-    # the same tag) is untouched by this job. --keep-within is based on
-    # each snapshot's own (immutable) creation time, not when it was
-    # tagged.
-    pre-reinstall-cleanup = {
-      environmentFile = config.sops.secrets.restic_env.path;
-      passwordFile = config.sops.secrets.restic_password.path;
-      pruneOpts = [
-        "--tag pre-reinstall"
-        "--host ${config.networking.hostName}"
-        "--keep-within 45d"
-      ];
-      repositoryFile = config.sops.secrets.restic_repo.path;
-      timerConfig = {
-        OnCalendar = "daily";
-        Persistent = false;
-      };
-    };
-  };
+  # but not a card death - only what's backed up via that module does.
 
   systemd = {
     services = {

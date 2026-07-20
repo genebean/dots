@@ -1,5 +1,6 @@
 {
   imports = [
+    ./kiosk-hardware.nix
     ./plasma.nix
     ./programs/angry-ip-scanner.nix
     ./programs/askpass.nix
@@ -56,6 +57,7 @@
     ./programs/zsh.nix
     ./services/chromium-kiosk.nix
     ./services/flatpak.nix
+    ./services/kiosk-backups.nix
     ./services/tailscale.nix
   ];
 }
