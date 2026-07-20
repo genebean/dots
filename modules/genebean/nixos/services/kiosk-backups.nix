@@ -40,10 +40,15 @@ in
       serviceConfig = {
         Type = "oneshot";
         EnvironmentFile = config.sops.secrets.restic_env.path;
+        # Reuses genebean.services.restic's own cache dir (same repo) -
+        # see that module's resticEnv comment for why this matters.
+        CacheDirectory = "restic-backups-daily";
+        CacheDirectoryMode = "0700";
       };
       environment = {
         RESTIC_REPOSITORY_FILE = config.sops.secrets.restic_repo.path;
         RESTIC_PASSWORD_FILE = config.sops.secrets.restic_password.path;
+        RESTIC_CACHE_DIR = "/var/cache/restic-backups-daily";
       };
       script = ''
         ${lib.getExe pkgs.restic} forget \

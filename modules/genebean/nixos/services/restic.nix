@@ -7,9 +7,22 @@
 }:
 let
   cfg = config.home-manager.users.${username}.genebean.services.restic;
+  # Reuses the same cache the module-generated restic-backups-daily.service
+  # already maintains at /var/cache/restic-backups-daily (its own
+  # CacheDirectory), rather than each raw unit below getting no cache at
+  # all - confirmed on nixnuc: without RESTIC_CACHE_DIR, restic falls back
+  # to "unable to locate cache directory: neither $XDG_CACHE_HOME nor
+  # $HOME are defined" and warns "running prune without a cache, this may
+  # be very slow!" - restic-fleet-prune was still stuck on the read-only
+  # scan phase 5+ hours in when this was caught. Each unit below also
+  # declares its own CacheDirectory (same name) rather than relying on
+  # restic-backups-daily.service having already run first to create it -
+  # CacheDirectory is idempotent, so multiple units declaring the same one
+  # just share it safely.
   resticEnv = {
     RESTIC_REPOSITORY_FILE = config.sops.secrets.restic_repo.path;
     RESTIC_PASSWORD_FILE = config.sops.secrets.restic_password.path;
+    RESTIC_CACHE_DIR = "/var/cache/restic-backups-daily";
   };
 in
 {
@@ -41,6 +54,8 @@ in
         serviceConfig = {
           Type = "oneshot";
           EnvironmentFile = config.sops.secrets.restic_env.path;
+          CacheDirectory = "restic-backups-daily";
+          CacheDirectoryMode = "0700";
         };
         environment = resticEnv;
         script = ''
@@ -59,6 +74,8 @@ in
         serviceConfig = {
           Type = "oneshot";
           EnvironmentFile = config.sops.secrets.restic_env.path;
+          CacheDirectory = "restic-backups-daily";
+          CacheDirectoryMode = "0700";
         };
         environment = resticEnv;
         script = ''
@@ -74,6 +91,8 @@ in
         serviceConfig = {
           Type = "oneshot";
           EnvironmentFile = config.sops.secrets.restic_env.path;
+          CacheDirectory = "restic-backups-daily";
+          CacheDirectoryMode = "0700";
         };
         environment = resticEnv;
         script = "${lib.getExe pkgs.restic} prune";
