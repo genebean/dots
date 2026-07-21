@@ -1,15 +1,17 @@
 {
   description = "A flake for all my stuff";
-  # nixos-raspberrypi's own binary cache (pre-built vendor kernel/firmware
-  # for kiosk-gene-desk). Only inherited automatically when building *from
-  # their flake directly*, not when consumed as an input like here - hence
-  # declaring it ourselves. This is a build-time/client-side setting; it
-  # does not help kiosk-gene-desk's own future rebuilds once deployed -
-  # see its nix.settings.extra-substituters for that.
+  # Binary caches for flake inputs that don't propagate their own nixConfig
+  # when consumed as inputs rather than run directly.
   nixConfig = {
-    extra-substituters = [ "https://nixos-raspberrypi.cachix.org" ];
+    extra-substituters = [
+      # nixos-raspberrypi: pre-built vendor kernel/firmware for kiosk-gene-desk
+      "https://nixos-raspberrypi.cachix.org"
+      # numtide/system-manager
+      "https://cache.numtide.com"
+    ];
     extra-trusted-public-keys = [
       "nixos-raspberrypi.cachix.org-1:4iMO9LXa8BqhU+Rpg6LQKiGa2lsNh/j2oiYLNOQ5sPI="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
     ];
   };
   inputs = {
@@ -156,6 +158,11 @@
     statix = {
       url = "github:astro/statix";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    system-manager = {
+      url = "github:numtide/system-manager";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     viscosity-cli = {
@@ -344,6 +351,16 @@
         };
       }; # end homeConfigurations
 
+      # System-level config for home-manager-only hosts (non-NixOS Linux)
+      systemConfigs = {
+        gene-x86_64-linux = localLib.mkSystemConfig {
+          system = "x86_64-linux";
+        };
+        gene-aarch64-linux = localLib.mkSystemConfig {
+          system = "aarch64-linux";
+        };
+      }; # end systemConfigs
+
       packages = forAllSystems (
         system:
         let
@@ -352,6 +369,7 @@
         import ./pkgs { inherit inputs pkgs; }
         // {
           deploy-rs = inputs.deploy-rs.packages.${system}.deploy-rs;
+          system-manager = inputs.system-manager.packages.${system}.default;
         }
       );
 
