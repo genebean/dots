@@ -1,6 +1,6 @@
 { pkgs, inputs }:
 let
-  deploy-rs = inputs.deploy-rs.packages.${pkgs.system}.deploy-rs;
+  deploy-rs = inputs.deploy-rs.packages.${pkgs.stdenv.hostPlatform.system}.deploy-rs;
 in
 pkgs.writeShellApplication {
   name = "deploy-with-retry";
