@@ -205,6 +205,24 @@ Do **not** expose data-driven cross-layer values as Home Manager options — the
 system-manager layer cannot read HM options, so duplicating them there would
 create drift.
 
+### The `nix.conf.d/` and `nix.custom.conf` relationship
+
+Determinate Nix only reads `/etc/nix/nix.custom.conf` via an explicit `!include`
+in its generated `nix.conf`. It does **not** auto-read `/etc/nix/nix.conf.d/`.
+
+When a system-manager module writes a file under `nix/nix.conf.d/`, you must
+add a corresponding `include` line in `nix.custom.conf` so Determinate Nix
+picks it up. Use `include` (without `!`) so nix does not error if the file is
+absent before system-manager has activated:
+
+```
+# in nix.custom.conf
+include /etc/nix/nix.conf.d/genebean-caches.conf
+```
+
+`modules/hosts/home-manager-only/system.nix` owns `nix.custom.conf` and
+carries one include line per system-manager module that writes to `nix.conf.d/`.
+
 ---
 
 ## Adding a New Module
