@@ -154,7 +154,7 @@ in
         }
         # ─── HM-only (non-NixOS Linux) ────────────────────────────────────────
         // lib.optionalAttrs genebeanLib.isHMOnly {
-          nixup = "home-manager switch --flake ~/repos/dots#${username}-${system}";
+          nixup = "nix run ~/repos/dots#system-manager -- switch --sudo --flake ~/repos/dots#${username}-${system} && home-manager switch --flake ~/repos/dots#${username}-${system}";
         };
     };
   };

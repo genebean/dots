@@ -2,6 +2,7 @@
 pkgs.writeShellApplication {
   name = "nixdiff";
   runtimeInputs = [
+    pkgs.diff-so-fancy
     pkgs.jq
     pkgs.nvd
   ];

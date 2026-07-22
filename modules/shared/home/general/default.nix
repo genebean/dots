@@ -50,6 +50,7 @@
       lazydocker
       lazygit
       lua-language-server
+      mcp-nixos
       minicom
       mtr
       nil

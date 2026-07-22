@@ -74,6 +74,31 @@ if [[ "${ID:-}" == "nixos" ]]; then
 
 else
   # Home Manager only
+
+  # system-manager diff — stderr (progress logs) flows to terminal; stdout is the store path
+  sm_result=$(nix run ~/repos/dots#system-manager -- build \
+    --flake ".#$(whoami)-$(uname -m)-linux")
+
+  echo ""
+  echo "=== System /etc changes ==="
+  sm_etc="$sm_result/etcFiles/etcFiles.json"
+  mapfile -t sm_targets < <(jq -r '.entries | to_entries[] | select(.value.text != null) | .key' "$sm_etc")
+  if [[ ${#sm_targets[@]} -eq 0 ]]; then
+    echo "(no text-mode /etc files managed)"
+  fi
+  for target in "${sm_targets[@]}"; do
+    new_text=$(jq -r --arg k "$target" '.entries[$k].text' "$sm_etc")
+    current_src="/etc/$target"
+    [[ -f "$current_src" ]] || current_src="/dev/null"
+    if diff -q "$current_src" <(printf '%s' "$new_text") &>/dev/null; then
+      echo "/etc/$target: no change"
+    else
+      diff -u "$current_src" <(printf '%s' "$new_text") \
+        --label "/etc/$target" --label "/etc/$target" \
+        | diff-so-fancy || true
+    fi
+  done
+
   home-manager build --flake ".#$(whoami)-$(uname -m)-linux"
 
   echo ""
