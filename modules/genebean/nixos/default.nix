@@ -3,6 +3,7 @@
     ./kiosk-hardware.nix
     ./plasma.nix
     ./ports.nix
+    ./nix-caches.nix
     ./programs/askpass.nix
     ./programs/boinc.nix
     ./programs/firefox.nix
