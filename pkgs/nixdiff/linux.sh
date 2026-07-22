@@ -99,6 +99,68 @@ else
     fi
   done
 
+  # Systemd unit diff — system-manager manages units via a source directory, not text,
+  # so they are not captured by the text-file loop above.
+  sm_systemd_source=$(jq -r '.entries["systemd/system"].source // empty' "$sm_etc")
+  if [[ -n "$sm_systemd_source" ]]; then
+    echo ""
+    echo "=== System-manager systemd unit changes ==="
+    new_units=$(readlink -f "$sm_systemd_source/systemd/system")
+
+    sm_profile="/nix/var/nix/profiles/system-manager-profiles/system-manager"
+    if [[ -L "$sm_profile" ]]; then
+      old_etc=$(readlink -f "$sm_profile")/etcFiles/etcFiles.json
+      old_source=$(jq -r '.entries["systemd/system"].source // empty' "$old_etc" 2>/dev/null)
+      old_units=$(readlink -f "$old_source/systemd/system" 2>/dev/null || echo "")
+    else
+      old_units=""
+    fi
+
+    # List only unit files (symlinks/files), not .wants/.requires dirs
+    list_units() {
+      local f
+      for f in "$1"/*; do
+        [[ -e "$f" ]] || continue
+        [[ -d "$f" ]] && continue
+        printf '%s\n' "${f##*/}"
+      done | sort
+    }
+
+    if [[ -z "$old_units" || ! -d "$old_units" ]]; then
+      echo "(no previous profile — all units are new)"
+      list_units "$new_units" | while IFS= read -r unit; do
+        echo "  + $unit"
+      done
+    else
+      any_unit_change=false
+
+      while IFS= read -r unit; do
+        [[ -n "$unit" ]] && echo "  + $unit" && any_unit_change=true
+      done < <(comm -13 <(list_units "$old_units") <(list_units "$new_units"))
+
+      while IFS= read -r unit; do
+        [[ -n "$unit" ]] && echo "  - $unit" && any_unit_change=true
+      done < <(comm -23 <(list_units "$old_units") <(list_units "$new_units"))
+
+      while IFS= read -r unit; do
+        old_file=$(readlink -f "$old_units/$unit" 2>/dev/null || echo "")
+        new_file=$(readlink -f "$new_units/$unit" 2>/dev/null || echo "")
+        if [[ -f "$old_file" && -f "$new_file" ]]; then
+          if ! diff -q "$old_file" "$new_file" &>/dev/null; then
+            diff -u "$old_file" "$new_file" \
+              --label "$unit (current)" --label "$unit (new)" \
+              | diff-so-fancy || true
+            any_unit_change=true
+          fi
+        fi
+      done < <(comm -12 <(list_units "$old_units") <(list_units "$new_units"))
+
+      if [[ "$any_unit_change" != "true" ]]; then
+        echo "(no changes)"
+      fi
+    fi
+  fi
+
   home-manager build --flake ".#$(whoami)-$(uname -m)-linux"
 
   echo ""
