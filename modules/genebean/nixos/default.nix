@@ -11,6 +11,7 @@
     ./programs/thunderbird.nix
     ./programs/xfce4-terminal.nix
     ./services/chromium-kiosk.nix
+    ./services/dnclient.nix
     ./services/flatpak.nix
     ./services/kiosk-backups.nix
     ./services/restic.nix

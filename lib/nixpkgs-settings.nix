@@ -10,6 +10,7 @@
     };
     overlays = [
       (final: prev: {
+        dnclient = prev.callPackage ../pkgs/dnclient { };
         nixdiff = prev.callPackage ../pkgs/nixdiff { };
       })
     ];
