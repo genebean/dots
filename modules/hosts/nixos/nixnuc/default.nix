@@ -114,6 +114,8 @@ in
     mtr.enable = true;
   };
 
+  genebean.services.dnclient.enable = true;
+
   # List services that you want to enable:
   services = {
     atuin = {
