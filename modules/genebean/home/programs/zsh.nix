@@ -134,10 +134,10 @@ in
         # ─── Darwin ───────────────────────────────────────────────────────────
         // lib.optionalAttrs genebeanLib.isDarwin {
           currentwifi = "networksetup -getairportnetwork en0 |cut -d ':' -f2- | cut -d ' ' -f2-";
-          nixup = "sudo darwin-rebuild switch --flake ~/repos/dots";
+          nixup = "sudo darwin-rebuild switch --flake ~/repos/dots && exec zsh";
           uwgconnect = "networksetup -setairportnetwork en0 SecureWest";
           uwgforget = "networksetup -removepreferredwirelessnetwork en0 SecureWest";
-          ykey = "pkill -9 gpg-agent && source ~/.zshrc; ssh-add -L";
+          ykey = "pkill -9 gpg-agent && zsh -ic 'ssh-add -L'; exec zsh";
         }
         # ─── Linux (all Linux) ────────────────────────────────────────────────
         // lib.optionalAttrs pkgs.stdenv.isLinux {
@@ -146,15 +146,15 @@ in
         # ─── NixOS ────────────────────────────────────────────────────────────
         // lib.optionalAttrs genebeanLib.isNixOS {
           nixboot = "sudo nixos-rebuild boot --flake ~/repos/dots && echo 'Time to reboot!'";
-          nixup = "sudo nixos-rebuild switch --flake ~/repos/dots";
+          nixup = "sudo nixos-rebuild switch --flake ~/repos/dots && exec zsh";
           nixroutes = "cd ~/repos/dots && echo '=== Current Routes ===' && ip route show && ip -6 route show && echo '' && echo '=== New Build Routes ===' && nix eval --json '.#nixosConfigurations.${hostname}.config.systemd.network.networks.\"10-wan\".routes'";
           uwgconnect = "nmcli dev wifi connect SecureWest password";
           uwgforget = "nmcli connection delete SecureWest";
-          ykey = "sudo systemctl restart pcscd && sudo pkill -9 gpg-agent && source ~/.zshrc; ssh-add -L";
+          ykey = "sudo systemctl restart pcscd && sudo pkill -9 gpg-agent && zsh -ic 'ssh-add -L'; exec zsh";
         }
         # ─── HM-only (non-NixOS Linux) ────────────────────────────────────────
         // lib.optionalAttrs genebeanLib.isHMOnly {
-          nixup = "nix run ~/repos/dots#system-manager -- switch --sudo --flake ~/repos/dots#${username}-${system} && home-manager switch --flake ~/repos/dots#${username}-${system}";
+          nixup = "nix run ~/repos/dots#system-manager -- switch --sudo --flake ~/repos/dots#${username}-${system} && home-manager switch --flake ~/repos/dots#${username}-${system} && exec zsh";
         };
     };
   };
