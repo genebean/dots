@@ -192,6 +192,7 @@
       darwinModules.genebean = ./modules/genebean/darwin;
       homeManagerModules.genebean = ./modules/genebean/home;
       nixosModules.genebean = ./modules/genebean/nixos;
+      systemManagerModules.genebean = ./modules/genebean/system-manager;
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
 
