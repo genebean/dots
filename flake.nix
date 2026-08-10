@@ -105,7 +105,11 @@
 
     nixos-anywhere = {
       url = "github:nix-community/nixos-anywhere";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        disko.follows = "disko";
+        nixpkgs.follows = "nixpkgs";
+        nixos-stable.follows = "nixpkgs";
+      };
     };
 
     nixos-cosmic = {
@@ -115,7 +119,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Raspberry Pi hardware support: vendor kernel/firmware packages and a
     # proper declarative bootloader (boot.loader.raspberry-pi) that keeps
