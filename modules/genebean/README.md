@@ -140,7 +140,7 @@ For apps that have separate Homebrew and Nix install paths (e.g. Ghostty).
 ```nix
 installViaHomebrew = lib.mkOption {
   type    = lib.types.bool;
-  default = pkgs.stdenv.isDarwin;
+  default = pkgs.stdenv.hostPlatform.isDarwin;
 };
 installViaNix = lib.mkOption {
   type    = lib.types.bool;

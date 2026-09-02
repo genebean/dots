@@ -12,7 +12,7 @@ in
     enable = lib.mkEnableOption "Nextcloud desktop client";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     home.packages = [ pkgs.nextcloud-client ];
   };
 }

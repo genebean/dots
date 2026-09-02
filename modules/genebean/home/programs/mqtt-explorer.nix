@@ -12,7 +12,7 @@ in
     enable = lib.mkEnableOption "MQTT Explorer";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     home.packages = [ pkgs.mqtt-explorer ];
   };
 }

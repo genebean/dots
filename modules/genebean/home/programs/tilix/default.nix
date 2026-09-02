@@ -13,7 +13,7 @@ with lib.hm.gvariant;
     enable = lib.mkEnableOption "Tilix terminal emulator";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     dconf.settings = {
       "com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d" = {
         background-color = "#272822";
