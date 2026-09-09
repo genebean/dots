@@ -97,6 +97,9 @@ in
         enableACME = true;
         acmeRoot = null; # DNS challenge via Gandi — no webroot needed
         forceSSL = true;
+        extraConfig = ''
+          client_max_body_size 50M;
+        '';
         locations."= /xmlrpc.php" = {
           # Defense-in-depth: block xmlrpc.php at the nginx layer before PHP runs,
           # saving CPU.  The disable-xml-rpc plugin also disables it at the WP layer.
@@ -155,8 +158,9 @@ in
         #   3. simple-login-captcha — adds math captcha to the login page
         plugins = {
           inherit (wpPlugins) disable-xml-rpc;
-          inherit (wpPlugins) wp-fail2ban;
           inherit (wpPlugins) simple-login-captcha;
+          inherit (wpPlugins) webp-converter-for-media;
+          inherit (wpPlugins) wp-fail2ban;
           inherit wordpress-importer;
         };
 
@@ -177,6 +181,8 @@ in
           "pm" = "ondemand";
           "pm.max_children" = 4;
           "pm.process_idle_timeout" = "10s";
+          "php_admin_value[upload_max_filesize]" = "50M";
+          "php_admin_value[post_max_size]" = "50M";
         };
       };
     };
