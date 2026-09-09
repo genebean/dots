@@ -5,6 +5,20 @@ let
   # so we can symlink them into /etc/fail2ban/filter.d/ below.
   wpf2b = wpPlugins.wp-fail2ban;
 
+  # Infield theme — GPL v2, by Automattic. Not in nixpkgs; sourced from
+  # https://github.com/Automattic/themes (only the infield/ subdirectory is used).
+  infield-theme = pkgs.stdenv.mkDerivation {
+    pname = "infield";
+    version = "1.0.1";
+    src = pkgs.fetchFromGitHub {
+      owner = "Automattic";
+      repo = "themes";
+      rev = "a8cdadabc1132aae2eccfde8523d9cc67a940583";
+      hash = "sha256-FiRB/LQrTt6QhV5Sg3ltRK4diR9pBQS+Xl4Ng7Tn1jQ=";
+    };
+    installPhase = "mkdir -p $out; cp -r infield/. $out/";
+  };
+
   # wordpress-importer is not yet in nixpkgs — package it manually.
   # Needed once to import the WXR export from wordpress.com; remove after migration.
   wordpress-importer = pkgs.stdenv.mkDerivation rec {
@@ -156,6 +170,10 @@ in
         #   1. wp-fail2ban     — starts logging auth events to syslog immediately
         #   2. disable-xml-rpc — disables XML-RPC at the WordPress layer
         #   3. simple-login-captcha — adds math captcha to the login page
+        themes = {
+          inherit infield-theme;
+        };
+
         plugins = {
           inherit (wpPlugins) disable-xml-rpc;
           inherit (wpPlugins) simple-login-captcha;
