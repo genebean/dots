@@ -4,6 +4,18 @@ let
   # wp-fail2ban ships its own fail2ban filter files — reference the store path
   # so we can symlink them into /etc/fail2ban/filter.d/ below.
   wpf2b = wpPlugins.wp-fail2ban;
+
+  # wordpress-importer is not yet in nixpkgs — package it manually.
+  # Needed once to import the WXR export from wordpress.com; remove after migration.
+  wordpress-importer = pkgs.stdenv.mkDerivation rec {
+    pname = "wordpress-importer";
+    version = "0.9.6";
+    src = pkgs.fetchzip {
+      url = "https://downloads.wordpress.org/plugin/${pname}.${version}.zip";
+      hash = "sha256-rc/Ut0HYmqTsP2Yc3tcqVRXU3zq7H9wf80SmGqQSYF4=";
+    };
+    installPhase = "mkdir -p $out; cp -R * $out/";
+  };
 in
 {
   # Symlink the fail2ban filter files that ship with the wp-fail2ban plugin into
@@ -145,6 +157,7 @@ in
           inherit (wpPlugins) disable-xml-rpc;
           inherit (wpPlugins) wp-fail2ban;
           inherit (wpPlugins) simple-login-captcha;
+          inherit wordpress-importer;
         };
 
         settings = {
