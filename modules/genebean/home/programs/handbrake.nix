@@ -12,7 +12,7 @@ in
     enable = lib.mkEnableOption "HandBrake video transcoder";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     home.packages = [ pkgs.handbrake ];
   };
 }

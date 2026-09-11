@@ -6,5 +6,9 @@ pkgs.writeShellApplication {
     pkgs.jq
     pkgs.nvd
   ];
-  text = if pkgs.stdenv.isDarwin then builtins.readFile ./darwin.sh else builtins.readFile ./linux.sh;
+  text =
+    if pkgs.stdenv.hostPlatform.isDarwin then
+      builtins.readFile ./darwin.sh
+    else
+      builtins.readFile ./linux.sh;
 }

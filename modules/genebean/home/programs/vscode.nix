@@ -12,7 +12,7 @@ in
     enable = lib.mkEnableOption "Visual Studio Code";
   };
 
-  config = lib.mkIf (cfg.enable && !pkgs.stdenv.isDarwin) {
+  config = lib.mkIf (cfg.enable && !pkgs.stdenv.hostPlatform.isDarwin) {
     programs.vscode.enable = true;
   };
 }

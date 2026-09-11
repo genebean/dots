@@ -12,7 +12,7 @@ in
     enable = lib.mkEnableOption "Claude Code AI coding assistant";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     home.packages = [ pkgs.claude-code ];
   };
 }

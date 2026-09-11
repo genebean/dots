@@ -12,7 +12,7 @@ in
     enable = lib.mkEnableOption "Waybar status bar";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     home.file = {
       ".config/waybar/config".source = ./config;
       ".config/waybar/frappe.css".source =

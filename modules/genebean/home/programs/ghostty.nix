@@ -13,7 +13,7 @@ in
     enable = lib.mkEnableOption "Ghostty terminal";
     installViaHomebrew = lib.mkOption {
       type = lib.types.bool;
-      default = pkgs.stdenv.isDarwin;
+      default = pkgs.stdenv.hostPlatform.isDarwin;
     };
     installViaNix = lib.mkOption {
       type = lib.types.bool;
@@ -26,7 +26,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.file = lib.mkIf pkgs.stdenv.isDarwin {
+    home.file = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       "Library/Application Support/com.mitchellh.ghostty/config".text = ''
         # Ghostty configuration is managed by home-manager.
         # Settings are in modules/genebean/home/programs/ghostty.nix in the dots repo.
