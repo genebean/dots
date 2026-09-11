@@ -17,6 +17,7 @@ in
     ./monitoring.nix
     #./mosquitto.nix
     ./nginx.nix
+    ./wordpress.nix
   ];
 
   services = {
