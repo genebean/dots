@@ -107,20 +107,6 @@ in
           };
         };
       };
-      "cloud.pack1828.org" = {
-        enableACME = true;
-        acmeRoot = null;
-        forceSSL = true;
-      };
-      "collabora.pack1828.org" = {
-        enableACME = true;
-        acmeRoot = null;
-        forceSSL = true;
-        locations."/" = {
-          proxyPass = "http://[::1]:${toString config.services.collabora-online.port}";
-          proxyWebsockets = true; # collabora uses websockets
-        };
-      };
       "location.${domain}" = {
         enableACME = true;
         acmeRoot = null;
@@ -190,14 +176,6 @@ in
         acmeRoot = null;
         forceSSL = true;
         locations."/".return = "301 https://beanbag.technicalissues.us";
-      };
-      "pack1828.org" = {
-        enableACME = true;
-        acmeRoot = null;
-        forceSSL = true;
-        locations."/" = {
-          return = "307 https://cloud.pack1828.org";
-        };
       };
       "stats.${domain}" = {
         enableACME = true;
