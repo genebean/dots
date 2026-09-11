@@ -24,15 +24,5 @@
     extraModulePackages = [ ];
   };
 
-  fileSystems."pack1828" = {
-    device = "/dev/disk/by-id/scsi-0HC_Volume_102600992";
-    fsType = "ext4";
-    options = [
-      "discard"
-      "nofail"
-      "defaults"
-    ];
-  };
-
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }
