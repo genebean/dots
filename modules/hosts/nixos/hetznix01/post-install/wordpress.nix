@@ -5,15 +5,14 @@
   ...
 }:
 let
-  # Pull WordPress core from nixpkgs-unstable so security releases land faster
-  # than the pinned stable channel provides. Plugins stay on stable — they are
-  # version-agnostic enough that this split is safe.
+  # Pull WordPress core and plugins from nixpkgs-unstable so security releases
+  # land faster than the pinned stable channel provides.
   unstablePkgs = import inputs.nixpkgs-unstable {
     inherit (pkgs) system;
     config.allowUnfree = pkgs.config.allowUnfree;
   };
 
-  wpPlugins = pkgs.wordpressPackages.plugins;
+  wpPlugins = unstablePkgs.wordpressPackages.plugins;
   # wp-fail2ban ships its own fail2ban filter files — reference the store path
   # so we can symlink them into /etc/fail2ban/filter.d/ below.
   wpf2b = wpPlugins.wp-fail2ban;
@@ -206,6 +205,27 @@ in
           "php_admin_value[post_max_size]" = "50M";
         };
       };
+    };
+  };
+
+  # Run wp core update-db automatically after each deploy.
+  # Embedding the WP version in the description changes the unit file hash
+  # whenever WordPress is bumped, causing systemd to re-run this oneshot
+  # on the next nixos-rebuild switch / deploy-rs activation.
+  systemd.services."wordpress-138cubpack-update-db" = {
+    description = "WordPress DB migration for 138cubpack.com (WP ${unstablePkgs.wordpress.version})";
+    after = [ "mysql.service" ];
+    requires = [ "mysql.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "wordpress";
+      RemainAfterExit = true;
+      StateDirectory = "wordpress-wp-cli";
+      Environment = "HOME=/var/lib/wordpress-wp-cli";
+      ExecStart = "${pkgs.wp-cli}/bin/wp --path=${
+        config.services.nginx.virtualHosts."138cubpack.com".root
+      } core update-db";
     };
   };
 }
