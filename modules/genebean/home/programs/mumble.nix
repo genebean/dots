@@ -12,7 +12,7 @@ in
     enable = lib.mkEnableOption "Mumble VoIP client";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     home.packages = [ pkgs.mumble ];
   };
 }

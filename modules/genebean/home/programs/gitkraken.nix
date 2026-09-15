@@ -20,7 +20,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = lib.mkIf (pkgs.stdenv.isLinux && cfg.linuxInstallMethod == "nixpkgs") [
+    home.packages = lib.mkIf (pkgs.stdenv.hostPlatform.isLinux && cfg.linuxInstallMethod == "nixpkgs") [
       pkgs.gitkraken
     ];
 

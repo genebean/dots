@@ -12,7 +12,7 @@ in
     enable = lib.mkEnableOption "xfce4-terminal";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     home = {
       packages = [ pkgs.xfce4-terminal ];
       file = {

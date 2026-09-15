@@ -12,7 +12,7 @@ in
     enable = lib.mkEnableOption "FileZilla FTP client";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     home.packages = [ pkgs.filezilla ];
   };
 }

@@ -12,7 +12,7 @@ in
     enable = lib.mkEnableOption "Pidgin IM client";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     programs.pidgin.enable = true;
   };
 }

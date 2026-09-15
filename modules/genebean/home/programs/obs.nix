@@ -12,7 +12,7 @@ in
     enable = lib.mkEnableOption "OBS Studio";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     home.packages = [ pkgs.obs-studio ];
   };
 }
