@@ -19,7 +19,7 @@ in
     };
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     home.packages = lib.mkIf (cfg.linuxInstallMethod == "nixpkgs") [
       pkgs.meld
     ];

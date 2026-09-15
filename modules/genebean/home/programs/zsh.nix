@@ -140,7 +140,7 @@ in
           ykey = "pkill -9 gpg-agent && zsh -ic 'ssh-add -L'; exec zsh";
         }
         # ─── Linux (all Linux) ────────────────────────────────────────────────
-        // lib.optionalAttrs pkgs.stdenv.isLinux {
+        // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
           pbcopy = "wl-copy";
         }
         # ─── NixOS ────────────────────────────────────────────────────────────

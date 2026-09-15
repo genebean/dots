@@ -12,11 +12,11 @@ in
     enable = lib.mkEnableOption "WezTerm terminal";
     installViaHomebrew = lib.mkOption {
       type = lib.types.bool;
-      default = pkgs.stdenv.isDarwin;
+      default = pkgs.stdenv.hostPlatform.isDarwin;
     };
     installViaNix = lib.mkOption {
       type = lib.types.bool;
-      default = !pkgs.stdenv.isDarwin;
+      default = !pkgs.stdenv.hostPlatform.isDarwin;
     };
   };
 

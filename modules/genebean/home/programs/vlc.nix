@@ -22,7 +22,7 @@ in
     enable = lib.mkEnableOption "VLC media player with Blu-ray decoding support";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     home.packages = [
       pkgs.libbdplus
       vlc-with-decoding

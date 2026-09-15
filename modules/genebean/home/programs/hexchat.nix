@@ -12,7 +12,7 @@ in
     enable = lib.mkEnableOption "HexChat IRC client";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
     programs.hexchat.enable = true;
   };
 }

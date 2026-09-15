@@ -319,7 +319,7 @@ available in any home-manager module:
 | Helper | Value | Use for |
 |---|---|---|
 | `genebeanLib.isNixOS` | `true` in `mkNixosHost`, `false` elsewhere | NixOS vs other Linux |
-| `pkgs.stdenv.isDarwin` | stdlib | macOS detection |
+| `pkgs.stdenv.hostPlatform.isDarwin` | stdlib | macOS detection |
 
 `genebeanLib.isNixOS` is set explicitly per builder (not via `builtins.pathExists`)
 to keep evaluation pure. Use it as the `default` for platform-varying options:
