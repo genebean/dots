@@ -1,5 +1,18 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 let
+  # Pull WordPress core from nixpkgs-unstable so security releases land faster
+  # than the pinned stable channel provides. Plugins stay on stable — they are
+  # version-agnostic enough that this split is safe.
+  unstablePkgs = import inputs.nixpkgs-unstable {
+    inherit (pkgs) system;
+    config.allowUnfree = pkgs.config.allowUnfree;
+  };
+
   wpPlugins = pkgs.wordpressPackages.plugins;
   # wp-fail2ban ships its own fail2ban filter files — reference the store path
   # so we can symlink them into /etc/fail2ban/filter.d/ below.
@@ -19,17 +32,6 @@ let
     installPhase = "mkdir -p $out; cp -r infield/. $out/";
   };
 
-  # wordpress-importer is not yet in nixpkgs — package it manually.
-  # Needed once to import the WXR export from wordpress.com; remove after migration.
-  wordpress-importer = pkgs.stdenv.mkDerivation rec {
-    pname = "wordpress-importer";
-    version = "0.9.6";
-    src = pkgs.fetchzip {
-      url = "https://downloads.wordpress.org/plugin/${pname}.${version}.zip";
-      hash = "sha256-rc/Ut0HYmqTsP2Yc3tcqVRXU3zq7H9wf80SmGqQSYF4=";
-    };
-    installPhase = "mkdir -p $out; cp -R * $out/";
-  };
 in
 {
   # Symlink the fail2ban filter files that ship with the wp-fail2ban plugin into
@@ -154,6 +156,8 @@ in
     wordpress = {
       webserver = "nginx";
       sites."138cubpack.com" = {
+        package = unstablePkgs.wordpress;
+
         database = {
           # Unix socket auth: the PHP-FPM pool runs as the "wordpress" system user
           # and MariaDB authenticates by matching that Unix user — no password needed.
@@ -179,7 +183,6 @@ in
           inherit (wpPlugins) simple-login-captcha;
           inherit (wpPlugins) webp-converter-for-media;
           inherit (wpPlugins) wp-fail2ban;
-          inherit wordpress-importer;
         };
 
         settings = {
