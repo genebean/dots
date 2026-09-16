@@ -59,7 +59,6 @@
       "itermbrowserplugin"
       "iterm2"
       #"makemkv" See https://github.com/Homebrew/homebrew-cask/issues/269960
-      "raycast"
       "sonos"
       "todoist-app"
     ];

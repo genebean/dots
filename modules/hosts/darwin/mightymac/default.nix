@@ -73,6 +73,7 @@
     brews = [
       "adr-tools"
       "awscli"
+      "container"
       "gnupg"
       "i2cssh"
       "lima"
