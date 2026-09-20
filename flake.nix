@@ -214,6 +214,18 @@
           hostname = "mightymac";
           username = "gene.liverman";
         };
+        # PR validation exercises the complete macOS configuration without
+        # realizing the nested Linux VM closure. The normal mightymac output
+        # above remains unchanged and includes its local Linux builder.
+        mightymac-ci = localLib.mkDarwinHost {
+          hostname = "mightymac";
+          username = "gene.liverman";
+          additionalModules = [
+            ({ lib, ... }: {
+              nix.linux-builder.enable = lib.mkForce false;
+            })
+          ];
+        };
       }; # end darwinConfigurations
 
       # NixOS hosts

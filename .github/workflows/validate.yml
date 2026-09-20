@@ -76,8 +76,5 @@ jobs:
           token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
           path: private-flake
       - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v14
-        with:
-          use-flakehub: false
       - name: Build nix-darwin configuration
-        run: nix build .#darwinConfigurations.mightymac.system --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+        run: nix build .#darwinConfigurations.mightymac-ci.system --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
