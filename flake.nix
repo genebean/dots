@@ -48,10 +48,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    flox = {
-      url = "github:flox/flox/v1.4.4";
-    };
-
     genebean-neovim = {
       url = "github:genebean/neovim-flake";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
