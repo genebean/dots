@@ -2,9 +2,12 @@ name: Update flake.lock
 
 on:
   schedule:
-    - cron: "0 6 * * 4"
+    # Friday morning, after Thursday's Renovate window.
+    - cron: "0 10 * * 5"
   workflow_dispatch:
 
 jobs:
   update:
     uses: genebean/.github/.github/workflows/update-flake-lock.yml@main
+    secrets:
+      token: ${{ secrets.CI_FLAKE_UPDATES }}
