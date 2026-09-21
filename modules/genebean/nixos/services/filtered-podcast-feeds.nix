@@ -120,12 +120,25 @@ in
   };
 
   config = mkIf cfg.enable {
-    assertions = lib.mapAttrsToList (name: feed: {
-      assertion = feed.filter == null || feed.searchIn != [ ];
-      message = ''
-        genebean.services.filteredPodcastFeeds.feeds.${name}: searchIn must not be empty when filter is set.
-      '';
-    }) cfg.feeds;
+    assertions =
+      (lib.mapAttrsToList (name: feed: {
+        assertion = feed.filter == null || feed.searchIn != [ ];
+        message = ''
+          genebean.services.filteredPodcastFeeds.feeds.${name}: searchIn must not be empty when filter is set.
+        '';
+      }) cfg.feeds)
+      ++ (lib.mapAttrsToList (name: feed: {
+        assertion = feed.since == null || builtins.match "[0-9]{4}-[0-9]{2}-[0-9]{2}" feed.since != null;
+        message = ''
+          genebean.services.filteredPodcastFeeds.feeds.${name}: since must be in YYYY-MM-DD format.
+        '';
+      }) cfg.feeds)
+      ++ [
+        {
+          assertion = !lib.hasSuffix "/" cfg.publicUrl;
+          message = "genebean.services.filteredPodcastFeeds.publicUrl must not end in a trailing slash - the generator appends /<slug>.xml.";
+        }
+      ];
 
     # Not DynamicUser: its state directory lands under /var/lib/private/<name>,
     # which is 0700 root:root - nginx (a different, static user) can never
