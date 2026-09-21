@@ -11,3 +11,4 @@ jobs:
     uses: genebean/.github/.github/workflows/update-flake-lock.yml@main
     secrets:
       token: ${{ secrets.CI_FLAKE_UPDATES }}
+      nix_access_token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
