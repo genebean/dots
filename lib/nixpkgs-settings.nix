@@ -11,6 +11,7 @@
     overlays = [
       (final: prev: {
         dnclient = prev.callPackage ../pkgs/dnclient { };
+        filtered-podcast-feeds = prev.callPackage ../pkgs/filtered-podcast-feeds { };
         nixdiff = prev.callPackage ../pkgs/nixdiff { };
       })
     ];

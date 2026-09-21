@@ -77,8 +77,9 @@ switch` workflows.
 
 This repo uses the following tools for code quality:
 
-- **nixfmt** - Formats Nix files. Run `nix fmt .` to format all files.
 - **deadnix** - Finds unused code in Nix files.
+- **nixfmt** - Formats Nix files. Run `nix fmt .` to format all files.
+- **ruff** - Lints and formats Python files (e.g. `pkgs/*/generator.py`-style scripts).
 - **statix** - Checks Nix code for common issues and style problems.
 
 Pre-commit hooks are configured in `.pre-commit-config.yaml` and run automatically before commits. 

@@ -19,6 +19,7 @@ in
     ./containers/photon.nix
     ./containers/psitransfer.nix
     ./cup-collector.nix
+    ./filtered-podcast-feeds.nix
     ./monitoring-stack.nix
     ./ports.nix
     ./social-reader-mcp.nix
@@ -520,6 +521,26 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+        };
+        "podcasts.${home_domain}" = {
+          listen = [
+            {
+              inherit (config.genebean.ports.https) port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          basicAuthFile = config.sops.secrets.filtered_podcast_feeds_basic_auth.path;
+          locations."/feeds/" = {
+            alias = "/var/lib/filtered-podcast-feeds/";
+            extraConfig = ''
+              default_type application/rss+xml;
+              add_header Cache-Control "public, max-age=300";
+            '';
+          };
         };
         "readit.${home_domain}" = {
           listen = [

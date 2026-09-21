@@ -31,3 +31,17 @@ repos:
         files: ^modules/hosts/.*\.nix$
         pass_filenames: false
 
+      - id: ruff-check
+        name: ruff-check
+        entry: ruff
+        language: system
+        types: [python]
+        args: ["check"]
+
+      - id: ruff-format
+        name: ruff-format
+        entry: ruff
+        language: system
+        types: [python]
+        args: ["format", "--check", "--diff"]
+
