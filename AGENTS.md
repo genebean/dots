@@ -392,8 +392,15 @@ nix run .#deadnix  # finds dead code
 nix run .#statix   # lints for common issues
 ```
 
-Pre-commit hooks enforce this automatically after `pre-commit install`. CI
-(`.github/workflows/validate.yml`) mirrors the same checks.
+Before pushing any `.py` change (e.g. `pkgs/*/generator.py`-style scripts):
+
+```bash
+nix run nixpkgs#ruff -- check .
+nix run nixpkgs#ruff -- format --check --diff .
+```
+
+Pre-commit hooks enforce all of the above automatically after `pre-commit
+install`. CI (`.github/workflows/validate.yml`) mirrors the same checks.
 
 **Also run `nix build .#nixosConfigurations.<hostname>.config.system.build.toplevel`**
 for the affected host before pushing whenever `flake.nix`, `flake.lock`, or a

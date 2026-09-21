@@ -32,6 +32,12 @@ jobs:
       - name: Check restic prune singleton
         run: scripts/check-restic-prune-singleton.sh
 
+      - name: Run ruff check
+        run: nix run nixpkgs#ruff -- check .
+
+      - name: Run ruff format check
+        run: nix run nixpkgs#ruff -- format --check --diff .
+
   nixos:
     name: Build ${{ matrix.host }}
     runs-on: ubuntu-latest

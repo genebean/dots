@@ -13,6 +13,7 @@
     ./programs/xfce4-terminal.nix
     ./services/chromium-kiosk.nix
     ./services/dnclient.nix
+    ./services/filtered-podcast-feeds.nix
     ./services/flatpak.nix
     ./services/kiosk-backups.nix
     ./services/restic.nix

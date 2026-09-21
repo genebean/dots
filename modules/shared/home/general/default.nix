@@ -65,6 +65,7 @@
       puppet-lint
       rename
       ruby
+      ruff
       subversion
       statix
       tldr
