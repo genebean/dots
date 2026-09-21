@@ -1,5 +1,4 @@
 {
-  inputs,
   config,
   pkgs,
   username,
@@ -40,7 +39,6 @@
     go
     hubble
     hugo
-    inputs.flox.packages.${pkgs.stdenv.hostPlatform.system}.default
     kdePackages.kdenlive
     kubectl
     kubectx

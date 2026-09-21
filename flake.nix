@@ -48,10 +48,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    flox = {
-      url = "github:flox/flox/v1.4.4";
-    };
-
     genebean-neovim = {
       url = "github:genebean/neovim-flake";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -217,6 +213,18 @@
         mightymac = localLib.mkDarwinHost {
           hostname = "mightymac";
           username = "gene.liverman";
+        };
+        # PR validation exercises the complete macOS configuration without
+        # realizing the nested Linux VM closure. The normal mightymac output
+        # above remains unchanged and includes its local Linux builder.
+        mightymac-ci = localLib.mkDarwinHost {
+          hostname = "mightymac";
+          username = "gene.liverman";
+          additionalModules = [
+            ({ lib, ... }: {
+              nix.linux-builder.enable = lib.mkForce false;
+            })
+          ];
         };
       }; # end darwinConfigurations
 

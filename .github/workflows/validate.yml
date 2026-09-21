@@ -3,6 +3,13 @@ name: Validate
 on:
   pull_request:
 
+env:
+  # This repository's flake.nix declares the public binary caches and signing
+  # keys needed by its inputs. CI is non-interactive, so explicitly accept
+  # those checked-in settings rather than silently ignoring them.
+  NIX_CONFIG: |
+    accept-flake-config = true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -10,6 +17,8 @@ jobs:
       - uses: actions/checkout@v7
       - uses: DeterminateSystems/nix-installer-action@v22
       - uses: DeterminateSystems/magic-nix-cache-action@v14
+        with:
+          use-flakehub: false
 
       - name: Check formatting
         run: nix fmt -- --ci .
@@ -22,3 +31,50 @@ jobs:
 
       - name: Check restic prune singleton
         run: scripts/check-restic-prune-singleton.sh
+
+  nixos:
+    name: Build ${{ matrix.host }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        host:
+          - nixnuc
+          - hetznix01
+    steps:
+      - uses: actions/checkout@v7
+      - name: Read pinned private flake revision
+        id: private-flake
+        run: echo "rev=$(jq -r '.nodes[.nodes.root.inputs["private-flake"]].locked.rev' flake.lock)" >> "$GITHUB_OUTPUT"
+      - name: Checkout pinned private flake
+        uses: actions/checkout@v7
+        with:
+          repository: genebean/private-flake
+          ref: ${{ steps.private-flake.outputs.rev }}
+          token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
+          path: private-flake
+      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/magic-nix-cache-action@v14
+        with:
+          use-flakehub: false
+      - name: Build NixOS configuration
+        run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+
+  mightymac:
+    name: Build mightymac (Apple Silicon)
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v7
+      - name: Read pinned private flake revision
+        id: private-flake
+        run: echo "rev=$(jq -r '.nodes[.nodes.root.inputs["private-flake"]].locked.rev' flake.lock)" >> "$GITHUB_OUTPUT"
+      - name: Checkout pinned private flake
+        uses: actions/checkout@v7
+        with:
+          repository: genebean/private-flake
+          ref: ${{ steps.private-flake.outputs.rev }}
+          token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
+          path: private-flake
+      - uses: DeterminateSystems/nix-installer-action@v22
+      - name: Build nix-darwin configuration
+        run: nix build .#darwinConfigurations.mightymac-ci.system --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
