@@ -8,7 +8,7 @@ in
   virtualisation.oci-containers.containers = {
     "audiobookshelf" = {
       autoStart = true;
-      image = "ghcr.io/advplyr/audiobookshelf:2.36.0";
+      image = "ghcr.io/advplyr/audiobookshelf:2.36.1";
       environment = {
         AUDIOBOOKSHELF_UID = "99";
         AUDIOBOOKSHELF_GID = "100";
@@ -16,6 +16,7 @@ in
       ports = [ "${toString config.genebean.ports.audiobookshelf.port}:80" ];
       volumes = [
         "${volume_base}/audiobooks:/audiobooks"
+        "${volume_base}/podcast-libraries:/podcast-libraries"
         "${volume_base}/podcasts:/podcasts"
         "${volume_base}/printbooks:/printbooks"
         "${volume_base}/config:/config"
