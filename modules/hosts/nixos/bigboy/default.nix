@@ -1,5 +1,7 @@
 {
   config,
+  includeDisplayLink ? true,
+  lib,
   pkgs,
   username,
   ...
@@ -23,13 +25,15 @@
     NIXOS_OZONE_WL = "1";
   };
 
-  environment.systemPackages = with pkgs; [
-    #angryipscanner
-    displaylink
-    networkmanager-openvpn
-    rclone-browser
-    xf86-video-fbdev
-  ];
+  environment.systemPackages =
+    with pkgs;
+    lib.optional includeDisplayLink displaylink
+    ++ [
+      #angryipscanner
+      networkmanager-openvpn
+      rclone-browser
+      xf86-video-fbdev
+    ];
 
   hardware.bluetooth = {
     enable = true;

@@ -236,6 +236,17 @@
             inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p52
           ];
         };
+        # CI validates the complete host closure except DisplayLink, whose
+        # upstream source requires manual EULA acceptance and cannot be fetched
+        # reproducibly on an ephemeral runner. The real bigboy output above is
+        # unchanged.
+        bigboy-ci = localLib.mkNixosHost {
+          hostname = "bigboy";
+          additionalModules = [
+            inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p52
+          ];
+          additionalSpecialArgs.includeDisplayLink = false;
+        };
         hetznix01 = localLib.mkNixosHost {
           hostname = "hetznix01";
           additionalModules = [

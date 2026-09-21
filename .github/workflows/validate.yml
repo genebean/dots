@@ -2,6 +2,10 @@ name: Validate
 
 on:
   pull_request:
+  schedule:
+    # Weekly full sweep after Thursday's dependency update window.
+    - cron: "0 12 * * 5"
+  workflow_dispatch:
 
 env:
   # This repository's flake.nix declares the public binary caches and signing
@@ -65,6 +69,62 @@ jobs:
           use-flakehub: false
       - name: Build NixOS configuration
         run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+
+  extended-nixos:
+    name: Build ${{ matrix.host }} (full sweep)
+    if: github.event_name != 'pull_request'
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - host: bigboy
+            configuration: bigboy-ci
+            runner: ubuntu-latest
+          - host: hetznix02
+            configuration: hetznix02
+            runner: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v7
+      - name: Read pinned private flake revision
+        id: private-flake
+        run: echo "rev=$(jq -r '.nodes[.nodes.root.inputs["private-flake"]].locked.rev' flake.lock)" >> "$GITHUB_OUTPUT"
+      - name: Checkout pinned private flake
+        uses: actions/checkout@v7
+        with:
+          repository: genebean/private-flake
+          ref: ${{ steps.private-flake.outputs.rev }}
+          token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
+          path: private-flake
+      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/magic-nix-cache-action@v14
+        with:
+          use-flakehub: false
+      - name: Build NixOS configuration
+        run: nix build .#nixosConfigurations.${{ matrix.configuration }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+
+  home-manager:
+    name: Build Home Manager (x86_64 Linux)
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Read pinned private flake revision
+        id: private-flake
+        run: echo "rev=$(jq -r '.nodes[.nodes.root.inputs["private-flake"]].locked.rev' flake.lock)" >> "$GITHUB_OUTPUT"
+      - name: Checkout pinned private flake
+        uses: actions/checkout@v7
+        with:
+          repository: genebean/private-flake
+          ref: ${{ steps.private-flake.outputs.rev }}
+          token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
+          path: private-flake
+      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/magic-nix-cache-action@v14
+        with:
+          use-flakehub: false
+      - name: Build Home Manager configuration
+        run: nix build .#homeConfigurations.gene-x86_64-linux.activationPackage --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
 
   mightymac:
     name: Build mightymac (Apple Silicon)
