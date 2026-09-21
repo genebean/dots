@@ -20,6 +20,7 @@
       claude-code
       dconf2nix
       file
+      ghostty.terminfo
       iftop
       inetutils
       iotop
