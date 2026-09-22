@@ -20,9 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v14
-        with:
-          use-flakehub: false
 
       - name: Check formatting
         run: nix fmt -- --ci .
@@ -64,9 +61,6 @@ jobs:
           token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
           path: private-flake
       - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v14
-        with:
-          use-flakehub: false
       - name: Build NixOS configuration
         run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
 
@@ -97,9 +91,6 @@ jobs:
           token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
           path: private-flake
       - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v14
-        with:
-          use-flakehub: false
       - name: Build NixOS configuration
         run: nix build .#nixosConfigurations.${{ matrix.configuration }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
 
@@ -120,9 +111,6 @@ jobs:
           token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
           path: private-flake
       - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v14
-        with:
-          use-flakehub: false
       - name: Build Home Manager configuration
         run: nix build .#homeConfigurations.gene-x86_64-linux.activationPackage --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
 
