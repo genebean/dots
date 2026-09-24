@@ -7,7 +7,7 @@ in
   virtualisation.oci-containers.containers = {
     "emqx" = {
       autoStart = true;
-      image = "docker.io/emqx/emqx-enterprise:5.10.0";
+      image = "docker.io/emqx/emqx-enterprise:6.3.1";
       environment = {
         EMQX_NODE_NAME = "emqx@emqx1.hetznix01.technicalissues.us";
       };
