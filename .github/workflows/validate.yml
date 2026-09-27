@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/nix-installer-action@v23
 
       - name: Check formatting
         run: nix fmt -- --ci .
@@ -60,7 +60,7 @@ jobs:
           ref: ${{ steps.private-flake.outputs.rev }}
           token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
           path: private-flake
-      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/nix-installer-action@v23
       - name: Build NixOS configuration
         run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
 
@@ -90,7 +90,7 @@ jobs:
           ref: ${{ steps.private-flake.outputs.rev }}
           token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
           path: private-flake
-      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/nix-installer-action@v23
       - name: Build NixOS configuration
         run: nix build .#nixosConfigurations.${{ matrix.configuration }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
 
@@ -110,7 +110,7 @@ jobs:
           ref: ${{ steps.private-flake.outputs.rev }}
           token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
           path: private-flake
-      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/nix-installer-action@v23
       - name: Build Home Manager configuration
         run: nix build .#homeConfigurations.gene-x86_64-linux.activationPackage --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
 
@@ -129,6 +129,6 @@ jobs:
           ref: ${{ steps.private-flake.outputs.rev }}
           token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
           path: private-flake
-      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/nix-installer-action@v23
       - name: Build nix-darwin configuration
         run: nix build .#darwinConfigurations.mightymac-ci.system --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
