@@ -59,6 +59,11 @@
       flake = false;
     };
 
+    hermes-social-digest-pipeline = {
+      url = "github:genebean/HermesSocialDigestPipeline";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     hermes-social-summerizer = {
       url = "github:genebean/HermesSocialSummerizer";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -290,6 +295,7 @@
           hostname = "nixnuc";
           additionalModules = [
             inputs.cup-collector.nixosModules.default
+            inputs.hermes-social-digest-pipeline.nixosModules.default
             inputs.hermes-social-summerizer.nixosModules.default
             inputs.private-flake.nixosModules.private.nixnuc
             inputs.ytdlfin.nixosModules.default
