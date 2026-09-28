@@ -40,6 +40,7 @@
     ./programs/signal.nix
     ./programs/slack.nix
     ./programs/sops.nix
+    ./programs/tea.nix
     ./programs/telegram.nix
     ./programs/thunderbird.nix
     ./programs/tilix
