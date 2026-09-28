@@ -15,6 +15,7 @@
       nixdiff.enable = true;
       powershell.enable = true;
       sops.enable = true;
+      tea.enable = true;
       tmux.enable = true;
       vim.enable = true;
     };
