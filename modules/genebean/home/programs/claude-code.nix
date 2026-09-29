@@ -12,7 +12,10 @@ in
     enable = lib.mkEnableOption "Claude Code AI coding assistant";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
-    home.packages = [ pkgs.claude-code ];
+  config = lib.mkIf cfg.enable {
+    home.file.".claude/skills/hindsight-global-memory/SKILL.md".source =
+      ./claude-code/hindsight-global-memory/SKILL.md;
+
+    home.packages = lib.mkIf pkgs.stdenv.hostPlatform.isLinux [ pkgs.claude-code ];
   };
 }
