@@ -82,6 +82,16 @@
       openFirewall = true;
     };
 
+    # Tailscale-scoped TCP services (openFirewall stays false here — exposure
+    # is via networking.firewall.interfaces.tailscale0 in the owning module,
+    # not the fleet-wide allowlist)
+    hindsight-gene-personal-api = {
+      port = 8889;
+    };
+    hindsight-gene-personal-ui = {
+      port = 9999;
+    };
+
     # Internal-only TCP services (proxied via nginx, not firewalled)
     pocket-id = {
       port = 1411;
