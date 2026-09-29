@@ -89,6 +89,17 @@ in
         # --device-auth prints a URL + code to complete on any device with a
         # browser — no local browser needed on nixnuc itself.
         HINDSIGHT_API_LLM_PROVIDER = "openai-codex";
+        # Hindsight's own built-in default (gpt-5.4-mini) gets rejected by
+        # OpenAI for ChatGPT-subscription auth — "not supported when using
+        # Codex with a ChatGPT account", a widely-reported, frequently
+        # shifting restriction on OpenAI's side (different model names get
+        # rejected week to week). Pinned here to whatever the `codex` CLI
+        # itself currently resolves as ITS OWN default for this exact
+        # account (confirmed working live via `codex exec` before setting
+        # this) rather than trusting Hindsight's default to stay valid.
+        # Re-verify the same way if retain/reflect calls start failing
+        # again with an "is not supported" error.
+        HINDSIGHT_API_LLM_MODEL = "gpt-5.6-sol";
         HINDSIGHT_API_WORKER_ID = app_container_name;
       };
       environmentFiles = [ config.sops.secrets.hindsight_gene_personal_app_env.path ];
