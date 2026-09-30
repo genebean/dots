@@ -70,36 +70,18 @@ in
       autoStart = true;
       dependsOn = [ db_container_name ];
       environment = {
-        # Reuses the owner's ChatGPT Plus/Pro (Codex) subscription for
-        # Hindsight's own internal retain/reflect LLM calls — no separate
-        # API billing (ADR 0007), and keeps Claude Code itself free for the
-        # owner's own interactive use rather than the fleet's bots. No
-        # CODEX_HOME override needed — this container's $HOME is its own
-        # bind-mounted volume (below), never shared with any other process
-        # or machine, so there's no ~/.codex/auth.json to collide with.
-        #
-        # Needs a one-time OAuth login before the app container will start
-        # cleanly (it crash-loops on PermissionError/missing-credentials
-        # otherwise). The image itself has no Codex CLI (Python-only, no
-        # npm), so run nixpkgs' own `codex` package on the HOST instead,
-        # pointed at the exact path this container reads as ~/.codex:
-        #
-        #   CODEX_HOME=${volume_base}/app-data/.codex nix run nixpkgs#codex -- auth login --device-auth
-        #
-        # --device-auth prints a URL + code to complete on any device with a
-        # browser — no local browser needed on nixnuc itself.
-        HINDSIGHT_API_LLM_PROVIDER = "openai-codex";
-        # Hindsight's own built-in default (gpt-5.4-mini) gets rejected by
-        # OpenAI for ChatGPT-subscription auth — "not supported when using
-        # Codex with a ChatGPT account", a widely-reported, frequently
-        # shifting restriction on OpenAI's side (different model names get
-        # rejected week to week). Pinned here to whatever the `codex` CLI
-        # itself currently resolves as ITS OWN default for this exact
-        # account (confirmed working live via `codex exec` before setting
-        # this) rather than trusting Hindsight's default to stay valid.
-        # Re-verify the same way if retain/reflect calls start failing
-        # again with an "is not supported" error.
-        HINDSIGHT_API_LLM_MODEL = "gpt-5.6-sol";
+        # Local Ollama backend (ollama.nix) instead of the owner's
+        # ChatGPT/Codex subscription — this task (fact extraction/mental-
+        # model refresh) is structured, not deep reasoning, and a small
+        # local model is genuinely sufficient. Avoids depending on that
+        # subscription's quota for a background task; also keeps Claude
+        # Code/Codex CLI usage free for the owner's own interactive work.
+        # host.containers.internal: podman's own DNS name for reaching a
+        # host-native service from inside a container on a custom bridge
+        # network (hindsight-gene-personal-net) — no host IP to hardcode.
+        HINDSIGHT_API_LLM_PROVIDER = "ollama";
+        HINDSIGHT_API_LLM_BASE_URL = "http://host.containers.internal:${toString config.genebean.ports.ollama.port}/v1";
+        HINDSIGHT_API_LLM_MODEL = "qwen2.5:7b-instruct";
         HINDSIGHT_API_WORKER_ID = app_container_name;
       };
       environmentFiles = [ config.sops.secrets.hindsight_gene_personal_app_env.path ];
@@ -175,7 +157,15 @@ in
       };
 
       ${app_service_name} = {
-        after = [ network_service_unit ];
+        # Soft ordering only (after, not requires) — the API/UI and most
+        # read/write operations don't need the LLM backend, only the
+        # background retain/reflect workers do. Starting anyway if the model
+        # pull is slow/fails means those calls just fail individually and
+        # retry, rather than blocking this whole container.
+        after = [
+          network_service_unit
+          "ollama-model-loader.service"
+        ];
         requires = [ network_service_unit ];
       };
 
