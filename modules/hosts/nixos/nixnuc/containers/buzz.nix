@@ -66,6 +66,28 @@ in
     ];
   };
 
+  # Device pairing (NIP-AB — desktop/mobile key transfer) is a separate
+  # binary from buzz-relay, bundled in the same image but not started by its
+  # default entrypoint. Fully stateless/in-memory (confirmed against
+  # buzz-pair-relay's own source — no DB, no Redis, one env var), so nothing
+  # here beyond the bind address. Desktop/mobile clients derive
+  # wss://buzz.${home_domain}/pair from the main relay's NIP-11
+  # supported_nips list advertising 43; nginx routes that path here
+  # (default.nix's virtualHosts) instead of to buzz-relay's own port.
+  virtualisation.oci-containers.containers.buzz-pair-relay = {
+    autoStart = true;
+    entrypoint = "/usr/local/bin/buzz-pair-relay";
+    environment = {
+      BUZZ_PAIR_RELAY_BIND_ADDR = "127.0.0.1:${toString config.genebean.ports.buzz-pair-relay.port}";
+    };
+    extraOptions = [
+      "--network=host"
+      "--cap-drop=ALL"
+      "--security-opt=no-new-privileges"
+    ];
+    image = "ghcr.io/block/buzz:sha-fccc07e";
+  };
+
   # Podman doesn't auto-create bind-mount host directories (unlike Docker);
   # the image's own useradd (uid/gid 1000, see its Dockerfile) needs this
   # pre-created and owned to match, since a bind mount overrides whatever

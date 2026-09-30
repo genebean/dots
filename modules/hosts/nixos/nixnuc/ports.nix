@@ -96,6 +96,11 @@
       port = 9999;
     };
 
+    # Loopback-only: reached via nginx's /pair location on the buzz vhost,
+    # same pattern as buzz-relay itself.
+    buzz-pair-relay = {
+      port = 5000;
+    };
     # Loopback-only (bound to 127.0.0.1 in the owning module, no firewall
     # entry needed at all): the S3 API. Buzz is the only consumer and runs
     # on this same host.
