@@ -26,6 +26,7 @@
 
   home = {
     packages = with pkgs; [
+      awscli2
       btop
       bundix
       cargo

@@ -81,6 +81,10 @@
       port = 8787;
       openFirewall = true;
     };
+    rustfs-console = {
+      port = 9011;
+      openFirewall = true;
+    };
 
     # Tailscale-scoped TCP services (openFirewall stays false here — exposure
     # is via networking.firewall.interfaces.tailscale0 in the owning module,
@@ -92,12 +96,29 @@
       port = 9999;
     };
 
+    # Loopback-only (bound to 127.0.0.1 in the owning module, no firewall
+    # entry needed at all): the S3 API. Buzz is the only consumer and runs
+    # on this same host.
+    rustfs-api = {
+      port = 9010;
+    };
+    # Loopback-only: local health/metrics checks only, no external consumer.
+    buzz-health = {
+      port = 9101;
+    };
+    buzz-metrics = {
+      port = 9102;
+    };
+
     # Internal-only TCP services (proxied via nginx, not firewalled)
     pocket-id = {
       port = 1411;
     };
     immich = {
       port = 2283;
+    };
+    buzz-relay = {
+      port = 3033;
     };
     ytdlfin = {
       port = 8001;

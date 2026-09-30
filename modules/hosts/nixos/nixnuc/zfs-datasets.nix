@@ -40,6 +40,7 @@
           "orico/postgresql-data"
           "orico/postgresql-wal-16"
           "orico/psitransfer"
+          "orico/rustfs"
         ];
       in
       builtins.concatStringsSep "\n" (
