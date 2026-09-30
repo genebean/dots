@@ -15,10 +15,12 @@ in
   imports = [
     ./hardware-configuration.nix
     ./containers/audiobookshelf.nix
+    ./containers/buzz.nix
     ./containers/hindsight-gene-personal.nix
     ./containers/mountain-mesh-bot-discord.nix
     ./containers/photon.nix
     ./containers/psitransfer.nix
+    ./containers/rustfs.nix
     ./cup-collector.nix
     ./filtered-podcast-feeds.nix
     ./hermes-social-digest.nix
@@ -375,6 +377,20 @@ in
             ssl = false;
           }
         ];
+        "buzz.${home_domain}" = {
+          listen = [
+            {
+              inherit (config.genebean.ports.https) port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.buzz-relay.port}";
+          locations."/".proxyWebsockets = true;
+        };
         "git.${home_domain}" = {
           listen = [
             {
