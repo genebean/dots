@@ -55,6 +55,7 @@
       mcp-nixos
       minicom
       mtr
+      nak
       nil
       nix-search
       nix-zsh-completions
