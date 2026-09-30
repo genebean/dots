@@ -29,7 +29,17 @@
   # kill, and OOMScoreAdjust makes ollama the kernel's preferred victim over
   # postgresql/forgejo/etc. in a genuine system-wide OOM. Revisit once this
   # workload moves to dedicated hardware with real headroom.
+  #
+  # CPUQuota/CPUWeight added after real testing showed the same problem on
+  # the CPU side: a live inference pinned ollama at 338% CPU, and basic SSH
+  # commands to nixnuc started hanging shortly after — 8-core host, capping
+  # at 400% leaves half the machine schedulable for everything else even at
+  # ollama's peak. CPUWeight (default 100) additionally makes ollama yield
+  # proportionally more under contention even within that cap, not just
+  # hard-stop at it.
   systemd.services.ollama.serviceConfig = {
+    CPUQuota = "400%";
+    CPUWeight = 50;
     MemoryHigh = "6G";
     MemoryMax = "8G";
     OOMScoreAdjust = 500;
