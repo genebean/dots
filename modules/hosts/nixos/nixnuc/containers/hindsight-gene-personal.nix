@@ -82,6 +82,13 @@ in
         HINDSIGHT_API_LLM_PROVIDER = "ollama";
         HINDSIGHT_API_LLM_BASE_URL = "http://host.containers.internal:${toString config.genebean.ports.ollama.port}/v1";
         HINDSIGHT_API_LLM_MODEL = "qwen2.5:7b-instruct";
+        # CPU-only inference on nixnuc is genuinely slow — a real test
+        # generation took 2m21s for one small prompt, over the 120s retain
+        # default. Hindsight's own docs recommend exactly this for slow
+        # local providers (their own Ollama/Cursor example: reflect default
+        # is 30s, "well past" for one agent turn, recommends 180s+).
+        HINDSIGHT_API_LLM_TIMEOUT = "300";
+        HINDSIGHT_API_REFLECT_LLM_TIMEOUT = "300";
         HINDSIGHT_API_WORKER_ID = app_container_name;
       };
       environmentFiles = [ config.sops.secrets.hindsight_gene_personal_app_env.path ];
