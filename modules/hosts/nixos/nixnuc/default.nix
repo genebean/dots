@@ -25,6 +25,7 @@ in
     ./filtered-podcast-feeds.nix
     ./hermes-social-digest.nix
     ./monitoring-stack.nix
+    ./ollama.nix
     ./ports.nix
     ./social-reader-mcp.nix
     ./zfs-datasets.nix
