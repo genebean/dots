@@ -43,6 +43,19 @@ in
       BUZZ_GIT_REPO_PATH = "/data/git";
       BUZZ_HEALTH_PORT = toString config.genebean.ports.buzz-health.port;
       BUZZ_METRICS_PORT = toString config.genebean.ports.buzz-metrics.port;
+      # Makes the relay advertise this explicitly via NIP-11 (the desktop
+      # app's first-checked case) instead of relying on its NIP-43-implies-
+      # legacy-path inference, which is what got us to /pair in the first
+      # place (hermes-agent-fleet-plan issue 23 follow-up).
+      BUZZ_PAIRING_RELAY_URL = "${relay_url}/pair";
+      # Points at Block's own centrally-hosted push gateway — the documented
+      # default for self-hosted relays. It holds the real App Store Buzz
+      # app's actual Apple APNs credentials; self-hosting buzz-push-gateway
+      # ourselves is only for Block's own dogfood/internal builds (confirmed
+      # against its deployment doc: hardcoded to a single compiled-in
+      # application profile, xyz.block.buzz.dogfood.mobile).
+      BUZZ_PUSH_ENABLED = "true";
+      BUZZ_PUSH_GATEWAY_DELIVERY_URL = "https://push.buzz.xyz/v1/deliveries/apns";
       BUZZ_REQUIRE_AUTH_TOKEN = "true";
       BUZZ_REQUIRE_RELAY_MEMBERSHIP = "true";
       BUZZ_S3_ADDRESSING_STYLE = "path";
