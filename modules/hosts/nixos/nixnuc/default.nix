@@ -388,8 +388,20 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.buzz-relay.port}";
-          locations."/".proxyWebsockets = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://${backend_ip}:${toString config.genebean.ports.buzz-relay.port}";
+              proxyWebsockets = true;
+            };
+            # Device pairing (NIP-AB): a separate binary/process from the main
+            # relay (buzz.nix's buzz-pair-relay container), not buzz-relay
+            # itself. Desktop/mobile clients derive this path from the main
+            # relay's own NIP-11 supported_nips list advertising 43.
+            "/pair" = {
+              proxyPass = "http://${backend_ip}:${toString config.genebean.ports.buzz-pair-relay.port}";
+              proxyWebsockets = true;
+            };
+          };
         };
         "git.${home_domain}" = {
           listen = [
