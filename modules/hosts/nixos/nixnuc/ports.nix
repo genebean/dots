@@ -71,10 +71,6 @@
       port = 8945;
       openFirewall = true;
     };
-    ollama = {
-      port = 11434;
-      openFirewall = true;
-    };
     audiobookshelf = {
       port = 13378;
       openFirewall = true;

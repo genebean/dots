@@ -9,6 +9,8 @@
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
+    ./ollama.nix
+    ./ports.nix
   ];
 
   system.stateVersion = "26.05";
