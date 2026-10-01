@@ -70,17 +70,20 @@ in
       autoStart = true;
       dependsOn = [ db_container_name ];
       environment = {
-        # Local Ollama backend (ollama.nix) instead of the owner's
-        # ChatGPT/Codex subscription — this task (fact extraction/mental-
-        # model refresh) is structured, not deep reasoning, and a small
-        # local model is genuinely sufficient. Avoids depending on that
-        # subscription's quota for a background task; also keeps Claude
-        # Code/Codex CLI usage free for the owner's own interactive work.
-        # host.containers.internal: podman's own DNS name for reaching a
-        # host-native service from inside a container on a custom bridge
-        # network (hindsight-gene-personal-net) — no host IP to hardcode.
+        # Local Ollama backend instead of the owner's ChatGPT/Codex
+        # subscription — this task (fact extraction/mental-model refresh) is
+        # structured, not deep reasoning, and a small local model is
+        # genuinely sufficient. Avoids depending on that subscription's quota
+        # for a background task; also keeps Claude Code/Codex CLI usage free
+        # for the owner's own interactive work.
+        # Runs on tcan-left now (modules/hosts/nixos/tcan-left/ollama.nix),
+        # not nixnuc — moved once that host existed, to get Ollama off
+        # nixnuc's tight resource constraints onto hardware with real
+        # headroom. Hardcoded LAN IP (reserved DHCP lease), not Tailscale and
+        # not config.genebean.ports.ollama.port — that registry is scoped to
+        # this host's own ports, not a cross-host lookup.
         HINDSIGHT_API_LLM_PROVIDER = "ollama";
-        HINDSIGHT_API_LLM_BASE_URL = "http://host.containers.internal:${toString config.genebean.ports.ollama.port}/v1";
+        HINDSIGHT_API_LLM_BASE_URL = "http://192.168.20.191:11434/v1";
         HINDSIGHT_API_LLM_MODEL = "qwen2.5:7b-instruct";
         # CPU-only inference on nixnuc is genuinely slow — a real test
         # generation took 2m21s for one small prompt, over the 120s retain
