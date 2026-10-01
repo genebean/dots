@@ -304,7 +304,23 @@ This is the verified, current procedure - confirmed end-to-end while onboarding
    always passes `--label=${label}` to `bcachefs format`, and a blank one
    fails with a cryptic `Invalid argument (os error 22)`.
 
-6. **Pull the installer's SSH host key** and adopt it as the target's
+6. **Create `home-<username>.nix`** - `mkNixosHost` hard-requires
+   `modules/hosts/nixos/<hostname>/home-${username}.nix` to exist (the path
+   is unconditional in `lib/mkNixosHost.nix`); the build fails with `error:
+   Path '.../home-gene.nix' does not exist in Git repository` without it.
+   See `modules/hosts/nixos/tcan-left/home-gene.nix` for a minimal starting
+   point. Also wire basic metrics now, not as an afterthought - copy
+   `modules/hosts/nixos/kiosk-entryway/monitoring.nix` (self-contained:
+   local `vmagent` scrapes the host's own node-exporter and remote-writes to
+   nixnuc's VictoriaMetrics using the existing shared `vmagent_push_pw`
+   secret, no per-host secret needed) and import it from `default.nix`.
+   Check also whether `nixos-hardware` has a profile for the exact board
+   (`github:NixOS/nixos-hardware` - module names follow the directory path
+   with `/` replaced by `-`, e.g. `aoostar/r1/n100` → `aoostar-r1-n100`);
+   wire it via `additionalModules` in the `flake.nix` step below (`bigboy`
+   already does this for `lenovo-thinkpad-p52`).
+
+7. **Pull the installer's SSH host key** and adopt it as the target's
    permanent one. This is safe because the installer's root is `tmpfs` and
    generates a genuinely fresh key every boot - confirm that before trusting
    it: `ssh root@<installer-ip> "findmnt /"` should show `tmpfs`, and
@@ -317,7 +333,7 @@ This is the verified, current procedure - confirmed end-to-end while onboarding
    chmod 600 nixos-anywhere-extras-<hostname>/etc/ssh/ssh_host_ed25519_key
    ```
 
-7. **Derive the age recipient and register it in `.sops.yaml`**:
+8. **Derive the age recipient and register it in `.sops.yaml`**:
    ```bash
    nix run nixpkgs#ssh-to-age -- -i nixos-anywhere-extras-<hostname>/etc/ssh/ssh_host_ed25519_key.pub
    ```
@@ -334,10 +350,9 @@ This is the verified, current procedure - confirmed end-to-end while onboarding
    sops set modules/shared/secrets.yaml '["ssh_host_ed25519_key_<hostname>"]' "\"$(cat nixos-anywhere-extras-<hostname>/etc/ssh/ssh_host_ed25519_key)\""
    ```
 
-8. **Create the host's own first `secrets.yaml`** with a dummy value, then
-   edit the real value in yourself:
+9. **Create the host's own first `secrets.yaml`** (see Notes for why this
+   is plain `sops`, not `sops set`):
    ```bash
-   sops set modules/hosts/nixos/<hostname>/secrets.yaml '["tailscale_key"]' '"REPLACE_ME"'
    sops modules/hosts/nixos/<hostname>/secrets.yaml
    ```
    If your own machine's key isn't a recipient for this file yet (per-host
@@ -349,30 +364,34 @@ This is the verified, current procedure - confirmed end-to-end while onboarding
    rm /tmp/<hostname>-age-key.txt
    ```
 
-9. **Register authorized SSH keys** for your user. `private-flake` is a
+10. **Register authorized SSH keys** for your user. `private-flake` is a
    separate, private companion repo (already cloned at
    `~/repos/private-flake`) that holds sensitive config this repo never
    commits directly - see the "Private Flake" section of `AGENTS.md`. Add the
    new host to its `modules/nixos/ssh-keys.nix` (`sshKeyHosts.<hostname>`).
 
-10. **Wire the host into `flake.nix`**:
+11. **Wire the host into `flake.nix`**:
     ```nix
     tcan-left = localLib.mkNixosHost { hostname = "tcan-left"; };
     ```
     And a matching `deploy.nodes.<hostname>` entry with `remoteBuild = true;`
     (see the existing entries for the exact shape), if you want remote deploys.
 
-11. **Validate before touching the real hardware:**
+12. **Validate before touching the real hardware:**
     ```bash
     git add modules/hosts/nixos/<hostname> flake.nix .sops.yaml modules/shared/secrets.yaml
     nix build .#nixosConfigurations.<hostname>.config.system.build.toplevel --no-link --print-out-paths
     ```
-    If you edited `private-flake` (step 9) and haven't pushed it yet, point
-    `flake.nix`'s `private-flake.url` at
-    `"path:/home/gene/repos/private-flake"` temporarily, then
-    `nix flake lock --update-input private-flake`. Revert both once pushed.
+    If you edited `private-flake` (step 10), point `flake.nix`'s
+    `private-flake.url` at `"path:/home/gene/repos/private-flake"`
+    temporarily and `nix flake lock --update-input private-flake` - keep
+    this in place through the actual install and verification (step 15),
+    not just until the branch is pushed. Only once the host is up and
+    verified working: merge `private-flake`'s PR, revert `flake.nix`'s
+    `private-flake.url` back to `"github:genebean/private-flake"`, re-lock
+    against that real merged commit, and open `dots`'s own PR.
 
-12. **Pre-authorize a throwaway key** so install doesn't need password auth.
+13. **Pre-authorize a throwaway key** so install doesn't need password auth.
     `<console-password>` is the root password from step 2:
     ```bash
     ssh-keygen -t ed25519 -N "" -C "bootstrap" -f /tmp/bootstrap-key
@@ -380,7 +399,7 @@ This is the verified, current procedure - confirmed end-to-end while onboarding
       "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys" < /tmp/bootstrap-key.pub
     ```
 
-13. **Install.** Make sure no earlier attempt against this same host is still
+14. **Install.** Make sure no earlier attempt against this same host is still
     running in the background first (see Notes) - then:
     ```bash
     nix run github:nix-community/nixos-anywhere -- \
@@ -391,11 +410,11 @@ This is the verified, current procedure - confirmed end-to-end while onboarding
       root@<installer-ip>
     ```
 
-14. **Verify**: SSH in as your normal user once it reboots, confirm
+15. **Verify**: SSH in as your normal user once it reboots, confirm
     `systemctl status tailscaled-autoconnect`, and that `tailscale status`
     shows the new node.
 
-15. **Deploy via `deploy-rs` going forward**:
+16. **Deploy via `deploy-rs` going forward**:
     ```bash
     nix run .#deploy-rs -- .#<hostname> --dry-activate --skip-checks
     nix run .#deploy-rs -- .#<hostname> --skip-checks
@@ -403,6 +422,15 @@ This is the verified, current procedure - confirmed end-to-end while onboarding
 
 ##### Notes
 
+- **`sops set` cannot bootstrap a brand-new file** - confirmed twice (the
+  file genuinely absent, and an empty `{}` stub both fail: `Error reading
+  file: ... no such file or directory` / `sops metadata not found`). Plain
+  `sops <file>` (edit mode, no subcommand) does create one: on a
+  nonexistent path it opens `$EDITOR` on an empty temp document and
+  encrypts whatever's saved, resolving recipients from `.sops.yaml`'s
+  `creation_rule` same as any other file. No interactive terminal needed
+  either - point `$EDITOR` at a script that writes to the path it's given
+  (`$1`) and it works non-interactively.
 - **Custom ISO + `root`, not the stock installer.** The ISO above is built
   from `nixos-images`' `image-installer` module - the same media every time,
   with whatever kernel modules the target needs already baked in. It logs in

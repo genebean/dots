@@ -320,6 +320,12 @@
         #    inputs.nixos-hardware.nixosModules.dell-xps-13-9360
         #  ];
         #};
+        star1 = localLib.mkNixosHost {
+          hostname = "star1";
+          additionalModules = [
+            inputs.nixos-hardware.nixosModules.aoostar-r1-n100
+          ];
+        };
         tcan-left = localLib.mkNixosHost {
           hostname = "tcan-left";
         };
@@ -375,6 +381,12 @@
         };
         nixnuc = localLib.mkDeployNode {
           hostname = "nixnuc";
+          system = "x86_64-linux";
+          fastConnection = true;
+          remoteBuild = true;
+        };
+        star1 = localLib.mkDeployNode {
+          hostname = "star1";
           system = "x86_64-linux";
           fastConnection = true;
           remoteBuild = true;
