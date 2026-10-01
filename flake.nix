@@ -125,6 +125,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Source of nixos-anywhere's own default kexec image - used directly
+    # (not just transitively) to build a custom kexec tarball with the
+    # bcachefs out-of-tree module added, for installing a bcachefs root.
+    nixos-images = {
+      url = "github:nix-community/nixos-images";
+      inputs.nixos-stable.follows = "nixpkgs";
+      inputs.nixos-unstable.follows = "nixpkgs-unstable";
+    };
+
     # Raspberry Pi hardware support: vendor kernel/firmware packages and a
     # proper declarative bootloader (boot.loader.raspberry-pi) that keeps
     # /boot/firmware in sync on every switch, instead of the one-shot
@@ -311,6 +320,9 @@
         #    inputs.nixos-hardware.nixosModules.dell-xps-13-9360
         #  ];
         #};
+        tcan-left = localLib.mkNixosHost {
+          hostname = "tcan-left";
+        };
       }; # end nixosConfigurations
 
       # Codified remote deploys (`nix run .#deploy-rs -- .#<host>`) - see
@@ -363,6 +375,12 @@
         };
         nixnuc = localLib.mkDeployNode {
           hostname = "nixnuc";
+          system = "x86_64-linux";
+          fastConnection = true;
+          remoteBuild = true;
+        };
+        tcan-left = localLib.mkDeployNode {
+          hostname = "tcan-left";
           system = "x86_64-linux";
           fastConnection = true;
           remoteBuild = true;
