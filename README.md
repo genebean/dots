@@ -15,8 +15,8 @@ This repo is a Nix flake that manages most of my setup on macOS and fully manage
         - [Setup sudo via Touch ID](#setup-sudo-via-touch-id)
         - [Atuin](#atuin)
         - [Mouse support](#mouse-support)
-    - [Adding a NixOS host](#adding-a-nixos-host)
-      - [Post-install](#post-install)
+    - [Adding a NixOS host (nixos-anywhere)](#adding-a-nixos-host-nixos-anywhere)
+      - [Notes](#notes)
 
 ## Flake structure
 
@@ -261,15 +261,222 @@ Nix installs and configures Atuin, but you still need to log into the server:
 
 - [Logitech M720 Triathlon mouse](https://support.logi.com/hc/en-us/articles/360024698414--Downloads-M720-Triathlon-Multi-Device-Mouse)
 
-#### Adding a NixOS host
+#### Adding a NixOS host (nixos-anywhere)
 
-##### Post-install
+This is the verified, current procedure - confirmed end-to-end while onboarding
+`tcan-left` (a MacPro6,1).
 
-1. clone this repo
-2. create keys for [SOPS](https://georgheiler.com/post/sops/) via `mkdir -p ~/.config/sops/age && nix run nixpkgs#ssh-to-age -- -private-key -i ~/.ssh/id_ed25519 > ~/.config/sops/age/keys.txt && nix run nixpkgs#ssh-to-age --  -i ~/.ssh/id_ed25519.pub  > ~/.config/sops/age/pub-keys.txt`
-3. copy output of `~/.config/sops/age/pub-keys.txt`
-4. add entries to `.sops.yaml`
-5. run `sops modules/hosts/nixos/$(hostname)/secrets.yaml`
-   - if there is an empty yaml file in where you target you will get an error... just delete it and try again
-6. edit `sops modules/hosts/nixos/$(hostname)/default.nix` and add the Tailscale service and the block of config for sops.
-   - if there is an empty yaml file in where you target you will need to delete it
+1. **Build the installer ISO** - the same one every time, bcachefs support
+   included regardless of what the target actually uses:
+   ```bash
+   nix build .#bcachefs-installer-iso
+   ```
+   Flash `result/iso/*.iso` to a USB drive (`dd`, Balena Etcher, Rufus - any
+   of them, it's a standard ISO).
+
+2. **Boot the target from that USB**, connected to ethernet, no SD card or
+   other disks that shouldn't be touched still attached. A display and
+   keyboard are required for this step: the console prompts you to type a
+   password for **`root`** - note it down, you'll need it for SSH. Find the
+   IP it got via DHCP either on the console itself, or via your
+   router/switch's DHCP client list (UniFi, etc.) by matching the new device
+   that appears around boot time. Set a DHCP reservation for that MAC address
+   now - a later reboot can otherwise land on a different IP mid-install.
+
+3. **Inspect the live installer** to gather real hardware facts:
+   ```bash
+   ssh root@<installer-ip> "lsblk -o NAME,SIZE,TYPE,MODEL,TRAN && ip -brief link && nproc && free -h && ls /sys/firmware/efi 2>&1 | head -1"
+   ssh root@<installer-ip> "ls -la /dev/disk/by-id/ | grep -v -- '-part'"
+   ```
+   Use the **stable by-id disk path** from the second command, not
+   `/dev/sda` - the boot USB itself shows up as a separate disk and must
+   never be a disko target.
+
+4. **Generate `hardware-configuration.nix`**:
+   ```bash
+   ssh root@<installer-ip> "nixos-generate-config --no-filesystems --show-hardware-config" > modules/hosts/nixos/<hostname>/hardware-configuration.nix
+   ```
+
+5. **Write `disk-config.nix`** (disko) using the by-id path from step 3. See
+   `modules/hosts/nixos/tcan-left/disk-config.nix` for a bcachefs example
+   (3-subvolume split: `/`, `/nix`, `/var/lib`). **If using bcachefs, every
+   bcachefs-typed partition needs an explicit, non-empty `label`** - disko
+   always passes `--label=${label}` to `bcachefs format`, and a blank one
+   fails with a cryptic `Invalid argument (os error 22)`.
+
+6. **Pull the installer's SSH host key** and adopt it as the target's
+   permanent one. This is safe because the installer's root is `tmpfs` and
+   generates a genuinely fresh key every boot - confirm that before trusting
+   it: `ssh root@<installer-ip> "findmnt /"` should show `tmpfs`, and
+   `readlink -f /etc/ssh/ssh_host_ed25519_key` should show a plain file, not
+   a symlink into `/nix/store`.
+   ```bash
+   mkdir -p nixos-anywhere-extras-<hostname>/etc/ssh
+   ssh root@<installer-ip> "cat /etc/ssh/ssh_host_ed25519_key" > nixos-anywhere-extras-<hostname>/etc/ssh/ssh_host_ed25519_key
+   ssh root@<installer-ip> "cat /etc/ssh/ssh_host_ed25519_key.pub" > nixos-anywhere-extras-<hostname>/etc/ssh/ssh_host_ed25519_key.pub
+   chmod 600 nixos-anywhere-extras-<hostname>/etc/ssh/ssh_host_ed25519_key
+   ```
+
+7. **Derive the age recipient and register it in `.sops.yaml`**:
+   ```bash
+   nix run nixpkgs#ssh-to-age -- -i nixos-anywhere-extras-<hostname>/etc/ssh/ssh_host_ed25519_key.pub
+   ```
+   Add a `&system_<hostname>` anchor with that recipient, a `creation_rule`
+   for `<hostname>/secrets.yaml$`, and add it to `modules/shared/secrets.yaml`'s
+   key group. Then:
+   ```bash
+   sops updatekeys modules/shared/secrets.yaml
+   ```
+   Optional but recommended: escrow the private key too, so you don't lose
+   the host identity if the disk ever dies (a **blind** `sops set` so the
+   value never prints):
+   ```bash
+   sops set modules/shared/secrets.yaml '["ssh_host_ed25519_key_<hostname>"]' "\"$(cat nixos-anywhere-extras-<hostname>/etc/ssh/ssh_host_ed25519_key)\""
+   ```
+
+8. **Create the host's own first `secrets.yaml`** with a dummy value, then
+   edit the real value in yourself:
+   ```bash
+   sops set modules/hosts/nixos/<hostname>/secrets.yaml '["tailscale_key"]' '"REPLACE_ME"'
+   sops modules/hosts/nixos/<hostname>/secrets.yaml
+   ```
+   If your own machine's key isn't a recipient for this file yet (per-host
+   secrets are scoped to just that host's own system key), point `sops` at
+   the host's key temporarily instead:
+   ```bash
+   nix run nixpkgs#ssh-to-age -- -private-key -i nixos-anywhere-extras-<hostname>/etc/ssh/ssh_host_ed25519_key > /tmp/<hostname>-age-key.txt
+   SOPS_AGE_KEY_FILE=/tmp/<hostname>-age-key.txt sops modules/hosts/nixos/<hostname>/secrets.yaml
+   rm /tmp/<hostname>-age-key.txt
+   ```
+
+9. **Register authorized SSH keys** for your user. `private-flake` is a
+   separate, private companion repo (already cloned at
+   `~/repos/private-flake`) that holds sensitive config this repo never
+   commits directly - see the "Private Flake" section of `AGENTS.md`. Add the
+   new host to its `modules/nixos/ssh-keys.nix` (`sshKeyHosts.<hostname>`).
+
+10. **Wire the host into `flake.nix`**:
+    ```nix
+    tcan-left = localLib.mkNixosHost { hostname = "tcan-left"; };
+    ```
+    And a matching `deploy.nodes.<hostname>` entry with `remoteBuild = true;`
+    (see the existing entries for the exact shape), if you want remote deploys.
+
+11. **Validate before touching the real hardware:**
+    ```bash
+    git add modules/hosts/nixos/<hostname> flake.nix .sops.yaml modules/shared/secrets.yaml
+    nix build .#nixosConfigurations.<hostname>.config.system.build.toplevel --no-link --print-out-paths
+    ```
+    If you edited `private-flake` (step 9) and haven't pushed it yet, point
+    `flake.nix`'s `private-flake.url` at
+    `"path:/home/gene/repos/private-flake"` temporarily, then
+    `nix flake lock --update-input private-flake`. Revert both once pushed.
+
+12. **Pre-authorize a throwaway key** so install doesn't need password auth.
+    `<console-password>` is the root password from step 2:
+    ```bash
+    ssh-keygen -t ed25519 -N "" -C "bootstrap" -f /tmp/bootstrap-key
+    SSHPASS='<console-password>' sshpass -e ssh root@<installer-ip> \
+      "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys" < /tmp/bootstrap-key.pub
+    ```
+
+13. **Install.** Make sure no earlier attempt against this same host is still
+    running in the background first (see Notes) - then:
+    ```bash
+    nix run github:nix-community/nixos-anywhere -- \
+      --flake .#<hostname> \
+      --extra-files ./nixos-anywhere-extras-<hostname> \
+      --phases disko,install,reboot \
+      -i /tmp/bootstrap-key \
+      root@<installer-ip>
+    ```
+
+14. **Verify**: SSH in as your normal user once it reboots, confirm
+    `systemctl status tailscaled-autoconnect`, and that `tailscale status`
+    shows the new node.
+
+15. **Deploy via `deploy-rs` going forward**:
+    ```bash
+    nix run .#deploy-rs -- .#<hostname> --dry-activate --skip-checks
+    nix run .#deploy-rs -- .#<hostname> --skip-checks
+    ```
+
+##### Notes
+
+- **Custom ISO + `root`, not the stock installer.** The ISO above is built
+  from `nixos-images`' `image-installer` module - the same media every time,
+  with whatever kernel modules the target needs already baked in. It logs in
+  as `root`, not `nixos` (the stock installer's account).
+- **Why not `nixos-anywhere`'s default kexec bootstrap.** Its default is to
+  `kexec` from whatever's running into its own bundled image, so you'd never
+  need to pre-build/flash anything - but on this specific hardware (MacPro6,1)
+  `kexec` itself hung mid-transition, twice, rather than completing the
+  handoff (a known class of issue with some Mac EFI implementations - if a
+  kexec'd target doesn't come back within roughly a minute, treat it as hung,
+  not slow: check the display, power-cycle, start over). Separately, its
+  bundled image doesn't carry the bcachefs module, and even a custom `--kexec`
+  image gets silently skipped on a retry unless you also pass `--force-kexec`
+  (`nixos-anywhere` assumes "already in a compatible installer" means "don't
+  bother re-kexec'ing"). Booting the real target image directly over USB
+  sidesteps both problems. If you'd rather use kexec anyway (faster when it
+  works): build with `pkgs/bcachefs-kexec-installer` instead, pass `--kexec
+  ./result/....tar.gz --force-kexec`, and keep the default
+  `kexec,disko,install,reboot` phases. `--kexec` also accepts an `http(s)://`
+  URL - the target fetches it itself via `wget`, so hosting one on a
+  LAN-reachable nginx avoids re-uploading a large file every time.
+- **The installer's SSH host key is genuinely fresh per boot.** Its root is
+  `tmpfs` (verify with `findmnt /`), and `nixos-images`/the stock installer
+  both generate a new `ssh_host_ed25519_key` every boot. Confirm it's really
+  fresh (not baked into the image) before adopting it: mtime should match
+  your session, and `readlink -f /etc/ssh/ssh_host_ed25519_key` should show a
+  plain file, not a symlink into `/nix/store`. Once confirmed, this is why
+  step 6/7 works without generating a separate key - that's why
+  `nixos-anywhere --extra-files` seeding it to `/etc/ssh/ssh_host_ed25519_key`
+  gives the fleet-wide `sops.age.sshKeyPaths` default
+  (`modules/hosts/nixos/default.nix`) something to decrypt secrets with from
+  the very first boot, no two-phase post-install dance needed. This only
+  applies to a normal persistent-root host - `kiosk-gene-desk` (wipe-every-boot
+  impermanence) has a separate, already-solved version of this problem; see
+  `scripts/prep-install-bootstrap.sh`.
+- **`--env-password` (`sshpass -e ssh-copy-id`) is unreliable in practice** -
+  confirmed repeatedly looping `Permission denied` / `Too many authentication
+  failures` even with the right password, on an install where a plain
+  `sshpass -e ssh` with that same password worked fine moments earlier. Step
+  12/13's pre-authorized-key approach avoids `ssh-copy-id` entirely.
+- **Never run two `nixos-anywhere` attempts against the same target at
+  once.** A stale/forgotten background attempt keeps retrying its own auth in
+  parallel and can stall the one that's actually working - confirmed: a real
+  install's `nix copy` froze solid for several minutes while an orphaned
+  duplicate kept failing `ssh-copy-id` against the same host in the
+  background. Check `ps aux | grep nixos-anywhere` before assuming a stuck
+  install is just slow.
+- **A GUI askpass helper** (`genebean.programs.askpass`/`ksshaskpass`) can
+  make a plain `ssh`/`sshpass` command (e.g. the inspection steps above) hang
+  on a prompt it can't parse non-interactively, instead of using `$SSHPASS`.
+  Point `SSH_ASKPASS` at a trivial script rather than disabling askpass
+  outright - `SSH_ASKPASS_REQUIRE=never` also disables the legitimate
+  password fallback and breaks auth entirely:
+  ```bash
+  printf '#!/bin/sh\necho "$SSHPASS"\n' > /tmp/askpass.sh && chmod +x /tmp/askpass.sh
+  SSHPASS='<password>' SSH_ASKPASS=/tmp/askpass.sh SSH_ASKPASS_REQUIRE=force ssh root@<installer-ip> ...
+  ```
+- **Always pass `--skip-checks` to `deploy-rs`** when running it from a
+  laptop/desktop, not just from `mightymac` as the existing note under
+  [Deploying](#deploying) states - its pre-deploy `nix flake check` builds
+  **every** node's full closure locally regardless of that node's own
+  `remoteBuild` setting, not just the one you're targeting. Forgetting this
+  genuinely OOM'd a 14GB-RAM laptop in practice.
+- **bcachefs is out-of-tree again** (kernel maintainer conflict, back to a
+  DKMS-style module) - `bcachefs-tools` being present doesn't mean the kernel
+  can mount one; a stock ISO can `bcachefs format` fine but then fails with
+  `mount: unknown filesystem type 'bcachefs'`. `pkgs/bcachefs-installer-iso`'s
+  `boot.extraModulePackages = [ config.boot.kernelPackages.bcachefs ];` fixes
+  this - referencing `config.boot.kernelPackages` rather than a hardcoded
+  version keeps it self-matching whatever kernel the image ships, since
+  out-of-tree modules are ABI-locked to one exact kernel build.
+- **`disko` always emits `--label=${label}` to `bcachefs format`**, even for
+  a single-disk filesystem. An unset (empty-string-default) `label` produces
+  a literally empty `--label=` argument, which `bcachefs-tools` rejects with
+  `error creating disk path: Invalid argument (os error 22)`. Always set an
+  explicit, non-empty `label` on every bcachefs-typed partition (see
+  `tcan-left/disk-config.nix`).

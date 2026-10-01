@@ -77,6 +77,7 @@ modules/
 |---|---|---|---|
 | bigboy | NixOS | x86_64 | ThinkPad P52, daily driver |
 | nixnuc | NixOS | x86_64 | Home server, runs most services |
+| tcan-left | NixOS | x86_64 | MacPro6,1 ("trashcan"), home server, bcachefs root (3-subvolume split: `/`, `/nix`, `/var/lib`) |
 | hetznix01 | NixOS | x86_64 | Hetzner VPS, runs email + matrix, primary VPS |
 | hetznix02 | NixOS | aarch64 | Hetzner VPS, build host for Raspberry Pi's |
 | kiosk-entryway | NixOS | x86_64 | Lenovo Q190, headless kiosk, WiFi only (`wlp3s0`) |
