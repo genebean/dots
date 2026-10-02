@@ -59,6 +59,14 @@
       flake = false;
     };
 
+    hermes-agent = {
+      # git+https, not github: - the plain github tarball fetcher kept
+      # truncating on this repo (large translated-docs tree); git protocol
+      # fetching is more robust for it.
+      url = "git+https://github.com/NousResearch/hermes-agent";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     hermes-social-digest-pipeline = {
       url = "github:genebean/HermesSocialDigestPipeline";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -328,6 +336,9 @@
         };
         tcan-left = localLib.mkNixosHost {
           hostname = "tcan-left";
+          additionalModules = [
+            inputs.hermes-agent.nixosModules.default
+          ];
         };
       }; # end nixosConfigurations
 
