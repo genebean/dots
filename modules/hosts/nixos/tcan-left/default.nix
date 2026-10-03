@@ -9,6 +9,7 @@
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
+    ./hermes
     ./monitoring.nix
     ./ollama.nix
     ./ports.nix

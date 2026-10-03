@@ -59,6 +59,11 @@
       flake = false;
     };
 
+    hermes-agent = {
+      url = "git+https://github.com/NousResearch/hermes-agent";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     hermes-social-digest-pipeline = {
       url = "github:genebean/HermesSocialDigestPipeline";
       inputs.nixpkgs.follows = "nixpkgs";

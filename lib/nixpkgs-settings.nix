@@ -10,6 +10,7 @@
     };
     overlays = [
       (final: prev: {
+        buzz-cli = prev.callPackage ../pkgs/buzz-cli { };
         dnclient = prev.callPackage ../pkgs/dnclient { };
         filtered-podcast-feeds = prev.callPackage ../pkgs/filtered-podcast-feeds { };
         nixdiff = prev.callPackage ../pkgs/nixdiff { };
