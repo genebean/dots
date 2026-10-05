@@ -85,6 +85,7 @@ builder {
       channels = [
         "a100215b-9a61-4e58-b8bf-47542cd20b78" # press-room
         "381f80a4-7398-47a5-ac60-78401a73e1a8" # the-paper
+        "4c1462b1-fc3b-4567-9b43-5f5e75e11635" # news-editors
       ];
       home_channel = "381f80a4-7398-47a5-ac60-78401a73e1a8"; # the-paper
       # require_mention stays at the shared default (true,
