@@ -27,10 +27,6 @@ builder {
   };
   environmentFiles = [ "/run/secrets/hermes_leo_buzz_identity" ];
 
-  environment = {
-    BUZZ_RELAY_URL = "https://buzz.home.technicalissues.us";
-  };
-
   hermesSettings = {
     model = {
       default = "gpt-5.6-sol"; # matches gene-personal's existing choice

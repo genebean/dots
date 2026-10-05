@@ -1,6 +1,8 @@
-# Charlie: the Forgejo-scoped planning worker. Watches only senior-staff,
-# only ever acts on messages from Leo (BUZZ_ALLOWED_USERS, appended to its
-# own identity secret) - see AGENTS.md.
+# Charlie: the Forgejo-scoped planning worker. Watches only senior-staff.
+# Any relay member can technically message it (BUZZ_ALLOW_ALL_USERS, the
+# shared container-builder.nix default) - the "only act on Leo's
+# instructions" rule is judgment enforced in AGENTS.md, not a technical
+# allow-list.
 #
 # Forgejo access is via `tea` (Gitea's official CLI, pkgs.tea), run through
 # Charlie's own generic terminal tool - not an MCP server. No bundled or
@@ -45,10 +47,6 @@ in
         # persisted login (tea-login-setup below), not a live env var per
         # call. Still bind-mounted above so that setup unit can read it.
       ];
-
-      environment = {
-        BUZZ_RELAY_URL = "https://buzz.home.technicalissues.us";
-      };
 
       extraPackages = [ pkgs.tea ];
 
