@@ -13,7 +13,7 @@
   ...
 }:
 let
-  digestPipeline = inputs.hermes-social-digest-pipeline.packages.${pkgs.system};
+  digestPipeline = inputs.hermes-social-digest-pipeline.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   # time.timeZone is set fleet-wide for every agent container via

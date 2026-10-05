@@ -8,7 +8,7 @@ let
   # Pull WordPress core and plugins from nixpkgs-unstable so security releases
   # land faster than the pinned stable channel provides.
   unstablePkgs = import inputs.nixpkgs-unstable {
-    inherit (pkgs) system;
+    system = pkgs.stdenv.hostPlatform.system;
     config.allowUnfree = pkgs.config.allowUnfree;
   };
 
