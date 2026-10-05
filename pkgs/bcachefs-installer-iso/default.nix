@@ -20,7 +20,7 @@
 #   nixos-anywhere --phases disko,install,reboot \
 #     --flake .#<hostname> --extra-files <dir> --env-password nixos@<installer-ip>
 { inputs, pkgs }:
-(inputs.nixos-images.inputs.nixos-stable.legacyPackages.${pkgs.system}.nixos [
+(inputs.nixos-images.inputs.nixos-stable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.nixos [
   inputs.nixos-images.nixosModules.image-installer
   (
     { config, ... }:

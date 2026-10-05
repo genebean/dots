@@ -31,7 +31,7 @@
 #   nixos-anywhere --kexec "$(readlink -f result)/nixos-kexec-installer-noninteractive-x86_64-linux.tar.gz" \
 #     --flake .#<hostname> --extra-files <dir> nixos@<installer-ip>
 { inputs, pkgs }:
-(inputs.nixos-images.inputs.nixos-stable.legacyPackages.${pkgs.system}.nixos [
+(inputs.nixos-images.inputs.nixos-stable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.nixos [
   inputs.nixos-images.nixosModules.kexec-installer
   inputs.nixos-images.nixosModules.noninteractive
   {

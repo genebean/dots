@@ -14,7 +14,7 @@ let
     hostPkgs = pkgs;
     hostTimeZone = config.time.timeZone;
   };
-  digestPipeline = inputs.hermes-social-digest-pipeline.packages.${pkgs.system};
+  digestPipeline = inputs.hermes-social-digest-pipeline.packages.${pkgs.stdenv.hostPlatform.system};
 
   # Generated from the flake input's own source tree (not the built
   # hermes-social-digest-skill derivation - this is a fetched source, so
