@@ -2,10 +2,11 @@
 # Deliberately a plain function, not a NixOS module with its own typed
 # options - keeps each call site a normal, readable module instead of
 # hiding agent-specific config behind indirection. Promote to
-# modules/genebean/nixos/ once there are 3+ call sites to generalize the
-# option surface from; with only 2 today (Leo, Charlie) and their
-# per-agent variance not yet settled, a typed module would be guessing at
-# an abstraction boundary.
+# modules/genebean/nixos/ once the option surface stops shifting; three
+# call sites exist today (Leo, Charlie, Danny) but each new one has
+# still been adding a genuinely new parameter (extraHermesHomeFiles most
+# recently), not just reusing the existing surface - a typed module would
+# still be guessing at the abstraction boundary.
 #
 # Each agent is its own systemd-nspawn container running services.hermes-agent
 # in native mode (container.enable = false, the module's own default - not
@@ -39,6 +40,11 @@
   environmentFiles ? [ ], # plain string paths - matches secretBindMounts' keys
   hermesSettings ? { }, # merged over the shared defaults below
   extraPackages ? [ ],
+  extraHermesHomeFiles ? { }, # "<relpath under HERMES_HOME>" -> source path;
+  # merged alongside SOUL.md below. A real Nix option (drives activation-
+  # time file materialization), unlike hermesSettings - never put a skill
+  # or any other HERMES_HOME file under hermesSettings, it only reaches
+  # the agent's own free-form settings.yaml, not the filesystem.
 }:
 {
   # systemd-nspawn does not create bind-mount source directories itself -
@@ -48,8 +54,20 @@
   # as root inside, same UID 0 as the host since privateUsers isn't set,
   # and chowns its own subtree to whatever "hermes" UID it allocates) -
   # this only needs to guarantee the mount source exists at all.
+  #
+  # 0755, not 0750: the `d` tmpfiles directive re-enforces mode/ownership
+  # on every systemd-tmpfiles-resetup.service run (not just on first
+  # creation), which fires on every deploy that touches sops secrets.
+  # 0750 root:root blocked the container's own "hermes" user (not a
+  # member of the host's root group) from even traversing into this
+  # directory, breaking every agent - not just the one whose own config
+  # changed - on every deploy, discovered the hard way when Leo and
+  # Charlie broke from a deploy that only touched Danny's files. The
+  # deeper subdirectories' own tighter permissions (2770 hermes:hermes,
+  # set by each container's own activation) are the real access control;
+  # this directory only needs to exist and be traversable.
   systemd.tmpfiles.rules = [
-    "d ${stateHostPath} 0750 root root -"
+    "d ${stateHostPath} 0755 root root -"
   ];
 
   containers.${name} = {
@@ -88,7 +106,10 @@
 
           extraPackages = [ pkgs.buzz-cli ] ++ extraPackages;
 
-          hermesHomeFiles."SOUL.md" = soulFile;
+          hermesHomeFiles = {
+            "SOUL.md" = soulFile;
+          }
+          // extraHermesHomeFiles;
 
           workingDirectory = "${config.services.hermes-agent.stateDir}/workspace";
           documents."AGENTS.md" = agentsFile;
