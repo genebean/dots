@@ -33,6 +33,11 @@ in
   sops.secrets.emqx_env = {
     path = "${volume_base}/.env";
     owner = username;
-    restartUnits = [ "${config.virtualisation.oci-containers.containers.emqx.serviceName}" ];
+    # `serviceName` is bare; sops-nix's `restartUnits` needs the full unit
+    # name or it ends up in the legacy activation-script restart path and
+    # gets handed to switch-to-configuration-ng without a type suffix,
+    # which systemd's D-Bus API (unlike the `systemctl` CLI) rejects
+    # outright: "Unit name podman-emqx is not valid" (dots#741).
+    restartUnits = [ "${config.virtualisation.oci-containers.containers.emqx.serviceName}.service" ];
   };
 }

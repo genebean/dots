@@ -31,6 +31,13 @@ let
 
   container_name = "buzz";
   service_name = config.virtualisation.oci-containers.containers.${container_name}.serviceName;
+  # `serviceName` is bare (correct for use as a `systemd.services` attrset
+  # key below) - sops-nix's `restartUnits` needs the full unit name, or it
+  # ends up in the legacy activation-script restart path and gets handed to
+  # switch-to-configuration-ng without a type suffix, which systemd's D-Bus
+  # API (unlike the `systemctl` CLI) rejects outright: "Unit name podman-X
+  # is not valid" (dots#741).
+  service_unit = "${service_name}.service";
 in
 {
   virtualisation.oci-containers.containers.${container_name} = {
@@ -141,7 +148,7 @@ in
     # BUZZ_S3_ACCESS_KEY=<same value as rustfs_env's RUSTFS_ACCESS_KEY>
     # BUZZ_S3_SECRET_KEY=<same value as rustfs_env's RUSTFS_SECRET_KEY>
     buzz_env = {
-      restartUnits = [ service_name ];
+      restartUnits = [ service_unit ];
     };
 
     # RELAY_OWNER_PUBKEY=<hex pubkey> — Jed's dedicated Nostr identity
@@ -151,7 +158,7 @@ in
     #   this pubkey as the owner automatically on startup — no separate
     #   membership step needed.
     fleet_owner_pubkey = {
-      restartUnits = [ service_name ];
+      restartUnits = [ service_unit ];
       sopsFile = ../../../../shared/secrets.yaml;
     };
 
