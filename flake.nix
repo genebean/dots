@@ -309,7 +309,11 @@
           hostname = "nixnuc";
           additionalModules = [
             inputs.cup-collector.nixosModules.default
-            inputs.hermes-social-digest-pipeline.nixosModules.default
+            # Not hermes-social-digest-pipeline's module - the collector
+            # moved to Danny's own container (hermes-agent-fleet-plan
+            # issue 40). hermes-social-summerizer stays: it backs
+            # social-reader-mcp, the MCP server itself, unrelated to the
+            # collector and not being touched.
             inputs.hermes-social-summerizer.nixosModules.default
             inputs.private-flake.nixosModules.private.nixnuc
             inputs.ytdlfin.nixosModules.default

@@ -19,6 +19,7 @@ let
   builder = import ../container-builder.nix {
     inherit inputs;
     hostPkgs = pkgs;
+    hostTimeZone = config.time.timeZone;
   };
   forgejoUrl = "https://git.home.technicalissues.us";
 in

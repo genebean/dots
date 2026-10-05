@@ -12,6 +12,7 @@ let
   builder = import ../container-builder.nix {
     inherit inputs;
     hostPkgs = pkgs;
+    hostTimeZone = config.time.timeZone;
   };
 in
 builder {

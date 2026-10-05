@@ -42,22 +42,11 @@
   ];
 
   networking = {
-    # hermes-agent-fleet-plan issue 37: no real DNS record for
-    # social-reader-mcp.home.technicalissues.us (internal-only service,
-    # LAN hostnames aren't in public/zone DNS) - a plain hosts-file entry
-    # resolving straight to nixnuc is the settled fix, confirmed with the
-    # owner directly on that issue. ACME's own DNS-01 cert issuance for
-    # this hostname is unrelated to this entry (it validates ownership via
-    # a TXT record at the DNS provider, not this file) and already works
-    # through modules/shared/nixos/lets-encrypt.nix.
-    #
-    # This entry is on the bare host for now; once Danny's own container
-    # exists (issue 39), it needs this same entry in its own nested
-    # config too - privateNetwork=false shares the network namespace, not
-    # /etc/hosts, which is per-container.
-    hosts = {
-      "192.168.20.190" = [ "social-reader-mcp.home.technicalissues.us" ];
-    };
+    # No social-reader-mcp hosts entry here on the bare host - only
+    # Danny's own container (hermes/danny/social-digest.nix) actually
+    # talks to the MCP, so that's the only place that needs it.
+    # privateNetwork=false shares the network namespace, not /etc/hosts,
+    # which is per-container (hermes-agent-fleet-plan issue 37/40).
 
     firewall = {
       allowedTCPPorts = lib.pipe config.genebean.ports [

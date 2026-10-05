@@ -23,7 +23,6 @@ in
     ./containers/rustfs.nix
     ./cup-collector.nix
     ./filtered-podcast-feeds.nix
-    ./hermes-social-digest.nix
     ./monitoring-stack.nix
     ./ports.nix
     ./social-reader-mcp.nix
