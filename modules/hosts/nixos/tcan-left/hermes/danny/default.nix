@@ -24,7 +24,7 @@ let
   # exact failure mode this file already hit once with the wrong option
   # name for `skills`.
   skillRoot = "${inputs.hermes-social-digest-pipeline}/skills/hermes-social-digest-pipeline";
-  skillFiles = lib.listToAttrs (
+  digestSkillFiles = lib.listToAttrs (
     map (p: {
       # Attribute names can't carry string context (which store paths a
       # string depends on) - only the name needs stripping; `value = p`
@@ -33,6 +33,26 @@ let
       name = "skills/hermes-social-digest-pipeline/${builtins.unsafeDiscardStringContext (lib.removePrefix "${skillRoot}/" (toString p))}";
       value = p;
     }) (lib.filesystem.listFilesRecursive skillRoot)
+  );
+
+  # Jed's private recipient profile (hermes-agent-fleet-plan issue 36,
+  # private-flake PR #14) - a Hiera-style data output, not a NixOS
+  # module. Lands at HERMES_HOME's top level, read directly by the
+  # daily-report-skill (issue 41). Never logged, never quoted verbatim
+  # into a published report - see that skill's own instructions.
+  recipientProfileFiles = {
+    "recipient-profile.yaml" = inputs.private-flake.data.hermes.danny.recipientProfile;
+  };
+
+  # Same recursive-listing approach as digestSkillFiles above, for the
+  # same reason - a template/reference file added to this skill later
+  # (e.g. the HTML report template) gets picked up automatically.
+  dailyReportSkillRoot = toString ./daily-report-skill;
+  dailyReportSkillFiles = lib.listToAttrs (
+    map (p: {
+      name = "skills/daily-social-report/${builtins.unsafeDiscardStringContext (lib.removePrefix "${dailyReportSkillRoot}/" (toString p))}";
+      value = p;
+    }) (lib.filesystem.listFilesRecursive ./daily-report-skill)
   );
 in
 {
@@ -70,15 +90,14 @@ in
 
       extraPackages = [ digestPipeline.hermes-social-digest-pipeline ];
 
-      # Materializes HermesSocialDigestPipeline's own operational-runbook
-      # skill at ${stateDir}/.hermes/skills/hermes-social-digest-pipeline/,
-      # matching the bundled-skills directory convention already observed
-      # at that same path. This locked hermes-agent revision (flake.lock
-      # rev 9a71d5a8) has no declarative `skills` Nix option at all -
-      # confirmed directly against the evaluated module - so
-      # hermesHomeFiles (a real file-materialization option, unlike the
-      # free-form hermesSettings blob) is the correct mechanism.
-      extraHermesHomeFiles = skillFiles;
+      # Materializes: HermesSocialDigestPipeline's own operational-runbook
+      # skill (bundled-skills directory convention, confirmed this locked
+      # hermes-agent revision - flake.lock rev 9a71d5a8 - has no
+      # declarative `skills` Nix option at all); Jed's private recipient
+      # profile (issue 36/41); and Danny's own daily-report-generation
+      # skill (issue 41). hermesHomeFiles is the real file-materialization
+      # option here, unlike the free-form hermesSettings blob.
+      extraHermesHomeFiles = digestSkillFiles // recipientProfileFiles // dailyReportSkillFiles;
 
       hermesSettings = {
         model = {
@@ -100,14 +119,16 @@ in
     })
   ];
 
-  # Deterministic social collection/compilation (hermes-agent-fleet-plan
-  # issue 40) - a dedicated file, same reason nixnuc's own collector got
-  # one: self-contained functionality, not Danny's own agent identity.
-  # Imported into the CONTAINER's nested module system (not the host's),
-  # alongside the pipeline's own NixOS module, which the container
-  # doesn't otherwise import.
+  # Deterministic social collection/compilation (issue 40) and the 6am
+  # daily-report cron registration/trigger (issue 41) - dedicated files,
+  # same reason nixnuc's own collector got one: self-contained
+  # functionality, not Danny's own agent identity. Imported into the
+  # CONTAINER's nested module system (not the host's), alongside the
+  # pipeline's own NixOS module, which the container doesn't otherwise
+  # import.
   containers.danny.config.imports = [
     inputs.hermes-social-digest-pipeline.nixosModules.default
     ./social-digest.nix
+    ./daily-report-cron.nix
   ];
 }

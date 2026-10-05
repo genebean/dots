@@ -121,6 +121,17 @@
 
           environment = {
             BUZZ_RELAY_URL = "https://buzz.home.technicalissues.us";
+            # Resolved explicitly rather than left to `shutil.which("buzz")`
+            # on PATH (plugins/platforms/buzz/adapter.py's standalone/cron
+            # send path, `_resolve_cli_path`) - confirmed that lookup only
+            # sees whichever process's own PATH is in effect, which is NOT
+            # the same for every caller (hermes-agent.service's PATH
+            # includes buzz-cli from this same extraPackages list; an
+            # interactive `machinectl shell` root session does not, and
+            # failed cron delivery with "buzz CLI binary not found" when
+            # testing issue 41's daily-social-report job from one). An
+            # absolute path sidesteps that PATH-dependence entirely.
+            BUZZ_CLI_PATH = "${pkgs.buzz-cli}/bin/buzz";
             # Every agent allows any relay member to talk to it - caution
             # and reporting-structure judgment (e.g. Charlie only acting on
             # Leo's instructions) lives in each agent's own AGENTS.md, not

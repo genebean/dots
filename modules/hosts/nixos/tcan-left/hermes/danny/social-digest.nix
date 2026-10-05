@@ -44,27 +44,51 @@ in
     timers.catchupSchedule = "04:00";
   };
 
-  systemd.services.hermes-social-digest-compile-context = {
-    description = "Compile cached social-digest candidates into bounded context";
-    serviceConfig = {
-      Type = "oneshot";
-      # Same user collect writes as - needs read access to its state dir.
-      User = "hermes-social-digest";
-      Group = "hermes-social-digest";
-      Environment = "SOCIAL_DIGEST_STATE_DIR=/var/lib/hermes-social-digest";
-      ExecStart = "${digestPipeline.hermes-social-digest-pipeline}/bin/hermes-social-digest-compile-context --since-hours 24 --max-candidates 250";
-      NoNewPrivileges = true;
-      ProtectSystem = "strict";
-      ProtectHome = true;
-      PrivateTmp = true;
+  systemd = {
+    services.hermes-social-digest-compile-context = {
+      description = "Compile cached social-digest candidates into bounded context";
+      serviceConfig = {
+        Type = "oneshot";
+        # Same user collect writes as - needs read access to its state dir.
+        User = "hermes-social-digest";
+        Group = "hermes-social-digest";
+        Environment = "SOCIAL_DIGEST_STATE_DIR=/var/lib/hermes-social-digest";
+        ExecStart = "${digestPipeline.hermes-social-digest-pipeline}/bin/hermes-social-digest-compile-context --since-hours 24 --max-candidates 250";
+        # truncate:, not file: - file: opens without truncating, so a
+        # shorter run leaves stale trailing bytes from the previous one.
+        # Danny's 6am skill reads this as a plain file (hermes-agent-fleet-plan
+        # issue 41) rather than scraping journalctl.
+        StandardOutput = "truncate:/var/lib/hermes-social-digest/latest-context.json";
+        NoNewPrivileges = true;
+        ProtectSystem = "strict";
+        ProtectHome = true;
+        PrivateTmp = true;
+        # ProtectSystem=strict makes /var/lib read-only otherwise, which
+        # would silently break the StandardOutput redirect above.
+        ReadWritePaths = [ "/var/lib/hermes-social-digest" ];
+      };
     };
-  };
-  systemd.timers.hermes-social-digest-compile-context = {
-    description = "Run social-digest compile-context daily";
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "05:50";
-      Persistent = true;
+    timers.hermes-social-digest-compile-context = {
+      description = "Run social-digest compile-context daily";
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnCalendar = "05:50";
+        Persistent = true;
+      };
     };
+    # The collect service's own StateDirectory lands at 0700
+    # hermes-social-digest:hermes-social-digest - confirmed live this
+    # blocks Danny's own `hermes` user from even traversing into the
+    # directory to reach latest-context.json above, regardless of that
+    # file's own 0644 mode (Unix needs +x on every ancestor dir, which
+    # `ls -la` as root doesn't reveal since root bypasses that check).
+    # Re-opening just the top-level directory's traversal bit here, not
+    # the subdirectories underneath (batches/briefings/candidates/locks
+    # stay 0700 - genuinely private intermediate state, not meant for
+    # the report-reading skill). tmpfiles `d` re-enforces this mode on
+    # every systemd-tmpfiles-resetup run, which is what we want here.
+    tmpfiles.rules = [
+      "d /var/lib/hermes-social-digest 0755 hermes-social-digest hermes-social-digest -"
+    ];
   };
 }

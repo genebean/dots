@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{DIGEST_TITLE}}</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1020; --panel: #121a33; --panel-2: #172141;
+      --text: #edf2ff; --muted: #aeb9d6; --line: rgba(255,255,255,.11);
+      --blue: #7dc4ff; --green: #91f2bd; --pink: #ff9bd2;
+      --orange: #ffd38a; --purple: #c8a7ff; --shadow: 0 18px 50px rgba(0,0,0,.32);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(125,196,255,.20), transparent 30rem),
+        radial-gradient(circle at 90% 5%, rgba(255,155,210,.16), transparent 28rem),
+        linear-gradient(180deg, #0b1020 0%, #09101d 100%);
+      color: var(--text);
+    }
+    a { color: inherit; }
+    .wrap { width: min(1040px, 100%); margin: 0 auto; padding: 22px; }
+    header { padding: 26px; border: 1px solid var(--line); border-radius: 28px; background: rgba(18,26,51,.78); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
+    .eyebrow { color: var(--green); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: .76rem; }
+    h1 { margin: 8px 0 8px; font-size: clamp(2rem, 7vw, 4.6rem); line-height: .95; letter-spacing: -.06em; }
+    .sub { margin: 0; color: var(--muted); max-width: 68ch; font-size: 1.02rem; }
+    .status { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 20px; }
+    .stat { border: 1px solid var(--line); border-radius: 18px; padding: 12px; background: rgba(255,255,255,.045); }
+    .stat b { display: block; font-size: 1.3rem; }
+    .stat span { color: var(--muted); font-size: .82rem; }
+    section { margin-top: 26px; }
+    .section-title { display:flex; align-items:end; justify-content:space-between; gap: 12px; margin: 0 2px 12px; }
+    h2 { margin:0; font-size:1.12rem; letter-spacing:-.02em; }
+    .hint { color: var(--muted); font-size: .85rem; }
+    .grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .card { border: 1px solid var(--line); border-radius: 22px; background: linear-gradient(180deg, rgba(23,33,65,.92), rgba(18,26,51,.92)); padding: 16px; box-shadow: 0 10px 28px rgba(0,0,0,.18); }
+    .card h3 { margin: 0 0 8px; font-size: 1.1rem; line-height: 1.18; letter-spacing: -.02em; }
+    .meta { display:flex; flex-wrap:wrap; gap: 7px; margin-bottom: 12px; color: var(--muted); font-size:.82rem; }
+    .pill { border: 1px solid var(--line); border-radius: 999px; padding: 3px 8px; background: rgba(255,255,255,.04); }
+    .mastodon { color: var(--purple); } .bsky { color: var(--blue); } .nostr { color: var(--pink); } .local { color: var(--orange); }
+    .why { margin: 0 0 10px; color: #dfe6ff; }
+    .signals { margin: 0; padding: 10px 12px; border-radius: 14px; background: rgba(0,0,0,.18); color: var(--muted); font-size: .9rem; }
+    .actions { display:flex; flex-wrap:wrap; gap: 8px; margin-top: 13px; }
+    .button { display:inline-block; text-decoration:none; border-radius: 999px; padding: 8px 11px; background: rgba(125,196,255,.12); border: 1px solid rgba(125,196,255,.35); font-size:.9rem; }
+    .wide { grid-column: 1 / -1; }
+    .compact-list { margin:0; padding-left: 1.15rem; color: var(--muted); }
+    footer { margin: 28px 0 8px; color: var(--muted); font-size: .85rem; text-align:center; }
+    @media (max-width: 720px) { .wrap { padding: 14px; } header { padding: 20px; border-radius: 22px; } .status { grid-template-columns: repeat(2, minmax(0,1fr)); } .grid { grid-template-columns: 1fr; } .card { border-radius: 20px; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div class="eyebrow">{{EYEBROW}}</div>
+      <h1>{{HEADLINE}}</h1>
+      <p class="sub">{{SUMMARY}}</p>
+      <div class="status">{{STATUS_CARDS}}</div>
+    </header>
+
+    {{SECTIONS}}
+
+    <footer>{{FOOTER}}</footer>
+  </main>
+</body>
+</html>
+
+<!--
+Template notes:
+- Render each digest item as an <article class="card">.
+- The <h3> must be the title/summary top line.
+- Use meta pills for platform, author, and time.
+- Use p.why and p.signals for the short rationale.
+- Add visible/tappable <a class="button"> links in .actions.
+- For Mastodon cards, use two actions:
+  1. Open via Fosstodon: https://fosstodon.org/authorize_interaction?uri=<urlencoded-original-post-url>
+  2. Open in Toot!: cx-c3-toot://<best-effort-target>
+  More generally, label the first action `Open via <instance name>` if the account instance changes. Do not add a separate `Original` web action in normal digests; the home-instance HTTPS action points to the same post with the user's account context.
+- Keep the file self-contained for Matrix attachment delivery.
+-->
