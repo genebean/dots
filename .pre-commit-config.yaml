@@ -1,6 +1,13 @@
+default_install_hook_types: [pre-commit, commit-msg]
 repos:
   - repo: local
     hooks:
+      - id: check-cross-repo-issue-refs
+        name: check-cross-repo-issue-refs
+        entry: scripts/check-cross-repo-issue-refs.sh
+        language: system
+        stages: [commit-msg]
+
       - id: nixfmt
         name: nixfmt
         entry: nix
