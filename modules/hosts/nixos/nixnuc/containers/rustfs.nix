@@ -7,7 +7,7 @@
 # nixConfig/cachix substituter), while the image is the same official
 # artifact, already built. Same reasoning as the podman-container pattern
 # already used elsewhere in this directory for upstream-only-published
-# services (see hindsight-gene-personal.nix).
+# services.
 #
 # Single-node/single-volume (one path in RUSTFS_VOLUMES below) — orico is a
 # two-disk ZFS mirror (`zpool status`), which is already the redundancy layer;

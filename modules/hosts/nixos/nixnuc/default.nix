@@ -16,7 +16,6 @@ in
     ./hardware-configuration.nix
     ./containers/audiobookshelf.nix
     ./containers/buzz.nix
-    ./containers/hindsight-gene-personal.nix
     ./containers/mountain-mesh-bot-discord.nix
     ./containers/photon.nix
     ./containers/psitransfer.nix
