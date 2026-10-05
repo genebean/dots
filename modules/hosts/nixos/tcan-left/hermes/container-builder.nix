@@ -26,6 +26,10 @@
   # buzz-cli entry, etc.) - a container's nested NixOS evaluation builds its
   # own fresh pkgs by default and doesn't inherit the host's overlays, so
   # this gets threaded through via nixpkgs.pkgs below instead.
+  hostTimeZone, # the host's own config.time.timeZone - a container's nested
+  # evaluation doesn't inherit it either (defaults to UTC), and every
+  # agent's logs/timers should read in the same zone as the host they
+  # actually run on, not wherever the flake happened to default.
 }:
 {
   name,
@@ -93,6 +97,7 @@
       {
         nixpkgs.pkgs = hostPkgs;
         system.stateVersion = stateVersion;
+        time.timeZone = hostTimeZone;
 
         imports = [ inputs.hermes-agent.nixosModules.default ];
 

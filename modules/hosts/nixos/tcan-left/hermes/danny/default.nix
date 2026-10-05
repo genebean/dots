@@ -12,6 +12,7 @@ let
   builder = import ../container-builder.nix {
     inherit inputs;
     hostPkgs = pkgs;
+    hostTimeZone = config.time.timeZone;
   };
   digestPipeline = inputs.hermes-social-digest-pipeline.packages.${pkgs.system};
 
@@ -34,63 +35,79 @@ let
     }) (lib.filesystem.listFilesRecursive skillRoot)
   );
 in
-builder {
-  name = "danny";
-  soulFile = ./SOUL.md;
-  agentsFile = ./AGENTS.md;
-  stateHostPath = "/var/lib/hermes-containers/danny";
-  stateVersion = "26.05";
+{
+  imports = [
+    (builder {
+      name = "danny";
+      soulFile = ./SOUL.md;
+      agentsFile = ./AGENTS.md;
+      stateHostPath = "/var/lib/hermes-containers/danny";
+      stateVersion = "26.05";
 
-  secretBindMounts = {
-    "/run/secrets/hermes_danny_buzz_identity" = {
-      hostPath = config.sops.secrets.hermes_danny_buzz_identity.path;
-      isReadOnly = true;
-    };
-    "/run/secrets/hermes_danny_mcp_token" = {
-      hostPath = config.sops.secrets.hermes_danny_mcp_token.path;
-      isReadOnly = true;
-    };
-  };
-  environmentFiles = [
-    "/run/secrets/hermes_danny_buzz_identity"
-    "/run/secrets/hermes_danny_mcp_token"
+      secretBindMounts = {
+        "/run/secrets/hermes_danny_buzz_identity" = {
+          hostPath = config.sops.secrets.hermes_danny_buzz_identity.path;
+          isReadOnly = true;
+        };
+        "/run/secrets/hermes_danny_mcp_token" = {
+          hostPath = config.sops.secrets.hermes_danny_mcp_token.path;
+          isReadOnly = true;
+        };
+      };
+      environmentFiles = [
+        "/run/secrets/hermes_danny_buzz_identity"
+        "/run/secrets/hermes_danny_mcp_token"
+      ];
+
+      environment = {
+        # Not a secret - matches HermesSocialDigestPipeline's own SKILL.md
+        # env convention, for manual/ad-hoc `hermes-social-digest-collect`
+        # invocations inside the agent's own shell. The actual scheduled
+        # collect/compile-context systemd units (./social-digest.nix) use
+        # the module's own `mcp.url` option instead, not this env var.
+        SOCIAL_READER_MCP_URL = "https://social-reader-mcp.home.technicalissues.us:8443/mcp";
+      };
+
+      extraPackages = [ digestPipeline.hermes-social-digest-pipeline ];
+
+      # Materializes HermesSocialDigestPipeline's own operational-runbook
+      # skill at ${stateDir}/.hermes/skills/hermes-social-digest-pipeline/,
+      # matching the bundled-skills directory convention already observed
+      # at that same path. This locked hermes-agent revision (flake.lock
+      # rev 9a71d5a8) has no declarative `skills` Nix option at all -
+      # confirmed directly against the evaluated module - so
+      # hermesHomeFiles (a real file-materialization option, unlike the
+      # free-form hermesSettings blob) is the correct mechanism.
+      extraHermesHomeFiles = skillFiles;
+
+      hermesSettings = {
+        model = {
+          default = "gpt-5.6-sol"; # matches Leo's / Charlie's existing choice
+          provider = "codex";
+        };
+        gateway.platforms.buzz.extra = {
+          channels = [
+            "a100215b-9a61-4e58-b8bf-47542cd20b78" # press-room
+            "381f80a4-7398-47a5-ac60-78401a73e1a8" # the-paper
+            "4c1462b1-fc3b-4567-9b43-5f5e75e11635" # news-editors
+          ];
+          home_channel = "381f80a4-7398-47a5-ac60-78401a73e1a8"; # the-paper
+          # require_mention stays at the shared default (true,
+          # container-builder.nix) - Danny only activates on an explicit
+          # @-mention or a reply to his own message.
+        };
+      };
+    })
   ];
 
-  environment = {
-    # Not a secret - matches HermesSocialDigestPipeline's own SKILL.md env
-    # convention. hermes-agent-fleet-plan issue 40 wires the actual
-    # collect/compile systemd units that read this.
-    SOCIAL_READER_MCP_URL = "https://social-reader-mcp.home.technicalissues.us:8443/mcp";
-  };
-
-  extraPackages = [ digestPipeline.hermes-social-digest-pipeline ];
-
-  # Materializes HermesSocialDigestPipeline's own operational-runbook
-  # skill at ${stateDir}/.hermes/skills/hermes-social-digest-pipeline/,
-  # matching the bundled-skills directory convention already observed at
-  # that same path. This locked hermes-agent revision (flake.lock rev
-  # 9a71d5a8) has no declarative `skills` Nix option at all - confirmed
-  # directly against the evaluated module - so hermesHomeFiles (a real
-  # file-materialization option, unlike the free-form hermesSettings
-  # blob) is the correct mechanism. Not yet wired into any schedule
-  # (issue 40's job) - just present and ready.
-  extraHermesHomeFiles = skillFiles;
-
-  hermesSettings = {
-    model = {
-      default = "gpt-5.6-sol"; # matches Leo's / Charlie's existing choice
-      provider = "codex";
-    };
-    gateway.platforms.buzz.extra = {
-      channels = [
-        "a100215b-9a61-4e58-b8bf-47542cd20b78" # press-room
-        "381f80a4-7398-47a5-ac60-78401a73e1a8" # the-paper
-        "4c1462b1-fc3b-4567-9b43-5f5e75e11635" # news-editors
-      ];
-      home_channel = "381f80a4-7398-47a5-ac60-78401a73e1a8"; # the-paper
-      # require_mention stays at the shared default (true,
-      # container-builder.nix) - Danny only activates on an explicit
-      # @-mention or a reply to his own message.
-    };
-  };
+  # Deterministic social collection/compilation (hermes-agent-fleet-plan
+  # issue 40) - a dedicated file, same reason nixnuc's own collector got
+  # one: self-contained functionality, not Danny's own agent identity.
+  # Imported into the CONTAINER's nested module system (not the host's),
+  # alongside the pipeline's own NixOS module, which the container
+  # doesn't otherwise import.
+  containers.danny.config.imports = [
+    inputs.hermes-social-digest-pipeline.nixosModules.default
+    ./social-digest.nix
+  ];
 }
