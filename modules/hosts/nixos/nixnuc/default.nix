@@ -88,6 +88,19 @@ in
         (builtins.filter (e: e.openFirewall && e.protocol == "udp"))
         (map (e: e.port))
       ];
+
+      # hermes-agent-fleet-plan issue 37: social-reader-mcp-https (8443) is
+      # deliberately NOT in genebean.ports' openFirewall allowlist above -
+      # that would open it fleet-wide. Only tcan-left (Danny's host) may
+      # reach it; everyone else falls through to nixos-fw's normal default
+      # reject, same as any other unlisted port. See dots#760 for making
+      # this a reusable genebean.ports option once there's a second case.
+      extraCommands = ''
+        iptables -A nixos-fw -p tcp -s 192.168.20.191 --dport ${toString config.genebean.ports.social-reader-mcp-https.port} -j nixos-fw-accept
+      '';
+      extraStopCommands = ''
+        iptables -D nixos-fw -p tcp -s 192.168.20.191 --dport ${toString config.genebean.ports.social-reader-mcp-https.port} -j nixos-fw-accept || true
+      '';
     };
 
     hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4
@@ -584,6 +597,26 @@ in
           acmeRoot = null;
           forceSSL = true;
           locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.wallabag.port}";
+        };
+        # hermes-agent-fleet-plan issue 37: Danny's only path to
+        # social-reader-mcp. Its own dedicated port (not the shared
+        # genebean.ports.https listener other vhosts use) - the firewall
+        # rule below restricts TCP/8443 to tcan-left specifically, and
+        # mixing that with the fleet-wide-reachable 443 vhosts would make
+        # the restriction easy to lose track of later.
+        "social-reader-mcp.${home_domain}" = {
+          listen = [
+            {
+              inherit (config.genebean.ports.social-reader-mcp-https) port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/mcp".proxyPass =
+            "http://${backend_ip}:${toString config.genebean.ports.social-reader-mcp.port}/mcp";
         };
         "ytdlfin.${home_domain}" = {
           listen = [
