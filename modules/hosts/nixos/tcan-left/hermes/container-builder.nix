@@ -93,7 +93,19 @@
           workingDirectory = "${config.services.hermes-agent.stateDir}/workspace";
           documents."AGENTS.md" = agentsFile;
 
-          inherit environment environmentFiles;
+          environment = {
+            BUZZ_RELAY_URL = "https://buzz.home.technicalissues.us";
+            # Every agent allows any relay member to talk to it - caution
+            # and reporting-structure judgment (e.g. Charlie only acting on
+            # Leo's instructions) lives in each agent's own AGENTS.md, not
+            # a technical allow-list. Without this, hermes-agent's
+            # authz_mixin defaults to deny-all once BUZZ_ALLOWED_USERS is
+            # unset (gateway/authz_mixin.py's _principal_authorized) - this
+            # has to be set, not just absent.
+            BUZZ_ALLOW_ALL_USERS = "true";
+          }
+          // environment;
+          inherit environmentFiles;
 
           settings = lib.recursiveUpdate {
             # Buzz is this agent's interactive surface, not Hermes's own
