@@ -26,5 +26,12 @@
     hermes_charlie_forgejo_token = {
       sopsFile = ../../../../shared/secrets.yaml;
     };
+    # Declared here ahead of Danny's own container (hermes-agent-fleet-plan
+    # issue 39) so the identity can be exercised via buzz-cli directly for
+    # issue 38's own verification (channel participation, a real
+    # #press-room/#the-paper test) without waiting on the container build.
+    hermes_danny_buzz_identity = {
+      sopsFile = ../../../../shared/secrets.yaml;
+    };
   };
 }
