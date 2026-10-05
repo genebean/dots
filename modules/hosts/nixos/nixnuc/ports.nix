@@ -77,10 +77,6 @@
     };
 
     # Firewalled TCP services continued
-    social-reader-mcp = {
-      port = 8787;
-      openFirewall = true;
-    };
     rustfs-console = {
       port = 9011;
       openFirewall = true;
@@ -100,6 +96,19 @@
     # same pattern as buzz-relay itself.
     buzz-pair-relay = {
       port = 5000;
+    };
+    # NOT openFirewall (that would open it fleet-wide) - restricted to
+    # tcan-left (192.168.20.191) only, via a dedicated iptables rule in
+    # this host's own default.nix, not the generic allowlist. See
+    # dots#760 for generalizing this pattern once there's a second case.
+    social-reader-mcp-https = {
+      port = 8443;
+    };
+    # Loopback-only (bound to 127.0.0.1 in the owning module, no firewall
+    # entry needed at all) - hermes-agent-fleet-plan issue 37. nginx on
+    # social-reader-mcp-https (above) is the only path in.
+    social-reader-mcp = {
+      port = 8787;
     };
     # Loopback-only (bound to 127.0.0.1 in the owning module, no firewall
     # entry needed at all): the S3 API. Buzz is the only consumer and runs

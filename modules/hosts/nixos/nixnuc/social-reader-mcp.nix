@@ -17,11 +17,13 @@
     http = {
       enable = true;
 
-      bindAddress = "0.0.0.0";
+      bindAddress = "127.0.0.1";
       environmentFile = config.sops.secrets.social_reader_mcp_env.path;
-      # Bind on all interfaces — LAN-only access, no nginx proxy in front.
-      # The bearer token (SOCIAL_READER_MCP_HTTP_TOKEN in environmentFile)
-      # is the sole auth mechanism.
+      # Loopback-only - hermes-agent-fleet-plan issue 37 puts nginx in front
+      # (TLS termination + source-IP restriction to tcan-left only) rather
+      # than exposing this directly. The bearer token
+      # (SOCIAL_READER_MCP_HTTP_TOKEN in environmentFile) remains the
+      # actual auth mechanism; nginx only handles transport and reachability.
       port = config.genebean.ports.social-reader-mcp.port;
     };
 
