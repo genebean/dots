@@ -60,6 +60,11 @@ in
   # "rustfsadmin" default for either value once network-reachable at all,
   # even LAN-only.
   sops.secrets.rustfs_env = {
-    restartUnits = [ config.virtualisation.oci-containers.containers.rustfs.serviceName ];
+    # `serviceName` is bare; sops-nix's `restartUnits` needs the full unit
+    # name or it ends up in the legacy activation-script restart path and
+    # gets handed to switch-to-configuration-ng without a type suffix,
+    # which systemd's D-Bus API (unlike the `systemctl` CLI) rejects
+    # outright: "Unit name podman-rustfs is not valid" (dots#741).
+    restartUnits = [ "${config.virtualisation.oci-containers.containers.rustfs.serviceName}.service" ];
   };
 }
