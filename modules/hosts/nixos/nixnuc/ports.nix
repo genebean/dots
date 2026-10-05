@@ -82,16 +82,6 @@
       openFirewall = true;
     };
 
-    # Tailscale-scoped TCP services (openFirewall stays false here — exposure
-    # is via networking.firewall.interfaces.tailscale0 in the owning module,
-    # not the fleet-wide allowlist)
-    hindsight-gene-personal-api = {
-      port = 8889;
-    };
-    hindsight-gene-personal-ui = {
-      port = 9999;
-    };
-
     # Loopback-only: reached via nginx's /pair location on the buzz vhost,
     # same pattern as buzz-relay itself.
     buzz-pair-relay = {

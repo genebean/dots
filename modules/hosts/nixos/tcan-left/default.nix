@@ -11,8 +11,6 @@
     ./hardware-configuration.nix
     ./hermes
     ./monitoring.nix
-    ./ollama.nix
-    ./ports.nix
   ];
 
   system.stateVersion = "26.05";

@@ -13,9 +13,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.file.".claude/skills/hindsight-global-memory/SKILL.md".source =
-      ./claude-code/hindsight-global-memory/SKILL.md;
-
     home.packages = lib.mkIf pkgs.stdenv.hostPlatform.isLinux [ pkgs.claude-code ];
   };
 }
