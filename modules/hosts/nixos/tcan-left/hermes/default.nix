@@ -15,10 +15,14 @@
     ./leo
     ./charlie
     ./danny
+    ./cj
   ];
 
   sops.secrets = {
     hermes_leo_buzz_identity = {
+      sopsFile = ../../../../shared/secrets.yaml;
+    };
+    hermes_cj_buzz_identity = {
       sopsFile = ../../../../shared/secrets.yaml;
     };
     hermes_charlie_buzz_identity = {
