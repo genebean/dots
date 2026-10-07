@@ -38,7 +38,7 @@ builder {
         "3abc3d5f-9460-41d8-a26a-e9b50abf7da2" # senior-staff
         "a100215b-9a61-4e58-b8bf-47542cd20b78" # press-room
       ];
-      home_channel = "a100215b-9a61-4e58-b8bf-47542cd20b78"; # press-room
+      home_channel = "3abc3d5f-9460-41d8-a26a-e9b50abf7da2"; # senior-staff
       # require_mention stays at the shared default (true,
       # container-builder.nix) - C.J. only delivers on direction, same as
       # Charlie/Danny, not a primary conversational partner like Leo.
