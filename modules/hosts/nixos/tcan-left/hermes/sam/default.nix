@@ -1,9 +1,11 @@
-# Sam: the GitHub product-repo worker (mylittletechbot). Branches, commits,
-# and opens PRs against dots/private-flake/Hermes app repos - never
-# self-merges, see AGENTS.md. Any relay member can technically message it
-# (BUZZ_ALLOW_ALL_USERS, the shared container-builder.nix default); the
-# "only act on Leo's instructions" rule is judgment enforced in AGENTS.md,
-# not a technical allow-list - same shape as Charlie.
+# Sam: the GitHub product-repo worker (mylittletechbot). Forks, branches,
+# commits, and opens PRs against dots and the Hermes app repos - never
+# self-merges, see AGENTS.md. No private-flake access (it moved to
+# Forgejo; Sam holds no Forgejo credential). Any relay member can
+# technically message it (BUZZ_ALLOW_ALL_USERS, the shared
+# container-builder.nix default); the "only act on Leo's instructions"
+# rule is judgment enforced in AGENTS.md, not a technical allow-list -
+# same shape as Charlie.
 #
 # GitHub App, not a PAT (hermes-agent-fleet-plan's authority-boundaries.md
 # explicitly prefers this): a GitHub App's private key mints short-lived
