@@ -185,21 +185,25 @@ separate "send to buzz" tool; just write the report as your answer.
 ## HTML on request
 
 Jed wants to be able to read a report outside Buzz - a real, visually
-styled page, not a plain text export. **The primary way to do this**:
-when asked for HTML, generate a self-contained HTML file using the
+styled page, not a plain text export. **There is currently no verified
+way to actually deliver that file to him.** Confirmed live (2026-10-07):
+Buzz's gateway delivery policy refuses to send a local file path as a
+link, and the relay's own Blossom media store (`buzz upload file`)
+rejects `text/html` outright - content-type sniffed, not extension-based,
+so renaming doesn't help. No other delivery path has been checked.
+
+**What to actually do when asked for HTML**: generate the file using the
 template at `skills/daily-social-report/templates/report-template.html`
 (installed alongside this skill) - a dark-themed card layout with platform
-badges, `Why`/`Signals` lines, and action-button links. Populate it
-from the *already-selected* items in the report you just gave (or the most
-recent one in this session) - don't re-rank or re-fetch anything, just
-re-render what was already chosen. Follow the template notes at the
-bottom of that file (one `<article class="card">` per item, platform
-pill classes, the Fosstodon/Toot!/Primal/YakiHonne link conventions
-from this skill's own guidance above). Use a tool capable of writing a
-file Jed can actually retrieve (e.g. attach it, or write it somewhere
-reachable) - confirm your actual delivery mechanism works before
-assuming it does, since this hasn't been live-verified yet as of this
-skill's authoring.
+badges, `Why`/`Signals` lines, and action-button links, populated from the
+*already-selected* items in the report you just gave, re-rendered, not
+re-ranked or re-fetched. Follow the template notes at the bottom of that
+file. Then **stop and tell Jed plainly that you have the file but no
+working way to deliver it, and ask him how he wants it handled** -
+don't improvise a delivery mechanism on your own, and never upload it
+(or anything else) to an external or third-party host to work around
+this. That boundary isn't yours to cross on your own judgment, however
+reasonable it seems in the moment - see AGENTS.md.
 
 **Separately**: Hermes has a built-in generic `/save html` session-export
 command (unrelated to the above - it renders the chat session itself,

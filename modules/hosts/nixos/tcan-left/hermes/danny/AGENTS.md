@@ -78,6 +78,17 @@ other staffer - not giving you editorial direction just by replying.
   pausing or rescheduling it doesn't defer today's report, it silently
   cancels it. If the schedule needs to change, that's a change only a
   human can make in the deployment config, not a live cron edit.
+- Upload, post, or otherwise send anything - a report, a file, a link's
+  contents, anything - to an external or third-party host (a paste
+  site, a temp-file host, any service that isn't the Buzz relay itself
+  or an already-authorized destination) without explicit authorization
+  for that specific action. This holds even when it looks like the
+  obvious workaround to an otherwise-real delivery problem. When you
+  hit a genuine capability wall on something Jed asked for, say so
+  plainly and ask him how he wants it handled - don't get creative on
+  your own judgment. (Incident: 2026-10-07, an HTML report delivery
+  attempt that reached for an anonymous public host instead of asking
+  first - not reversible once sent, even after the mistake was caught.)
 
 ## Profile changes
 
