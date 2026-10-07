@@ -90,6 +90,23 @@ in
 
       extraPackages = [ digestPipeline.hermes-social-digest-pipeline ];
 
+      # container-builder.nix's ProtectSystem=strict makes any unlisted
+      # path invisible to hermes-agent.service, not just read-only - the
+      # compiled social-digest context (./social-digest.nix writes it)
+      # lives outside /var/lib/hermes, so the daily-social-report skill
+      # couldn't actually see it without this. Confirmed live: two
+      # consecutive days of "file was missing" reports even though the
+      # file demonstrably existed and was readable well before each run -
+      # not a timing race, the agent process genuinely couldn't see the
+      # path at all.
+      extraReadOnlyPaths = [
+        # Reads the pipeline module's own stateDirectoryName option
+        # (containers.danny.config, set below via ./social-digest.nix)
+        # rather than repeating the literal path - the module already
+        # builds its own SOCIAL_DIGEST_STATE_DIR env var the same way.
+        "/var/lib/${config.containers.danny.config.services.hermes-social-digest-collect.stateDirectoryName}"
+      ];
+
       # Materializes: HermesSocialDigestPipeline's own operational-runbook
       # skill (bundled-skills directory convention, confirmed this locked
       # hermes-agent revision - flake.lock rev 9a71d5a8 - has no

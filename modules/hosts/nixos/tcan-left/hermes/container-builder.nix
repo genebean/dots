@@ -44,6 +44,11 @@
   environmentFiles ? [ ], # plain string paths - matches secretBindMounts' keys
   hermesSettings ? { }, # merged over the shared defaults below
   extraPackages ? [ ],
+  extraReadOnlyPaths ? [ ], # container-internal paths hermes-agent.service
+  # needs to read beyond /var/lib/hermes - ProtectSystem=strict (below)
+  # makes every unlisted path invisible to the process, not just read-only,
+  # so an agent that reads external state (e.g. Danny's compiled social
+  # digest) needs its directory listed here explicitly.
   extraHermesHomeFiles ? { }, # "<relpath under HERMES_HOME>" -> source path;
   # merged alongside SOUL.md below. A real Nix option (drives activation-
   # time file materialization), unlike hermesSettings - never put a skill
@@ -191,6 +196,7 @@
           CapabilityBoundingSet = "";
           LockPersonality = true;
           ProcSubset = "pid";
+          ReadOnlyPaths = extraReadOnlyPaths;
           ProtectClock = true;
           ProtectControlGroups = true;
           ProtectHostname = true;
