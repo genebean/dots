@@ -40,11 +40,13 @@ builder {
         "8a05dee5-ad45-4492-a68c-d5497be47a1f" # oval-office
       ];
       home_channel = "8a05dee5-ad45-4492-a68c-d5497be47a1f"; # oval-office
-      # Leo is the primary conversational partner - he should respond to
-      # any message in his channels without needing an @-mention every
-      # time. Every subordinate keeps the shared require_mention = true
-      # default (container-builder.nix) so they stay quiet unless addressed.
-      require_mention = false;
+      # Was false (Leo as always-listening primary conversational partner)
+      # - reverted to the shared require_mention = true default
+      # (container-builder.nix) after he was found responding to messages
+      # that weren't actually addressed to him. No override needed; this
+      # line exists only to document that the choice was deliberate, not
+      # an oversight.
+      require_mention = true;
     };
   };
 }
