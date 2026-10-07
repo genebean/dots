@@ -157,7 +157,8 @@
 
     # Private flake for sensitive configs
     private-flake = {
-      url = "github:genebean/private-flake";
+      url = "git+https://git.home.technicalissues.us/genebean/private-flake";
+      #url = "github:genebean/private-flake";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         simple-nixos-mailserver.follows = "simple-nixos-mailserver";
