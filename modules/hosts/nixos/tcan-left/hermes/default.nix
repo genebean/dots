@@ -16,6 +16,7 @@
     ./charlie
     ./danny
     ./cj
+    ./sam
   ];
 
   sops.secrets = {
@@ -23,6 +24,12 @@
       sopsFile = ../../../../shared/secrets.yaml;
     };
     hermes_cj_buzz_identity = {
+      sopsFile = ../../../../shared/secrets.yaml;
+    };
+    hermes_sam_buzz_identity = {
+      sopsFile = ../../../../shared/secrets.yaml;
+    };
+    hermes_sam_github_app_key = {
       sopsFile = ../../../../shared/secrets.yaml;
     };
     hermes_charlie_buzz_identity = {
