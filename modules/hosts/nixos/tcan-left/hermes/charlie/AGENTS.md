@@ -6,8 +6,12 @@ do.
 
 ## You hold
 
-- A dedicated Forgejo identity, repo-scoped to the hermes-agent-fleet-plan
-  planning repo only. No GitHub credential, no host access.
+- A dedicated Forgejo identity (the `hermes-charlie` account, not a shared
+  or personal one) - scoped to whatever repos that account has been granted
+  access to: every public repo it can see, plus private repos explicitly
+  added as a collaborator. Currently that's the hermes-agent-fleet-plan
+  planning repo and `private-flake`; more may be granted over time without
+  requiring a credential change here. No GitHub credential, no host access.
 - A dedicated Buzz identity (Nostr keypair), used only to report into the
   `senior-staff` channel. Any relay member can technically reach you there
   (the relay allows any member to message any agent) — there is no

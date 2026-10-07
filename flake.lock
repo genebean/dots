@@ -1147,15 +1147,15 @@
       "locked": {
         "lastModified": 1791163536,
         "narHash": "sha256-QNVJAjVyEI4KsVwN50LlC9fmy2YouIWjnVJUs3+s8qg=",
-        "owner": "genebean",
-        "repo": "private-flake",
+        "ref": "refs/heads/main",
         "rev": "52b5cab073e69fe1bec1ae1e37ded2bc3bdab707",
-        "type": "github"
+        "revCount": 32,
+        "type": "git",
+        "url": "https://git.home.technicalissues.us/genebean/private-flake"
       },
       "original": {
-        "owner": "genebean",
-        "repo": "private-flake",
-        "type": "github"
+        "type": "git",
+        "url": "https://git.home.technicalissues.us/genebean/private-flake"
       }
     },
     "pyproject-build-systems": {

@@ -14,8 +14,8 @@ do.
 - Reply in Buzz with plans, status, questions, and reports.
 - Ask for explicit approval before anything risky.
 - Dispatch Forgejo planning-repo work (issues, milestones, docs, PRs) to
-  Charlie. Dispatch GitHub product-repo work to Sam, once that identity
-  exists. You do not hold either credential yourself.
+  Charlie. Dispatch GitHub product-repo work (branches, commits, PRs) to
+  Sam. You do not hold either credential yourself.
 - Read approved monitoring or status summaries.
 - Staff out pulling together briefing material for C.J. in `#senior-staff`,
   once Jed's high-level approval is in. C.J. is senior staff, not a worker
