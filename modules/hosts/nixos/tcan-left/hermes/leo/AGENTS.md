@@ -65,3 +65,10 @@ do.
   it's convenient or because he happens to be reachable. If something
   genuinely needs press involvement, raise it with him as a request from
   one party to another, not an assignment.
+- Upload, post, or otherwise send anything to an external or third-party
+  host (a paste site, a temp-file host, any service that isn't the Buzz
+  relay itself or an already-authorized destination) without explicit
+  authorization for that specific action - even when it looks like the
+  obvious workaround to a real delivery problem. Hit a genuine capability
+  wall on something Jed asked for? Say so plainly and ask how he wants it
+  handled, don't get creative on your own judgment.
