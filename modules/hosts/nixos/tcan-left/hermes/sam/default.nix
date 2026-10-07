@@ -173,14 +173,20 @@ in
     };
 
     # Installation tokens expire after 1 hour - refresh well ahead of that.
-    # OnUnitActiveSec alone (no OnBootSec/OnCalendar) is enough: the service
-    # above already guarantees a first mint at boot via `before`, and this
-    # timer only needs to keep it fresh after that.
+    # OnUnitActiveSec doesn't work here - confirmed live (2026-10-07, token
+    # went stale ~5 hours after the one and only refresh). It fires relative
+    # to the target unit's last active-state *transition*, but this service
+    # is Type=oneshot + RemainAfterExit=true, so it transitions into
+    # "active" exactly once and then stays there forever - there's never a
+    # second transition for OnUnitActiveSec to re-anchor against, so it
+    # only ever fires once, ever. OnCalendar is wall-clock based and has no
+    # such dependency on the target unit's own state.
     timers.sam-github-token-refresh = {
       description = "Refresh Sam's GitHub App installation token before it expires";
       wantedBy = [ "timers.target" ];
       timerConfig = {
-        OnUnitActiveSec = "45m";
+        OnCalendar = "*:0/45"; # every 45 minutes, on the hour and :45
+        Persistent = true; # catch up immediately if the container was down
       };
     };
   };
