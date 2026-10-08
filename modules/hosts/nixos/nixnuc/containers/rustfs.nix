@@ -34,7 +34,7 @@ in
       RUSTFS_VOLUMES = "/data";
     };
     environmentFiles = [ config.sops.secrets.rustfs_env.path ];
-    image = "docker.io/rustfs/rustfs:1.0.0";
+    image = "docker.io/rustfs/rustfs:1.0.1";
     ports = [
       "127.0.0.1:${toString config.genebean.ports.rustfs-api.port}:9000"
       "${toString config.genebean.ports.rustfs-console.port}:9001"
