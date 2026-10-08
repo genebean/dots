@@ -65,12 +65,22 @@ in
   };
 
   # https://wiki.nixos.org/wiki/Jellyfin
+  #
+  # Dropped intel-ocl (legacy Intel SRB5.0 OpenCL SDK): this host's CPU is a
+  # 6th-gen Skylake i7-6770HQ, already covered by intel-compute-runtime-legacy1
+  # (NEO, "pre-13th gen cpu") - intel-ocl only matters for older iGPUs NEO
+  # doesn't support. Confirmed on the live host that neither package is
+  # currently exercised anyway: Jellyfin's own encoding.xml has
+  # HardwareAccelerationType=none (pure software transcoding), and
+  # /etc/OpenCL/vendors/ doesn't exist at all. Its upstream fetchurl source
+  # (both the primary mirror and the web.archive.org fallback) started
+  # returning 403 and broke CI - removed rather than patched since it was
+  # never load-bearing for this hardware to begin with.
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
       intel-compute-runtime-legacy1 # pre-13th gen cpu
       intel-media-driver # For Broadwell and newer (ca. 2014+), use with LIBVA_DRIVER_NAME=iHD:
-      intel-ocl # Generic OpenCL support
     ];
   };
 

@@ -80,7 +80,7 @@ in
       "--cap-drop=ALL"
       "--security-opt=no-new-privileges"
     ];
-    image = "ghcr.io/block/buzz:sha-fccc07e";
+    image = "ghcr.io/block/buzz:sha-70d2ca7";
     volumes = [
       "/var/lib/buzz-relay:/data/git"
     ];
@@ -105,7 +105,7 @@ in
       "--cap-drop=ALL"
       "--security-opt=no-new-privileges"
     ];
-    image = "ghcr.io/block/buzz:sha-fccc07e";
+    image = "ghcr.io/block/buzz:sha-70d2ca7";
   };
 
   # Podman doesn't auto-create bind-mount host directories (unlike Docker);
