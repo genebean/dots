@@ -12,6 +12,7 @@
       claude-code.enable = true;
       diff.enable = true;
       git.enable = true;
+      mcp-nixos.enable = true;
       nixdiff.enable = true;
       powershell.enable = true;
       sops.enable = true;
@@ -52,7 +53,6 @@
       lazydocker
       lazygit
       lua-language-server
-      mcp-nixos
       minicom
       mtr
       nak

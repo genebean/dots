@@ -26,6 +26,7 @@
     ./programs/libreoffice.nix
     ./programs/localsend.nix
     ./programs/logseq.nix
+    ./programs/mcp-nixos.nix
     ./programs/meld.nix
     ./programs/mkvtoolnix.nix
     ./programs/nixdiff.nix
