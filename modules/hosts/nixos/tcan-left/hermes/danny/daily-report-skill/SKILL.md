@@ -182,6 +182,14 @@ buzz` already configured on it - **your final response in this run is
 what gets published to `#the-paper`**. You don't need to call a
 separate "send to buzz" tool; just write the report as your answer.
 
+**Split across multiple messages if it's long** - this report routinely
+runs long on an active day, and a single oversized message risks
+truncation at Buzz's character limit (confirmed happening in practice:
+a full report got cut off mid-list). Break at natural section
+boundaries (top picks / local-regional / news / mood-lighteners) rather
+than mid-item. This applies generally, not just to this skill - see
+AGENTS.md.
+
 ## HTML on request
 
 Jed wants to be able to read a report outside Buzz - a real, visually
