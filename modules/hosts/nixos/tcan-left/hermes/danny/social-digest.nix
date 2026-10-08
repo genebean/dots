@@ -62,7 +62,14 @@ in
       # winning by a wide margin. Overriding the mode at its actual
       # source (here) removes the fight entirely - the tmpfiles rule
       # this replaced is gone, not left behind as dead weight.
-      hermes-social-digest-collect.serviceConfig.StateDirectoryMode = "0755";
+      #
+      # mkForce, not a plain assignment: evaluating this inside
+      # containers.danny's nested config hits a second, equal-priority
+      # "0700" definition of the same option (nix eval --show-trace
+      # attributes it to nixpkgs' nixos-containers.nix, not to
+      # HermesSocialDigestPipeline's own module) - a plain assignment
+      # here conflicts with it instead of winning.
+      hermes-social-digest-collect.serviceConfig.StateDirectoryMode = lib.mkForce "0755";
 
       hermes-social-digest-compile-context = {
         description = "Compile cached social-digest candidates into bounded context";
