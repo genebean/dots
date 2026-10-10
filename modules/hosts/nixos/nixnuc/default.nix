@@ -22,6 +22,7 @@ in
     ./containers/rustfs.nix
     ./cup-collector.nix
     ./filtered-podcast-feeds.nix
+    ./forgejo.nix
     ./monitoring-stack.nix
     ./ports.nix
     ./social-reader-mcp.nix
@@ -195,33 +196,6 @@ in
         TZ = "America/New_York";
       };
       virtualHost = "budget-importer.${home_domain}";
-    };
-    forgejo = {
-      enable = true;
-      database.type = "postgres";
-      lfs.enable = true;
-      settings = {
-        # Add support for actions, based on act: https://github.com/nektos/act
-        actions = {
-          ENABLED = true;
-          DEFAULT_ACTIONS_URL = "github";
-        };
-        DEFAULT.APP_NAME = "Beantown's Code";
-        repository = {
-          DEFAULT_PUSH_CREATE_PRIVATE = true;
-          ENABLE_PUSH_CREATE_ORG = true;
-          ENABLE_PUSH_CREATE_USER = true;
-        };
-        server = {
-          DOMAIN = "git.${home_domain}";
-          HTTP_PORT = config.genebean.ports.forgejo.port;
-          LANDING_PAGE = "explore";
-          ROOT_URL = "https://git.${home_domain}/";
-        };
-        service.DISABLE_REGISTRATION = true;
-        session.COOKIE_SECURE = true;
-      };
-      stateDir = "/orico/forgejo";
     };
     fwupd.enable = true;
     jellyfin = {
@@ -683,7 +657,6 @@ in
     resolved.enable = true;
     restic.backups.daily = {
       paths = [
-        config.services.forgejo.stateDir
         config.services.mealie.settings.DATA_DIR
         config.services.nextcloud.home
         "${config.users.users.${username}.home}/compose-files/wallabag"
