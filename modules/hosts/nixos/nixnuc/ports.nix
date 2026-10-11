@@ -119,6 +119,11 @@
     newspaper-webhook = {
       port = 9103;
     };
+    # Loopback-only: oauth2-proxy gating the newspaper vhost against
+    # PocketID. nginx is the only consumer, same host.
+    newspaper-oauth2-proxy = {
+      port = 9104;
+    };
 
     # Internal-only TCP services (proxied via nginx, not firewalled)
     pocket-id = {
