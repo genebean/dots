@@ -113,6 +113,12 @@
     buzz-metrics = {
       port = 9102;
     };
+    # Loopback-only: the CI deploy-trigger endpoint. Reached through nginx's
+    # /hooks/ location on the newspaper vhost, same pattern as
+    # social-reader-mcp-https/social-reader-mcp above.
+    newspaper-webhook = {
+      port = 9103;
+    };
 
     # Internal-only TCP services (proxied via nginx, not firewalled)
     pocket-id = {
@@ -138,6 +144,9 @@
     };
     mealie = {
       port = 9000;
+    };
+    newspaper = {
+      port = 9002;
     };
 
     # UDP services
