@@ -36,6 +36,16 @@
 # version, not :latest - this is upstream's image, not ours), not a
 # custom-built image: Nix itself can pull in whatever else a job needs
 # (skopeo for registry pushes, etc.) via `nix run`/`nix shell` at use-time.
+#
+# This image has no Node.js, which breaks any workflow step using a JS
+# GitHub Action (actions/checkout@v4 included - confirmed directly: "node:
+# executable file not found in $PATH") since this runner doesn't inject a
+# node runtime into the job container the way GitHub's hosted runners do.
+# Fix lives in each workflow, not here: a first step does
+# `nix profile install nixpkgs#nodejs` (confirmed directly against this
+# exact image - lands on /root/.nix-profile/bin, already on this image's
+# PATH) before any step that needs a JS action. All steps in a job share
+# the same container, so that's enough for the rest of the job too.
 {
   config,
   inputs,
