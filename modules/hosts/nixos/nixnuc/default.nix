@@ -555,15 +555,29 @@ in
           acmeRoot = null;
           forceSSL = true;
           locations = {
-            # Basic auth only - CI's own bearer-token check (X-Deploy-Token)
-            # already gates this path, and a browser-auth prompt here would
-            # just break the automated POST from the publish workflow.
+            # `satisfy any;` - either passes: basicAuthFile (Hermes agents,
+            # which can't do an interactive OIDC login) OR the PocketID
+            # auth_request that services.oauth2-proxy.nginx injects at the
+            # vhost level (humans, restricted to the "beantown_subscribers"
+            # group - see newspaper.nix). Without this the two would stack
+            # as a requirement, not an alternative.
             "/" = {
               basicAuthFile = config.sops.secrets.newspaper_basic_auth.path;
               proxyPass = "http://${backend_ip}:${toString config.genebean.ports.newspaper.port}";
+              extraConfig = ''
+                satisfy any;
+              '';
             };
-            "/hooks/".proxyPass =
-              "http://127.0.0.1:${toString config.genebean.ports.newspaper-webhook.port}/hooks/";
+            # Exempt from the vhost-wide auth_request PocketID gating adds -
+            # this already has its own bearer-token check (X-Deploy-Token),
+            # and either a basic-auth prompt or an OIDC redirect here would
+            # break the automated POST from the publish workflow.
+            "/hooks/" = {
+              proxyPass = "http://127.0.0.1:${toString config.genebean.ports.newspaper-webhook.port}/hooks/";
+              extraConfig = ''
+                auth_request off;
+              '';
+            };
           };
         };
         "nextcloud.${home_domain}" = {
