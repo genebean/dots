@@ -24,6 +24,7 @@ in
     ./filtered-podcast-feeds.nix
     ./forgejo.nix
     ./monitoring-stack.nix
+    ./newspaper.nix
     ./ports.nix
     ./social-reader-mcp.nix
     ./zfs-datasets.nix
@@ -540,6 +541,29 @@ in
               proxyPass = "http://127.0.0.1:${toString config.genebean.ports.victoriametrics.port}/api/v1/write";
               proxyWebsockets = true;
             };
+          };
+        };
+        "newspaper.${home_domain}" = {
+          listen = [
+            {
+              inherit (config.genebean.ports.https) port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations = {
+            # Basic auth only - CI's own bearer-token check (X-Deploy-Token)
+            # already gates this path, and a browser-auth prompt here would
+            # just break the automated POST from the publish workflow.
+            "/" = {
+              basicAuthFile = config.sops.secrets.newspaper_basic_auth.path;
+              proxyPass = "http://${backend_ip}:${toString config.genebean.ports.newspaper.port}";
+            };
+            "/hooks/".proxyPass =
+              "http://127.0.0.1:${toString config.genebean.ports.newspaper-webhook.port}/hooks/";
           };
         };
         "nextcloud.${home_domain}" = {
