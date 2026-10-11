@@ -52,8 +52,6 @@ in
         credential."https://git.home.technicalissues.us".helper =
           "!${gitCredentialNixAuth}/bin/git-credential-nix-auth";
 
-        diff.sopsdiffer.textconv = "sops --config /dev/null --decrypt";
-
         init = {
           defaultBranch = "main";
         };
