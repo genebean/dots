@@ -52,6 +52,10 @@ in
             git fetch origin "$default_branch":"$default_branch" && git rebase "$default_branch"
           }
 
+          gsops() {
+            git -c diff.sopsdiffer.textconv="sops --config /dev/null --decrypt" "$@"
+          }
+
           function nv() {
             # Assumes all configs exist in directories named ~/.config/nvim-*
             local config=$(fd --max-depth 1 --glob 'nvim*' ~/.config | fzf --prompt="Neovim Configs > " --height=~50% --layout=reverse --border --exit-0)
