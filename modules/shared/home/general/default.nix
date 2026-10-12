@@ -48,6 +48,10 @@
       htop
       httpie
       hub
+      # Stable has beads (1.0.3), but it's too far behind - meaningful work
+      # has landed upstream since stable's version was cut. Pull from
+      # unstable (1.3.1 at time of writing) instead.
+      (import inputs.nixpkgs-unstable { inherit (pkgs.stdenv.hostPlatform) system; }).beads
       inputs.nix-auth.packages.${stdenv.hostPlatform.system}.default
       jq
       lazydocker
