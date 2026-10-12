@@ -113,6 +113,18 @@ in
       '';
     };
 
+    # oauth2-proxy's OIDC discovery call (newspaper.nix) was hitting
+    # PocketID via its public hostname despite both running on this same
+    # host - fine most of the time via hairpin NAT, but not guaranteed, and
+    # unnecessary for a same-host call. Pin it to this host's own LAN IP
+    # instead of 127.0.0.1 - confirmed live that nginx does NOT route SNI
+    # correctly on loopback (serves the wrong vhost's cert, breaking TLS
+    # verification entirely), but the LAN IP is the same path every real
+    # client already uses successfully.
+    extraHosts = ''
+      192.168.20.190 id.home.technicalissues.us
+    '';
+
     hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4
 
     useDHCP = false;
