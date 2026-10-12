@@ -24,7 +24,14 @@ in
       clientID = "195c68b6-1600-4620-ad89-37beee72b5e0"; # PocketID client "The Paper"
       clientSecretFile = config.sops.secrets.newspaper_oauth2_client_secret.path;
       cookie.secretFile = config.sops.secrets.newspaper_oauth2_cookie_secret.path;
-      extraConfig."code-challenge-method" = "S256"; # For PKCE
+      extraConfig = {
+        "code-challenge-method" = "S256"; # For PKCE
+        # Without this, every login's post-auth redirect back to the site's
+        # own URL gets rejected ("domain / port not in whitelist") and falls
+        # back to a generic default instead of returning the user to where
+        # they started. Confirmed live in oauth2-proxy's logs.
+        "whitelist-domain" = "newspaper.home.technicalissues.us";
+      };
       email.domains = [ "*" ];
       httpAddress = "http://127.0.0.1:${toString config.genebean.ports.newspaper-oauth2-proxy.port}";
       nginx = {

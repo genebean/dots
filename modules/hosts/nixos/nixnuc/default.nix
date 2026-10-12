@@ -113,6 +113,14 @@ in
       '';
     };
 
+    # oauth2-proxy's OIDC discovery call (newspaper.nix) was hitting
+    # PocketID via its public hostname despite both running on this same
+    # host - fine most of the time via hairpin NAT, but not guaranteed, and
+    # unnecessary for a same-host call. Pin it to loopback instead.
+    extraHosts = ''
+      127.0.0.1 id.home.technicalissues.us
+    '';
+
     hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4
 
     useDHCP = false;
