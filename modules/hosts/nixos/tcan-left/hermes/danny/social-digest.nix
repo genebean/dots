@@ -9,7 +9,6 @@
   config,
   inputs,
   pkgs,
-  lib,
   ...
 }:
 let
@@ -48,29 +47,20 @@ in
 
   systemd = {
     services = {
-      # HermesSocialDigestPipeline's own module leaves this service's
-      # StateDirectoryMode at systemd's 0700 default, and systemd
-      # reasserts that mode on every service start - not just at
-      # directory creation. Confirmed live (2026-10-08): a tmpfiles
-      # `d 0755` rule here looked like it should keep
-      # /var/lib/hermes-social-digest traversable for Danny's own
-      # `hermes` user, and did, briefly, right after each boot - but the
-      # collect timer fires 5x/day (10:00/14:00/18:00/22:00/05:30 plus a
-      # 04:00 catchup), and the very next run silently re-clamped the
-      # directory back to 0700, well before Danny's 6am report ever read
-      # it. Two reset sources fighting over one directory, one of them
-      # winning by a wide margin. Overriding the mode at its actual
-      # source (here) removes the fight entirely - the tmpfiles rule
-      # this replaced is gone, not left behind as dead weight.
-      #
-      # mkForce, not a plain assignment: evaluating this inside
-      # containers.danny's nested config hits a second, equal-priority
-      # "0700" definition of the same option (nix eval --show-trace
-      # attributes it to nixpkgs' nixos-containers.nix, not to
-      # HermesSocialDigestPipeline's own module) - a plain assignment
-      # here conflicts with it instead of winning.
-      hermes-social-digest-collect.serviceConfig.StateDirectoryMode = lib.mkForce "0755";
-
+      # Permission-fight history, now abandoned in favor of relocating the
+      # output instead (see compile-context below): HermesSocialDigestPipeline's
+      # own module leaves StateDirectoryMode at systemd's 0700 default on
+      # both hermes-social-digest-collect and hermes-social-digest-catchup.
+      # Tried overriding it with lib.mkForce "0755" on both (2026-10-08,
+      # 2026-10-12) - confirmed live each time that the override briefly
+      # "worked" but the live directory kept reverting to 0700 regardless,
+      # including on hermes-social-digest-collect even though its override
+      # had been confirmed working weeks earlier. systemd's StateDirectory
+      # mode-reassertion behavior for an already-existing directory proved
+      # unreliable enough in practice (genebean/dots issue #785) that it
+      # wasn't worth continuing to chase - relocating the one file Danny
+      # actually needs to read sidesteps the whole fight instead of trying
+      # to win it.
       hermes-social-digest-compile-context = {
         description = "Compile cached social-digest candidates into bounded context";
         serviceConfig = {
@@ -84,14 +74,29 @@ in
           # shorter run leaves stale trailing bytes from the previous one.
           # Danny's 6am skill reads this as a plain file (hermes-agent-fleet-plan
           # issue 41) rather than scraping journalctl.
-          StandardOutput = "truncate:${stateDir}/latest-context.json";
+          #
+          # Lands under /var/lib/hermes (Danny's own state dir, already
+          # fully owned/traversable by the `hermes` user) rather than
+          # /var/lib/hermes-social-digest (owned by the separate
+          # hermes-social-digest user/group, mode 0700) - see the services
+          # comment above for why. The file itself still ends up root-owned
+          # either way: StandardOutput's truncate: target is opened by
+          # systemd itself before dropping to User/Group above, same as it
+          # always was.
+          StandardOutput = "truncate:/var/lib/hermes/latest-context.json";
           NoNewPrivileges = true;
           ProtectSystem = "strict";
           ProtectHome = true;
           PrivateTmp = true;
           # ProtectSystem=strict makes /var/lib read-only otherwise, which
-          # would silently break the StandardOutput redirect above.
-          ReadWritePaths = [ stateDir ];
+          # would silently break the StandardOutput redirect above -
+          # confirmed this isn't optional, not just a theoretical risk.
+          # stateDir: still needed to read collect's candidates/batches
+          # output. /var/lib/hermes: the new output location.
+          ReadWritePaths = [
+            stateDir
+            "/var/lib/hermes"
+          ];
         };
       };
     };

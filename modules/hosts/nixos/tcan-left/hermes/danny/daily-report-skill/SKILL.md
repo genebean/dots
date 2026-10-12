@@ -15,7 +15,7 @@ not part of this run).
 
 ## Inputs - read these two files, nothing else
 
-- **Compiled candidates**: `/var/lib/hermes-social-digest/latest-context.json`
+- **Compiled candidates**: `/var/lib/hermes/latest-context.json`
   - Already deduplicated, bounded, and recipient-agnostic (normalized
     candidate metadata only - platform, author, text, url, timestamps).
     It never contains your editorial judgment or Jed's private profile.
