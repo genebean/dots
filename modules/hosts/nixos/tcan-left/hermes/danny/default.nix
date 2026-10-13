@@ -55,6 +55,15 @@ let
       value = p;
     }) (lib.filesystem.listFilesRecursive ./daily-report-skill)
   );
+
+  # Same pattern again, for the file-newspaper-article skill.
+  newspaperArticleSkillRoot = toString ./newspaper-article-skill;
+  newspaperArticleSkillFiles = lib.listToAttrs (
+    map (p: {
+      name = "skills/file-newspaper-article/${builtins.unsafeDiscardStringContext (lib.removePrefix "${newspaperArticleSkillRoot}/" (toString p))}";
+      value = p;
+    }) (lib.filesystem.listFilesRecursive ./newspaper-article-skill)
+  );
 in
 {
   imports = [
@@ -95,6 +104,7 @@ in
 
       extraPackages = [
         digestPipeline.hermes-social-digest-pipeline
+        pkgs.git
         pkgs.tea
       ];
 
@@ -119,10 +129,13 @@ in
       # skill (bundled-skills directory convention, confirmed this locked
       # hermes-agent revision - flake.lock rev 9a71d5a8 - has no
       # declarative `skills` Nix option at all); Jed's private recipient
-      # profile (issue 36/41); and Danny's own daily-report-generation
-      # skill (issue 41). hermesHomeFiles is the real file-materialization
-      # option here, unlike the free-form hermesSettings blob.
-      extraHermesHomeFiles = digestSkillFiles // recipientProfileFiles // dailyReportSkillFiles;
+      # profile (issue 36/41); Danny's own daily-report-generation skill
+      # (issue 41); and his file-newspaper-article skill, for turning a
+      # published report into a genebean/newspaper PR. hermesHomeFiles is
+      # the real file-materialization option here, unlike the free-form
+      # hermesSettings blob.
+      extraHermesHomeFiles =
+        digestSkillFiles // recipientProfileFiles // dailyReportSkillFiles // newspaperArticleSkillFiles;
 
       hermesSettings = {
         model = {
