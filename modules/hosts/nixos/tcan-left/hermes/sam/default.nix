@@ -32,21 +32,36 @@
   ...
 }:
 let
+  # tmpfs (/run), not persistent state - an hour-old token left over from a
+  # prior boot would be stale anyway, and this way there's nothing to clean
+  # up on container rebuild either.
+  agentIdeasTokenFile = "/run/sam-agent-ideas-token";
+
   builder = import ../container-builder.nix {
     inherit inputs;
     hostPkgs = pkgs;
     hostTimeZone = config.time.timeZone;
   };
 
+  # Second, separate App - "sam-mylittletechbot" (app id 5288757), installed
+  # directly on genebean, scoped to only genebean/agent-ideas (Issues:
+  # read+write, Contents: read). Confirmed live (2026-10-12) that an
+  # installation token from this App attributes as its own bot identity
+  # (sam-mylittletechbot[bot]), never as genebean - verified before wiring
+  # this in, not assumed. Kept fully separate from the product-repo App
+  # below: different id, different key, different token file, different
+  # wrapper - this one can never be reached for anything broader than
+  # agent-ideas, and the product-repo App can never reach agent-ideas at all
+  # (mylittletechbot only sees repos it owns, confirmed the hard way -
+  # "No repositories found" when trying to select agent-ideas from an
+  # install on mylittletechbot).
+  githubAppAgentIdeasId = "5288757";
+  githubAppAgentIdeasKeyPath = "/run/secrets/hermes_sam_agent_ideas_app_key";
+
   # The App's own identifier - not secret, same tier as a relay/channel ID
   # elsewhere in this file. Only the private key (sops) is sensitive.
   githubAppId = "5204628";
   githubAppKeyPath = "/run/secrets/hermes_sam_github_app_key";
-
-  # tmpfs (/run), not persistent state - an hour-old token left over from a
-  # prior boot would be stale anyway, and this way there's nothing to clean
-  # up on container rebuild either.
-  tokenFile = "/run/sam-github-token";
 
   # For `gh` CLI operations (opening PRs, reading CI results, etc.) -
   # `GH_TOKEN` takes precedence over any persisted `gh auth login`, so this
@@ -56,23 +71,6 @@ let
     token=$(cat ${tokenFile})
     GH_TOKEN="$token" exec ${pkgs.gh}/bin/gh "$@"
   '';
-
-  # Second, separate App - "sam-mylittletechbot" (app id 5288757), installed
-  # directly on genebean, scoped to only genebean/agent-ideas (Issues:
-  # read+write, Contents: read). Confirmed live (2026-10-12) that an
-  # installation token from this App attributes as its own bot identity
-  # (sam-mylittletechbot[bot]), never as genebean - verified before wiring
-  # this in, not assumed. Kept fully separate from the product-repo App
-  # above: different id, different key, different token file, different
-  # wrapper - this one can never be reached for anything broader than
-  # agent-ideas, and the product-repo App can never reach agent-ideas at all
-  # (mylittletechbot only sees repos it owns, confirmed the hard way -
-  # "No repositories found" when trying to select agent-ideas from an
-  # install on mylittletechbot).
-  githubAppAgentIdeasId = "5288757";
-  githubAppAgentIdeasKeyPath = "/run/secrets/hermes_sam_agent_ideas_app_key";
-
-  agentIdeasTokenFile = "/run/sam-agent-ideas-token";
 
   samGhIdeas = pkgs.writeShellScriptBin "sam-gh-ideas" ''
     set -euo pipefail
@@ -93,6 +91,11 @@ let
     echo "username=x-access-token"
     echo "password=$token"
   '';
+
+  # tmpfs (/run), not persistent state - an hour-old token left over from a
+  # prior boot would be stale anyway, and this way there's nothing to clean
+  # up on container rebuild either.
+  tokenFile = "/run/sam-github-token";
 in
 {
   imports = [
@@ -104,12 +107,12 @@ in
       stateVersion = "26.05";
 
       secretBindMounts = {
-        "${githubAppKeyPath}" = {
-          hostPath = config.sops.secrets.hermes_sam_github_app_key.path;
-          isReadOnly = true;
-        };
         "${githubAppAgentIdeasKeyPath}" = {
           hostPath = config.sops.secrets.hermes_sam_agent_ideas_app_key.path;
+          isReadOnly = true;
+        };
+        "${githubAppKeyPath}" = {
+          hostPath = config.sops.secrets.hermes_sam_github_app_key.path;
           isReadOnly = true;
         };
         "/run/secrets/hermes_sam_buzz_identity" = {
@@ -147,134 +150,141 @@ in
     })
   ];
 
-  # Points git at the credential helper above for any github.com HTTPS
-  # remote - a one-time config write, safe to persist (unlike a token
-  # itself) since the helper mints fresh credentials on every git
-  # operation that actually needs one. Same before/RemainAfterExit shape
-  # as Charlie's tea-login-setup.
-  containers.sam.config.systemd.services.git-credential-helper-setup = {
-    description = "Configure Sam's git credential helper for github.com (one-time)";
-    wantedBy = [ "multi-user.target" ];
-    before = [ "hermes-agent.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      User = "hermes";
-      Group = "hermes";
-      Environment = "HOME=/var/lib/hermes";
-    };
-    script = ''
-      set -euo pipefail
-      ${pkgs.git}/bin/git config --global credential.helper \
-        "!${samGitCredentialHelper}/bin/sam-git-credential-helper"
-    '';
-  };
-
   containers.sam.config.systemd = {
-    # Root here is deliberate and the whole point: only this service ever
-    # opens the raw App private key (root:root 0400, sops-nix default,
-    # unchanged on the host side). It writes out only the derived, already-
-    # scoped, hour-lived installation token - never the key itself - so the
-    # `hermes` user (and Sam's own agent process) never gets a path to the
-    # long-lived credential at all, only to tokens that are already short-
-    # lived and narrowly scoped by the time they're readable.
-    services.sam-github-token-refresh = {
-      description = "Mint Sam's GitHub App installation token";
-      wantedBy = [ "multi-user.target" ];
-      before = [ "hermes-agent.service" ];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
+    services = {
+      # Points git at the credential helper above for any github.com HTTPS
+      # remote - a one-time config write, safe to persist (unlike a token
+      # itself) since the helper mints fresh credentials on every git
+      # operation that actually needs one. Same before/RemainAfterExit
+      # shape as the token-refresh services below.
+      git-credential-helper-setup = {
+        description = "Configure Sam's git credential helper for github.com (one-time)";
+        wantedBy = [ "multi-user.target" ];
+        before = [ "hermes-agent.service" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          User = "hermes";
+          Group = "hermes";
+          Environment = "HOME=/var/lib/hermes";
+        };
+        script = ''
+          set -euo pipefail
+          ${pkgs.git}/bin/git config --global credential.helper \
+            "!${samGitCredentialHelper}/bin/sam-git-credential-helper"
+        '';
       };
-      script = ''
-        set -euo pipefail
-        installation_id=$(${pkgs.gh-token}/bin/gh-token installations \
-          --key ${githubAppKeyPath} --app-id ${githubAppId} | ${pkgs.jq}/bin/jq -r '.[0].id')
-        token=$(${pkgs.gh-token}/bin/gh-token generate \
-          --key ${githubAppKeyPath} --app-id ${githubAppId} \
-          --installation-id "$installation_id" | ${pkgs.jq}/bin/jq -r '.token')
-        tmpfile=$(${pkgs.coreutils}/bin/mktemp ${tokenFile}.XXXXXX)
-        printf '%s' "$token" > "$tmpfile"
-        ${pkgs.coreutils}/bin/chown hermes:hermes "$tmpfile"
-        ${pkgs.coreutils}/bin/chmod 0440 "$tmpfile"
-        ${pkgs.coreutils}/bin/mv -f "$tmpfile" ${tokenFile}
 
-        # Self-reschedule rather than relying solely on the OnCalendar timer
-        # below re-arming on its own - confirmed live (2026-10-12) that it
-        # can get stuck after a container reboot: it fires once via its
-        # Persistent catch-up, then silently never computes a next elapse
-        # again (next_elapse frozen at the same timestamp as the last
-        # trigger, NextElapseUSecRealtime empty, `list-timers` shows
-        # Trigger: n/a) - for days, until manually restarted. A fresh
-        # transient timer each run has no prior state to get stuck on.
-        # `|| true` so a rare naming collision with an already-pending
-        # reschedule doesn't fail this run after the token mint already
-        # succeeded; the OnCalendar timer below remains as a backstop.
-        ${pkgs.systemd}/bin/systemd-run --on-active=2700 --collect \
-          --unit=sam-github-token-refresh-reschedule \
-          --description="Reschedule Sam's GitHub token refresh" \
-          ${pkgs.systemd}/bin/systemctl start sam-github-token-refresh.service || true
-      '';
+      # Second App's refresh, same shape as sam-github-token-refresh below -
+      # see that service's comments for why root-only/derived-token-only and
+      # why the self-reschedule exists. Built with the self-reschedule from
+      # the start here, not added after hitting the stuck-timer bug again.
+      sam-agent-ideas-token-refresh = {
+        description = "Mint Sam's genebean-installed GitHub App installation token (agent-ideas)";
+        wantedBy = [ "multi-user.target" ];
+        before = [ "hermes-agent.service" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+        };
+        script = ''
+          set -euo pipefail
+          installation_id=$(${pkgs.gh-token}/bin/gh-token installations \
+            --key ${githubAppAgentIdeasKeyPath} --app-id ${githubAppAgentIdeasId} | ${pkgs.jq}/bin/jq -r '.[0].id')
+          token=$(${pkgs.gh-token}/bin/gh-token generate \
+            --key ${githubAppAgentIdeasKeyPath} --app-id ${githubAppAgentIdeasId} \
+            --installation-id "$installation_id" | ${pkgs.jq}/bin/jq -r '.token')
+          tmpfile=$(${pkgs.coreutils}/bin/mktemp ${agentIdeasTokenFile}.XXXXXX)
+          printf '%s' "$token" > "$tmpfile"
+          ${pkgs.coreutils}/bin/chown hermes:hermes "$tmpfile"
+          ${pkgs.coreutils}/bin/chmod 0440 "$tmpfile"
+          ${pkgs.coreutils}/bin/mv -f "$tmpfile" ${agentIdeasTokenFile}
+
+          ${pkgs.systemd}/bin/systemd-run --on-active=2700 --collect \
+            --unit=sam-agent-ideas-token-refresh-reschedule \
+            --description="Reschedule Sam's agent-ideas GitHub token refresh" \
+            ${pkgs.systemd}/bin/systemctl start sam-agent-ideas-token-refresh.service || true
+        '';
+      };
+
+      # Root here is deliberate and the whole point: only this service ever
+      # opens the raw App private key (root:root 0400, sops-nix default,
+      # unchanged on the host side). It writes out only the derived,
+      # already-scoped, hour-lived installation token - never the key
+      # itself - so the `hermes` user (and Sam's own agent process) never
+      # gets a path to the long-lived credential at all, only to tokens
+      # that are already short-lived and narrowly scoped by the time
+      # they're readable.
+      sam-github-token-refresh = {
+        description = "Mint Sam's GitHub App installation token";
+        wantedBy = [ "multi-user.target" ];
+        before = [ "hermes-agent.service" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+        };
+        script = ''
+          set -euo pipefail
+          installation_id=$(${pkgs.gh-token}/bin/gh-token installations \
+            --key ${githubAppKeyPath} --app-id ${githubAppId} | ${pkgs.jq}/bin/jq -r '.[0].id')
+          token=$(${pkgs.gh-token}/bin/gh-token generate \
+            --key ${githubAppKeyPath} --app-id ${githubAppId} \
+            --installation-id "$installation_id" | ${pkgs.jq}/bin/jq -r '.token')
+          tmpfile=$(${pkgs.coreutils}/bin/mktemp ${tokenFile}.XXXXXX)
+          printf '%s' "$token" > "$tmpfile"
+          ${pkgs.coreutils}/bin/chown hermes:hermes "$tmpfile"
+          ${pkgs.coreutils}/bin/chmod 0440 "$tmpfile"
+          ${pkgs.coreutils}/bin/mv -f "$tmpfile" ${tokenFile}
+
+          # Self-reschedule rather than relying solely on the OnCalendar
+          # timer below re-arming on its own - confirmed live (2026-10-12)
+          # that it can get stuck after a container reboot: it fires once
+          # via its Persistent catch-up, then silently never computes a
+          # next elapse again (next_elapse frozen at the same timestamp as
+          # the last trigger, NextElapseUSecRealtime empty, `list-timers`
+          # shows Trigger: n/a) - for days, until manually restarted. A
+          # fresh transient timer each run has no prior state to get stuck
+          # on. `|| true` so a rare naming collision with an already-
+          # pending reschedule doesn't fail this run after the token mint
+          # already succeeded; the OnCalendar timer below remains as a
+          # backstop.
+          ${pkgs.systemd}/bin/systemd-run --on-active=2700 --collect \
+            --unit=sam-github-token-refresh-reschedule \
+            --description="Reschedule Sam's GitHub token refresh" \
+            ${pkgs.systemd}/bin/systemctl start sam-github-token-refresh.service || true
+        '';
+      };
     };
 
-    # Installation tokens expire after 1 hour - refresh well ahead of that.
-    # OnUnitActiveSec doesn't work here - confirmed live (2026-10-07, token
-    # went stale ~5 hours after the one and only refresh). It fires relative
-    # to the target unit's last active-state *transition*, but this service
-    # is Type=oneshot + RemainAfterExit=true, so it transitions into
-    # "active" exactly once and then stays there forever - there's never a
-    # second transition for OnUnitActiveSec to re-anchor against, so it
-    # only ever fires once, ever. OnCalendar is wall-clock based and has no
-    # such dependency on the target unit's own state - but it has its own
-    # failure mode (see the self-reschedule above), so it's now a backstop
-    # rather than the sole mechanism.
-    timers.sam-github-token-refresh = {
-      description = "Refresh Sam's GitHub App installation token before it expires";
-      wantedBy = [ "timers.target" ];
-      timerConfig = {
-        OnCalendar = "*:0/45"; # every 45 minutes, on the hour and :45
-        Persistent = true; # catch up immediately if the container was down
+    timers = {
+      sam-agent-ideas-token-refresh = {
+        description = "Refresh Sam's genebean-installed GitHub App installation token (backstop)";
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "*:0/45";
+          Persistent = true;
+        };
       };
-    };
 
-    # Second App's refresh, same shape as sam-github-token-refresh above -
-    # see that service's comments for why root-only/derived-token-only and
-    # why the self-reschedule exists. Built with the self-reschedule from
-    # the start here, not added after hitting the stuck-timer bug again.
-    services.sam-agent-ideas-token-refresh = {
-      description = "Mint Sam's genebean-installed GitHub App installation token (agent-ideas)";
-      wantedBy = [ "multi-user.target" ];
-      before = [ "hermes-agent.service" ];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-      };
-      script = ''
-        set -euo pipefail
-        installation_id=$(${pkgs.gh-token}/bin/gh-token installations \
-          --key ${githubAppAgentIdeasKeyPath} --app-id ${githubAppAgentIdeasId} | ${pkgs.jq}/bin/jq -r '.[0].id')
-        token=$(${pkgs.gh-token}/bin/gh-token generate \
-          --key ${githubAppAgentIdeasKeyPath} --app-id ${githubAppAgentIdeasId} \
-          --installation-id "$installation_id" | ${pkgs.jq}/bin/jq -r '.token')
-        tmpfile=$(${pkgs.coreutils}/bin/mktemp ${agentIdeasTokenFile}.XXXXXX)
-        printf '%s' "$token" > "$tmpfile"
-        ${pkgs.coreutils}/bin/chown hermes:hermes "$tmpfile"
-        ${pkgs.coreutils}/bin/chmod 0440 "$tmpfile"
-        ${pkgs.coreutils}/bin/mv -f "$tmpfile" ${agentIdeasTokenFile}
-
-        ${pkgs.systemd}/bin/systemd-run --on-active=2700 --collect \
-          --unit=sam-agent-ideas-token-refresh-reschedule \
-          --description="Reschedule Sam's agent-ideas GitHub token refresh" \
-          ${pkgs.systemd}/bin/systemctl start sam-agent-ideas-token-refresh.service || true
-      '';
-    };
-
-    timers.sam-agent-ideas-token-refresh = {
-      description = "Refresh Sam's genebean-installed GitHub App installation token (backstop)";
-      wantedBy = [ "timers.target" ];
-      timerConfig = {
-        OnCalendar = "*:0/45";
-        Persistent = true;
+      # Installation tokens expire after 1 hour - refresh well ahead of
+      # that. OnUnitActiveSec doesn't work here - confirmed live
+      # (2026-10-07, token went stale ~5 hours after the one and only
+      # refresh). It fires relative to the target unit's last active-state
+      # *transition*, but this service is Type=oneshot + RemainAfterExit=
+      # true, so it transitions into "active" exactly once and then stays
+      # there forever - there's never a second transition for
+      # OnUnitActiveSec to re-anchor against, so it only ever fires once,
+      # ever. OnCalendar is wall-clock based and has no such dependency on
+      # the target unit's own state - but it has its own failure mode (see
+      # the self-reschedule above), so it's now a backstop rather than the
+      # sole mechanism.
+      sam-github-token-refresh = {
+        description = "Refresh Sam's GitHub App installation token before it expires";
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "*:0/45"; # every 45 minutes, on the hour and :45
+          Persistent = true; # catch up immediately if the container was down
+        };
       };
     };
   };
