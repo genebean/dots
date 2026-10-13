@@ -15,6 +15,7 @@ let
     hostTimeZone = config.time.timeZone;
   };
   digestPipeline = inputs.hermes-social-digest-pipeline.packages.${pkgs.stdenv.hostPlatform.system};
+  forgejoUrl = "https://git.home.technicalissues.us";
 
   # Generated from the flake input's own source tree (not the built
   # hermes-social-digest-skill derivation - this is a fetched source, so
@@ -69,6 +70,10 @@ in
           hostPath = config.sops.secrets.hermes_danny_buzz_identity.path;
           isReadOnly = true;
         };
+        "/run/secrets/hermes_danny_forgejo_token" = {
+          hostPath = config.sops.secrets.hermes_danny_forgejo_token.path;
+          isReadOnly = true;
+        };
         "/run/secrets/hermes_danny_mcp_token" = {
           hostPath = config.sops.secrets.hermes_danny_mcp_token.path;
           isReadOnly = true;
@@ -88,7 +93,10 @@ in
         SOCIAL_READER_MCP_URL = "https://social-reader-mcp.home.technicalissues.us:8443/mcp";
       };
 
-      extraPackages = [ digestPipeline.hermes-social-digest-pipeline ];
+      extraPackages = [
+        digestPipeline.hermes-social-digest-pipeline
+        pkgs.tea
+      ];
 
       # container-builder.nix's ProtectSystem=strict makes any unlisted
       # path invisible to hermes-agent.service, not just read-only - the
@@ -148,4 +156,32 @@ in
     ./social-digest.nix
     ./daily-report-cron.nix
   ];
+
+  # Same tea-login-setup shape as Charlie's (and C.J.'s - cj/default.nix),
+  # but idempotent from the start: always delete-then-add rather than
+  # gating on the config file already existing. Charlie's version has the
+  # opposite, known-broken shape (hermes-agent-fleet-plan#51) - a secret
+  # rotation silently has no effect once the file exists once. No reason
+  # to copy that bug into a third identity.
+  containers.danny.config.systemd.services.tea-login-setup = {
+    description = "Register Danny's Forgejo token with tea (idempotent)";
+    wantedBy = [ "multi-user.target" ];
+    before = [ "hermes-agent.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      set -euo pipefail
+      secret_file=/run/secrets/hermes_danny_forgejo_token
+      token=$(sed -n 's/^FORGEJO_TOKEN=//p' "$secret_file")
+      if [ -z "$token" ]; then
+        token=$(cat "$secret_file")
+      fi
+      HOME=/var/lib/hermes ${pkgs.tea}/bin/tea logins delete --name forgejo 2>/dev/null || true
+      HOME=/var/lib/hermes ${pkgs.tea}/bin/tea logins add \
+        --name forgejo --url ${forgejoUrl} --token "$token" --no-version-check
+      chown -R hermes:hermes /var/lib/hermes/.config
+    '';
+  };
 }
