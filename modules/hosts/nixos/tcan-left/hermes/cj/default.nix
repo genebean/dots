@@ -8,6 +8,7 @@
 {
   config,
   inputs,
+  lib,
   pkgs,
   ...
 }:
@@ -18,6 +19,17 @@ let
     hostTimeZone = config.time.timeZone;
   };
   forgejoUrl = "https://git.home.technicalissues.us";
+
+  # Same recursive-listing approach as Danny's own skill materialization
+  # (danny/default.nix) - a file added to this skill later gets picked up
+  # automatically, no Nix change needed.
+  newspaperArticleSkillRoot = toString ./newspaper-article-skill;
+  newspaperArticleSkillFiles = lib.listToAttrs (
+    map (p: {
+      name = "skills/file-newspaper-article/${builtins.unsafeDiscardStringContext (lib.removePrefix "${newspaperArticleSkillRoot}/" (toString p))}";
+      value = p;
+    }) (lib.filesystem.listFilesRecursive ./newspaper-article-skill)
+  );
 in
 {
   imports = [
@@ -39,7 +51,15 @@ in
         };
       };
       environmentFiles = [ "/run/secrets/hermes_cj_buzz_identity" ];
-      extraPackages = [ pkgs.tea ];
+      extraPackages = [
+        pkgs.git
+        pkgs.tea
+      ];
+      # Materializes C.J.'s file-newspaper-article skill, for turning an
+      # already-approved briefing or statement into a genebean/newspaper
+      # PR. hermesHomeFiles is the real file-materialization option here,
+      # unlike the free-form hermesSettings blob.
+      extraHermesHomeFiles = newspaperArticleSkillFiles;
 
       hermesSettings = {
         model = {

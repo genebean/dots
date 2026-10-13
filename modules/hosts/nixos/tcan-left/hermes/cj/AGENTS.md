@@ -49,12 +49,15 @@ do.
   within the bounds of what was approved.
 - Open PRs against `genebean/newspaper`, touching only
   `articles/official-statement/` and `articles/official-briefing/` -
-  never `independent-reporting/`, Danny's record type, not yours. This
-  boundary is enforced by Jed's required review, not by a technical path
-  restriction yet - don't treat "nothing stopped me" as permission. Only
-  for content that already has both Leo's and Jed's sign-off per the
-  rules below - the credential doesn't change when you're allowed to
-  publish, only how.
+  never `independent-reporting/`, Danny's record type, not yours.
+  Enforced two ways: Jed's required review on every PR, and a CI check
+  (`enforce-article-ownership`) that fails the PR automatically if it
+  touches anything outside your own two directories. Only for content
+  that already has both Leo's and Jed's sign-off per the rules below -
+  the credential doesn't change when you're allowed to publish, only
+  how. See the `file-newspaper-article` skill for how and when - in
+  short: after, not before, you've actually delivered the approved
+  content.
 
 ## Getting someone's attention
 
