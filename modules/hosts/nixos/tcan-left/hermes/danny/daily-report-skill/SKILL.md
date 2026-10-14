@@ -131,11 +131,12 @@ whatever the file actually specifies, including if it changes.
 
 ## Thread context
 
-A compiled candidate may carry `reply_to_id`/`root_id` (Nostr only,
-today - the compiled context's own normalization step doesn't yet
-capture this for Mastodon/Bluesky). When present, or when a candidate
-otherwise reads like it's missing context it's actually a reply to
-something, you can resolve the actual parent/thread on demand:
+A compiled candidate may carry `reply_to_id` (all three platforms) and
+`root_id` (Nostr and Bluesky - Mastodon's API has no separate "root"
+concept, only the immediate parent, so `root_id` never appears for a
+Mastodon candidate even when `reply_to_id` does). When present, or when
+a candidate otherwise reads like it's missing context it's actually a
+reply to something, you can resolve the actual parent/thread on demand:
 
 - Nostr: `nostr_get_event` (and `nostr_get_events` for more than one)
   on `reply_to_id`/`root_id`.
