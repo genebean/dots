@@ -20,10 +20,15 @@ not part of this run).
     candidate metadata only - platform, author, text, url, timestamps).
     It never contains your editorial judgment or Jed's private profile.
   - This is the *only* source of candidate content. Do not call any
-    social-reader MCP tool, timeline, or feed function yourself -
-    deterministic collection already happened on a separate schedule
-    and already advanced platform cursors. Calling a live feed tool
-    here would re-fetch or double-count items, not add anything.
+    social-reader timeline or feed function yourself - deterministic
+    collection already happened on a separate schedule and already
+    advanced platform cursors. Calling a live feed tool here would
+    re-fetch or double-count items, not add anything.
+  - Exception: the point-lookup thread-context tools (Mastodon status
+    context, Bluesky post thread, Nostr event lookup - see "Thread
+    context" below) are fine to call during report generation. They
+    resolve one already-collected item's existing thread by ID/URI,
+    never fetch new candidates, and don't touch any cursor.
 - **Jed's private recipient profile**: `/var/lib/hermes/.hermes/recipient-profile.yaml`
   (an absolute path, not relative to anything - your Unix `$HOME` and
   `$HERMES_HOME` are not the same directory here, so "your home
@@ -84,7 +89,10 @@ C) probably omit (generic, redundant, low-context, vague); D) skip
 - -4 speculative/price-chasing content with no substantive tie to an
   actual positive-interest topic.
 - -3 duplicate already covered by a better item.
-- -3 low-context reply where you haven't checked the root/thread.
+- -3 low-context reply where thread context is available but you
+  haven't looked it up (see "Thread context" below) - check first,
+  then apply this penalty only if it's still low-context after
+  checking.
 - -2 vague announcement with no concrete detail.
 - -2 clickbait/threadbait, or a generic install guide/release post with
   no apparent utility.
@@ -118,8 +126,37 @@ whatever the file actually specifies, including if it changes.
 - Replies/thread fragments need overwhelming reason to appear - most
   should be omitted. Include one only when it carries the key value,
   a critical correction, or substantive context from an important
-  source, and you've checked enough of the thread to explain it
-  clearly.
+  source, and you've checked enough of the thread (see "Thread
+  context" below) to explain it clearly.
+
+## Thread context
+
+A compiled candidate may carry `reply_to_id`/`root_id` (Nostr only,
+today - the compiled context's own normalization step doesn't yet
+capture this for Mastodon/Bluesky). When present, or when a candidate
+otherwise reads like it's missing context it's actually a reply to
+something, you can resolve the actual parent/thread on demand:
+
+- Nostr: `nostr_get_event` (and `nostr_get_events` for more than one)
+  on `reply_to_id`/`root_id`.
+- Mastodon: Mastodon status-context lookup on the candidate's own
+  status ID.
+- Bluesky: Bluesky post-thread lookup on the candidate's own URI.
+
+Use this to actually decide, not to pad the report: resolve it, then
+either drop the candidate (still low-context after checking), include
+it with the resolved context folded into your own summary, or - when
+the parent/root is itself a separate item worth a reader's attention -
+include both but say plainly that they're linked rather than silently
+merging them into one entry: *"this appears to be part of a reply
+thread - see also: `<link to the root/parent>`"*. Never present resolved
+thread content as if it came from the compiled context itself.
+
+This is also available outside report generation - if Jed or staff ask
+a follow-up question in `#news-editors` or `#press-room` about
+something you already reported ("what was that a reply to?", "did
+anyone respond?"), resolve it the same way rather than saying you can't
+check.
 
 ## Report shape
 
