@@ -87,10 +87,24 @@ in
           hostPath = config.sops.secrets.hermes_danny_mcp_token.path;
           isReadOnly = true;
         };
+        # Reshapes the bare hermes_danny_mcp_token value (shared, as-is,
+        # with nixnuc's own social-reader-mcp secret) into a KEY=value line
+        # via sops.templates below, so it can land in hermes-agent's own
+        # .env instead of touching the shared secret's format. hermes-agent
+        # resolves a literal "${VAR}" in an mcpServers.*.headers value from
+        # its own process env at MCP-connect time (tools/mcp_tool_config.py
+        # _interpolate_env_vars, confirmed against the locked flake source)
+        # - never from the Nix store, and it fails closed (raises) if the
+        # var isn't set, rather than sending an unresolved placeholder.
+        "/run/secrets/danny-mcp-http-token" = {
+          hostPath = config.sops.templates."danny-mcp-http-token".path;
+          isReadOnly = true;
+        };
       };
       environmentFiles = [
         "/run/secrets/hermes_danny_buzz_identity"
         "/run/secrets/hermes_danny_mcp_token"
+        "/run/secrets/danny-mcp-http-token"
       ];
 
       environment = {
@@ -164,37 +178,87 @@ in
   # CONTAINER's nested module system (not the host's), alongside the
   # pipeline's own NixOS module, which the container doesn't otherwise
   # import.
-  containers.danny.config.imports = [
-    inputs.hermes-social-digest-pipeline.nixosModules.default
-    ./social-digest.nix
-    ./daily-report-cron.nix
-  ];
+  # Reshapes hermes_danny_mcp_token (a bare bearer-token value, shared as-is
+  # with nixnuc's own social-reader-mcp secret - see the sops.secrets
+  # comment above) into a KEY=value line, decrypted straight to a file
+  # outside the Nix store (sops-nix's own activation-time render, same
+  # mechanism nixnuc/newspaper.nix already uses for its webhook token) -
+  # never duplicates the secret's encrypted value, just its on-disk shape.
+  # Bind-mounted into Danny's container and merged into hermes-agent's own
+  # .env below (secretBindMounts/environmentFiles above), so the mcpServers
+  # block's "${SOCIAL_READER_MCP_HTTP_TOKEN}" reference resolves against
+  # the interactive agent's real process env, not a Nix-store literal.
+  sops.templates."danny-mcp-http-token" = {
+    content = "SOCIAL_READER_MCP_HTTP_TOKEN=${config.sops.placeholder.hermes_danny_mcp_token}";
+    restartUnits = [ "container@danny.service" ];
+  };
 
-  # Same tea-login-setup shape as Charlie's (and C.J.'s - cj/default.nix),
-  # but idempotent from the start: always delete-then-add rather than
-  # gating on the config file already existing. Charlie's version has the
-  # opposite, known-broken shape (hermes-agent-fleet-plan#51) - a secret
-  # rotation silently has no effect once the file exists once. No reason
-  # to copy that bug into a third identity.
-  containers.danny.config.systemd.services.tea-login-setup = {
-    description = "Register Danny's Forgejo token with tea (idempotent)";
-    wantedBy = [ "multi-user.target" ];
-    before = [ "hermes-agent.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
+  # Everything that reaches directly into the CONTAINER's own nested module
+  # system (not the host's) lives in this one block - statix flags repeated
+  # top-level `containers.danny.config.*` keys as separate assignments, and
+  # this repo's own convention folds siblings under one parent (see
+  # feedback_nix_attrset_ordering in this user's Claude memory).
+  containers.danny.config = {
+    # Deterministic social collection/compilation (issue 40) and the 6am
+    # daily-report cron registration/trigger (issue 41) - dedicated files,
+    # same reason nixnuc's own collector got one: self-contained
+    # functionality, not Danny's own agent identity. The pipeline's own
+    # NixOS module isn't otherwise imported by the container.
+    imports = [
+      inputs.hermes-social-digest-pipeline.nixosModules.default
+      ./social-digest.nix
+      ./daily-report-cron.nix
+    ];
+
+    # Narrow, point-lookup-only follow-up tool access (hermes-agent-fleet-
+    # plan issue 34/agents-beads-collaboration-4vm) - lets Danny resolve a
+    # collected candidate's thread context on demand (e.g. in #news-editors
+    # follow-up) rather than only at original-collection time.
+    # `tools.include` is an allowlist: nothing else social-reader-mcp
+    # exposes is reachable by name from this container, even if the server
+    # adds more tools later. Not a new container-builder.nix parameter -
+    # matches that file's own "promote once a second call site needs it"
+    # philosophy.
+    services.hermes-agent.mcpServers.social-reader = {
+      url = "https://social-reader-mcp.home.technicalissues.us:8443/mcp";
+      # Literal "${VAR}" - resolved by hermes-agent at MCP-connect time from
+      # its own process env (populated by environmentFiles above), never by
+      # Nix. See the sops.templates comment above for why this var exists.
+      headers.Authorization = "Bearer \${SOCIAL_READER_MCP_HTTP_TOKEN}";
+      tools.include = [
+        "mastodon_status_context"
+        "bluesky_post_thread"
+        "nostr_get_event"
+        "nostr_get_events"
+      ];
     };
-    script = ''
-      set -euo pipefail
-      secret_file=/run/secrets/hermes_danny_forgejo_token
-      token=$(sed -n 's/^FORGEJO_TOKEN=//p' "$secret_file")
-      if [ -z "$token" ]; then
-        token=$(cat "$secret_file")
-      fi
-      HOME=/var/lib/hermes ${pkgs.tea}/bin/tea logins delete --name forgejo 2>/dev/null || true
-      HOME=/var/lib/hermes ${pkgs.tea}/bin/tea logins add \
-        --name forgejo --url ${forgejoUrl} --token "$token" --no-version-check
-      chown -R hermes:hermes /var/lib/hermes/.config
-    '';
+
+    # Same tea-login-setup shape as Charlie's (and C.J.'s - cj/default.nix),
+    # but idempotent from the start: always delete-then-add rather than
+    # gating on the config file already existing. Charlie's version has the
+    # opposite, known-broken shape (hermes-agent-fleet-plan#51) - a secret
+    # rotation silently has no effect once the file exists once. No reason
+    # to copy that bug into a third identity.
+    systemd.services.tea-login-setup = {
+      description = "Register Danny's Forgejo token with tea (idempotent)";
+      wantedBy = [ "multi-user.target" ];
+      before = [ "hermes-agent.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+      script = ''
+        set -euo pipefail
+        secret_file=/run/secrets/hermes_danny_forgejo_token
+        token=$(sed -n 's/^FORGEJO_TOKEN=//p' "$secret_file")
+        if [ -z "$token" ]; then
+          token=$(cat "$secret_file")
+        fi
+        HOME=/var/lib/hermes ${pkgs.tea}/bin/tea logins delete --name forgejo 2>/dev/null || true
+        HOME=/var/lib/hermes ${pkgs.tea}/bin/tea logins add \
+          --name forgejo --url ${forgejoUrl} --token "$token" --no-version-check
+        chown -R hermes:hermes /var/lib/hermes/.config
+      '';
+    };
   };
 }

@@ -528,11 +528,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791416149,
-        "narHash": "sha256-DCNXVHx8blxDIAfF0LaLbxziNdjY+w3KKXzHs1y+Hec=",
+        "lastModified": 1792017256,
+        "narHash": "sha256-JlPXCO1XjLVHA4lOEAtii5n0EwVEBimuVRw7bkztMwU=",
         "owner": "genebean",
         "repo": "HermesSocialDigestPipeline",
-        "rev": "1aa416a1e90a91d94ffc9068d51a3dae7c53efe1",
+        "rev": "fd254ac5efd0793b1a48ff3da0f4b44eca394bdf",
         "type": "github"
       },
       "original": {
@@ -548,11 +548,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791416162,
-        "narHash": "sha256-orJ1K1jxzh2a3W/icda4bdmw/PDJ7g8D9Kw7nwEDaWI=",
+        "lastModified": 1792017207,
+        "narHash": "sha256-Kf9nZW3t+QUw+D7/GiTrqS4H1V/ydulwrjAloNL2GD4=",
         "owner": "genebean",
         "repo": "HermesSocialSummerizer",
-        "rev": "d7b3dc1ce15b7e697916127e3348b00978536688",
+        "rev": "0578e891d8dbadaa40e7818099bf1d9e06b82dee",
         "type": "github"
       },
       "original": {
