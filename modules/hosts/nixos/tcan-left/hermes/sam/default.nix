@@ -177,8 +177,7 @@ in
 
       # Second App's refresh, same shape as sam-github-token-refresh below -
       # see that service's comments for why root-only/derived-token-only and
-      # why the self-reschedule exists. Built with the self-reschedule from
-      # the start here, not added after hitting the stuck-timer bug again.
+      # why the self-reschedule exists.
       sam-agent-ideas-token-refresh = {
         description = "Mint Sam's genebean-installed GitHub App installation token (agent-ideas)";
         wantedBy = [ "multi-user.target" ];
@@ -201,9 +200,9 @@ in
           ${pkgs.coreutils}/bin/mv -f "$tmpfile" ${agentIdeasTokenFile}
 
           ${pkgs.systemd}/bin/systemd-run --on-active=2700 --collect \
-            --unit=sam-agent-ideas-token-refresh-reschedule \
+            --unit=sam-agent-ideas-token-refresh-reschedule-$$ \
             --description="Reschedule Sam's agent-ideas GitHub token refresh" \
-            ${pkgs.systemd}/bin/systemctl start sam-agent-ideas-token-refresh.service || true
+            ${pkgs.systemd}/bin/systemctl restart sam-agent-ideas-token-refresh.service || true
         '';
       };
 
@@ -242,16 +241,31 @@ in
           # via its Persistent catch-up, then silently never computes a
           # next elapse again (next_elapse frozen at the same timestamp as
           # the last trigger, NextElapseUSecRealtime empty, `list-timers`
-          # shows Trigger: n/a) - for days, until manually restarted. A
-          # fresh transient timer each run has no prior state to get stuck
-          # on. `|| true` so a rare naming collision with an already-
-          # pending reschedule doesn't fail this run after the token mint
-          # already succeeded; the OnCalendar timer below remains as a
-          # backstop.
+          # shows Trigger: n/a) - for days, until manually restarted. The
+          # OnCalendar timer below remains as a backstop for that failure
+          # mode.
+          #
+          # systemctl restart, not start - confirmed live (2026-10-14) that
+          # this self-reschedule chain was itself silently dying after
+          # exactly one follow-up, independent of the OnCalendar bug above:
+          # this service is Type=oneshot + RemainAfterExit=true, so once it
+          # has run once it's permanently "active (exited)" - `systemctl
+          # start` on an already-active unit is a no-op by definition, so
+          # every reschedule after the first silently did nothing (no
+          # journal entry, no new token, and critically no new
+          # self-reschedule either, since that line only runs if the
+          # script body actually executes). `restart` forces re-execution
+          # regardless of current state. Also: the transient unit name now
+          # includes $$ (this run's PID) so a reschedule firing while a
+          # prior one is still pending (e.g. a manual restart shortly
+          # before the scheduled one) can't collide on an identical unit
+          # name and get silently swallowed by the `|| true` below -
+          # confirmed live the same day, while verifying this fix, that a
+          # same-named collision does exactly that.
           ${pkgs.systemd}/bin/systemd-run --on-active=2700 --collect \
-            --unit=sam-github-token-refresh-reschedule \
+            --unit=sam-github-token-refresh-reschedule-$$ \
             --description="Reschedule Sam's GitHub token refresh" \
-            ${pkgs.systemd}/bin/systemctl start sam-github-token-refresh.service || true
+            ${pkgs.systemd}/bin/systemctl restart sam-github-token-refresh.service || true
         '';
       };
     };
