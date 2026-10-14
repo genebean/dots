@@ -528,11 +528,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791416149,
-        "narHash": "sha256-DCNXVHx8blxDIAfF0LaLbxziNdjY+w3KKXzHs1y+Hec=",
+        "lastModified": 1791944608,
+        "narHash": "sha256-JbryHkze3GyO6NnZNi4p2a1bBwfRfdOyfzIVZ/+V8LQ=",
         "owner": "genebean",
         "repo": "HermesSocialDigestPipeline",
-        "rev": "1aa416a1e90a91d94ffc9068d51a3dae7c53efe1",
+        "rev": "44e792449c5bc658fb9347576ee0ae2a2d0726bc",
         "type": "github"
       },
       "original": {
