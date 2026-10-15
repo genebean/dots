@@ -45,6 +45,15 @@ this operates inside.
    cp -r newspaper/articles/independent-reporting/TEMPLATE \
          newspaper/articles/independent-reporting/<YYYY-MM-DD>-<short-slug>
    ```
+   **`<short-slug>` must be specific to this article's actual content -
+   never a generic category name like `social-digest` or `report`.**
+   The date prefix does not protect you from a URL collision: the site
+   renders its page URL from the slug portion alone, so reusing the same
+   generic slug on a later date collides with the earlier page even
+   though the directories differ (confirmed happening 2026-10-13/14 -
+   `2026-10-13-social-digest` collided once a second day tried the same
+   slug). Derive it from a few real keywords in the title instead - e.g.
+   `curl-flaw-foss-resilience-rayhunter`, not `social-digest`.
 4. **Fill in `article.md`'s frontmatter and body.** The template itself
    documents the exact shape - read it fresh each time rather than relying
    on this skill's memory of it, in case the schema has changed. Key
