@@ -216,17 +216,57 @@ have in context, not a new capability to wire up.
 ## Delivery
 
 This run is triggered by the job's own 6am schedule, with `--deliver
-buzz` already configured on it - **your final response in this run is
-what gets published to `#the-paper`**. You don't need to call a
-separate "send to buzz" tool; just write the report as your answer.
+buzz` already configured on it. For a **short** report, your final
+response in this run is what gets published to `#the-paper` - just write
+the report as your answer, no separate send needed.
 
-**Split across multiple messages if it's long** - this report routinely
-runs long on an active day, and a single oversized message risks
-truncation at Buzz's character limit (confirmed happening in practice:
-a full report got cut off mid-list). Break at natural section
-boundaries (top picks / local-regional / news / mood-lighteners) rather
-than mid-item. This applies generally, not just to this skill - see
-AGENTS.md.
+**For a long report, that single-final-response path is not safe to use
+- send it yourself instead.** `--deliver buzz` publishes your final
+response as one message; a report long enough to need splitting will
+truncate at Buzz's character limit if you let that one-shot path handle
+it (confirmed happening in practice, twice now: 2026-10-07 and again
+2026-10-14, both oversized-single-message truncations). So: whenever the
+report needs more than one message, actively send each part yourself as
+a separate Buzz message, breaking at natural section boundaries (top
+picks / local-regional / news / mood-lighteners) rather than mid-item -
+don't write the whole thing as your final answer and trust `--deliver
+buzz` to split it, because it won't. This applies generally, not just to
+this skill - see AGENTS.md.
+
+**Verify before you call it done** - after sending (one message or
+several), read back what's actually in `#the-paper` and confirm every
+part landed, in order, with the final section present and not cut off.
+Don't infer success from a send call returning without an error; check
+the actual channel content. This is what would have caught both prior
+truncations immediately instead of the next morning.
+
+**External `@handles` are not safe to paste verbatim into Buzz message
+text** - a source platform's `@user@instance`-style handle gets parsed
+as a Buzz channel mention, not literal text, and can get the whole
+message rejected (confirmed happening 2026-10-14). Wrap any external
+handle you're quoting in backticks (`` `@user@instance` ``) instead of
+leaving it bare.
+
+## End-of-run status report - mandatory, every run
+
+Silence or a generic "done" is never an acceptable way to end this run.
+State explicitly, every time, whether the run was `COMPLETE`, `PARTIAL`,
+or `FAILED` - win or lose, and without waiting to be asked:
+
+- **Buzz**: how many parts you expected, how many you verified present
+  in `#the-paper` via read-back, and whether the final part is intact
+  (not truncated).
+- **Newspaper**: the article's PR URL and whether it's mergeable with
+  CI passing - or, if you didn't attempt or couldn't complete filing,
+  the precise reason why not.
+- **Overall**: one of the three states above, derived from the two
+  checks above - not a separate judgment call.
+
+Example: `PARTIAL - Buzz 3/3 parts verified, including final line.
+Newspaper PR not filed: tea push failed with a network timeout.` A run
+that completes both destinations cleanly still states `COMPLETE`
+explicitly - don't let a clean run go unstated just because nothing
+went wrong.
 
 ## HTML on request
 
