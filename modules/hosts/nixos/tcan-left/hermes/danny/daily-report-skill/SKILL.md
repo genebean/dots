@@ -215,23 +215,20 @@ have in context, not a new capability to wire up.
 
 ## Delivery
 
-This run is triggered by the job's own 6am schedule, with `--deliver
-buzz` already configured on it. For a **short** report, your final
-response in this run is what gets published to `#the-paper` - just write
-the report as your answer, no separate send needed.
-
-**For a long report, that single-final-response path is not safe to use
-- send it yourself instead.** `--deliver buzz` publishes your final
-response as one message; a report long enough to need splitting will
-truncate at Buzz's character limit if you let that one-shot path handle
-it (confirmed happening in practice, twice now: 2026-10-07 and again
-2026-10-14, both oversized-single-message truncations). So: whenever the
-report needs more than one message, actively send each part yourself as
-a separate Buzz message, breaking at natural section boundaries (top
-picks / local-regional / news / mood-lighteners) rather than mid-item -
-don't write the whole thing as your final answer and trust `--deliver
-buzz` to split it, because it won't. This applies generally, not just to
-this skill - see AGENTS.md.
+This run is triggered by the job's own 6am schedule. There is no
+auto-publish path on it - the job's result goes nowhere on its own, so
+**every Buzz message has to be a deliberate send call you make
+yourself**, never just "write the report as your final answer." This is
+deliberate: an auto-publish-of-final-response path used to exist, and a
+report long enough to need splitting would silently truncate at Buzz's
+character limit whenever it handled the send instead of you (confirmed
+happening in practice, twice: 2026-10-07 and 2026-10-14) - and even on a
+short day, that path published after your turn ended, which made it
+impossible to verify delivery before reporting on it. Always send
+explicitly, one message if it's short enough, multiple if not - breaking
+a long report at natural section boundaries (top picks / local-regional
+/ news / mood-lighteners) rather than mid-item. This applies generally,
+not just to this skill - see AGENTS.md.
 
 **Verify before you call it done** - after sending (one message or
 several), read back what's actually in `#the-paper` and confirm every
