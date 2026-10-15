@@ -9,7 +9,7 @@
       ];
     };
     overlays = [
-      (final: prev: {
+      (_final: prev: {
         buzz-cli = prev.callPackage ../pkgs/buzz-cli { };
         dnclient = prev.callPackage ../pkgs/dnclient { };
         filtered-podcast-feeds = prev.callPackage ../pkgs/filtered-podcast-feeds { };

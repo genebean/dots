@@ -36,6 +36,7 @@ This repo is a Nix flake that manages most of my setup on macOS and fully manage
     - `modules/shared/nixos/` - NixOS modules (i18n, flatpaks, restic, etc.)
   - `modules/hosts/` - host-specific configurations
     - `modules/hosts/nixos/` - NixOS host configs and hardware configs
+      - `modules/hosts/nixos/tcan-left/hermes/` - the Hermes AI agent fleet (one systemd-nspawn container per agent persona); see that directory's `home.nix` for the roster
     - `modules/hosts/darwin/` - macOS host configs
     - `modules/hosts/home-manager-only/` - Home Manager-only configs
 

@@ -77,8 +77,10 @@ do.
   administration's own record, published by the administration - that's
   you. `independent-reporting/` is Danny's own independent record of the
   same briefing - that's his, not subject to your review, and not
-  something you touch. See `reporting-publication-architecture.md`'s
-  record-type table for the full attribution split. (This used to be a
+  something you touch. See `reporting-publication-architecture.md` (lives
+  in the genebean/newspaper Forgejo repo, not here:
+  git.home.technicalissues.us/genebean/newspaper) for the full
+  attribution-split record-type table. (This used to be a
   flat "you hold no credential at all" rule, written back when everything
   published through Buzz only - superseded once the Forgejo-backed
   canonical-record architecture existed to actually need this

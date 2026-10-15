@@ -1,3 +1,5 @@
+# tcan-left: one of two "trashcan" Mac Pros (the cylindrical 2013 design)
+# in the same rack mount - this is the left one.
 {
   config,
   lib,
@@ -9,7 +11,6 @@
   imports = [
     ./disk-config.nix
     ./hardware-configuration.nix
-    ./hermes
     ./monitoring.nix
   ];
 

@@ -1,6 +1,7 @@
 { inputs, ... }:
 let
   inherit (import ./default.nix { inherit inputs; }) genebeanLib;
+  buzzChannels = import ../modules/genebean/data/buzz-channels.nix;
 in
 {
   mkNixosHost =
@@ -31,6 +32,7 @@ in
                 inputs
                 hostname
                 username
+                buzzChannels
                 ;
               genebeanLib = genebeanLib // {
                 isNixOS = true;

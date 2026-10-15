@@ -58,6 +58,7 @@ avoids drift between layers.
 
 Candidates for `data/`:
 - Fleet-wide Nix binary caches (`nix-caches.nix`) — already here
+- Buzz (Nostr relay) channel name → UUID lookup (`buzz-channels.nix`) — already here
 - Port/service registry (`ports.nix`) — currently in `nixos/`, candidate for future move
 
 ---

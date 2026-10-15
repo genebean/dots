@@ -25,14 +25,13 @@
 # running"). Scheduling reliability here is "is hermes-agent.service
 # up", already systemd-supervised; timezone resolution is the
 # container's own `time.timeZone` (hostTimeZone, set fleet-wide in
-# container-builder.nix), already confirmed correct. So: register the
+# hermes-agents.nix), already confirmed correct. So: register the
 # job ACTIVE (no --paused) with its real cron schedule and let the
 # gateway's own ticker fire it - one scheduling authority, just not
 # the one originally assumed.
 {
   config,
   pkgs,
-  lib,
   ...
 }:
 let
@@ -59,7 +58,7 @@ in
     # the fix for that is a precise field match, not discarding the job's
     # id/run-history on every redeploy (this container restarts for reasons
     # that have nothing to do with this job's own definition, e.g. a shared
-    # container-builder.nix change). Match on the exact `Name:` field
+    # hermes-agents.nix change). Match on the exact `Name:` field
     # instead of a loose substring, the same parse already proven reliable
     # for by-name lookup during that same testing.
     script = ''

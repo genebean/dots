@@ -18,8 +18,8 @@ let
 in
 {
   # time.timeZone is set fleet-wide for every agent container via
-  # container-builder.nix's hostTimeZone parameter (pulled from this same
-  # host's own config.time.timeZone) - not repeated here.
+  # hermes-agents.nix's hostTimeZone (pulled from this same host's own
+  # config.time.timeZone) - not repeated here.
 
   # Per-NixOS-evaluation, not shared via privateNetwork=false - this is
   # the only copy now (not duplicated on the bare host, since only this

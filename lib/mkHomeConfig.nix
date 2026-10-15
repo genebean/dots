@@ -1,6 +1,7 @@
 { inputs, ... }:
 let
   inherit (import ./default.nix { inherit inputs; }) genebeanLib;
+  buzzChannels = import ../modules/genebean/data/buzz-channels.nix;
 in
 {
   mkHomeConfig =
@@ -16,6 +17,7 @@ in
           homeDirectory
           system
           username
+          buzzChannels
           ;
         genebeanLib = genebeanLib // {
           isHMOnly = true;
