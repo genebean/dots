@@ -451,9 +451,40 @@
         import ./pkgs { inherit inputs pkgs; }
         // {
           deploy-rs = inputs.deploy-rs.packages.${system}.deploy-rs;
+          # Rendered from the same evaluated option tree every host actually
+          # gets (gene-x86_64-linux, not system-dependent - genebean.*'s
+          # declared options/descriptions are platform-invariant text, so
+          # every system renders identical content using only its own
+          # native pkgs for the markdown-rendering step itself). See
+          # apps.<system>.update-docs for writing this into docs/ in the
+          # repo; `nix build .#genebean-options-doc` alone just leaves it
+          # in the Nix store.
+          genebean-options-doc =
+            (pkgs.nixosOptionsDoc {
+              options = self.homeConfigurations.gene-x86_64-linux.options.genebean;
+              # Several genebean/home modules predate this convention and
+              # are missing option descriptions - don't fail the build on
+              # that, just let nixos-render-docs warn on stderr.
+              warningsAreErrors = false;
+            }).optionsCommonMark;
           system-manager = inputs.system-manager.packages.${system}.default;
         }
       );
+
+      apps = forAllSystems (system: {
+        update-docs = {
+          type = "app";
+          program = toString (
+            nixpkgs.legacyPackages.${system}.writeShellScript "update-docs" ''
+              set -euo pipefail
+              cd "$(${nixpkgs.legacyPackages.${system}.git}/bin/git rev-parse --show-toplevel)"
+              mkdir -p docs
+              install -m 0644 "${self.packages.${system}.genebean-options-doc}" docs/genebean-options.md
+              echo "Updated docs/genebean-options.md"
+            ''
+          );
+        };
+      });
 
       # Validates every deploy.nodes entry builds (nix flake check) -
       # pure evaluation, zero deploy risk.
