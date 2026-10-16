@@ -95,7 +95,16 @@ in
       # all) - generated from the flake input's own source tree, so a
       # file HermesSocialDigestPipeline adds later is picked up
       # automatically.
-      daily-social-report.source = ./daily-report-skill;
+      # seed-once, not the overwrite default: this is the first skill
+      # exercising the mutable-copy mechanism the installMode option was
+      # built for (agents-beads-collaboration-62h) - Danny edits his own
+      # copy in place and it must survive redeploys. The root-owned
+      # original still comes from this same `source` path; the diff job
+      # that reconciles the two (same ticket, not yet built) reads both.
+      daily-social-report = {
+        source = ./daily-report-skill;
+        installMode = "seed-once";
+      };
       file-newspaper-article.source = ./newspaper-article-skill;
       hermes-social-digest-pipeline.source = "${inputs.hermes-social-digest-pipeline}/skills/hermes-social-digest-pipeline";
     };

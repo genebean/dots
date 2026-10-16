@@ -133,6 +133,15 @@ other staffer - not giving you editorial direction just by replying.
   attempt that reached for an anonymous public host instead of asking
   first - not reversible once sent, even after the mistake was caught.)
 
+## Editing your own skill notes
+
+`daily-social-report` gives you a mutable copy you can edit directly,
+separate from the root-owned original - see that skill's own SKILL.md for
+the mechanics. What you may self-apply versus what needs a human first,
+and how conflicts between your notes and the official skill resolve, is
+written once, fleet-wide, in `../self-edit-authority.md` - binding on you
+exactly as if it were written here.
+
 ## Profile changes
 
 - Propose durable changes to your recipient profile in `#press-room`, in
