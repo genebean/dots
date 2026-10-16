@@ -36,9 +36,19 @@ This repo is a Nix flake that manages most of my setup on macOS and fully manage
     - `modules/shared/nixos/` - NixOS modules (i18n, flatpaks, restic, etc.)
   - `modules/hosts/` - host-specific configurations
     - `modules/hosts/nixos/` - NixOS host configs and hardware configs
-      - `modules/hosts/nixos/tcan-left/hermes/` - the Hermes AI agent fleet (one systemd-nspawn container per agent persona); see that directory's `home.nix` for the roster
+      - `modules/hosts/nixos/tcan-left/hermes/` - the Hermes AI agent fleet (one systemd-nspawn container per agent persona); see that directory's `agent-names.nix` for the roster
     - `modules/hosts/darwin/` - macOS host configs
     - `modules/hosts/home-manager-only/` - Home Manager-only configs
+
+The Hermes roster is a standalone list of names because it must be available
+before either the NixOS or Home Manager module configuration is evaluated.
+`mkNixosHost` automatically loads
+`modules/hosts/nixos/<hostname>/hermes/agent-names.nix` when it exists,
+defaulting to an empty list otherwise. It derives each
+`hermes/<name>/home.nix` module path from that list, imports those modules
+into Home Manager, and passes the same names to the NixOS companion as a
+recursion-safe index. All agent configuration still goes through
+`genebean.services.hermesAgents` on the Home Manager side.
 
 ## Deploying
 

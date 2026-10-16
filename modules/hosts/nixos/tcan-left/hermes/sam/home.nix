@@ -22,8 +22,8 @@
 # attributes as its own distinct bot identity, and neither App can reach
 # the other's scope.
 #
-# This is a Home Manager module (imported via tcan-left/home-gene.nix ->
-# ./hermes/home.nix) - see leo/home.nix's header for why.
+# This Home Manager module is registered in ../agent-names.nix and imported by
+# tcan-left's mkNixosHost call - see leo/home.nix's header for why.
 { pkgs, buzzChannels, ... }:
 {
   genebean.services.hermesAgents.sam = {

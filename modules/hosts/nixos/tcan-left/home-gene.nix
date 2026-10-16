@@ -1,8 +1,4 @@
 {
-  imports = [
-    ./hermes/home.nix
-  ];
-
   home.stateVersion = "26.05";
 
   genebean = {

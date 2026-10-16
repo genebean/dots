@@ -3,13 +3,13 @@
 # Charlie over Buzz (senior-staff channel) rather than holding that
 # credential itself - see AGENTS.md.
 #
-# This is a Home Manager module (imported via tcan-left/home-gene.nix ->
-# ./hermes/home.nix) - the real genebean.services.hermesAgents option lives
-# on the home side (modules/genebean/home/services/hermes-agents.nix), per
-# this repo's own convention (modules/genebean/README.md). The NixOS
-# companion reads this resolved value back and does the actual system-level
-# work (container, secrets, etc.) - see modules/genebean/nixos/services/
-# hermes-agents.nix.
+# This Home Manager module is registered in ../agent-names.nix and imported by
+# tcan-left's mkNixosHost call. The real genebean.services.hermesAgents
+# option lives on the home side (modules/genebean/home/services/
+# hermes-agents.nix), per this repo's own convention
+# (modules/genebean/README.md). The NixOS companion reads this resolved
+# value back and does the actual system-level work (container, secrets,
+# etc.).
 { buzzChannels, ... }:
 {
   genebean.services.hermesAgents.leo = {

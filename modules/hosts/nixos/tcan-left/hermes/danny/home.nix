@@ -2,13 +2,13 @@
 # the-paper only - see AGENTS.md. Not Leo's subordinate: no approval or
 # relay step through Leo for Danny's own work.
 #
-# This is a Home Manager module (imported via tcan-left/home-gene.nix ->
-# ./hermes/home.nix) - see leo/home.nix's header for why. Everything Danny
-# needs, including the digest-pipeline container wiring and MCP access
-# below, goes through genebean.services.hermesAgents options - there is no
-# NixOS-side default.nix for Danny; modules/genebean/nixos/services/
-# hermes-agents.nix turns these into the actual container/secrets/sops
-# config, same as every other agent.
+# This Home Manager module is registered in ../agent-names.nix and imported by
+# tcan-left's mkNixosHost call - see leo/home.nix's header for why.
+# Everything Danny needs, including the digest-pipeline container wiring
+# and MCP access below, goes through genebean.services.hermesAgents options
+# - there is no NixOS-side default.nix for Danny; modules/genebean/nixos/
+# services/hermes-agents.nix turns these into the actual
+# container/secrets/sops config, same as every other agent.
 {
   inputs,
   pkgs,

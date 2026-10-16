@@ -43,7 +43,7 @@
   pkgs,
   inputs,
   username,
-  hostname,
+  hermesAgentNames,
   ...
 }:
 let
@@ -437,41 +437,13 @@ let
       ];
     };
 
-  # Static, not lib.attrNames cfg - confirmed live that enumerating the
-  # full key set of an attrsOf option nested inside
-  # config.home-manager.users.<name>.* from this (NixOS) side is
-  # genuinely circular: even querying a totally unrelated leaf of the
-  # overall system config recurses infinitely the moment any form of
-  # full-key enumeration appears anywhere in this module's own `config`
-  # output. Direct, single-key access (cfg.${name}) is unaffected - only
-  # resolving "what are ALL the keys" is the problem. A new agent needs
-  # a line added here, matching hermes/home.nix's own static imports
-  # list for the same five agents.
-  knownAgentNames = [
-    "leo"
-    "charlie"
-    "danny"
-    "cj"
-    "sam"
-  ];
-
-  # Hosts that actually run any of these agents - today, just tcan-left.
-  # Add a hostname here, not just a name to knownAgentNames, the day an
-  # agent moves to or is added on a second host.
-  agentHosts = [ "tcan-left" ];
 in
 {
-  # Gated on `hostname`, not on probing cfg's own keys - this module
-  # (nixosModules.genebean) is imported fleet-wide, not just by
-  # tcan-left, and every other host has no agents defined at all
-  # (cfg = {}). Confirmed live that EVERY form of "handle a possibly-
-  # missing key safely" - `?`, `or`, attrNames, mapAttrsToList - is
-  # circular here (see the comment on knownAgentNames above); only a
-  # host-level `if`, which short-circuits before `cfg.${n}` is ever
-  # forced at all on a host with no agents, actually avoids it.
-  config =
-    if !builtins.elem hostname agentHosts then
-      { }
-    else
-      lib.mkMerge (map (n: mkAgentContainer n cfg.${n}) knownAgentNames);
+  # Do not replace the explicit roster with lib.attrNames cfg. Enumerating
+  # the full key set of this Home Manager attrsOf option from the NixOS
+  # module creates a module-system cycle. The host builder passes the names
+  # as a specialArg derived from the same plain list as the Home Manager
+  # imports. Accessing each cfg.${name} directly keeps evaluation lazy;
+  # hosts using the default empty roster never force cfg.
+  config = lib.mkMerge (map (name: mkAgentContainer name cfg.${name}) hermesAgentNames);
 }

@@ -179,7 +179,35 @@ companion reads the same home-manager option path:
 }
 ```
 
-### 7. Data-driven cross-layer module
+### 7. Collection-valued NixOS companion
+
+Most companions read one known Home Manager option path. Hermes is different:
+the NixOS companion must create one container tree per key under
+`genebean.services.hermesAgents`. Enumerating that Home Manager `attrsOf`
+option from the NixOS module creates a module-system cycle, so the companion
+receives a recursion-safe name index through the `hermesAgentNames`
+`specialArg`.
+
+`mkNixosHost` owns this plumbing:
+
+1. It checks the optional host-local
+   `modules/hosts/nixos/<hostname>/hermes/agent-names.nix` path.
+2. A missing file becomes `[ ]`, so hosts without agents are a no-op.
+3. For each name, it imports
+   `modules/hosts/nixos/<hostname>/hermes/<name>/home.nix` into Home Manager.
+4. It passes the same list as `hermesAgentNames` to NixOS modules.
+
+The roster is only an index; it is not a second configuration surface. All
+agent settings remain in the Home Manager modules under
+`genebean.services.hermesAgents.<name>`. Do not replace the explicit index
+with `lib.attrNames config.home-manager.users.<name>...`, and do not add
+agent names to the reusable NixOS companion.
+
+The `builtins.pathExists` check is pure because it probes a path inside the
+fixed flake source. Do not use this pattern to detect ambient machine state
+such as files under `/etc`.
+
+### 8. Data-driven cross-layer module
 
 When the same values must reach multiple module systems that cannot share
 options (e.g. NixOS, nix-darwin, and system-manager all need the same cache

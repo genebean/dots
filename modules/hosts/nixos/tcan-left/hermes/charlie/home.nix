@@ -8,8 +8,8 @@
 # third-party Forgejo/Gitea MCP server exists, so `tea` avoids an extra
 # unmaintained-dependency risk for no real benefit.
 #
-# This is a Home Manager module (imported via tcan-left/home-gene.nix ->
-# ./hermes/home.nix) - see leo/home.nix's header for why.
+# This Home Manager module is registered in ../agent-names.nix and imported by
+# tcan-left's mkNixosHost call - see leo/home.nix's header for why.
 { buzzChannels, ... }:
 {
   genebean.services.hermesAgents.charlie = {

@@ -1,11 +1,14 @@
-# Hermes agent fleet on tcan-left (Home Manager side): one
-# genebean.services.hermesAgents.<name> declaration per agent - the real
-# consumer-facing option (modules/genebean/home/services/hermes-agents.nix),
-# per this repo's "Home Manager is always the consumer declaration point"
-# convention (modules/genebean/README.md). The NixOS companion
-# (modules/genebean/nixos/services/hermes-agents.nix) reads these back and
-# does the actual system-level work: container, secrets, Forgejo/GitHub
-# credential plumbing, skill materialization.
+# Hermes agent fleet on tcan-left: a plain list of agent names discovered
+# automatically by mkNixosHost. The builder derives each
+# hermes/<name>/home.nix path, imports it into Home Manager, and passes the
+# same names to the NixOS companion as a recursion-safe index.
+#
+# Each module declares genebean.services.hermesAgents.<name> through the
+# real consumer-facing Home Manager option, per this repo's "Home Manager
+# is always the consumer declaration point" convention
+# (modules/genebean/README.md). The NixOS companion reads those declarations
+# back and does the actual system-level work: container, secrets,
+# Forgejo/GitHub credential plumbing, and skill materialization.
 #
 # The fleet is modeled on The West Wing's senior staff - each agent's own
 # SOUL.md states its full character mapping; this is just a one-line
@@ -26,22 +29,19 @@
 # modules/genebean/nixos/services/hermes-agents.nix's own header for what
 # that option surface currently covers.
 #
-# Adding a sixth agent needs a line added to BOTH the imports list below
-# AND `knownAgentNames` in modules/genebean/nixos/services/hermes-agents.nix
-# - that file's own comment explains why the second list can't just be
-# derived from this one. Missing the second edit fails silently: the
-# container simply never gets built, no error.
+# This list is the roster and import source of truth. Keeping it as plain
+# data avoids asking either module system to enumerate the recursive Home
+# Manager configuration. Adding an agent requires only its name here and a
+# matching <name>/home.nix module.
 #
 # Planning/issue tracking for this fleet ("hermes-agent-fleet-plan issue N",
 # cited throughout this subtree) lives outside this repo, in the
 # hermes-agent-fleet-plan Forgejo repo
 # (git.home.technicalissues.us/genebean/hermes-agent-fleet-plan).
-{
-  imports = [
-    ./leo/home.nix
-    ./charlie/home.nix
-    ./danny/home.nix
-    ./cj/home.nix
-    ./sam/home.nix
-  ];
-}
+[
+  "leo"
+  "charlie"
+  "danny"
+  "cj"
+  "sam"
+]

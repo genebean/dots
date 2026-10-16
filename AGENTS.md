@@ -364,6 +364,29 @@ setting system programs, configuring polkit), create a companion under
 via `config.home-manager.users.${username}.genebean.*` — the consumer only ever
 sets the home-manager option, both layers respond automatically.
 
+### Hermes agent roster
+
+Hermes agents follow the same Home Manager consumer-declaration rule, even
+though the NixOS companion creates their systemd-nspawn containers. The
+companion cannot enumerate the keys of the resolved Home Manager
+`hermesAgents` attrset without creating a module-system cycle, so the roster
+must be plain data available before either module configuration is evaluated.
+
+`modules/hosts/nixos/tcan-left/hermes/agent-names.nix` is the single roster
+source. `mkNixosHost` automatically imports the optional
+`modules/hosts/nixos/<hostname>/hermes/agent-names.nix` path, using an empty
+list for hosts without one. It derives each
+`modules/hosts/nixos/<hostname>/hermes/<name>/home.nix` path, imports those
+modules into Home Manager, and passes the same names to the NixOS companion as
+a `specialArg`. This repository-local `builtins.pathExists` check remains
+pure because the checked path is inside the fixed flake source; do not use the
+same pattern to probe ambient system paths. All actual agent settings remain
+under `genebean.services.hermesAgents.<name>` in the Home Manager modules.
+
+To add an agent, create `hermes/<name>/home.nix` and add `"<name>"` to
+`agent-names.nix`. Do not add the name to the reusable genebean module or
+maintain a second roster.
+
 ### Adding a new genebean module
 
 1. **Home layer** — `modules/genebean/home/programs/<name>.nix`:
