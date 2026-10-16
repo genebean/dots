@@ -7,6 +7,11 @@ platform (NixOS, macOS/nix-darwin, Ubuntu/HM-only).
 
 Consumers set options. They never import module files directly.
 
+Every option's own `description` is the source of truth beyond this file -
+`docs/genebean-options.md` (repo root) is generated from them via
+`pkgs.nixosOptionsDoc`; run `nix run .#update-docs` after changing any
+`genebean.*` option to regenerate it.
+
 ---
 
 ## Directory Layout

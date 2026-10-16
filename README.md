@@ -98,6 +98,15 @@ Run `pre-commit install` after checkout to make sure it gets used.
 
 CI validation is defined in `.github/workflows/validate.yml` and mirrors what is done by pre-commit.
 
+## Option docs
+
+`docs/genebean-options.md` is generated from the `genebean.*` option declarations
+(the `description`s in every `mkOption`) via `pkgs.nixosOptionsDoc` - the same
+mechanism NixOS/home-manager/nix-darwin use for their own options references.
+Run `nix run .#update-docs` after changing any `genebean.*` option to
+regenerate it; `nix build .#genebean-options-doc` alone just leaves the
+rendered Markdown in the Nix store without writing it back into the repo.
+
 ## Historical bits
 
 This repo historically contained my dot files. Historically symlinked files on Windows are still in `windows/`. Everything else is just in git history now.
