@@ -1,6 +1,7 @@
 { inputs, ... }:
 let
   inherit (import ./default.nix { inherit inputs; }) genebeanLib;
+  buzzChannels = import ../modules/genebean/data/buzz-channels.nix;
 in
 {
   mkDarwinHost =
@@ -33,7 +34,7 @@ in
         {
           home-manager = {
             extraSpecialArgs = {
-              inherit inputs username;
+              inherit inputs username buzzChannels;
               genebeanLib = genebeanLib // {
                 isDarwin = true;
               };

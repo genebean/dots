@@ -1,0 +1,325 @@
+# Consumer-facing declaration point (see modules/genebean/README.md - "Home
+# Manager is always the consumer declaration point"). Hermes agent
+# containers are root-only system infrastructure with no actual per-user
+# home-manager effect of their own - this module declares options and
+# nothing else, matching the simple-enable-stub pattern's shape but with no
+# `config` block at all. The NixOS companion
+# (modules/genebean/nixos/services/hermes-agents.nix) reads this resolved
+# value back and does all the real work (containers, secrets, systemd
+# units) - see that file for what each option actually produces.
+{ lib, ... }:
+let
+  inherit (lib)
+    mkOption
+    types
+    ;
+
+  forgejoUrlDefault = "https://git.home.technicalissues.us";
+
+  secretType = types.submodule {
+    options = {
+      envFileAs = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = ''
+          For a secret whose raw value is a bare token (not already
+          KEY=value shaped) that still needs to land in the agent's
+          environment under a specific variable name - e.g. shared as-is
+          with some other service's own secret. When set, a
+          sops.templates entry is generated that wraps the raw value into
+          a single "<envFileAs>=<value>" line, and that template's path
+          (not the raw secret) is bind-mounted into the container and
+          added to services.hermes-agent.environmentFiles. Mutually
+          exclusive with toEnvironmentFile in practice (the raw secret
+          isn't itself env-shaped), though nothing enforces that here.
+        '';
+      };
+      sopsFile = mkOption {
+        type = types.path;
+        default = ../../../shared/secrets.yaml;
+        description = "sops file this secret lives in.";
+      };
+      toEnvironmentFile = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Whether to add this secret's bind-mounted path to
+          services.hermes-agent.environmentFiles (merged into the agent's
+          own .env). Secrets consumed some other way (e.g. by a
+          forgejoLogin or githubApps setup script, read directly from
+          /run/secrets/<name>) should leave this false.
+        '';
+      };
+    };
+  };
+
+  forgejoLoginType = types.submodule {
+    options = {
+      tokenSecretName = mkOption {
+        type = types.str;
+        description = ''
+          Name of an entry in this agent's own `secrets` option holding
+          the Forgejo token. Expected content: either a bare token, or a
+          FORGEJO_TOKEN=<value> line (both are tolerated, matching every
+          existing agent's secret today).
+        '';
+      };
+      url = mkOption {
+        type = types.str;
+        default = forgejoUrlDefault;
+        description = "Forgejo instance URL to log in against.";
+      };
+    };
+  };
+
+  githubAppType = types.submodule {
+    options = {
+      appId = mkOption {
+        type = types.str;
+        description = "GitHub App ID (not secret - same tier as a channel ID).";
+      };
+      keySecretName = mkOption {
+        type = types.str;
+        description = ''
+          Name of an entry in this agent's own `secrets` option holding
+          the App's private key (PEM). Never read by the agent's own
+          process - only by this entry's own root-run minting service.
+        '';
+      };
+      wrapperName = mkOption {
+        type = types.str;
+        description = ''
+          Name of the generated wrapper command (pkgs.writeShellScriptBin)
+          that sets GH_TOKEN from this entry's freshly-minted installation
+          token and execs `gh`. Example: "sam-gh".
+        '';
+      };
+      gitCredentialHelper = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Whether raw `git` operations against github.com HTTPS remotes
+          should use this entry's token via a global credential helper.
+          At most one githubApps entry per agent should set this true.
+        '';
+      };
+      refreshIntervalSeconds = mkOption {
+        type = types.int;
+        default = 2700; # 45 minutes - installation tokens expire hourly
+        description = "Self-reschedule interval for minting a fresh installation token.";
+      };
+    };
+  };
+
+  managedSkillType = types.submodule {
+    options = {
+      source = mkOption {
+        type = types.path;
+        description = "Directory this skill's files are recursively listed from.";
+      };
+      installMode = mkOption {
+        type = types.enum [
+          "overwrite"
+          "seed-once"
+        ];
+        default = "overwrite";
+        description = ''
+          "overwrite" (default): materialized fresh from the Nix store on
+          every activation, same as every skill today - any live edit the
+          agent makes to its own copy is lost on the next deploy that
+          touches this container.
+
+          "seed-once": installed only if the live path doesn't already
+          exist, so the agent can edit its own copy durably across
+          deploys. Still experimental - built to unblock
+          agents-beads-collaboration-62h (a ticket in the shared,
+          cross-repo Beads coordination database, not in this repo - the
+          self-improvement rules-file design), not yet exercised by any
+          agent. The read-only Nix-
+          managed original is NOT yet materialized anywhere for
+          comparison under this mode (62h's own diff-and-report piece) -
+          that's still deferred, this option only provides the seed-once
+          half.
+        '';
+      };
+    };
+  };
+
+  agentType = types.submodule (
+    { name, ... }:
+    {
+      options = {
+        stateVersion = mkOption {
+          type = types.str;
+          # No default, deliberately: a new agent should get the current
+          # NixOS release, not silently inherit whatever this module's own
+          # default happened to be when it was written - same reasoning
+          # container-builder.nix already documented for this option.
+          description = "system.stateVersion for this agent's nested NixOS evaluation.";
+        };
+
+        agentsFile = mkOption {
+          type = types.path;
+          description = "AGENTS.md for this agent.";
+        };
+
+        enableGit = mkOption {
+          type = types.bool;
+          default = false;
+          description = "Add pkgs.git to this agent's extraPackages.";
+        };
+
+        environment = mkOption {
+          type = types.attrsOf types.str;
+          default = { };
+          description = "Non-secret environment variables, merged over the shared defaults.";
+        };
+
+        extraContainerModules = mkOption {
+          # types.raw, not types.anything: these list entries are often
+          # raw NixOS module *functions* (e.g. a flake's nixosModules.
+          # default), and types.anything's merge special-cases function-
+          # shaped values (treats them as types.functionTo and tries to
+          # merge-by-calling them) - confirmed live that this breaks a
+          # curried flake module with "called without required argument
+          # 'pkgs'". types.raw's merge (mergeOneOption) never introspects
+          # the value at all.
+          type = types.listOf types.raw;
+          default = [ ];
+          description = ''
+            Extra NixOS modules merged into this agent's own
+            containers.<name>.config.imports - for agent-specific
+            functionality (a companion systemd timer/service, extra
+            networking.hosts entries, etc.) that isn't itself a
+            first-class hermesAgents option. Promote a pattern into a
+            real option here once a second agent needs the same thing,
+            not before.
+          '';
+        };
+
+        extraHermesHomeFiles = mkOption {
+          type = types.attrsOf types.path;
+          default = { };
+          description = ''
+            One-off HERMES_HOME files that don't fit managedSkills (a
+            private data file, a template, etc.) - "<relpath>" -> source
+            path, merged alongside SOUL.md and every managedSkills entry.
+          '';
+        };
+
+        extraPackages = mkOption {
+          type = types.listOf types.package;
+          default = [ ];
+          description = "Extra packages on this agent's PATH.";
+        };
+
+        extraReadOnlyPaths = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+          description = "Container-internal paths hermes-agent.service may read beyond /var/lib/hermes.";
+        };
+
+        forgejoLogin = mkOption {
+          type = types.nullOr forgejoLoginType;
+          default = null;
+          description = ''
+            When set, generates an idempotent (delete-then-add) tea-login-
+            setup service - registers a persistent `tea` login from the
+            named secret before hermes-agent starts. Idempotent from the
+            start: always delete-then-add, never gated on the config file
+            already existing (that shape has a known bug -
+            hermes-agent-fleet-plan#51 - a credential rotation silently
+            has no effect once the file exists once).
+          '';
+        };
+
+        githubApps = mkOption {
+          type = types.attrsOf githubAppType;
+          default = { };
+          description = ''
+            GitHub Apps this agent mints short-lived installation tokens
+            from. Each entry gets its own self-rescheduling root-run
+            minting service + OnCalendar backstop timer, writing only the
+            derived, already-scoped, hour-lived token to a container-local
+            tmpfs path readable by `hermes` - the agent's own process
+            never touches the App's private key. Self-reschedule uses
+            `systemctl restart` (not `start` - a no-op on an already-
+            active Type=oneshot+RemainAfterExit=true unit) with a PID-
+            suffixed transient unit name (avoids a same-named collision
+            being silently swallowed) - both confirmed-necessary live,
+            dots issues 797/798.
+          '';
+        };
+
+        hermesSettings = mkOption {
+          type = types.attrsOf types.anything;
+          default = { };
+          description = "Merged over the shared services.hermes-agent.settings defaults.";
+        };
+
+        managedSkills = mkOption {
+          type = types.attrsOf managedSkillType;
+          default = { };
+          description = ''
+            Declarative skill materialization. Each attribute name becomes
+            the skill's directory under HERMES_HOME (skills/<name>/...),
+            recursively listed from its own `source` - a file added to the
+            skill later is picked up automatically, no Nix change needed.
+          '';
+        };
+
+        mcpServers = mkOption {
+          type = types.attrsOf types.anything;
+          default = { };
+          description = ''
+            Passed through verbatim to this agent's own
+            services.hermes-agent.mcpServers inside its container - see
+            hermes-agent's own option for the full per-server schema (url,
+            headers, tools.include/exclude, etc). Not validated here -
+            attrsOf types.anything, same passthrough treatment as
+            hermesSettings.
+          '';
+        };
+
+        secrets = mkOption {
+          type = types.attrsOf secretType;
+          default = { };
+          description = ''
+            Secrets this agent needs. Each one gets: a host-side
+            sops.secrets.<name> declaration (restartUnits auto-set to this
+            agent's container@<name>.service), a bind mount at
+            /run/secrets/<name> inside the container, and - if
+            toEnvironmentFile is set - an entry in
+            services.hermes-agent.environmentFiles.
+          '';
+        };
+
+        soulFile = mkOption {
+          type = types.path;
+          description = "SOUL.md for this agent.";
+        };
+
+        stateHostPath = mkOption {
+          type = types.str;
+          default = "/var/lib/hermes-containers/${name}";
+          description = "Host path bind-mounted to the guest's /var/lib/hermes.";
+        };
+      };
+    }
+  );
+in
+{
+  options.genebean.services.hermesAgents = mkOption {
+    type = types.attrsOf agentType;
+    default = { };
+    description = ''
+      Hermes agent containers (systemd-nspawn, one per agent, running
+      services.hermes-agent in native mode as that container's only
+      profile). Each attribute name is the agent's own name - matches
+      the container name and, by extension, container@<name>.service.
+      Declared here (not in nixos/) per this repo's own convention - see
+      modules/genebean/README.md - even though the actual effect is
+      entirely NixOS-side; the nixos/ companion does all the real work.
+    '';
+  };
+}

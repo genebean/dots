@@ -15,6 +15,7 @@
     ./services/dnclient.nix
     ./services/filtered-podcast-feeds.nix
     ./services/flatpak.nix
+    ./services/hermes-agents.nix
     ./services/kiosk-backups.nix
     ./services/restic.nix
     ./services/tailscale.nix
