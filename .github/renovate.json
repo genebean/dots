@@ -6,7 +6,13 @@
     {
       "description": "Group OCI container image updates into a single PR",
       "groupName": "OCI container images",
-      "matchManagers": ["custom.regex"]
+      "matchManagers": ["custom.regex"],
+      "matchDatasources": ["docker"]
+    },
+    {
+      "description": "hermes-agent tags a canary build on every push to its release branches - never propose those as an upgrade, only numbered releases",
+      "matchDepNames": ["NousResearch/hermes-agent"],
+      "allowedVersions": "!/\\+canary\\./"
     }
   ],
   "customManagers": [
@@ -18,6 +24,17 @@
       ],
       "matchStrings": ["image = \"(?<depName>[^\"]+):(?<currentValue>[^\"\\s]+)\""],
       "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "Track hermes-agent's release tag pinned in flake.nix (the built-in nix manager only follows git refs/commits, not release tags)",
+      "managerFilePatterns": ["/^flake\\.nix$/"],
+      "matchStrings": [
+        "url = \"github:NousResearch/hermes-agent/(?<currentValue>v[0-9.]+)\";"
+      ],
+      "depNameTemplate": "NousResearch/hermes-agent",
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "semver"
     }
   ]
 }
