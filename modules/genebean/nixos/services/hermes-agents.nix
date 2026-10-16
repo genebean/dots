@@ -141,11 +141,20 @@ let
             in
             lib.concatStringsSep "\n" (
               lib.mapAttrsToList (relPath: src: ''
-                dest="/var/lib/hermes/${relPath}"
+                dest="${containerStateDir}/${relPath}"
                 if [ ! -e "$dest" ]; then
                   mkdir -p "$(dirname "$dest")"
                   cp ${src} "$dest"
-                  chown hermes:hermes "$dest"
+                  # Nix store files are mode 444 - cp preserves that, and
+                  # chown alone doesn't add a write bit. Without this, the
+                  # whole point of seed-once (the agent can durably edit
+                  # its own copy) silently doesn't hold: the file lands
+                  # owned by hermes but still read-only to hermes.
+                  # chown -R (not just the file) so the agent can also
+                  # create new files/do an atomic rename-replace inside
+                  # its own skill directory, not just edit this one file.
+                  chmod 644 "$dest"
+                  chown -R hermes:hermes "$(dirname "$dest")"
                 fi
               '') files
             )

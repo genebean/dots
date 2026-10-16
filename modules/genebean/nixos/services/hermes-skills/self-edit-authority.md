@@ -15,8 +15,10 @@ on you exactly as if it were written in that file directly.
   was renamed).
 
 Apply these to your own mutable copy directly, no approval needed. Report
-what you changed and why the next time your diff job runs (see below) —
-don't let it go unreported just because it didn't need approval first.
+what you changed and why the next time your `rules-file-reconciliation`
+skill runs (a scheduled job - see that skill's own SKILL.md for the
+mechanics) - don't let it go unreported just because it didn't need
+approval first.
 
 ## What you must bring to a human first
 
