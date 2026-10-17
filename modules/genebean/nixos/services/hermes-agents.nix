@@ -243,11 +243,33 @@ let
             serviceConfig = {
               Type = "oneshot";
               RemainAfterExit = true;
-              User = "hermes";
-              Group = "hermes";
-              Environment = "HERMES_HOME=${containerHermesHome}";
             };
-            script = "${hermesBin} cron run ${jobName}";
+            # `hermes cron run` executes the job SYNCHRONOUSLY to
+            # completion, not just "marks it due" (confirmed against the
+            # locked hermes-agent source, hermes_cli/cron.py's
+            # _job_action - a deliberate upstream fix for a different bug,
+            # orphaned background runs mid-LLM-call). Running that inline
+            # here would make a full agent task - LLM calls, posting to
+            # Buzz - a boot-blocking, wantedBy=multi-user.target
+            # dependency: confirmed live, it hung container startup past
+            # deploy-rs's activation-wait window and triggered an
+            # automatic rollback. Detach it into its own transient unit
+            # via systemd-run --no-block (same pattern already used for
+            # the GitHub App token-refresh reschedule below) so this
+            # unit itself returns immediately and the actual
+            # (open-ended-duration) reconciliation run happens
+            # independently, tracked under its own unit name, not
+            # gating boot/deploy on an LLM call's latency. PID-suffixed
+            # unit name avoids a same-named collision on a second
+            # rapid-fire trigger (dots issue 798's same reasoning).
+            script = ''
+              ${pkgs.systemd}/bin/systemd-run --no-block --collect \
+                --unit=${jobName}-fire-$$ \
+                --description="Run ${agentName}'s ${skillName} reconciliation now" \
+                --property=User=hermes --property=Group=hermes \
+                --setenv=HERMES_HOME=${containerHermesHome} \
+                ${hermesBin} cron run ${jobName}
+            '';
           };
         }
       ) seedOnce
