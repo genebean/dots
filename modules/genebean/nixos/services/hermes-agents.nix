@@ -585,5 +585,24 @@ in
   # as a specialArg derived from the same plain list as the Home Manager
   # imports. Accessing each cfg.${name} directly keeps evaluation lazy;
   # hosts using the default empty roster never force cfg.
-  config = lib.mkMerge (map (name: mkAgentContainer name cfg.${name}) hermesAgentNames);
+  config = lib.mkMerge (
+    (map (name: mkAgentContainer name cfg.${name}) hermesAgentNames)
+    ++ [
+      # Every agent's HERMES_HOME - memories, skills (bundled and any
+      # seed-once mutable copies), session/cron/auth state - backed up by
+      # default, unconditionally. Excludes cache/ and tools/
+      # specifically: confirmed live on tcan-left these are large (2.3G
+      # alone on one agent) and purely regenerable - downloaded tool
+      # binaries and restic's own kind of local cache, not agent state.
+      {
+        services.restic.backups.daily = {
+          paths = map (name: "${cfg.${name}.stateHostPath}/.hermes") hermesAgentNames;
+          exclude = lib.concatMap (name: [
+            "${cfg.${name}.stateHostPath}/.hermes/cache"
+            "${cfg.${name}.stateHostPath}/.hermes/tools"
+          ]) hermesAgentNames;
+        };
+      }
+    ]
+  );
 }
