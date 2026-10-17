@@ -49,6 +49,29 @@
 let
   cfg = config.home-manager.users.${username}.genebean.services.hermesAgents;
 
+  # Fixed container-internal convention, not read back from the nested
+  # config (would be circular - this file builds containers.${agentName}
+  # while already needing a value derived from it). Matches
+  # services.hermes-agent's own stateDir default, already relied on
+  # elsewhere in this file as the bind-mount target below.
+  containerStateDir = "/var/lib/hermes";
+  containerHermesHome = "${containerStateDir}/.hermes";
+
+  # agents-beads-collaboration-62h (self-improvement rules-file
+  # mechanism): the fleet-wide authority doc every seed-once skill's
+  # reconciliation pass reads, and the shared skill that does the actual
+  # diffing/reporting. Both live here, not under any one host's hermes/
+  # directory, because they're generic across every agent, not tcan-left-
+  # specific.
+  selfEditAuthorityPath = ./hermes-skills/self-edit-authority.md;
+  reconciliationSkillSource = ./hermes-skills/rules-file-reconciliation;
+
+  # The flake's own published package, not read back from any nested
+  # container config (same circularity reasoning as containerStateDir
+  # above) - this is what services.hermes-agent.package itself defaults
+  # to, just reached from the outside.
+  hermesPkg = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
+
   # ── Per-agent derivation of the container config ──────────────────────
 
   mkManagedSkillFiles =
@@ -57,6 +80,22 @@ let
       map (p: {
         name = "skills/${skillName}/${builtins.unsafeDiscardStringContext (lib.removePrefix "${toString skill.source}/" (toString p))}";
         value = p;
+      }) (lib.filesystem.listFilesRecursive skill.source)
+    );
+
+  # Same file set as mkManagedSkillFiles, but destined for
+  # environment.etc rather than HERMES_HOME - the root-owned, read-only
+  # reference copy a seed-once skill's mutable copy gets diffed against.
+  # "zero custom activation code needed - a symlink into the Nix store,
+  # always current on every deploy" (per the original design note).
+  mkEtcSkillFiles =
+    skillName: skill:
+    lib.listToAttrs (
+      map (p: {
+        name = "hermes-skills/${skillName}/${builtins.unsafeDiscardStringContext (lib.removePrefix "${toString skill.source}/" (toString p))}";
+        value = {
+          source = p;
+        };
       }) (lib.filesystem.listFilesRecursive skill.source)
     );
 
@@ -102,11 +141,20 @@ let
             in
             lib.concatStringsSep "\n" (
               lib.mapAttrsToList (relPath: src: ''
-                dest="/var/lib/hermes/${relPath}"
+                dest="${containerStateDir}/${relPath}"
                 if [ ! -e "$dest" ]; then
                   mkdir -p "$(dirname "$dest")"
                   cp ${src} "$dest"
-                  chown hermes:hermes "$dest"
+                  # Nix store files are mode 444 - cp preserves that, and
+                  # chown alone doesn't add a write bit. Without this, the
+                  # whole point of seed-once (the agent can durably edit
+                  # its own copy) silently doesn't hold: the file lands
+                  # owned by hermes but still read-only to hermes.
+                  # chown -R (not just the file) so the agent can also
+                  # create new files/do an atomic rename-replace inside
+                  # its own skill directory, not just edit this one file.
+                  chmod 644 "$dest"
+                  chown -R hermes:hermes "$(dirname "$dest")"
                 fi
               '') files
             )
@@ -114,6 +162,96 @@ let
         );
       };
     };
+
+  # Read-only reference copies (environment.etc) for every seed-once
+  # skill this agent has - what its mutable copy gets diffed against.
+  seedOnceEtcFiles =
+    agentCfg:
+    lib.foldl' lib.recursiveUpdate { } (
+      lib.mapAttrsToList (skillName: skill: mkEtcSkillFiles skillName skill) (seedOnceSkills agentCfg)
+    );
+
+  # The shared reconciliation skill itself, only materialized for agents
+  # that actually have something to reconcile - always-fresh (not
+  # seed-once), this is the official mechanism, not anyone's own notes.
+  reconciliationHomeFiles =
+    agentCfg:
+    lib.optionalAttrs (seedOnceSkills agentCfg != { }) (
+      mkManagedSkillFiles "rules-file-reconciliation" { source = reconciliationSkillSource; }
+    );
+
+  # One cron-registration + one deploy-trigger service per seed-once
+  # skill. Registration mirrors daily-report-cron.nix's own proven
+  # idempotent (skip-if-present, exact Name: field match) pattern - see
+  # that file for why a loose substring match isn't good enough. The
+  # trigger service's restartTriggers is scoped to just that skill's own
+  # source path, not the whole container, so switch-to-configuration
+  # only restarts (and so only re-fires `cron run`) it when the official
+  # original for THIS skill actually changed.
+  mkReconciliationServices =
+    agentName: agentCfg:
+    let
+      hermesBin = "${hermesPkg}/bin/hermes";
+      seedOnce = seedOnceSkills agentCfg;
+    in
+    lib.foldl' lib.recursiveUpdate { } (
+      lib.mapAttrsToList (
+        skillName: skill:
+        let
+          jobName = "reconcile-${skillName}";
+          cronSetupUnit = "${jobName}-cron-setup";
+        in
+        {
+          "${cronSetupUnit}" = {
+            description = "Register ${agentName}'s weekly ${skillName} reconciliation job (one-time)";
+            wantedBy = [ "multi-user.target" ];
+            before = [ "hermes-agent.service" ];
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+              User = "hermes";
+              Group = "hermes";
+              Environment = "HERMES_HOME=${containerHermesHome}";
+            };
+            script = ''
+              set -euo pipefail
+              existing_ids=$(${hermesBin} cron list --all 2>/dev/null | ${pkgs.gawk}/bin/awk -v name="${jobName}" '
+                /^  [0-9a-f]+ \[/ { id = $1 }
+                $1 == "Name:" && $2 == name { print id }
+              ')
+              if [ -n "$existing_ids" ]; then
+                exit 0
+              fi
+              ${hermesBin} cron create "0 7 * * 1" \
+                "Reconcile the '${skillName}' skill per the rules-file-reconciliation skill, and report to #tradecraft." \
+                --name ${jobName} \
+                --skill rules-file-reconciliation
+            '';
+          };
+
+          "${jobName}-trigger" = {
+            description = "Fire ${agentName}'s ${skillName} reconciliation job now - the official original changed since the last deploy";
+            after = [
+              "hermes-agent.service"
+              "${cronSetupUnit}.service"
+            ];
+            wantedBy = [ "multi-user.target" ];
+            # Keyed on just this skill's own source path (see header
+            # comment), so an unrelated config change elsewhere in the
+            # container never causes a spurious extra run.
+            restartTriggers = [ skill.source ];
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+              User = "hermes";
+              Group = "hermes";
+              Environment = "HERMES_HOME=${containerHermesHome}";
+            };
+            script = "${hermesBin} cron run ${jobName}";
+          };
+        }
+      ) seedOnce
+    );
 
   mkForgejoLoginService =
     agentCfg:
@@ -313,6 +451,11 @@ let
 
             nixpkgs.pkgs = hostPkgs;
 
+            # Read-only reference copies for this agent's seed-once
+            # skills - empty attrset (no-op) for every agent that has
+            # none yet.
+            environment.etc = seedOnceEtcFiles agentCfg;
+
             services.hermes-agent = {
               enable = true;
 
@@ -345,6 +488,7 @@ let
                 "SOUL.md" = agentCfg.soulFile;
               }
               // skillHomeFiles
+              // reconciliationHomeFiles agentCfg
               // agentCfg.extraHermesHomeFiles;
 
               inherit (agentCfg) mcpServers;
@@ -373,6 +517,7 @@ let
                 // mkGithubAppServices agentCfg
                 // mkGitCredentialHelper agentName agentCfg
                 // mkSeedOnceService agentName agentCfg
+                // mkReconciliationServices agentName agentCfg
                 // {
                   hermes-agent.serviceConfig = {
                     ProtectHome = lib.mkForce true;
@@ -434,6 +579,17 @@ let
         # deploy that only touched one agent's files). Real access control
         # is each container's own deeper subdirectory permissions.
         "d ${agentCfg.stateHostPath} 0755 root root -"
+      ]
+      ++ lib.optionals (seedOnceSkills agentCfg != { }) [
+        # At the state dir's own root, not inside .hermes/ (HERMES_HOME)
+        # or workspace/ (documents) - this is deliberately a sibling of
+        # both, so AGENTS.md's "../self-edit-authority.md" (one level up
+        # from where `documents` installs it, into workspace/) resolves
+        # correctly at runtime. L+ (not a seed-once `d`/copy): always a
+        # fresh symlink into the Nix store, same "always current, no
+        # custom activation code" treatment as environment.etc above -
+        # this file is the official mechanism, never the agent's own.
+        "L+ ${agentCfg.stateHostPath}/self-edit-authority.md - - - - ${selfEditAuthorityPath}"
       ];
     };
 
