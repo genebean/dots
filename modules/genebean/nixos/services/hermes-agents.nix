@@ -141,7 +141,14 @@ let
             in
             lib.concatStringsSep "\n" (
               lib.mapAttrsToList (relPath: src: ''
-                dest="${containerStateDir}/${relPath}"
+                # HERMES_HOME (.hermes/), not the state dir's own root -
+                # hermesHomeFiles-installed ("overwrite") skills already
+                # live at .hermes/skills/<name>/, confirmed live: this
+                # was wrong before (containerStateDir, no .hermes/) and
+                # the result was a seed-once skill that hermes-agent
+                # could never actually see - Danny's "mutable copy"
+                # silently wasn't the file being read at all.
+                dest="${containerHermesHome}/${relPath}"
                 if [ ! -e "$dest" ]; then
                   mkdir -p "$(dirname "$dest")"
                   cp ${src} "$dest"
@@ -180,100 +187,55 @@ let
       mkManagedSkillFiles "rules-file-reconciliation" { source = reconciliationSkillSource; }
     );
 
-  # One cron-registration + one deploy-trigger service per seed-once
-  # skill. Registration mirrors daily-report-cron.nix's own proven
-  # idempotent (skip-if-present, exact Name: field match) pattern - see
-  # that file for why a loose substring match isn't good enough. The
-  # trigger service's restartTriggers is scoped to just that skill's own
-  # source path, not the whole container, so switch-to-configuration
-  # only restarts (and so only re-fires `cron run`) it when the official
-  # original for THIS skill actually changed.
+  # One cron-registration service per seed-once skill, mirroring
+  # daily-report-cron.nix's own proven idempotent (skip-if-present,
+  # exact Name: field match) pattern - see that file for why a loose
+  # substring match isn't good enough. Weekly only, via the gateway's
+  # own always-on ticker - no deploy-triggered immediate-fire mechanism
+  # (tried and dropped: every variant hit a different hermes-agent
+  # quirk live - a boot-blocking synchronous `cron run`, `cron run`
+  # silently not doing anything even once detached, then a missing-
+  # secrets problem once dispatched directly - not worth the fragility
+  # for a "sooner than a week" nicety when the weekly path alone is
+  # already proven reliable).
   mkReconciliationServices =
     agentName: agentCfg:
     let
       hermesBin = "${hermesPkg}/bin/hermes";
       seedOnce = seedOnceSkills agentCfg;
     in
-    lib.foldl' lib.recursiveUpdate { } (
-      lib.mapAttrsToList (
-        skillName: skill:
-        let
-          jobName = "reconcile-${skillName}";
-          cronSetupUnit = "${jobName}-cron-setup";
-        in
-        {
-          "${cronSetupUnit}" = {
-            description = "Register ${agentName}'s weekly ${skillName} reconciliation job (one-time)";
-            wantedBy = [ "multi-user.target" ];
-            before = [ "hermes-agent.service" ];
-            serviceConfig = {
-              Type = "oneshot";
-              RemainAfterExit = true;
-              User = "hermes";
-              Group = "hermes";
-              Environment = "HERMES_HOME=${containerHermesHome}";
-            };
-            script = ''
-              set -euo pipefail
-              existing_ids=$(${hermesBin} cron list --all 2>/dev/null | ${pkgs.gawk}/bin/awk -v name="${jobName}" '
-                /^  [0-9a-f]+ \[/ { id = $1 }
-                $1 == "Name:" && $2 == name { print id }
-              ')
-              if [ -n "$existing_ids" ]; then
-                exit 0
-              fi
-              ${hermesBin} cron create "0 7 * * 1" \
-                "Reconcile the '${skillName}' skill per the rules-file-reconciliation skill, and report to #tradecraft." \
-                --name ${jobName} \
-                --skill rules-file-reconciliation
-            '';
-          };
-
-          "${jobName}-trigger" = {
-            description = "Fire ${agentName}'s ${skillName} reconciliation job now - the official original changed since the last deploy";
-            after = [
-              "hermes-agent.service"
-              "${cronSetupUnit}.service"
-            ];
-            wantedBy = [ "multi-user.target" ];
-            # Keyed on just this skill's own source path (see header
-            # comment), so an unrelated config change elsewhere in the
-            # container never causes a spurious extra run.
-            restartTriggers = [ skill.source ];
-            serviceConfig = {
-              Type = "oneshot";
-              RemainAfterExit = true;
-            };
-            # `hermes cron run` executes the job SYNCHRONOUSLY to
-            # completion, not just "marks it due" (confirmed against the
-            # locked hermes-agent source, hermes_cli/cron.py's
-            # _job_action - a deliberate upstream fix for a different bug,
-            # orphaned background runs mid-LLM-call). Running that inline
-            # here would make a full agent task - LLM calls, posting to
-            # Buzz - a boot-blocking, wantedBy=multi-user.target
-            # dependency: confirmed live, it hung container startup past
-            # deploy-rs's activation-wait window and triggered an
-            # automatic rollback. Detach it into its own transient unit
-            # via systemd-run --no-block (same pattern already used for
-            # the GitHub App token-refresh reschedule below) so this
-            # unit itself returns immediately and the actual
-            # (open-ended-duration) reconciliation run happens
-            # independently, tracked under its own unit name, not
-            # gating boot/deploy on an LLM call's latency. PID-suffixed
-            # unit name avoids a same-named collision on a second
-            # rapid-fire trigger (dots issue 798's same reasoning).
-            script = ''
-              ${pkgs.systemd}/bin/systemd-run --no-block --collect \
-                --unit=${jobName}-fire-$$ \
-                --description="Run ${agentName}'s ${skillName} reconciliation now" \
-                --property=User=hermes --property=Group=hermes \
-                --setenv=HERMES_HOME=${containerHermesHome} \
-                ${hermesBin} cron run ${jobName}
-            '';
-          };
-        }
-      ) seedOnce
-    );
+    lib.mapAttrs' (
+      skillName: _skill:
+      let
+        jobName = "reconcile-${skillName}";
+      in
+      lib.nameValuePair "${jobName}-cron-setup" {
+        description = "Register ${agentName}'s weekly ${skillName} reconciliation job (one-time)";
+        wantedBy = [ "multi-user.target" ];
+        before = [ "hermes-agent.service" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          User = "hermes";
+          Group = "hermes";
+          Environment = "HERMES_HOME=${containerHermesHome}";
+        };
+        script = ''
+          set -euo pipefail
+          existing_ids=$(${hermesBin} cron list --all 2>/dev/null | ${pkgs.gawk}/bin/awk -v name="${jobName}" '
+            /^  [0-9a-f]+ \[/ { id = $1 }
+            $1 == "Name:" && $2 == name { print id }
+          ')
+          if [ -n "$existing_ids" ]; then
+            exit 0
+          fi
+          ${hermesBin} cron create "0 17 * * 4" \
+            "Reconcile the '${skillName}' skill per the rules-file-reconciliation skill, and report to #tradecraft." \
+            --name ${jobName} \
+            --skill rules-file-reconciliation
+        '';
+      }
+    ) seedOnce;
 
   mkForgejoLoginService =
     agentCfg:
