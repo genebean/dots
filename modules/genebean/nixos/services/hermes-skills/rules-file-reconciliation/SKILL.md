@@ -63,6 +63,51 @@ name (e.g. "daily-social-report"). For that name:
 5. **For anything in the escalation tier, in either direction**: do not
    apply it yourself. Prepare it for the report below instead.
 
+## Also, every run: discover and self-audit skills you've created
+
+This step is unconditional - it runs every time this skill fires, regardless
+of which skill the task above named for the diff in "What to do". It's
+separate from that diff: this is about skills that exist only because you
+created them yourself (via `skill_manage` or similar), that nobody has
+reviewed for the Nix-managed tier yet.
+
+1. Run `hermes curator usage` (your `terminal` tool) and read its `origin`
+   column. Rows marked `agent` are anything not bundled or hub-installed -
+   this includes skills a human placed here via Nix as well as ones you
+   created yourself, so this alone isn't the filter.
+
+2. For each `agent`-origin row, check whether `/etc/hermes-skills/<name>/`
+   exists. If it does, a human has already reviewed and Nix-managed this
+   skill - skip it, nothing new to report. What's left - `agent`-origin,
+   no matching `/etc/hermes-skills/` entry - is a skill you created that no
+   one has looked at yet.
+
+3. For each one left, **read its actual SKILL.md content and self-audit
+   it** - don't just list the name. Form your own honest opinion on
+   whether it should move into the Nix-managed/reviewed tier, and say why.
+   There's no single required justification - "broadly reusable across
+   the fleet" is one possible reason, but not the only one. Others are
+   just as legitimate: it captures a hard-won lesson worth preserving
+   permanently and not losing to drift; it'd be useful as reference
+   material for a human authoring future high-quality skills; you want
+   your own future edits to it tracked and surfaced by this same
+   reconciliation process rather than left unreviewed indefinitely; or
+   any other reason you find genuinely compelling. Equally, say so
+   plainly if you think a skill should stay exactly as it is - personal,
+   unreviewed, not worth anyone else's attention.
+
+4. Pull `hermes curator usage`'s own telemetry for each one (`use`,
+   `view`, `patch`, `last_activity`) and cite it as evidence either way -
+   a skill used thirteen times is a different case from one created once
+   and never touched again.
+
+This is purely advisory. Nothing here gets adopted automatically, by you
+or by curator's own `adopt` (that command only changes curator's lifecycle
+tracking - whether this gets reviewed into the Nix-managed tier is a
+separate, human decision). Once a human does adopt one, it gains a matching
+`/etc/hermes-skills/` entry and stops appearing in this section on its own
+- no separate tracking needed from you.
+
 ## Reporting to #tradecraft
 
 Post one message (split across several if it would otherwise risk Buzz's
@@ -95,3 +140,14 @@ another agent helping with the promotion) could open the right change
 without re-deriving your diff from scratch - the file path and hunk are
 the point, not prose padding. Keep the self-applied and no-drift cases
 short; save the detail for the entries that actually need a decision.
+
+- **Skills created, not yet reviewed** (from the discovery step above):
+  one entry per candidate, every run that finds one, even if you reported
+  the same skill last week and nothing's changed since - this section
+  doesn't get the no-drift shortcut, since the point is to keep surfacing
+  it until a human actually makes a call. For each: the skill's name and
+  path, its `use`/`view`/`patch`/`last_activity` telemetry, your own
+  recommendation (adopt / don't adopt / needs revision first) and the
+  reasoning behind it. If the discovery step found nothing this run, a
+  single line saying so is enough - no need to pad this section when
+  there's genuinely nothing new.
