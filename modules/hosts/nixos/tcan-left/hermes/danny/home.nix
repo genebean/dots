@@ -95,14 +95,25 @@ in
       # all) - generated from the flake input's own source tree, so a
       # file HermesSocialDigestPipeline adds later is picked up
       # automatically.
-      # seed-once, not the overwrite default: this is the first skill
-      # exercising the mutable-copy mechanism the installMode option was
-      # built for (agents-beads-collaboration-62h) - Danny edits his own
-      # copy in place and it must survive redeploys. The root-owned
-      # original still comes from this same `source` path; the diff job
-      # that reconciles the two (same ticket, not yet built) reads both.
+      # seed-once, not the overwrite default: the mutable-copy mechanism
+      # (agents-beads-collaboration-62h) - Danny edits his own copy in
+      # place and it must survive redeploys. The root-owned original
+      # still comes from this same `source` path; the weekly
+      # rules-file-reconciliation job (same ticket) reads both and
+      # reports drift to #tradecraft.
       daily-social-report = {
         source = ./daily-report-skill;
+        installMode = "seed-once";
+      };
+      # Originated as an ad hoc skill Danny generated himself out of a
+      # Buzz conversation (not hand-authored by Jed despite the
+      # frontmatter's `author` field, and not Nix-managed at all until
+      # now) - reviewed and adopted here because its guidance is
+      # fleet-wide generic (orchestration/delivery-verification for any
+      # scheduled publication job), not Danny-specific. seed-once for
+      # the same reason as daily-social-report above.
+      scheduled-publication-workflows = {
+        source = ../../../../../genebean/nixos/services/hermes-skills/scheduled-publication-workflows;
         installMode = "seed-once";
       };
       file-newspaper-article.source = ./newspaper-article-skill;
