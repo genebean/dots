@@ -138,33 +138,46 @@ let
             skillName: skill:
             let
               files = mkManagedSkillFiles skillName skill;
+              skillDir = "${containerHermesHome}/skills/${skillName}";
             in
-            lib.concatStringsSep "\n" (
-              lib.mapAttrsToList (relPath: src: ''
-                # HERMES_HOME (.hermes/), not the state dir's own root -
-                # hermesHomeFiles-installed ("overwrite") skills already
-                # live at .hermes/skills/<name>/, confirmed live: this
-                # was wrong before (containerStateDir, no .hermes/) and
-                # the result was a seed-once skill that hermes-agent
-                # could never actually see - Danny's "mutable copy"
-                # silently wasn't the file being read at all.
-                dest="${containerHermesHome}/${relPath}"
-                if [ ! -e "$dest" ]; then
-                  mkdir -p "$(dirname "$dest")"
-                  cp ${src} "$dest"
-                  # Nix store files are mode 444 - cp preserves that, and
-                  # chown alone doesn't add a write bit. Without this, the
-                  # whole point of seed-once (the agent can durably edit
-                  # its own copy) silently doesn't hold: the file lands
-                  # owned by hermes but still read-only to hermes.
-                  # chown -R (not just the file) so the agent can also
-                  # create new files/do an atomic rename-replace inside
-                  # its own skill directory, not just edit this one file.
-                  chmod 644 "$dest"
-                  chown -R hermes:hermes "$(dirname "$dest")"
-                fi
-              '') files
-            )
+            ''
+              # HERMES_HOME (.hermes/), not the state dir's own root -
+              # hermesHomeFiles-installed ("overwrite") skills already
+              # live at .hermes/skills/<name>/, confirmed live: this
+              # was wrong before (containerStateDir, no .hermes/) and
+              # the result was a seed-once skill that hermes-agent
+              # could never actually see - Danny's "mutable copy"
+              # silently wasn't the file being read at all.
+              ${lib.concatStringsSep "\n" (
+                lib.mapAttrsToList (relPath: src: ''
+                  dest="${containerHermesHome}/${relPath}"
+                  if [ ! -e "$dest" ]; then
+                    mkdir -p "$(dirname "$dest")"
+                    cp ${src} "$dest"
+                  fi
+                '') files
+              )}
+              # Unconditional, every activation - NOT just inside the
+              # "if absent" branch above. Confirmed live: a skill that
+              # was "overwrite" mode before switching to seed-once
+              # already had its directory tree on disk (installed as
+              # root by hermesHomeFiles' own mechanism, which only
+              # chowns the FILE, not the parent directories it
+              # creates) - the "if absent" copy never ran for it, so
+              # the one-time chmod/chown this used to do inline never
+              # applied either, and the agent genuinely could not
+              # write there (confirmed via a live `touch`: Permission
+              # denied on the directory itself, even though the file
+              # inside looked writable). Re-asserting ownership and
+              # write access on the whole directory tree every
+              # activation - cheap, idempotent, and the only way this
+              # also self-heals a skill that was already stale before
+              # this fix existed, not just newly-created ones going
+              # forward.
+              chown -R hermes:hermes "${skillDir}"
+              find "${skillDir}" -type d -exec chmod u+rwx,g+rwx {} +
+              find "${skillDir}" -type f -exec chmod u+rw,g+r {} +
+            ''
           ) seedOnce
         );
       };
