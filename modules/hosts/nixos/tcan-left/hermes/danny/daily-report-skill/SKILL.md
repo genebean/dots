@@ -240,9 +240,12 @@ truncations immediately instead of the next morning.
 **External `@handles` are not safe to paste verbatim into Buzz message
 text** - a source platform's `@user@instance`-style handle gets parsed
 as a Buzz channel mention, not literal text, and can get the whole
-message rejected (confirmed happening 2026-10-14). Wrap any external
-handle you're quoting in backticks (`` `@user@instance` ``) instead of
-leaving it bare.
+message rejected (confirmed happening 2026-10-14). Strip the leading
+`@` from any external handle you're quoting (`user@instance`, not
+`@user@instance`) rather than leaving it bare - matches the bundled
+`buzz-multipart-delivery`/`daily-social-report-publication` skills'
+own guidance; backtick-wrapping was this skill's own earlier guess and
+was never actually confirmed to suppress Buzz's mention parser.
 
 ## End-of-run status report - mandatory, every run
 
@@ -264,6 +267,51 @@ Newspaper PR not filed: tea push failed with a network timeout.` A run
 that completes both destinations cleanly still states `COMPLETE`
 explicitly - don't let a clean run go unstated just because nothing
 went wrong.
+
+**Where this status actually has to land** - stating it as your final
+response isn't enough on its own: this job's delivery is `local`, so
+that response only lands in the cron execution record, not somewhere a
+human will see it promptly.
+
+- `COMPLETE`: no further action - the report and any newspaper PR are
+  the visible record.
+- `PARTIAL` or `FAILED` from something an editor needs to weigh in on
+  (a ranking call, a filing conflict, anything short of an
+  infrastructure problem): actively send a concise version of the
+  status line above to `#news-editors`, addressed to Jed - don't rely
+  on him checking cron history.
+- `PARTIAL` or `FAILED` from an infrastructure problem (a tool broken,
+  a credential failing, a path missing): raise the concrete symptom in
+  `#press-room` to Leo, per AGENTS.md's existing "Infrastructure
+  concerns" section - that's the right channel for this category
+  specifically, not `#news-editors`.
+
+## Companion skills in this workflow
+
+This skill covers report generation and ranking only. The full daily
+run - this skill, Buzz delivery, and newspaper filing - also depends
+on these, all preloaded on the cron job alongside this one so the job
+configuration declares its complete workflow rather than relying on
+routing to find them:
+
+- **`buzz-multipart-delivery`**: the actual Buzz send mechanics for
+  the "Delivery" section above - preflighting handles, sending one
+  part at a time, confirming `accepted: true`, read-back verification.
+- **`daily-social-report-publication`**: the newspaper-filing half of
+  this run, referenced by "Newspaper" in the end-of-run status above.
+- **`file-newspaper-article`**: how and when to open the actual PR
+  against `genebean/newspaper` once a report is substantial enough to
+  be worth the permanent record.
+
+Two other, unrelated bundled skills cover similar-sounding ground but
+serve different purposes - don't conflate them:
+
+- **`social-report-publication-review`** protects the digest's own
+  editorial structure and supports omission audits (checking
+  *what got left out* of the compiled candidates).
+- **`newspaper-editorial-review`** governs branch revision and
+  publication verification once an article PR already exists (checking
+  *how a filed article gets revised*).
 
 ## HTML on request
 
