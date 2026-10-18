@@ -60,9 +60,12 @@
       gateway.platforms.buzz.extra = {
         channels = [
           buzzChannels.senior-staff
+          buzzChannels.time-clock
           buzzChannels.tradecraft
         ];
-        home_channel = buzzChannels.senior-staff;
+        # time-clock, not senior-staff: keeps shutdown-notification spam
+        # out of the channels people actually read, fleet-wide (2026-10-17).
+        home_channel = buzzChannels.time-clock;
         # require_mention stays at the shared default (true,
         # hermes-agents.nix) - Sam only activates on an explicit
         # @-mention or a reply to its own message, same as Charlie.
@@ -74,6 +77,8 @@
       hermes_sam_buzz_identity.toEnvironmentFile = true;
       hermes_sam_github_app_key = { };
     };
+
+    sharedSkills = [ "newspaper-access" ];
 
     soulFile = ./SOUL.md;
   };

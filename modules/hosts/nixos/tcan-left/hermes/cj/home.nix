@@ -27,9 +27,12 @@
         channels = [
           buzzChannels.senior-staff
           buzzChannels.press-room
+          buzzChannels.time-clock
           buzzChannels.tradecraft
         ];
-        home_channel = buzzChannels.senior-staff;
+        # time-clock, not senior-staff: keeps shutdown-notification spam
+        # out of the channels people actually read, fleet-wide (2026-10-17).
+        home_channel = buzzChannels.time-clock;
         # require_mention stays at the shared default (true,
         # hermes-agents.nix) - C.J. only delivers on direction, same as
         # Charlie/Danny, not a primary conversational partner like Leo.
@@ -42,6 +45,8 @@
       hermes_cj_buzz_identity.toEnvironmentFile = true;
       hermes_cj_forgejo_token = { };
     };
+
+    sharedSkills = [ "newspaper-access" ];
 
     soulFile = ./SOUL.md;
   };

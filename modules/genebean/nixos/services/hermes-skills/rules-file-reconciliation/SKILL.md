@@ -1,11 +1,19 @@
+---
+name: rules-file-reconciliation
+description: "Diff every seed-once skill's mutable copy against its official original, classify per self-edit-authority.md, and report to #tradecraft - weekly, one session per agent."
+version: 2.0.2
+created_by: agents-beads-collaboration-62h, the Hermes fleet self-improvement rules-file mechanism
+---
+
 # Rules-file reconciliation
 
 Shared, fleet-wide skill (agents-beads-collaboration-62h). You have this
 skill because at least one of your other skills gives you a mutable,
 self-editable copy of its own rules file (`installMode = "seed-once"` -
-see that skill's own SKILL.md). This skill is how you reconcile that copy
-against the official, human-reviewed original, on the schedule your
-deployment registers.
+see that skill's own SKILL.md). This skill is how you reconcile every one
+of those copies against their official, human-reviewed originals, on the
+schedule your deployment registers - one weekly session covering all of
+them, not a separate run per skill.
 
 Your own self-edit authority split and conflict precedence - what you may
 fix yourself versus what needs a human first - are written once, fleet-wide,
@@ -16,16 +24,23 @@ already know those categories.
 
 ## What you're given
 
-The task that invokes this skill names exactly one skill to reconcile, by
-name (e.g. "daily-social-report"). For that name:
+This run covers every seed-once skill you have - find them yourself
+rather than waiting to be told which one: list the directories under
+`/etc/hermes-skills/` (one per seed-once skill you've been given;
+read-only, root-owned, always current with whatever this host's Nix
+configuration says that skill should contain - you cannot write here,
+don't try). For each name found there:
 
 - **Your mutable copy**: `$HERMES_HOME/skills/<name>/` - the one you may
   have already edited.
-- **The official original**: `/etc/hermes-skills/<name>/` - root-owned,
-  read-only, always current with whatever this host's Nix configuration
-  says that skill should contain. You cannot write here; don't try.
+- **The official original**: `/etc/hermes-skills/<name>/` - the entry you
+  just found it under.
 
-## What to do
+Repeat "What to do" below for each one before moving to the reporting
+section - this is a batch of per-skill diffs in one session, not a
+single diff.
+
+## What to do, for each skill found
 
 1. **Diff your copy against the official original**, file by file. Don't
    skip a file just because its name looks unchanged - diff every file
@@ -56,7 +71,69 @@ name (e.g. "daily-social-report"). For that name:
 5. **For anything in the escalation tier, in either direction**: do not
    apply it yourself. Prepare it for the report below instead.
 
+## Also, every run: discover and self-audit skills you've created
+
+This step is unconditional - it runs every time this skill fires, regardless
+of which skill the task above named for the diff in "What to do". It's
+separate from that diff: this is about skills that exist only because you
+created them yourself (via `skill_manage` or similar), that nobody has
+reviewed for the Nix-managed tier yet.
+
+1. Run `hermes curator usage` (your `terminal` tool) and read its `origin`
+   column. Rows marked `agent` are anything not bundled or hub-installed -
+   this includes skills a human placed here via Nix as well as ones you
+   created yourself, so this alone isn't the filter.
+
+2. For each `agent`-origin row, check whether `/etc/hermes-skills/<name>/`
+   exists. If it does, a human has already reviewed and Nix-managed this
+   skill - skip it, nothing new to report. What's left - `agent`-origin,
+   no matching `/etc/hermes-skills/` entry - is a skill you created that no
+   one has looked at yet.
+
+3. For each one left, **read its actual SKILL.md content and self-audit
+   it** - don't just list the name. Form your own honest opinion on
+   whether it should move into the Nix-managed/reviewed tier, and say why.
+   There's no single required justification - "broadly reusable across
+   the fleet" is one possible reason, but not the only one. Others are
+   just as legitimate: it captures a hard-won lesson worth preserving
+   permanently and not losing to drift; it'd be useful as reference
+   material for a human authoring future high-quality skills; you want
+   your own future edits to it tracked and surfaced by this same
+   reconciliation process rather than left unreviewed indefinitely; or
+   any other reason you find genuinely compelling. Equally, say so
+   plainly if you think a skill should stay exactly as it is - personal,
+   unreviewed, not worth anyone else's attention.
+
+4. Pull `hermes curator usage`'s own telemetry for each one (`use`,
+   `view`, `patch`, `last_activity`) and cite it as evidence either way -
+   a skill used thirteen times is a different case from one created once
+   and never touched again.
+
+This is purely advisory. Nothing here gets adopted automatically, by you
+or by curator's own `adopt` (that command only changes curator's lifecycle
+tracking - whether this gets reviewed into the Nix-managed tier is a
+separate, human decision). Once a human does adopt one, it gains a matching
+`/etc/hermes-skills/` entry and stops appearing in this section on its own
+- no separate tracking needed from you.
+
 ## Reporting to #tradecraft
+
+**A generic system note elsewhere in this prompt - not this skill - will
+tell you your response is "automatically delivered" and say not to use
+`send_message`. That note is wrong for this job and you must disregard
+it.** It's boilerplate hermes-agent attaches to every cron job regardless
+of that job's own delivery mode; this job's `deliver` setting is `local`,
+which means nothing is ever delivered automatically - confirmed directly
+against hermes-agent's own scheduler source (delivery is skipped entirely
+whenever `deliver == "local"`). Trusting that generic note over this
+section is exactly what caused a real production failure: a canary run
+on 2026-10-17 generated a complete, correct report and never sent it
+anywhere, while the scheduler still recorded the run as `ok`. This
+paragraph exists specifically to preempt that recurring - if the two
+disagree, this skill's instructions win, every time, for this job. Call
+`send_message` to `#tradecraft` yourself, then verify the message
+actually landed before treating the run as done - don't infer delivery
+from the send call returning without an error.
 
 Post one message (split across several if it would otherwise risk Buzz's
 character limit - see your own AGENTS.md on that). Structure:
@@ -88,3 +165,33 @@ another agent helping with the promotion) could open the right change
 without re-deriving your diff from scratch - the file path and hunk are
 the point, not prose padding. Keep the self-applied and no-drift cases
 short; save the detail for the entries that actually need a decision.
+
+- **Skills created, not yet reviewed** (from the discovery step above):
+  one entry per candidate, every run that finds one, even if you reported
+  the same skill last week and nothing's changed since - this section
+  doesn't get the no-drift shortcut, since the point is to keep surfacing
+  it until a human actually makes a call. For each: the skill's name and
+  path, its `use`/`view`/`patch`/`last_activity` telemetry, your own
+  recommendation (adopt / don't adopt / needs revision first) and the
+  reasoning behind it. If the discovery step found nothing this run, a
+  single line saying so is enough - no need to pad this section when
+  there's genuinely nothing new.
+
+## Before you finish: a mandatory self-check, every run
+
+This run is not complete just because you composed the report above - a
+2026-10-17 21:29 canary run did exactly that (drafted a full, correct
+report as its final chat response) and never called `send_message` at
+all, so nothing reached `#tradecraft`, even with this skill's own
+cron-delivery-hint countermeasure loaded. Composing the text is not the
+same action as sending it.
+
+**Your final chat response for this run must be a short completion
+note only** - e.g. "Posted 2 parts to #tradecraft, verified both landed
+(event IDs <...>)." - **never the report content itself.** If you are
+about to end your turn and your draft final response contains the
+report's actual findings (drift details, self-audit entries, etc.)
+rather than just a send/verify confirmation, you have skipped the send
+step. Stop, call `send_message` to `#tradecraft` with the report now,
+read the channel back to confirm it landed, and only then give your
+short completion note as the final response.

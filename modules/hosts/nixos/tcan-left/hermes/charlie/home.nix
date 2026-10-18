@@ -32,9 +32,12 @@
       gateway.platforms.buzz.extra = {
         channels = [
           buzzChannels.senior-staff
+          buzzChannels.time-clock
           buzzChannels.tradecraft
         ];
-        home_channel = buzzChannels.senior-staff;
+        # time-clock, not senior-staff: keeps shutdown-notification spam
+        # out of the channels people actually read, fleet-wide (2026-10-17).
+        home_channel = buzzChannels.time-clock;
         # require_mention stays at the shared default (true,
         # hermes-agents.nix) - Charlie only activates on an explicit
         # @-mention or a reply to its own message, so Leo's own channel
@@ -48,6 +51,8 @@
       # above), not a live env var per call.
       hermes_charlie_forgejo_token = { };
     };
+
+    sharedSkills = [ "newspaper-access" ];
 
     soulFile = ./SOUL.md;
   };

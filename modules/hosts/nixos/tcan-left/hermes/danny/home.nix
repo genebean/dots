@@ -80,9 +80,12 @@ in
           buzzChannels.press-room
           buzzChannels.the-paper
           buzzChannels.news-editors
+          buzzChannels.time-clock
           buzzChannels.tradecraft
         ];
-        home_channel = buzzChannels.the-paper;
+        # time-clock, not the-paper: keeps shutdown-notification spam
+        # out of the channels people actually read, fleet-wide (2026-10-17).
+        home_channel = buzzChannels.time-clock;
         # require_mention stays at the shared default (true,
         # hermes-agents.nix) - Danny only activates on an explicit
         # @-mention or a reply to his own message.
@@ -95,18 +98,24 @@ in
       # all) - generated from the flake input's own source tree, so a
       # file HermesSocialDigestPipeline adds later is picked up
       # automatically.
-      # seed-once, not the overwrite default: this is the first skill
-      # exercising the mutable-copy mechanism the installMode option was
-      # built for (agents-beads-collaboration-62h) - Danny edits his own
-      # copy in place and it must survive redeploys. The root-owned
-      # original still comes from this same `source` path; the diff job
-      # that reconciles the two (same ticket, not yet built) reads both.
-      daily-social-report = {
-        source = ./daily-report-skill;
-        installMode = "seed-once";
-      };
+      daily-social-report.source = ./daily-report-skill;
       file-newspaper-article.source = ./newspaper-article-skill;
+      # When this flake input bumps upstream, the new version lands in
+      # the read-only /etc/hermes-skills/ reference as usual, and the
+      # next weekly reconciliation run surfaces the resulting gap
+      # against Danny's copy like any other official-source change - no
+      # special handling needed for the flake-sourced case.
       hermes-social-digest-pipeline.source = "${inputs.hermes-social-digest-pipeline}/skills/hermes-social-digest-pipeline";
+      # Adopted 2026-10-17 from Danny's own self-audit
+      # (agents-beads-collaboration-62h's rules-file-reconciliation
+      # discovery step) - both were self-authored, already relied on in
+      # daily production use (the PR-revision and manual-rerun/recovery
+      # paths for the morning report), and recommended "Adopt" on review.
+      # Kept Danny-specific rather than moved into genebean/'s shared
+      # namespace: both are scoped to this agent's own daily-social-
+      # report/newspaper-filing workflow, not generically reusable.
+      newspaper-editorial-review.source = ./newspaper-editorial-review-skill;
+      social-report-delivery.source = ./social-report-delivery-skill;
     };
 
     # Narrow, point-lookup-only follow-up tool access. `tools.include` is
@@ -138,6 +147,18 @@ in
       # resolve it.
       hermes_danny_mcp_token.envFileAs = "SOCIAL_READER_MCP_HTTP_TOKEN";
     };
+
+    sharedSkills = [
+      "buzz-multipart-delivery"
+      "newspaper-access"
+      # Originated as an ad hoc skill Danny generated himself out of a
+      # Buzz conversation (not hand-authored by Jed despite the
+      # frontmatter's `author` field, and not Nix-managed at all until
+      # 2026-10-17) - reviewed and adopted because its guidance is
+      # fleet-wide generic (orchestration/delivery-verification for any
+      # scheduled publication job), not Danny-specific.
+      "scheduled-publication-workflows"
+    ];
 
     soulFile = ./SOUL.md;
   };
