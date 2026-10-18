@@ -56,12 +56,16 @@ in
       # firing and unique per host - Puppet's fqdn_rand() for the same
       # purpose, no manual per-host time to maintain as hosts come and go.
       # 3h ceiling keeps every host's run well clear of restic-fleet-prune's
-      # own 04:00 start below.
+      # own 04:00 start below. Each field individually mkDefault, not the
+      # whole set - nixnuc's own default.nix already sets OnCalendar to its
+      # own deliberately-chosen time (a plain, non-default definition, so it
+      # wins outright); it still gets FixedRandomDelay layered on top of
+      # that chosen hour as extra margin, same as everyone else.
       timerConfig = {
-        OnCalendar = "daily";
-        Persistent = true;
-        RandomizedDelaySec = "3h";
-        FixedRandomDelay = true;
+        OnCalendar = lib.mkDefault "daily";
+        Persistent = lib.mkDefault true;
+        RandomizedDelaySec = lib.mkDefault "3h";
+        FixedRandomDelay = lib.mkDefault true;
       };
     };
 
