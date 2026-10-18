@@ -1,7 +1,7 @@
 ---
 name: rules-file-reconciliation
 description: "Diff every seed-once skill's mutable copy against its official original, classify per self-edit-authority.md, and report to #tradecraft - weekly, one session per agent."
-version: 2.0.1
+version: 2.0.2
 created_by: agents-beads-collaboration-62h, the Hermes fleet self-improvement rules-file mechanism
 ---
 
@@ -176,3 +176,22 @@ short; save the detail for the entries that actually need a decision.
   reasoning behind it. If the discovery step found nothing this run, a
   single line saying so is enough - no need to pad this section when
   there's genuinely nothing new.
+
+## Before you finish: a mandatory self-check, every run
+
+This run is not complete just because you composed the report above - a
+2026-10-17 21:29 canary run did exactly that (drafted a full, correct
+report as its final chat response) and never called `send_message` at
+all, so nothing reached `#tradecraft`, even with this skill's own
+cron-delivery-hint countermeasure loaded. Composing the text is not the
+same action as sending it.
+
+**Your final chat response for this run must be a short completion
+note only** - e.g. "Posted 2 parts to #tradecraft, verified both landed
+(event IDs <...>)." - **never the report content itself.** If you are
+about to end your turn and your draft final response contains the
+report's actual findings (drift details, self-audit entries, etc.)
+rather than just a send/verify confirmation, you have skipped the send
+step. Stop, call `send_message` to `#tradecraft` with the report now,
+read the channel back to confirm it landed, and only then give your
+short completion note as the final response.
