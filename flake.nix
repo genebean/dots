@@ -460,13 +460,30 @@
           # repo; `nix build .#genebean-options-doc` alone just leaves it
           # in the Nix store.
           genebean-options-doc =
-            (pkgs.nixosOptionsDoc {
-              options = self.homeConfigurations.gene-x86_64-linux.options.genebean;
-              # Several genebean/home modules predate this convention and
-              # are missing option descriptions - don't fail the build on
-              # that, just let nixos-render-docs warn on stderr.
-              warningsAreErrors = false;
-            }).optionsCommonMark;
+            let
+              rawOptionsCommonMark =
+                (pkgs.nixosOptionsDoc {
+                  options = self.homeConfigurations.gene-x86_64-linux.options.genebean;
+                  # Several genebean/home modules predate this convention and
+                  # are missing option descriptions - don't fail the build on
+                  # that, just let nixos-render-docs warn on stderr.
+                  warningsAreErrors = false;
+                }).optionsCommonMark;
+            in
+            # nixosOptionsDoc's own "Declared by" links, and any option
+            # whose own default is a self-referential types.path (e.g.
+            # secretType.sopsFile's "../../../shared/secrets.yaml"), both
+            # point at this flake's own ephemeral /nix/store/<hash>-source/
+            # self-path - ANY change anywhere in the tree (not just
+            # genebean/*) gives every one of these a new hash, so they're
+            # useless as a stable, reviewable diff and unnavigable from
+            # GitHub anyway. Rewritten here to plain repo-relative paths.
+            pkgs.runCommand "genebean-options-doc" { } ''
+              sed -E \
+                -e 's#\[/nix/store/[a-z0-9]+-source/([^]]+)\]\(file:///nix/store/[a-z0-9]+-source/([^)]+)\)#[\1](../\2)#g' \
+                -e 's#^/nix/store/[a-z0-9]+-source/(.+)$#\1#' \
+                "${rawOptionsCommonMark}" > "$out"
+            '';
           system-manager = inputs.system-manager.packages.${system}.default;
         }
       );

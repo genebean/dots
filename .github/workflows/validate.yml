@@ -39,9 +39,30 @@ jobs:
       - name: Run ruff format check
         run: nix run nixpkgs#ruff -- format --check --diff .
 
-      - name: Check genebean.* option docs are up to date
+  docs:
+    name: Check genebean.* option docs are up to date
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # update-docs evaluates self.homeConfigurations.gene-x86_64-linux,
+      # which (like the home-manager build job below) needs the private
+      # flake input available - the validate job above deliberately never
+      # evaluates the full flake, so this can't live there.
+      - name: Read pinned private flake revision
+        id: private-flake
+        run: echo "rev=$(jq -r '.nodes[.nodes.root.inputs["private-flake"]].locked.rev' flake.lock)" >> "$GITHUB_OUTPUT"
+      - name: Checkout pinned private flake
+        uses: actions/checkout@v7
+        with:
+          repository: genebean/private-flake
+          ref: ${{ steps.private-flake.outputs.rev }}
+          token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
+          path: private-flake
+      - uses: DeterminateSystems/nix-installer-action@v23
+      - name: Check docs/genebean-options.md is current
         run: |
-          nix run .#update-docs
+          nix run .#update-docs --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
           git diff --exit-code -- docs/genebean-options.md || {
             echo "::error::docs/genebean-options.md is stale - run 'nix run .#update-docs' and commit the result."
             exit 1
@@ -49,7 +70,7 @@ jobs:
 
   nixos:
     name: Build ${{ matrix.host }}
-    needs: validate
+    needs: [validate, docs]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -76,7 +97,7 @@ jobs:
 
   extended-nixos:
     name: Build ${{ matrix.host }} (full sweep)
-    needs: validate
+    needs: [validate, docs]
     if: github.event_name != 'pull_request'
     runs-on: ${{ matrix.runner }}
     strategy:
@@ -107,7 +128,7 @@ jobs:
 
   home-manager:
     name: Build Home Manager (x86_64 Linux)
-    needs: validate
+    needs: [validate, docs]
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
@@ -128,7 +149,7 @@ jobs:
 
   mightymac:
     name: Build mightymac (Apple Silicon)
-    needs: validate
+    needs: [validate, docs]
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v7
