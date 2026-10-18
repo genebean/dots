@@ -24,7 +24,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/kiosk-hardware\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/kiosk-hardware.nix)
+ - [modules/genebean/home/kiosk-hardware\.nix](../modules/genebean/home/kiosk-hardware.nix)
 
 
 
@@ -40,7 +40,7 @@ Wireless interface name (e\.g\. wlan0, wlp3s0)\. Feeds networking\.wireless\.int
 string
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/kiosk-hardware\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/kiosk-hardware.nix)
+ - [modules/genebean/home/kiosk-hardware\.nix](../modules/genebean/home/kiosk-hardware.nix)
 
 
 
@@ -72,7 +72,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/plasma\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/plasma.nix)
+ - [modules/genebean/home/plasma\.nix](../modules/genebean/home/plasma.nix)
 
 
 
@@ -104,7 +104,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/angry-ip-scanner\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/angry-ip-scanner.nix)
+ - [modules/genebean/home/programs/angry-ip-scanner\.nix](../modules/genebean/home/programs/angry-ip-scanner.nix)
 
 
 
@@ -136,7 +136,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/askpass\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/askpass.nix)
+ - [modules/genebean/home/programs/askpass\.nix](../modules/genebean/home/programs/askpass.nix)
 
 
 
@@ -168,7 +168,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/atuin-client\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/atuin-client.nix)
+ - [modules/genebean/home/programs/atuin-client\.nix](../modules/genebean/home/programs/atuin-client.nix)
 
 
 
@@ -200,7 +200,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/audacity\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/audacity.nix)
+ - [modules/genebean/home/programs/audacity\.nix](../modules/genebean/home/programs/audacity.nix)
 
 
 
@@ -232,7 +232,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/bat\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/bat.nix)
+ - [modules/genebean/home/programs/bat\.nix](../modules/genebean/home/programs/bat.nix)
 
 
 
@@ -264,7 +264,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/boinc\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/boinc.nix)
+ - [modules/genebean/home/programs/boinc\.nix](../modules/genebean/home/programs/boinc.nix)
 
 
 
@@ -296,7 +296,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/caffeine\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/caffeine.nix)
+ - [modules/genebean/home/programs/caffeine\.nix](../modules/genebean/home/programs/caffeine.nix)
 
 
 
@@ -328,7 +328,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/claude-code\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/claude-code.nix)
+ - [modules/genebean/home/programs/claude-code\.nix](../modules/genebean/home/programs/claude-code.nix)
 
 
 
@@ -360,7 +360,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/diff\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/diff.nix)
+ - [modules/genebean/home/programs/diff\.nix](../modules/genebean/home/programs/diff.nix)
 
 
 
@@ -392,7 +392,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/discord\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/discord.nix)
+ - [modules/genebean/home/programs/discord\.nix](../modules/genebean/home/programs/discord.nix)
 
 
 
@@ -424,7 +424,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/element\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/element.nix)
+ - [modules/genebean/home/programs/element\.nix](../modules/genebean/home/programs/element.nix)
 
 
 
@@ -448,7 +448,7 @@ one of “flatpak”, “nixpkgs”, “none”
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/element\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/element.nix)
+ - [modules/genebean/home/programs/element\.nix](../modules/genebean/home/programs/element.nix)
 
 
 
@@ -480,7 +480,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/filezilla\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/filezilla.nix)
+ - [modules/genebean/home/programs/filezilla\.nix](../modules/genebean/home/programs/filezilla.nix)
 
 
 
@@ -512,7 +512,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/firefox\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/firefox.nix)
+ - [modules/genebean/home/programs/firefox\.nix](../modules/genebean/home/programs/firefox.nix)
 
 
 
@@ -544,7 +544,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/fractal\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/fractal.nix)
+ - [modules/genebean/home/programs/fractal\.nix](../modules/genebean/home/programs/fractal.nix)
 
 
 
@@ -576,7 +576,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/ghostty\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/ghostty.nix)
+ - [modules/genebean/home/programs/ghostty\.nix](../modules/genebean/home/programs/ghostty.nix)
 
 
 
@@ -600,7 +600,7 @@ false
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/ghostty\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/ghostty.nix)
+ - [modules/genebean/home/programs/ghostty\.nix](../modules/genebean/home/programs/ghostty.nix)
 
 
 
@@ -624,7 +624,7 @@ false
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/ghostty\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/ghostty.nix)
+ - [modules/genebean/home/programs/ghostty\.nix](../modules/genebean/home/programs/ghostty.nix)
 
 
 
@@ -648,7 +648,7 @@ false
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/ghostty\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/ghostty.nix)
+ - [modules/genebean/home/programs/ghostty\.nix](../modules/genebean/home/programs/ghostty.nix)
 
 
 
@@ -680,7 +680,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/git\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/git.nix)
+ - [modules/genebean/home/programs/git\.nix](../modules/genebean/home/programs/git.nix)
 
 
 
@@ -712,7 +712,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/gitkraken\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/gitkraken.nix)
+ - [modules/genebean/home/programs/gitkraken\.nix](../modules/genebean/home/programs/gitkraken.nix)
 
 
 
@@ -736,7 +736,7 @@ one of “nixpkgs”, “none”
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/gitkraken\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/gitkraken.nix)
+ - [modules/genebean/home/programs/gitkraken\.nix](../modules/genebean/home/programs/gitkraken.nix)
 
 
 
@@ -768,7 +768,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/handbrake\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/handbrake.nix)
+ - [modules/genebean/home/programs/handbrake\.nix](../modules/genebean/home/programs/handbrake.nix)
 
 
 
@@ -800,7 +800,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/hexchat\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/hexchat.nix)
+ - [modules/genebean/home/programs/hexchat\.nix](../modules/genebean/home/programs/hexchat.nix)
 
 
 
@@ -832,7 +832,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/home-assistant-companion\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/home-assistant-companion.nix)
+ - [modules/genebean/home/programs/home-assistant-companion\.nix](../modules/genebean/home/programs/home-assistant-companion.nix)
 
 
 
@@ -864,7 +864,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/kopiaui\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/kopiaui.nix)
+ - [modules/genebean/home/programs/kopiaui\.nix](../modules/genebean/home/programs/kopiaui.nix)
 
 
 
@@ -888,7 +888,7 @@ one of “flatpak”, “nixpkgs”, “none”
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/kopiaui\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/kopiaui.nix)
+ - [modules/genebean/home/programs/kopiaui\.nix](../modules/genebean/home/programs/kopiaui.nix)
 
 
 
@@ -920,7 +920,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/libreoffice\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/libreoffice.nix)
+ - [modules/genebean/home/programs/libreoffice\.nix](../modules/genebean/home/programs/libreoffice.nix)
 
 
 
@@ -944,7 +944,7 @@ one of “flatpak”, “nixpkgs”, “none”
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/libreoffice\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/libreoffice.nix)
+ - [modules/genebean/home/programs/libreoffice\.nix](../modules/genebean/home/programs/libreoffice.nix)
 
 
 
@@ -976,7 +976,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/localsend\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/localsend.nix)
+ - [modules/genebean/home/programs/localsend\.nix](../modules/genebean/home/programs/localsend.nix)
 
 
 
@@ -1000,7 +1000,7 @@ one of “flatpak”, “nixpkgs”, “none”
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/localsend\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/localsend.nix)
+ - [modules/genebean/home/programs/localsend\.nix](../modules/genebean/home/programs/localsend.nix)
 
 
 
@@ -1032,7 +1032,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/logseq\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/logseq.nix)
+ - [modules/genebean/home/programs/logseq\.nix](../modules/genebean/home/programs/logseq.nix)
 
 
 
@@ -1056,7 +1056,7 @@ one of “flatpak”, “nixpkgs”, “none”
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/logseq\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/logseq.nix)
+ - [modules/genebean/home/programs/logseq\.nix](../modules/genebean/home/programs/logseq.nix)
 
 
 
@@ -1088,7 +1088,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/mcp-nixos\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/mcp-nixos.nix)
+ - [modules/genebean/home/programs/mcp-nixos\.nix](../modules/genebean/home/programs/mcp-nixos.nix)
 
 
 
@@ -1120,7 +1120,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/meld\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/meld.nix)
+ - [modules/genebean/home/programs/meld\.nix](../modules/genebean/home/programs/meld.nix)
 
 
 
@@ -1144,7 +1144,7 @@ one of “nixpkgs”, “none”
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/meld\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/meld.nix)
+ - [modules/genebean/home/programs/meld\.nix](../modules/genebean/home/programs/meld.nix)
 
 
 
@@ -1176,7 +1176,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/mkvtoolnix\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/mkvtoolnix.nix)
+ - [modules/genebean/home/programs/mkvtoolnix\.nix](../modules/genebean/home/programs/mkvtoolnix.nix)
 
 
 
@@ -1208,7 +1208,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/mqtt-explorer\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/mqtt-explorer.nix)
+ - [modules/genebean/home/programs/mqtt-explorer\.nix](../modules/genebean/home/programs/mqtt-explorer.nix)
 
 
 
@@ -1240,7 +1240,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/mumble\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/mumble.nix)
+ - [modules/genebean/home/programs/mumble\.nix](../modules/genebean/home/programs/mumble.nix)
 
 
 
@@ -1272,7 +1272,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/nextcloud-client\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/nextcloud-client.nix)
+ - [modules/genebean/home/programs/nextcloud-client\.nix](../modules/genebean/home/programs/nextcloud-client.nix)
 
 
 
@@ -1304,7 +1304,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/nixdiff\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/nixdiff.nix)
+ - [modules/genebean/home/programs/nixdiff\.nix](../modules/genebean/home/programs/nixdiff.nix)
 
 
 
@@ -1336,7 +1336,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/obs\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/obs.nix)
+ - [modules/genebean/home/programs/obs\.nix](../modules/genebean/home/programs/obs.nix)
 
 
 
@@ -1368,7 +1368,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/onepassword\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/onepassword.nix)
+ - [modules/genebean/home/programs/onepassword\.nix](../modules/genebean/home/programs/onepassword.nix)
 
 
 
@@ -1400,7 +1400,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/onlyoffice\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/onlyoffice.nix)
+ - [modules/genebean/home/programs/onlyoffice\.nix](../modules/genebean/home/programs/onlyoffice.nix)
 
 
 
@@ -1424,7 +1424,7 @@ one of “flatpak”, “none”
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/onlyoffice\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/onlyoffice.nix)
+ - [modules/genebean/home/programs/onlyoffice\.nix](../modules/genebean/home/programs/onlyoffice.nix)
 
 
 
@@ -1456,7 +1456,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/pidgin\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/pidgin.nix)
+ - [modules/genebean/home/programs/pidgin\.nix](../modules/genebean/home/programs/pidgin.nix)
 
 
 
@@ -1488,7 +1488,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/powershell](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/powershell)
+ - [modules/genebean/home/programs/powershell](../modules/genebean/home/programs/powershell)
 
 
 
@@ -1520,7 +1520,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/signal\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/signal.nix)
+ - [modules/genebean/home/programs/signal\.nix](../modules/genebean/home/programs/signal.nix)
 
 
 
@@ -1544,7 +1544,7 @@ one of “flatpak”, “nixpkgs”, “none”
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/signal\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/signal.nix)
+ - [modules/genebean/home/programs/signal\.nix](../modules/genebean/home/programs/signal.nix)
 
 
 
@@ -1576,7 +1576,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/slack\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/slack.nix)
+ - [modules/genebean/home/programs/slack\.nix](../modules/genebean/home/programs/slack.nix)
 
 
 
@@ -1608,7 +1608,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/sops\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/sops.nix)
+ - [modules/genebean/home/programs/sops\.nix](../modules/genebean/home/programs/sops.nix)
 
 
 
@@ -1640,7 +1640,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/tea\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/tea.nix)
+ - [modules/genebean/home/programs/tea\.nix](../modules/genebean/home/programs/tea.nix)
 
 
 
@@ -1672,7 +1672,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/telegram\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/telegram.nix)
+ - [modules/genebean/home/programs/telegram\.nix](../modules/genebean/home/programs/telegram.nix)
 
 
 
@@ -1696,7 +1696,7 @@ one of “flatpak”, “nixpkgs”, “none”
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/telegram\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/telegram.nix)
+ - [modules/genebean/home/programs/telegram\.nix](../modules/genebean/home/programs/telegram.nix)
 
 
 
@@ -1728,7 +1728,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/thunderbird\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/thunderbird.nix)
+ - [modules/genebean/home/programs/thunderbird\.nix](../modules/genebean/home/programs/thunderbird.nix)
 
 
 
@@ -1760,7 +1760,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/tilix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/tilix)
+ - [modules/genebean/home/programs/tilix](../modules/genebean/home/programs/tilix)
 
 
 
@@ -1792,7 +1792,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/tmux\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/tmux.nix)
+ - [modules/genebean/home/programs/tmux\.nix](../modules/genebean/home/programs/tmux.nix)
 
 
 
@@ -1824,7 +1824,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/transmission\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/transmission.nix)
+ - [modules/genebean/home/programs/transmission\.nix](../modules/genebean/home/programs/transmission.nix)
 
 
 
@@ -1856,7 +1856,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/ungoogled-chromium\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/ungoogled-chromium.nix)
+ - [modules/genebean/home/programs/ungoogled-chromium\.nix](../modules/genebean/home/programs/ungoogled-chromium.nix)
 
 
 
@@ -1880,7 +1880,7 @@ one of “flatpak”, “nixpkgs”, “none”
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/ungoogled-chromium\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/ungoogled-chromium.nix)
+ - [modules/genebean/home/programs/ungoogled-chromium\.nix](../modules/genebean/home/programs/ungoogled-chromium.nix)
 
 
 
@@ -1912,7 +1912,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/vim\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/vim.nix)
+ - [modules/genebean/home/programs/vim\.nix](../modules/genebean/home/programs/vim.nix)
 
 
 
@@ -1944,7 +1944,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/vivaldi\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/vivaldi.nix)
+ - [modules/genebean/home/programs/vivaldi\.nix](../modules/genebean/home/programs/vivaldi.nix)
 
 
 
@@ -1968,7 +1968,7 @@ one of “flatpak”, “nixpkgs”, “none”
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/vivaldi\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/vivaldi.nix)
+ - [modules/genebean/home/programs/vivaldi\.nix](../modules/genebean/home/programs/vivaldi.nix)
 
 
 
@@ -2000,7 +2000,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/vlc\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/vlc.nix)
+ - [modules/genebean/home/programs/vlc\.nix](../modules/genebean/home/programs/vlc.nix)
 
 
 
@@ -2032,7 +2032,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/vscode\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/vscode.nix)
+ - [modules/genebean/home/programs/vscode\.nix](../modules/genebean/home/programs/vscode.nix)
 
 
 
@@ -2064,7 +2064,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/waybar](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/waybar)
+ - [modules/genebean/home/programs/waybar](../modules/genebean/home/programs/waybar)
 
 
 
@@ -2096,7 +2096,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/wezterm](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/wezterm)
+ - [modules/genebean/home/programs/wezterm](../modules/genebean/home/programs/wezterm)
 
 
 
@@ -2120,7 +2120,7 @@ false
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/wezterm](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/wezterm)
+ - [modules/genebean/home/programs/wezterm](../modules/genebean/home/programs/wezterm)
 
 
 
@@ -2144,7 +2144,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/wezterm](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/wezterm)
+ - [modules/genebean/home/programs/wezterm](../modules/genebean/home/programs/wezterm)
 
 
 
@@ -2176,7 +2176,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/xfce4-terminal](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/xfce4-terminal)
+ - [modules/genebean/home/programs/xfce4-terminal](../modules/genebean/home/programs/xfce4-terminal)
 
 
 
@@ -2208,7 +2208,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/zoom\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/zoom.nix)
+ - [modules/genebean/home/programs/zoom\.nix](../modules/genebean/home/programs/zoom.nix)
 
 
 
@@ -2232,7 +2232,7 @@ one of “nixpkgs”, “none”
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/zoom\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/programs/zoom.nix)
+ - [modules/genebean/home/programs/zoom\.nix](../modules/genebean/home/programs/zoom.nix)
 
 
 
@@ -2264,7 +2264,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/chromium-kiosk\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/chromium-kiosk.nix)
+ - [modules/genebean/home/services/chromium-kiosk\.nix](../modules/genebean/home/services/chromium-kiosk.nix)
 
 
 
@@ -2288,7 +2288,7 @@ string
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/chromium-kiosk\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/chromium-kiosk.nix)
+ - [modules/genebean/home/services/chromium-kiosk\.nix](../modules/genebean/home/services/chromium-kiosk.nix)
 
 
 
@@ -2322,7 +2322,7 @@ list of string
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/chromium-kiosk\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/chromium-kiosk.nix)
+ - [modules/genebean/home/services/chromium-kiosk\.nix](../modules/genebean/home/services/chromium-kiosk.nix)
 
 
 
@@ -2346,7 +2346,7 @@ null
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/chromium-kiosk\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/chromium-kiosk.nix)
+ - [modules/genebean/home/services/chromium-kiosk\.nix](../modules/genebean/home/services/chromium-kiosk.nix)
 
 
 
@@ -2370,7 +2370,7 @@ string
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/chromium-kiosk\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/chromium-kiosk.nix)
+ - [modules/genebean/home/services/chromium-kiosk\.nix](../modules/genebean/home/services/chromium-kiosk.nix)
 
 
 
@@ -2394,7 +2394,7 @@ string
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/chromium-kiosk\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/chromium-kiosk.nix)
+ - [modules/genebean/home/services/chromium-kiosk\.nix](../modules/genebean/home/services/chromium-kiosk.nix)
 
 
 
@@ -2426,7 +2426,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/flatpak\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/flatpak.nix)
+ - [modules/genebean/home/services/flatpak\.nix](../modules/genebean/home/services/flatpak.nix)
 
 
 
@@ -2456,7 +2456,7 @@ attribute set of (submodule)
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2480,7 +2480,7 @@ false
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2496,7 +2496,7 @@ AGENTS\.md for this agent\.
 absolute path
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2520,7 +2520,7 @@ attribute set of string
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2550,7 +2550,7 @@ list of raw value
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2576,7 +2576,7 @@ attribute set of absolute path
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2600,7 +2600,7 @@ list of package
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2624,7 +2624,7 @@ list of string
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2654,7 +2654,7 @@ null
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2673,7 +2673,7 @@ existing agent’s secret today)\.
 string
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2697,7 +2697,7 @@ string
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2731,7 +2731,7 @@ attribute set of (submodule)
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2747,7 +2747,7 @@ GitHub App ID (not secret - same tier as a channel ID)\.
 string
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2773,7 +2773,7 @@ false
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2791,7 +2791,7 @@ process - only by this entry’s own root-run minting service\.
 string
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2815,7 +2815,7 @@ signed integer
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2833,7 +2833,7 @@ token and execs ` gh `\. Example: “sam-gh”\.
 string
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2857,7 +2857,7 @@ attribute set of anything
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2882,7 +2882,7 @@ attribute set of (submodule)
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2890,22 +2890,31 @@ attribute set of (submodule)
 
 
 
-“overwrite” (default): materialized fresh from the Nix store on
-every activation, same as every skill today - any live edit the
-agent makes to its own copy is lost on the next deploy that
-touches this container\.
+“seed-once” (default): installed only if the live path doesn’t
+already exist, so the agent can edit its own copy durably
+across deploys\. A root-owned, read-only reference copy is also
+materialized at /etc/hermes-skills/\<name>/ inside the
+container, and the weekly rules-file-reconciliation skill
+(agents-beads-collaboration-62h) diffs every seed-once skill
+an agent has - one shared weekly session per agent, not one
+per skill - against that reference and reports drift to
+\#tradecraft\.
 
-“seed-once”: installed only if the live path doesn’t already
-exist, so the agent can edit its own copy durably across
-deploys\. Still experimental - built to unblock
-agents-beads-collaboration-62h (a ticket in the shared,
-cross-repo Beads coordination database, not in this repo - the
-self-improvement rules-file design), not yet exercised by any
-agent\. The read-only Nix-
-managed original is NOT yet materialized anywhere for
-comparison under this mode (62h’s own diff-and-report piece) -
-that’s still deferred, this option only provides the seed-once
-half\.
+“overwrite”: materialized fresh from the Nix store on every
+activation; any live edit the agent makes to its own copy is
+lost on the next deploy that touches this container\. Default
+until 2026-10-17, now the deliberate exception rather than the
+default: hermes-agent’s own self-editing tools
+(skill_manage et al\.) work on any file under
+$HERMES_HOME/skills/ regardless of how it got there, so
+“overwrite” doesn’t actually prevent an agent from editing a
+skill - it just means that edit gets silently destroyed on
+the next deploy with no record, instead of being preserved
+and surfaced for review like seed-once does\. Reach for this
+only when the reconciliation cost itself is the problem (a
+skill whose official source changes often enough that weekly
+drift review would be pure noise), not merely because a
+skill “shouldn’t” need editing\.
 
 
 
@@ -2917,11 +2926,11 @@ one of “overwrite”, “seed-once”
 *Default:*
 
 ```nix
-"overwrite"
+"seed-once"
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2937,7 +2946,7 @@ Directory this skill’s files are recursively listed from\.
 absolute path
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2966,7 +2975,45 @@ attribute set of anything
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
+
+
+
+## genebean\.services\.hermesAgents\.\<name>\.reconciliationSchedule
+
+
+
+Cron schedule (same syntax as ` hermes cron create `’s own
+schedule argument) for this agent’s weekly skill-
+reconciliation job - only registered at all if this agent has
+at least one seed-once skill (managedSkills or sharedSkills)\.
+Override per agent to stagger reconciliation across the
+fleet deliberately, rather than letting every agent’s weekly
+session land at the same moment and overlap\.
+
+Only affects *newly* registered jobs: the registration
+service is a one-time, skip-if-present setup (matches
+daily-report-cron\.nix’s own idempotent pattern) - changing
+this value does not update a schedule an agent already has
+registered\. Delete the existing ` reconcile-skills ` cron job
+on that agent directly (` hermes cron delete <id> `) and
+redeploy to pick up a new schedule\.
+
+
+
+*Type:*
+string
+
+
+
+*Default:*
+
+```nix
+"0 17 * * 4"
+```
+
+*Declared by:*
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -2995,7 +3042,7 @@ attribute set of (submodule)
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -3028,7 +3075,7 @@ null
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -3048,11 +3095,11 @@ absolute path
 *Default:*
 
 ```nix
-/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/shared/secrets.yaml
+modules/shared/secrets.yaml
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -3080,7 +3127,41 @@ false
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
+
+
+
+## genebean\.services\.hermesAgents\.\<name>\.sharedSkills
+
+
+
+Fleet-wide skills this agent should have, by name - opt in
+here rather than pointing ` managedSkills.<name>.source ` at
+modules/genebean/nixos/services/hermes-skills/\<name>
+yourself\. The whole point of the genebean/ namespace is that
+a host-specific file (this one) never needs to know that
+module’s internal directory layout; the NixOS companion
+resolves each name to its own actual source path internally\.
+Always seed-once (matches the default for managedSkills
+itself) - these are meant to be self-correctable the same
+way as anything else, not special-cased as unconditionally
+overwritten official content\.
+
+
+
+*Type:*
+list of (one of “buzz-multipart-delivery”, “newspaper-access”, “scheduled-publication-workflows”)
+
+
+
+*Default:*
+
+```nix
+[ ]
+```
+
+*Declared by:*
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -3096,7 +3177,7 @@ SOUL\.md for this agent\.
 absolute path
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -3120,7 +3201,7 @@ string
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -3136,7 +3217,7 @@ system\.stateVersion for this agent’s nested NixOS evaluation\.
 string
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/hermes-agents.nix)
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
 
 
 
@@ -3168,7 +3249,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/kiosk-backups\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/kiosk-backups.nix)
+ - [modules/genebean/home/services/kiosk-backups\.nix](../modules/genebean/home/services/kiosk-backups.nix)
 
 
 
@@ -3196,7 +3277,7 @@ list of string
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/kiosk-backups\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/kiosk-backups.nix)
+ - [modules/genebean/home/services/kiosk-backups\.nix](../modules/genebean/home/services/kiosk-backups.nix)
 
 
 
@@ -3228,7 +3309,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/restic\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/restic.nix)
+ - [modules/genebean/home/services/restic\.nix](../modules/genebean/home/services/restic.nix)
 
 
 
@@ -3252,7 +3333,7 @@ false
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/restic\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/restic.nix)
+ - [modules/genebean/home/services/restic\.nix](../modules/genebean/home/services/restic.nix)
 
 
 
@@ -3284,7 +3365,7 @@ true
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/tailscale\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/tailscale.nix)
+ - [modules/genebean/home/services/tailscale\.nix](../modules/genebean/home/services/tailscale.nix)
 
 
 
@@ -3308,7 +3389,7 @@ false
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/tailscale\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/tailscale.nix)
+ - [modules/genebean/home/services/tailscale\.nix](../modules/genebean/home/services/tailscale.nix)
 
 
 
@@ -3332,7 +3413,7 @@ list of string
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/tailscale\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/tailscale.nix)
+ - [modules/genebean/home/services/tailscale\.nix](../modules/genebean/home/services/tailscale.nix)
 
 
 
@@ -3356,6 +3437,6 @@ one of “none”, “client”, “server”, “both”
 ```
 
 *Declared by:*
- - [/nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/tailscale\.nix](file:///nix/store/in17hf8ivnh88s8j33zhqz6ld2g125na-source/modules/genebean/home/services/tailscale.nix)
+ - [modules/genebean/home/services/tailscale\.nix](../modules/genebean/home/services/tailscale.nix)
 
 
