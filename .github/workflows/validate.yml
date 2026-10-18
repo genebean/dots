@@ -39,6 +39,14 @@ jobs:
       - name: Run ruff format check
         run: nix run nixpkgs#ruff -- format --check --diff .
 
+      - name: Check genebean.* option docs are up to date
+        run: |
+          nix run .#update-docs
+          git diff --exit-code -- docs/genebean-options.md || {
+            echo "::error::docs/genebean-options.md is stale - run 'nix run .#update-docs' and commit the result."
+            exit 1
+          }
+
   nixos:
     name: Build ${{ matrix.host }}
     needs: validate
