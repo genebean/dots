@@ -74,6 +74,7 @@ in
         "Generate and publish today's social report per the daily-social-report skill." \
         --name ${jobName} \
         --skill daily-social-report \
+        --skill scheduled-publication-workflows \
         --skill buzz-multipart-delivery \
         --skill daily-social-report-publication \
         --skill file-newspaper-article
