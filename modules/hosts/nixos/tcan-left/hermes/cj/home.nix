@@ -43,6 +43,8 @@
       hermes_cj_forgejo_token = { };
     };
 
+    sharedSkills = [ "newspaper-access" ];
+
     soulFile = ./SOUL.md;
   };
 }

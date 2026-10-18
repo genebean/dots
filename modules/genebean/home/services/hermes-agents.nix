@@ -122,24 +122,33 @@ let
           "overwrite"
           "seed-once"
         ];
-        default = "overwrite";
+        default = "seed-once";
         description = ''
-          "overwrite" (default): materialized fresh from the Nix store on
-          every activation, same as every skill today - any live edit the
-          agent makes to its own copy is lost on the next deploy that
-          touches this container.
+          "seed-once" (default): installed only if the live path doesn't
+          already exist, so the agent can edit its own copy durably
+          across deploys. A root-owned, read-only reference copy is also
+          materialized at /etc/hermes-skills/<name>/ inside the
+          container, and the weekly rules-file-reconciliation skill
+          (agents-beads-collaboration-62h) diffs every seed-once skill
+          an agent has - one shared weekly session per agent, not one
+          per skill - against that reference and reports drift to
+          #tradecraft.
 
-          "seed-once": installed only if the live path doesn't already
-          exist, so the agent can edit its own copy durably across
-          deploys. Still experimental - built to unblock
-          agents-beads-collaboration-62h (a ticket in the shared,
-          cross-repo Beads coordination database, not in this repo - the
-          self-improvement rules-file design), not yet exercised by any
-          agent. The read-only Nix-
-          managed original is NOT yet materialized anywhere for
-          comparison under this mode (62h's own diff-and-report piece) -
-          that's still deferred, this option only provides the seed-once
-          half.
+          "overwrite": materialized fresh from the Nix store on every
+          activation; any live edit the agent makes to its own copy is
+          lost on the next deploy that touches this container. Default
+          until 2026-10-17, now the deliberate exception rather than the
+          default: hermes-agent's own self-editing tools
+          (skill_manage et al.) work on any file under
+          $HERMES_HOME/skills/ regardless of how it got there, so
+          "overwrite" doesn't actually prevent an agent from editing a
+          skill - it just means that edit gets silently destroyed on
+          the next deploy with no record, instead of being preserved
+          and surfaced for review like seed-once does. Reach for this
+          only when the reconciliation cost itself is the problem (a
+          skill whose official source changes often enough that weekly
+          drift review would be pure noise), not merely because a
+          skill "shouldn't" need editing.
         '';
       };
     };
@@ -291,6 +300,30 @@ let
             /run/secrets/<name> inside the container, and - if
             toEnvironmentFile is set - an entry in
             services.hermes-agent.environmentFiles.
+          '';
+        };
+
+        sharedSkills = mkOption {
+          type = types.listOf (
+            types.enum [
+              "buzz-multipart-delivery"
+              "newspaper-access"
+              "scheduled-publication-workflows"
+            ]
+          );
+          default = [ ];
+          description = ''
+            Fleet-wide skills this agent should have, by name - opt in
+            here rather than pointing `managedSkills.<name>.source` at
+            modules/genebean/nixos/services/hermes-skills/<name>
+            yourself. The whole point of the genebean/ namespace is that
+            a host-specific file (this one) never needs to know that
+            module's internal directory layout; the NixOS companion
+            resolves each name to its own actual source path internally.
+            Always seed-once (matches the default for managedSkills
+            itself) - these are meant to be self-correctable the same
+            way as anything else, not special-cased as unconditionally
+            overwritten official content.
           '';
         };
 

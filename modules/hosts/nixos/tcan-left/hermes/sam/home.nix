@@ -75,6 +75,8 @@
       hermes_sam_github_app_key = { };
     };
 
+    sharedSkills = [ "newspaper-access" ];
+
     soulFile = ./SOUL.md;
   };
 }
