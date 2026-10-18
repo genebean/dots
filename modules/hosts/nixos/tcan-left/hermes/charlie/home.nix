@@ -45,6 +45,11 @@
       };
     };
 
+    # Staggered 1hr apart from the rest of the fleet's own reconciliation
+    # sessions (Thursdays, Danny last at the default 17:00) so they don't
+    # all race each other - see hermes-agents.nix's own option doc.
+    reconciliationSchedule = "0 13 * * 4";
+
     secrets = {
       hermes_charlie_buzz_identity.toEnvironmentFile = true;
       # NOT toEnvironmentFile - tea needs a persisted login (forgejoLogin
