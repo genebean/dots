@@ -3095,7 +3095,7 @@ absolute path
 *Default:*
 
 ```nix
-/nix/store/y159s2gsrkwc68b4xvw0b1ixnnxb2v00-source/modules/shared/secrets.yaml
+modules/shared/secrets.yaml
 ```
 
 *Declared by:*
