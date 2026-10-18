@@ -95,28 +95,13 @@ in
       # all) - generated from the flake input's own source tree, so a
       # file HermesSocialDigestPipeline adds later is picked up
       # automatically.
-      # seed-once, not the overwrite default: the mutable-copy mechanism
-      # (agents-beads-collaboration-62h) - Danny edits his own copy in
-      # place and it must survive redeploys. The root-owned original
-      # still comes from this same `source` path; the weekly
-      # rules-file-reconciliation job (same ticket) reads both and
-      # reports drift to #tradecraft.
-      daily-social-report = {
-        source = ./daily-report-skill;
-        installMode = "seed-once";
-      };
-      # Originated as an ad hoc skill Danny generated himself out of a
-      # Buzz conversation (not hand-authored by Jed despite the
-      # frontmatter's `author` field, and not Nix-managed at all until
-      # now) - reviewed and adopted here because its guidance is
-      # fleet-wide generic (orchestration/delivery-verification for any
-      # scheduled publication job), not Danny-specific. seed-once for
-      # the same reason as daily-social-report above.
-      scheduled-publication-workflows = {
-        source = ../../../../../genebean/nixos/services/hermes-skills/scheduled-publication-workflows;
-        installMode = "seed-once";
-      };
+      daily-social-report.source = ./daily-report-skill;
       file-newspaper-article.source = ./newspaper-article-skill;
+      # When this flake input bumps upstream, the new version lands in
+      # the read-only /etc/hermes-skills/ reference as usual, and the
+      # next weekly reconciliation run surfaces the resulting gap
+      # against Danny's copy like any other official-source change - no
+      # special handling needed for the flake-sourced case.
       hermes-social-digest-pipeline.source = "${inputs.hermes-social-digest-pipeline}/skills/hermes-social-digest-pipeline";
     };
 
@@ -149,6 +134,17 @@ in
       # resolve it.
       hermes_danny_mcp_token.envFileAs = "SOCIAL_READER_MCP_HTTP_TOKEN";
     };
+
+    sharedSkills = [
+      "newspaper-access"
+      # Originated as an ad hoc skill Danny generated himself out of a
+      # Buzz conversation (not hand-authored by Jed despite the
+      # frontmatter's `author` field, and not Nix-managed at all until
+      # 2026-10-17) - reviewed and adopted because its guidance is
+      # fleet-wide generic (orchestration/delivery-verification for any
+      # scheduled publication job), not Danny-specific.
+      "scheduled-publication-workflows"
+    ];
 
     soulFile = ./SOUL.md;
   };

@@ -42,6 +42,8 @@
 
     secrets.hermes_leo_buzz_identity.toEnvironmentFile = true;
 
+    sharedSkills = [ "newspaper-access" ];
+
     soulFile = ./SOUL.md;
   };
 }

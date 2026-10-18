@@ -200,9 +200,9 @@ let
       mkManagedSkillFiles "rules-file-reconciliation" { source = reconciliationSkillSource; }
     );
 
-  # One cron-registration service per seed-once skill, mirroring
+  # One cron-registration service per AGENT, not per skill - mirrors
   # daily-report-cron.nix's own proven idempotent (skip-if-present,
-  # exact Name: field match) pattern - see that file for why a loose
+  # exact Name: field match) pattern, see that file for why a loose
   # substring match isn't good enough. Weekly only, via the gateway's
   # own always-on ticker - no deploy-triggered immediate-fire mechanism
   # (tried and dropped: every variant hit a different hermes-agent
@@ -211,19 +211,26 @@ let
   # secrets problem once dispatched directly - not worth the fragility
   # for a "sooner than a week" nicety when the weekly path alone is
   # already proven reliable).
+  #
+  # One job covering every seed-once skill an agent has, not one job
+  # per skill: the prompt below doesn't name any skill - the skill's
+  # own instructions have the agent enumerate /etc/hermes-skills/
+  # itself to find the full set to reconcile this run. That keeps this
+  # a single weekly LLM session per agent regardless of how many
+  # seed-once skills they accumulate (was one session per skill before
+  # 2026-10-17, which doesn't scale once seed-once became the default
+  # install mode), and means adding or removing a seed-once skill never
+  # requires touching this registered job - it stays correct on its
+  # own.
   mkReconciliationServices =
     agentName: agentCfg:
     let
       hermesBin = "${hermesPkg}/bin/hermes";
-      seedOnce = seedOnceSkills agentCfg;
+      jobName = "reconcile-skills";
     in
-    lib.mapAttrs' (
-      skillName: _skill:
-      let
-        jobName = "reconcile-${skillName}";
-      in
-      lib.nameValuePair "${jobName}-cron-setup" {
-        description = "Register ${agentName}'s weekly ${skillName} reconciliation job (one-time)";
+    lib.optionalAttrs (seedOnceSkills agentCfg != { }) {
+      "${jobName}-cron-setup" = {
+        description = "Register ${agentName}'s weekly skill-reconciliation job (one-time)";
         wantedBy = [ "multi-user.target" ];
         before = [ "hermes-agent.service" ];
         serviceConfig = {
@@ -243,12 +250,12 @@ let
             exit 0
           fi
           ${hermesBin} cron create "0 17 * * 4" \
-            "Reconcile the '${skillName}' skill per the rules-file-reconciliation skill, and report to #tradecraft." \
+            "Reconcile your seed-once skills per the rules-file-reconciliation skill, and report to #tradecraft." \
             --name ${jobName} \
             --skill rules-file-reconciliation
         '';
-      }
-    ) seedOnce;
+      };
+    };
 
   mkForgejoLoginService =
     agentCfg:
@@ -397,8 +404,47 @@ let
       # the circular "whatever nixpkgs.pkgs resolves to" self-reference.
       hostPkgs = pkgs;
       needsTea = agentCfg.forgejoLogin != null;
-      skillHomeFiles = overwriteSkillFiles agentCfg;
-      envFileSecrets = lib.filterAttrs (_: secretCfg: secretCfg.envFileAs != null) agentCfg.secrets;
+      # sharedSkills is just a list of names (enum-typed, see the home-
+      # manager option) - this resolves each to its actual source path
+      # internally, the one place in the whole module that needs to
+      # know hermes-skills/'s own directory layout, so no host-specific
+      # agent home.nix ever has to reach into genebean/'s internals
+      # with a relative path to use one.
+      sharedSkillSources = {
+        newspaper-access = ./hermes-skills/newspaper-access;
+        scheduled-publication-workflows = ./hermes-skills/scheduled-publication-workflows;
+      };
+      # Only overwriteSkillFiles/seedOnceSkills (both read only
+      # .managedSkills off whatever's passed in) ever see this merged
+      # value - every other agentCfg.foo reference in this function
+      # still reads the real, unmerged option value directly.
+      skillsAgentCfg = {
+        managedSkills =
+          (lib.genAttrs agentCfg.sharedSkills (name: {
+            source = sharedSkillSources.${name};
+            installMode = "seed-once";
+          }))
+          // agentCfg.managedSkills;
+      };
+      skillHomeFiles = overwriteSkillFiles skillsAgentCfg;
+      # Every agent, unconditionally - same tier as the environment
+      # defaults below (BUZZ_RELAY_URL etc.). Read-only basic-auth
+      # credential for the newspaper site: all five agents should be
+      # able to read published content, not just the ones that author
+      # it. sopsFile defaults to modules/shared/secrets.yaml already,
+      # same file this secret actually lives in.
+      # Plain Nix attrsets, not NixOS-option values - unlike agentCfg.secrets
+      # (which went through secretType's own submodule defaulting), these
+      # need every field downstream code reads spelled out explicitly.
+      fleetWideSecrets = {
+        hermes_newspaper_basic_auth_creds = {
+          sopsFile = ../../../shared/secrets.yaml;
+          toEnvironmentFile = false;
+          envFileAs = "NEWSPAPER_BASIC_AUTH";
+        };
+      };
+      allSecrets = fleetWideSecrets // agentCfg.secrets;
+      envFileSecrets = lib.filterAttrs (_: secretCfg: secretCfg.envFileAs != null) allSecrets;
       envFileTemplateName = secretName: "${agentName}-${secretName}-envfile";
     in
     {
@@ -419,7 +465,7 @@ let
               hostPath = "/run/secrets/${secretName}";
               isReadOnly = true;
             }
-          ) agentCfg.secrets)
+          ) allSecrets)
           // (lib.mapAttrs' (
             secretName: _secretCfg:
             lib.nameValuePair "/run/secrets/${secretName}-envfile" {
@@ -451,7 +497,7 @@ let
             # Read-only reference copies for this agent's seed-once
             # skills - empty attrset (no-op) for every agent that has
             # none yet.
-            environment.etc = seedOnceEtcFiles agentCfg;
+            environment.etc = seedOnceEtcFiles skillsAgentCfg;
 
             services.hermes-agent = {
               enable = true;
@@ -464,12 +510,19 @@ let
                 BUZZ_RELAY_URL = "https://buzz.home.technicalissues.us";
                 BUZZ_CLI_PATH = "${pkgs.buzz-cli}/bin/buzz";
                 BUZZ_ALLOW_ALL_USERS = "true";
+                # Paired with the fleet-wide NEWSPAPER_BASIC_AUTH secret
+                # above - every agent can read published content, not
+                # just the ones that author it. See the newspaper-access
+                # skill (each agent's own managedSkills, seed-once - not
+                # baked in here, since it's safety-net self-editable the
+                # same as everything else, not infra plumbing) for usage.
+                NEWSPAPER_URL = "https://newspaper.home.technicalissues.us";
               }
               // agentCfg.environment;
 
               environmentFiles =
                 lib.mapAttrsToList (secretName: _: "/run/secrets/${secretName}") (
-                  lib.filterAttrs (_: secretCfg: secretCfg.toEnvironmentFile) agentCfg.secrets
+                  lib.filterAttrs (_: secretCfg: secretCfg.toEnvironmentFile) allSecrets
                 )
                 ++ lib.mapAttrsToList (secretName: _: "/run/secrets/${secretName}-envfile") envFileSecrets;
 
@@ -485,7 +538,7 @@ let
                 "SOUL.md" = agentCfg.soulFile;
               }
               // skillHomeFiles
-              // reconciliationHomeFiles agentCfg
+              // reconciliationHomeFiles skillsAgentCfg
               // agentCfg.extraHermesHomeFiles;
 
               inherit (agentCfg) mcpServers;
@@ -513,8 +566,8 @@ let
                 mkForgejoLoginService agentCfg
                 // mkGithubAppServices agentCfg
                 // mkGitCredentialHelper agentName agentCfg
-                // mkSeedOnceService agentName agentCfg
-                // mkReconciliationServices agentName agentCfg
+                // mkSeedOnceService agentName skillsAgentCfg
+                // mkReconciliationServices agentName skillsAgentCfg
                 // {
                   hermes-agent.serviceConfig = {
                     ProtectHome = lib.mkForce true;
@@ -551,10 +604,17 @@ let
       };
 
       sops = {
+        # allSecrets (not agentCfg.secrets): fleetWideSecrets' entries get
+        # contributed by every agent's own call to this function -
+        # NixOS's list-typed option merging (same as services.restic.
+        # backups.daily.paths elsewhere in this file) collapses that into
+        # one shared sops.secrets.<name> with every agent's
+        # container@<name>.service in its restartUnits, one decrypted
+        # file on the host, bind-mounted read-only into all of them.
         secrets = lib.mapAttrs (_secretName: secretCfg: {
           inherit (secretCfg) sopsFile;
           restartUnits = [ "container@${agentName}.service" ];
-        }) agentCfg.secrets;
+        }) allSecrets;
 
         # One reshaped KEY=value template per envFileAs secret - see that
         # option's own description. Never duplicates the secret's
