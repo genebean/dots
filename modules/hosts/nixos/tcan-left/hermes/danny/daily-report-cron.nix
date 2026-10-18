@@ -73,7 +73,10 @@ in
       ${hermesBin} cron create "0 6 * * *" \
         "Generate and publish today's social report per the daily-social-report skill." \
         --name ${jobName} \
-        --skill ${jobName}
+        --skill daily-social-report \
+        --skill buzz-multipart-delivery \
+        --skill daily-social-report-publication \
+        --skill file-newspaper-article
     '';
   };
 }

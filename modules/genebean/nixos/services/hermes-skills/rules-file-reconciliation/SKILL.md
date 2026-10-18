@@ -1,3 +1,10 @@
+---
+name: rules-file-reconciliation
+description: "Diff a seed-once skill's mutable copy against its official read-only original, classify every difference per self-edit-authority.md, and report to #tradecraft - weekly, per agent, per skill."
+version: 1.0.0
+created_by: agents-beads-collaboration-62h, the Hermes fleet self-improvement rules-file mechanism
+---
+
 # Rules-file reconciliation
 
 Shared, fleet-wide skill (agents-beads-collaboration-62h). You have this
