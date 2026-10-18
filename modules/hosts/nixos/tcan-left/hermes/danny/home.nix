@@ -103,6 +103,16 @@ in
       # against Danny's copy like any other official-source change - no
       # special handling needed for the flake-sourced case.
       hermes-social-digest-pipeline.source = "${inputs.hermes-social-digest-pipeline}/skills/hermes-social-digest-pipeline";
+      # Adopted 2026-10-17 from Danny's own self-audit
+      # (agents-beads-collaboration-62h's rules-file-reconciliation
+      # discovery step) - both were self-authored, already relied on in
+      # daily production use (the PR-revision and manual-rerun/recovery
+      # paths for the morning report), and recommended "Adopt" on review.
+      # Kept Danny-specific rather than moved into genebean/'s shared
+      # namespace: both are scoped to this agent's own daily-social-
+      # report/newspaper-filing workflow, not generically reusable.
+      newspaper-editorial-review.source = ./newspaper-editorial-review-skill;
+      social-report-delivery.source = ./social-report-delivery-skill;
     };
 
     # Narrow, point-lookup-only follow-up tool access. `tools.include` is
@@ -136,6 +146,7 @@ in
     };
 
     sharedSkills = [
+      "buzz-multipart-delivery"
       "newspaper-access"
       # Originated as an ad hoc skill Danny generated himself out of a
       # Buzz conversation (not hand-authored by Jed despite the

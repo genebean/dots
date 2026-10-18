@@ -306,6 +306,7 @@ let
         sharedSkills = mkOption {
           type = types.listOf (
             types.enum [
+              "buzz-multipart-delivery"
               "newspaper-access"
               "scheduled-publication-workflows"
             ]

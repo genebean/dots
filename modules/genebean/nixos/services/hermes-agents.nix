@@ -411,6 +411,7 @@ let
       # agent home.nix ever has to reach into genebean/'s internals
       # with a relative path to use one.
       sharedSkillSources = {
+        buzz-multipart-delivery = ./hermes-skills/buzz-multipart-delivery;
         newspaper-access = ./hermes-skills/newspaper-access;
         scheduled-publication-workflows = ./hermes-skills/scheduled-publication-workflows;
       };
