@@ -30,7 +30,22 @@ in
 
   services.hermes-social-digest-collect = {
     enable = true;
-    environmentFile = "/run/secrets/hermes_danny_mcp_token";
+    # -envfile, not the bare secret - hermes_danny_mcp_token's raw sops
+    # value is "SOCIAL_READER_MCP_HTTP_TOKEN=<token>" (this repo's
+    # standing convention: every env-destined secret is stored KEY=value
+    # shaped, not bare). hermes-agents.nix's envFileAs mechanism wraps
+    # that into a second "KEY=" layer whose own KEY= gets stripped again
+    # by the final EnvironmentFile=/dotenv parse, leaving the resolved
+    # env var equal to the raw value unchanged - and nixnuc's own
+    # social_reader_mcp_env template does the identical wrapping, so the
+    # two sides only agree when both go through it. Pointing straight at
+    # the bare /run/secrets/hermes_danny_mcp_token here (confirmed live,
+    # 2026-10-18) skips that wrapping, so systemd parses the raw
+    # "KEY=value" file itself and resolves to the bare value instead -
+    # silently mismatching nixnuc's wrapped expectation on every
+    # request. This was never updated when hermes-agents.nix's envFileAs
+    # convention was introduced for hermes_danny_mcp_token.
+    environmentFile = "/run/secrets/hermes_danny_mcp_token-envfile";
     mcp.url = "https://social-reader-mcp.home.technicalissues.us:8443/mcp";
     timers.collectSchedules = [
       "10:00"
