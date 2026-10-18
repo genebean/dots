@@ -41,6 +41,11 @@
 
     managedSkills.file-newspaper-article.source = ./newspaper-article-skill;
 
+    # Staggered 1hr apart from the rest of the fleet's own reconciliation
+    # sessions (Thursdays, Danny last at the default 17:00) so they don't
+    # all race each other - see hermes-agents.nix's own option doc.
+    reconciliationSchedule = "0 14 * * 4";
+
     secrets = {
       hermes_cj_buzz_identity.toEnvironmentFile = true;
       hermes_cj_forgejo_token = { };
