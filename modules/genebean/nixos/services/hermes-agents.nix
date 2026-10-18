@@ -249,7 +249,7 @@ let
           if [ -n "$existing_ids" ]; then
             exit 0
           fi
-          ${hermesBin} cron create "0 17 * * 4" \
+          ${hermesBin} cron create "${agentCfg.reconciliationSchedule}" \
             "Reconcile your seed-once skills per the rules-file-reconciliation skill, and report to #tradecraft." \
             --name ${jobName} \
             --skill rules-file-reconciliation
@@ -416,9 +416,11 @@ let
         scheduled-publication-workflows = ./hermes-skills/scheduled-publication-workflows;
       };
       # Only overwriteSkillFiles/seedOnceSkills (both read only
-      # .managedSkills off whatever's passed in) ever see this merged
-      # value - every other agentCfg.foo reference in this function
-      # still reads the real, unmerged option value directly.
+      # .managedSkills off whatever's passed in) and
+      # mkReconciliationServices (also reads .reconciliationSchedule)
+      # ever see this merged value - every other agentCfg.foo reference
+      # in this function still reads the real, unmerged option value
+      # directly.
       skillsAgentCfg = {
         managedSkills =
           (lib.genAttrs agentCfg.sharedSkills (name: {
@@ -426,6 +428,7 @@ let
             installMode = "seed-once";
           }))
           // agentCfg.managedSkills;
+        inherit (agentCfg) reconciliationSchedule;
       };
       skillHomeFiles = overwriteSkillFiles skillsAgentCfg;
       # Every agent, unconditionally - same tier as the environment

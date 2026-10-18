@@ -290,6 +290,28 @@ let
           '';
         };
 
+        reconciliationSchedule = mkOption {
+          type = types.str;
+          default = "0 17 * * 4";
+          description = ''
+            Cron schedule (same syntax as `hermes cron create`'s own
+            schedule argument) for this agent's weekly skill-
+            reconciliation job - only registered at all if this agent has
+            at least one seed-once skill (managedSkills or sharedSkills).
+            Override per agent to stagger reconciliation across the
+            fleet deliberately, rather than letting every agent's weekly
+            session land at the same moment and overlap.
+
+            Only affects *newly* registered jobs: the registration
+            service is a one-time, skip-if-present setup (matches
+            daily-report-cron.nix's own idempotent pattern) - changing
+            this value does not update a schedule an agent already has
+            registered. Delete the existing `reconcile-skills` cron job
+            on that agent directly (`hermes cron delete <id>`) and
+            redeploy to pick up a new schedule.
+          '';
+        };
+
         secrets = mkOption {
           type = types.attrsOf secretType;
           default = { };
