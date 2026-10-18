@@ -27,9 +27,12 @@
           buzzChannels.senior-staff
           buzzChannels.press-room
           buzzChannels.oval-office
+          buzzChannels.time-clock
           buzzChannels.tradecraft
         ];
-        home_channel = buzzChannels.oval-office;
+        # time-clock, not oval-office: keeps shutdown-notification spam
+        # out of the channels people actually read, fleet-wide (2026-10-17).
+        home_channel = buzzChannels.time-clock;
         # Was false (Leo as always-listening primary conversational partner)
         # - reverted to the shared require_mention = true default
         # (hermes-agents.nix) after he was found responding to messages

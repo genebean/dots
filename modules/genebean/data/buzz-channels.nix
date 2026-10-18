@@ -16,5 +16,6 @@
   press-room = "a100215b-9a61-4e58-b8bf-47542cd20b78";
   senior-staff = "3abc3d5f-9460-41d8-a26a-e9b50abf7da2";
   the-paper = "381f80a4-7398-47a5-ac60-78401a73e1a8";
+  time-clock = "5d67c23a-e7ca-4cf0-b391-f04351a00ec6";
   tradecraft = "36536f8b-0d3e-44fb-af89-32af588b901b";
 }

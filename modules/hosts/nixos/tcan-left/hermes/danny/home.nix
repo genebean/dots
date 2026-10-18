@@ -80,9 +80,12 @@ in
           buzzChannels.press-room
           buzzChannels.the-paper
           buzzChannels.news-editors
+          buzzChannels.time-clock
           buzzChannels.tradecraft
         ];
-        home_channel = buzzChannels.the-paper;
+        # time-clock, not the-paper: keeps shutdown-notification spam
+        # out of the channels people actually read, fleet-wide (2026-10-17).
+        home_channel = buzzChannels.time-clock;
         # require_mention stays at the shared default (true,
         # hermes-agents.nix) - Danny only activates on an explicit
         # @-mention or a reply to his own message.
