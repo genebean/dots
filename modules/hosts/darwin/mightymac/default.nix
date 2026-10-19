@@ -65,9 +65,18 @@
 
   homebrew = {
     taps = [
-      "hashicorp/tap"
-      "openvoxproject/openvox"
-      "wouterdebie/repo"
+      {
+        name = "hashicorp/tap";
+        trusted = true;
+      }
+      {
+        name = "openvoxproject/openvox";
+        trusted = true;
+      }
+      {
+        name = "wouterdebie/repo";
+        trusted = true;
+      }
     ];
     brews = [
       "adr-tools"
