@@ -19,6 +19,7 @@
 # eval time, and those secrets don't exist yet.
 {
   config,
+  inputs,
   pkgs,
   lib,
   ...
@@ -28,7 +29,14 @@ let
   dataDir = "/orico/dolt-beads";
   doltcfgDir = "${dataDir}/.doltcfg";
   backupDir = "/var/backup/dolt-beads";
-  doltPkg = pkgs.dolt;
+  # Must match the Dolt version bd itself vendors (confirmed: bd wraps its
+  # own dolt-2.4.2, not whatever this host's pinned nixpkgs resolves `dolt`
+  # to - that mismatch caused "table has unknown fields" reading real
+  # migrated data, Dolt's forward-schema-drift error). bd is itself
+  # installed from nixpkgs-unstable on this machine, so pull dolt from the
+  # same channel, same pattern as forgejo.nix's unstable forgejo-runner.
+  unstablePkgs = import inputs.nixpkgs-unstable { inherit (pkgs.stdenv.hostPlatform) system; };
+  doltPkg = unstablePkgs.dolt;
 
   serverConfig = pkgs.writeText "dolt-beads-server-config.yaml" ''
     log_level: info
