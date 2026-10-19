@@ -69,18 +69,6 @@ in
 
           # unset oh-my-zsh's gk so that gk can refer to the gitkraken-cli
           unalias gk
-
-          # Claude Code sessions get their own per-host Beads actor identity,
-          # separate from gene's own direct bd/CLI use (dots#825 design
-          # decision). CLAUDECODE is set by Claude Code itself in every shell
-          # it spawns, so this never touches a normal interactive terminal.
-          # Keyed on the real runtime hostname, not a Nix specialArg, since
-          # HM-only hosts (like this one) don't reliably get one.
-          if [ -n "$CLAUDECODE" ]; then
-            case "$(hostname)" in
-              rainbow-planet) export BEADS_ACTOR=claude-rp ;;
-            esac
-          fi
         ''
         # ─── Darwin ─────────────────────────────────────────────────────────────
         (lib.mkIf genebeanLib.isDarwin ''
