@@ -20,21 +20,38 @@ that's ready.
 ## 0. Pre-deploy checklist
 
 - [ ] Confirm which agents/hosts need their own Dolt login. Design decision
-      (dots#825): **per-agent, not per-host** - mirrors the existing
-      per-agent secret convention (Buzz identity, Forgejo token, etc. are
-      already distinct per Hermes agent).
+      (dots#825): **per-agent (and per-Claude-identity), not per-host** -
+      mirrors the existing per-agent secret convention (Buzz identity,
+      Forgejo token, etc. are already distinct per Hermes agent). "Every
+      agent, including you [Claude], should have its own identity" from the
+      original design discussion turned out to mean **you** are actually two
+      separate identities - direct human CLI use vs. interactive Claude Code
+      sessions - plus a third, pre-existing one (Mr. C) that hadn't been
+      named yet. Final consumer list:
+      - `leo`, `charlie`, `danny`, `cj`, `sam` - Hermes agents on `tcan-left`
+      - `gene` - direct human `bd`/SQL CLI use
+      - `claude-rp` - interactive Claude Code sessions on rainbow-planet
+        (this laptop; the naming convention is `claude-<host-suffix>`, so a
+        future second interactive-session host gets its own analogous name,
+        e.g. a hypothetical `claude-mm`)
+      - `mr-c` - the Buzz-side Claude Code agent (`~/.buzz`); already shares
+        the embedded `agents-beads-collaboration` DB today, so this just
+        formalizes its identity for the central-server migration
 - [ ] For each one, create a secret in `modules/shared/secrets.yaml` via
       `sops modules/shared/secrets.yaml` (never generate the password value
       yourself and never have an agent/Claude generate or see it - this is
       your own call to make, on your own machine). Suggested naming:
-      `dolt_beads_<agent>_password` (e.g. `dolt_beads_leo_password`,
-      `dolt_beads_danny_password`, `dolt_beads_gene_password` for your own
-      CLI use, etc.) - bare password value, no `KEY=value` wrapping needed
-      since these get read directly by SQL statements below, not through
-      `envFileAs`.
-- [ ] Decide the exact list of initial consumers. At minimum: every Hermes
-      agent on `tcan-left` (leo, charlie, danny, cj, sam) plus at least one
-      identity for direct `bd` CLI use from your own machines.
+      `dolt_beads_<identity>_password` (e.g. `dolt_beads_leo_password`,
+      `dolt_beads_gene_password`, `dolt_beads_claude-rp_password`,
+      `dolt_beads_mr-c_password`) - bare password value, no `KEY=value`
+      wrapping needed since these get read directly by SQL statements below,
+      not through `envFileAs`.
+- [ ] Each identity's Dolt SQL login is separate from its `BEADS_ACTOR`
+      audit-trail label (step 4) - both get set to the same identity name,
+      but they're two different config knobs. For `claude-rp` specifically,
+      something needs to export `BEADS_ACTOR=claude-rp` for interactive
+      sessions on rainbow-planet (a shell env var, most likely) - not wired
+      anywhere yet, just flagged here so it isn't forgotten at step 4.
 
 ## 1. Safety-net backup of the current embedded database
 
@@ -89,6 +106,8 @@ CREATE USER 'danny'@'%' IDENTIFIED BY '<danny-password>';
 CREATE USER 'cj'@'%' IDENTIFIED BY '<cj-password>';
 CREATE USER 'sam'@'%' IDENTIFIED BY '<sam-password>';
 CREATE USER 'gene'@'%' IDENTIFIED BY '<gene-password>';
+CREATE USER 'claude-rp'@'%' IDENTIFIED BY '<claude-rp-password>';
+CREATE USER 'mr-c'@'%' IDENTIFIED BY '<mr-c-password>';
 
 GRANT ALL PRIVILEGES ON beads_global.* TO 'leo'@'%';
 GRANT ALL PRIVILEGES ON beads_global.* TO 'charlie'@'%';
@@ -96,6 +115,8 @@ GRANT ALL PRIVILEGES ON beads_global.* TO 'danny'@'%';
 GRANT ALL PRIVILEGES ON beads_global.* TO 'cj'@'%';
 GRANT ALL PRIVILEGES ON beads_global.* TO 'sam'@'%';
 GRANT ALL PRIVILEGES ON beads_global.* TO 'gene'@'%';
+GRANT ALL PRIVILEGES ON beads_global.* TO 'claude-rp'@'%';
+GRANT ALL PRIVILEGES ON beads_global.* TO 'mr-c'@'%';
 
 FLUSH PRIVILEGES;
 ```
@@ -113,6 +134,18 @@ bd init --server --external --global \
   --server-host=dolt-beads.home.technicalissues.us \
   --server-user=<agent-name>
 ```
+
+For the Hermes agents (leo, charlie, danny, cj, sam) this is a straight copy
+of the existing per-agent secret pattern. Two newer identities need this set
+up fresh, not copied from an existing agent config:
+
+- **`claude-rp`** - interactive Claude Code sessions on rainbow-planet. Needs
+  `BEADS_DOLT_PASSWORD`/`BEADS_DOLT_SERVER_TLS`/`BEADS_ACTOR=claude-rp`
+  exported somewhere that's live for every interactive session on this
+  laptop (shell env, not yet decided exactly where).
+- **`mr-c`** - the Buzz-side Claude Code agent (`~/.buzz`). Currently shares
+  the embedded DB; this is where it switches to the central server with its
+  own real identity instead.
 
 Verify with `bd dolt test`, then `bd ready`/`bd list` and confirm the
 existing issues/epics/history are all present and unchanged.
