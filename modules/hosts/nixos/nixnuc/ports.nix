@@ -47,6 +47,17 @@
       port = 3087;
       openFirewall = true;
     };
+    # Matches bd's own --server-port default (3307, confirmed via `bd init
+    # --help`) - clients connecting with just --server-host need no
+    # --server-port override. Not actually internet-exposed despite
+    # openFirewall=true: nixnuc sits behind a physical/hardware firewall
+    # that only forwards 80/443 (nginx's) from the internet, confirmed
+    # directly by the repo owner - NixOS's own software firewall being
+    # open here doesn't change real-world reachability.
+    dolt-beads = {
+      port = 3307;
+      openFirewall = true;
+    };
     tube-archivist = {
       port = 8001;
       openFirewall = true;

@@ -21,6 +21,7 @@ in
     ./containers/psitransfer.nix
     ./containers/rustfs.nix
     ./cup-collector.nix
+    ./dolt-beads-server.nix
     ./filtered-podcast-feeds.nix
     ./forgejo.nix
     ./monitoring-stack.nix
@@ -713,6 +714,7 @@ in
         "/orico/immich/library"
         "/orico/jellyfin/data"
         "/orico/jellyfin/staging/downloaded-files"
+        "/var/backup/dolt-beads"
         "/var/backup/postgresql"
       ];
       timerConfig = {
