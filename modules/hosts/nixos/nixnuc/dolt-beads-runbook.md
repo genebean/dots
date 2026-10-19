@@ -42,8 +42,8 @@ that's ready.
       yourself and never have an agent/Claude generate or see it - this is
       your own call to make, on your own machine). Suggested naming:
       `dolt_beads_<identity>_password` (e.g. `dolt_beads_leo_password`,
-      `dolt_beads_gene_password`, `dolt_beads_claude-rp_password`,
-      `dolt_beads_mr-c_password`) - bare password value, no `KEY=value`
+      `dolt_beads_gene_password`, `dolt_beads_claude_rp_password`,
+      `dolt_beads_mr_c_password`) - bare password value, no `KEY=value`
       wrapping needed since these get read directly by SQL statements below,
       not through `envFileAs`.
 - [ ] Each identity's Dolt SQL login is separate from its `BEADS_ACTOR`
