@@ -70,28 +70,15 @@ in
           # unset oh-my-zsh's gk so that gk can refer to the gitkraken-cli
           unalias gk
 
-          # Claude Code sessions get their own per-host Beads identity,
+          # Claude Code sessions get their own per-host Beads actor identity,
           # separate from gene's own direct bd/CLI use (dots#825 design
-          # decision): own actor label for attribution, own Dolt SQL login
-          # for the central server. CLAUDECODE is set by Claude Code itself
-          # in every shell it spawns, so this never touches a normal
-          # interactive terminal. Keyed on the real runtime hostname, not a
-          # Nix specialArg, since HM-only hosts (like this one) don't
-          # reliably get one.
-          #
-          # The actual claude-rp password is NOT set here - it would land in
-          # the world-readable Nix store. It comes from CLAUDE_RP_DOLT_PASSWORD
-          # in ~/.private-env (sourced above, plaintext, local-only, never
-          # built into the store) and is only promoted to the real
-          # BEADS_DOLT_PASSWORD bd reads inside a Claude Code shell.
+          # decision). CLAUDECODE is set by Claude Code itself in every shell
+          # it spawns, so this never touches a normal interactive terminal.
+          # Keyed on the real runtime hostname, not a Nix specialArg, since
+          # HM-only hosts (like this one) don't reliably get one.
           if [ -n "$CLAUDECODE" ]; then
             case "$(hostname)" in
-              rainbow-planet)
-                export BEADS_ACTOR=claude-rp
-                export BEADS_DOLT_SERVER_USER=claude-rp
-                export BEADS_DOLT_SERVER_TLS=1
-                [ -n "$CLAUDE_RP_DOLT_PASSWORD" ] && export BEADS_DOLT_PASSWORD="$CLAUDE_RP_DOLT_PASSWORD"
-                ;;
+              rainbow-planet) export BEADS_ACTOR=claude-rp ;;
             esac
           fi
         ''
