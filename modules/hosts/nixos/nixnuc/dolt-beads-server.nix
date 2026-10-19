@@ -33,7 +33,7 @@ let
   serverConfig = pkgs.writeText "dolt-beads-server-config.yaml" ''
     log_level: info
     data_dir: ${dataDir}
-    doltcfg_dir: ${doltcfgDir}
+    cfg_dir: ${doltcfgDir}
     privilege_file: ${doltcfgDir}/privileges.db
     listener:
       host: 0.0.0.0
@@ -82,6 +82,12 @@ in
           Type = "simple";
           User = "dolt-beads";
           Group = "dolt-beads";
+          # The orico/dolt-beads ZFS dataset is created root-owned by
+          # zfs-create-orico-datasets.service - chown it to the service's
+          # own user every start, since nothing else does. The "+" prefix
+          # runs this one command with full privileges, exempt from
+          # ProtectSystem/ProtectHome/ReadWritePaths below.
+          ExecStartPre = "+${pkgs.coreutils}/bin/install -d -o dolt-beads -g dolt-beads -m 0750 ${dataDir}";
           ExecStart = "${doltPkg}/bin/dolt sql-server --config ${serverConfig}";
           Restart = "on-failure";
           RestartSec = "5s";
@@ -90,6 +96,11 @@ in
           ProtectHome = true;
           PrivateTmp = true;
           ReadWritePaths = [ dataDir ];
+          # dolt writes a global user config to $HOME/.dolt regardless of
+          # doltcfg_dir above - with ProtectHome, this system user's HOME
+          # defaults to the read-only /var/empty, so dolt fails to start
+          # unless HOME is redirected into the already-writable dataDir.
+          Environment = [ "HOME=${dataDir}" ];
         };
       };
 
@@ -100,6 +111,7 @@ in
           Type = "oneshot";
           User = "dolt-beads";
           Group = "dolt-beads";
+          Environment = [ "HOME=${dataDir}" ];
         };
         script = ''
           set -euo pipefail
