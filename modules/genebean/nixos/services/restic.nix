@@ -44,6 +44,29 @@ in
       # Deliberately no pruneOpts - the module always bundles that into
       # `forget --prune`, and prune is a whole-repo operation. See
       # restic-forget-daily below for the cheap, host-scoped replacement.
+
+      # Every host sharing this one B2 repo used the module's own default
+      # OnCalendar = "daily" (midnight) with no stagger at all - confirmed
+      # live, 2026-10-18: tcan-left's run collided with another host's and
+      # failed outright (the pre-start init-check script hits the backend's
+      # exclusive lock and aborts; it has no retry logic of its own, unlike
+      # --retry-lock above which only covers the main backup command once
+      # it's actually running). FixedRandomDelay derives the offset from
+      # the machine ID + timer unit name, so it's stable across every
+      # firing and unique per host - Puppet's fqdn_rand() for the same
+      # purpose, no manual per-host time to maintain as hosts come and go.
+      # 3h ceiling keeps every host's run well clear of restic-fleet-prune's
+      # own 04:00 start below. Each field individually mkDefault, not the
+      # whole set - nixnuc's own default.nix already sets OnCalendar to its
+      # own deliberately-chosen time (a plain, non-default definition, so it
+      # wins outright); it still gets FixedRandomDelay layered on top of
+      # that chosen hour as extra margin, same as everyone else.
+      timerConfig = {
+        OnCalendar = lib.mkDefault "daily";
+        Persistent = lib.mkDefault true;
+        RandomizedDelaySec = lib.mkDefault "3h";
+        FixedRandomDelay = lib.mkDefault true;
+      };
     };
 
     systemd.services = {
