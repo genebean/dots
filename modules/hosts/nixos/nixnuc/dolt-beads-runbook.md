@@ -4,7 +4,17 @@ Companion to `dolt-beads-server.nix`. genebean/dots#825 (design), genebean/agent
 (original proposal), `agents-beads-collaboration-3kt` (Beads coordination).
 
 This is a **runbook, not a script** - run each step deliberately, in order,
-checking output before moving on. Nothing here has been executed yet.
+checking output before moving on.
+
+**Status (2026-10-19): steps 0-4 complete for `gene` and `claude-rp`.**
+Server is live on nixnuc, real data migrated and verified (33 issues),
+all 8 identities provisioned. Still open: steps 4 (client config) for the
+five Hermes agents and `mr-c`, and step 5's decommission of the embedded
+copy. See notes inline below and `agents-beads-collaboration-3kt` for the
+full history, including bugs found only by actually deploying/migrating
+(wrong Dolt version, wrong config field name, `ProtectHome` vs. Dolt's
+`$HOME/.dolt`, root-owned ZFS dataset, `--global` not overriding the
+database name on `--reinit-local`, `dolt_server_port` defaulting to `0`).
 
 ## Why this exists separately from the Nix module
 
@@ -19,7 +29,7 @@ that's ready.
 
 ## 0. Pre-deploy checklist
 
-- [ ] Confirm which agents/hosts need their own Dolt login. Design decision
+- [x] Confirm which agents/hosts need their own Dolt login. Design decision
       (dots#825): **per-agent (and per-Claude-identity), not per-host** -
       mirrors the existing per-agent secret convention (Buzz identity,
       Forgejo token, etc. are already distinct per Hermes agent). "Every
@@ -37,7 +47,7 @@ that's ready.
       - `mr-c` - the Buzz-side Claude Code agent (`~/.buzz`); already shares
         the embedded `agents-beads-collaboration` DB today, so this just
         formalizes its identity for the central-server migration
-- [ ] For each one, create a secret in `modules/shared/secrets.yaml` via
+- [x] For each one, create a secret in `modules/shared/secrets.yaml` via
       `sops modules/shared/secrets.yaml` (never generate the password value
       yourself and never have an agent/Claude generate or see it - this is
       your own call to make, on your own machine). Suggested naming:
@@ -46,12 +56,18 @@ that's ready.
       `dolt_beads_mr_c_password`) - bare password value, no `KEY=value`
       wrapping needed since these get read directly by SQL statements below,
       not through `envFileAs`.
-- [ ] Each identity's Dolt SQL login is separate from its `BEADS_ACTOR`
+- [x] Each identity's Dolt SQL login is separate from its `BEADS_ACTOR`
       audit-trail label (step 4) - both get set to the same identity name,
-      but they're two different config knobs. For `claude-rp` specifically,
-      something needs to export `BEADS_ACTOR=claude-rp` for interactive
-      sessions on rainbow-planet (a shell env var, most likely) - not wired
-      anywhere yet, just flagged here so it isn't forgotten at step 4.
+      but they're two different config knobs. Resolved for `claude-rp`:
+      `~/.claude/settings.json`'s `env` block on rainbow-planet
+      (`BEADS_ACTOR`, `BEADS_DOLT_SERVER_USER`, `BEADS_DOLT_SERVER_TLS`,
+      `BEADS_DOLT_PASSWORD`) - deliberately *not* managed via home-manager/
+      sops; an attempt at that surfaced real cross-host-type complexity
+      (home-manager's own sops module isn't wired into NixOS hosts the way
+      it is for Darwin/HM-only) that wasn't worth resolving for this.
+      Confirmed working: `events.actor` in `beads_global` shows `claude-rp`
+      for writes made this way, vs. the generic Dolt-commit "Author" field
+      bd history displays (unaffected by `--actor`, a separate thing).
 
 ## 1. Safety-net backup of the current embedded database
 
@@ -91,14 +107,12 @@ chown -R dolt-beads:dolt-beads /orico/dolt-beads
 systemctl start dolt-beads
 ```
 
-Then, connected as root via `dolt sql -q` or a MySQL client against the new
-server, lock down root and create the real per-agent accounts (password
-values come from the sops secrets created in step 0 - read each one with
-`sops -d --extract '["dolt_beads_<agent>_password"]' modules/shared/secrets.yaml`
-**on your own machine**, never pasted into a Claude Code session):
+**Done, 2026-10-19.** Actual command used was `root`@`localhost` (Dolt's
+auto-created superuser is localhost-scoped, not `@'%'` - a MySQL client
+has to run this from nixnuc itself, over loopback, not remotely):
 
 ```sql
-ALTER USER 'root'@'%' IDENTIFIED BY '<a-password-only-you-know, or disable root entirely>';
+ALTER USER 'root'@'localhost' IDENTIFIED BY '<password>'; -- reused gene's password here; no dedicated root secret was created
 
 CREATE USER 'leo'@'%' IDENTIFIED BY '<leo-password>';
 CREATE USER 'charlie'@'%' IDENTIFIED BY '<charlie-password>';
@@ -109,55 +123,94 @@ CREATE USER 'gene'@'%' IDENTIFIED BY '<gene-password>';
 CREATE USER 'claude-rp'@'%' IDENTIFIED BY '<claude-rp-password>';
 CREATE USER 'mr-c'@'%' IDENTIFIED BY '<mr-c-password>';
 
-GRANT ALL PRIVILEGES ON beads_global.* TO 'leo'@'%';
-GRANT ALL PRIVILEGES ON beads_global.* TO 'charlie'@'%';
-GRANT ALL PRIVILEGES ON beads_global.* TO 'danny'@'%';
-GRANT ALL PRIVILEGES ON beads_global.* TO 'cj'@'%';
-GRANT ALL PRIVILEGES ON beads_global.* TO 'sam'@'%';
-GRANT ALL PRIVILEGES ON beads_global.* TO 'gene'@'%';
-GRANT ALL PRIVILEGES ON beads_global.* TO 'claude-rp'@'%';
-GRANT ALL PRIVILEGES ON beads_global.* TO 'mr-c'@'%';
+-- GRANT ALL ON beads_global.* alone turned out insufficient: Dolt's
+-- --global bootstrap/migration path runs a literal CREATE DATABASE and a
+-- "fresh-bootstrap history" schema check, both of which need *.* scope,
+-- not db-scoped privileges (standard MySQL's db-scoped CREATE DATABASE
+-- exception isn't replicated in Dolt's go-mysql-server). Went broad
+-- instead of chasing each one individually - the real trust boundary
+-- here is the physical firewall + per-identity passwords, not SQL-level
+-- isolation between mutually-trusted identities:
+GRANT ALL PRIVILEGES ON *.* TO 'leo'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'charlie'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'danny'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'cj'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'sam'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'gene'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'claude-rp'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'mr-c'@'%';
 
 FLUSH PRIVILEGES;
 ```
 
+No MySQL client is installed on nixnuc itself - `nix shell nixpkgs#mariadb
+--command mysql -h 127.0.0.1 -P 3307 -u root --ssl -p` worked (note:
+`--ssl`, not `--ssl-mode=REQUIRED` - this client version's flag differs).
+
 ## 4. Configure clients
 
-On each machine/agent, point `bd` at the new server (per-agent `BEADS_ACTOR`
-is the separate, already-existing audit-trail layer - set it in each
-agent's own environment, not here):
+**Done for `gene` and `claude-rp`; still pending for leo/charlie/danny/cj/
+sam (tcan-left Hermes agents) and `mr-c` (Buzz agent, `~/.buzz`).**
+
+On the one project directory that was already running the embedded copy
+(`~/repos/agents-beads-collaboration` on rainbow-planet, resolved from
+anywhere via the already-existing `BEADS_DIR` env var -
+`agents-beads-collaboration-66y` tracks making that declarative):
 
 ```sh
-export BEADS_DOLT_PASSWORD='<this agent's own password>'
+cd ~/repos/agents-beads-collaboration
+export BEADS_DOLT_PASSWORD='<gene-password>'
 export BEADS_DOLT_SERVER_TLS=1
-bd init --server --external --global \
+BD_ALLOW_REMOTE_MIGRATE=1 bd init --server --external --global --reinit-local \
   --server-host=dolt-beads.home.technicalissues.us \
-  --server-user=<agent-name>
+  --server-user=gene
+unset BEADS_DOLT_PASSWORD
 ```
 
-For the Hermes agents (leo, charlie, danny, cj, sam) this is a straight copy
-of the existing per-agent secret pattern. Two newer identities need this set
-up fresh, not copied from an existing agent config:
+Three things this surfaced, none obvious from `--help` alone:
 
-- **`claude-rp`** - interactive Claude Code sessions on rainbow-planet. Needs
-  `BEADS_DOLT_PASSWORD`/`BEADS_DOLT_SERVER_TLS`/`BEADS_ACTOR=claude-rp`
-  exported somewhere that's live for every interactive session on this
-  laptop (shell env, not yet decided exactly where).
-- **`mr-c`** - the Buzz-side Claude Code agent (`~/.buzz`). Currently shares
-  the embedded DB; this is where it switches to the central server with its
-  own real identity instead.
+- **`BD_ALLOW_REMOTE_MIGRATE=1` was required**: the embedded copy had
+  self-migrated far ahead of a brand-new server database (45 pending
+  migrations) and `bd` refuses to auto-apply that to a *shared* database
+  without explicit consent (locks out any older co-resident client). No
+  actual risk here - `gene` was the first real client of this new server.
+- **`--global` did not override `--reinit-local`'s existing database
+  name**: it silently kept the old per-project name
+  (`agents_beads_collaboration`) instead of switching to `beads_global`,
+  so the migration ran against a brand-new *empty* database rather than
+  the real one. Fixed after the fact with `bd dolt set database
+  beads_global` - no need to redo the init/migrate dance. (The orphaned
+  empty database this left behind on the server was later `DROP`ped.)
+- **`dolt_server_port` was persisted as `0`** instead of defaulting to
+  `3307` when `--server-port` wasn't passed explicitly. Fixed with `bd
+  dolt set port 3307`.
 
-Verify with `bd dolt test`, then `bd ready`/`bd list` and confirm the
-existing issues/epics/history are all present and unchanged.
+For `claude-rp`, no `bd init` was needed at all - it's the exact same
+local project/directory as `gene`, just a different runtime identity via
+env vars (`BEADS_DOLT_SERVER_USER`/`BEADS_DOLT_PASSWORD` are resolved
+fresh per-invocation, not baked in at init time). `gene`'s own terminal
+needs a way to supply its password without exporting it every session -
+`bd`'s credentials file (`~/.config/beads/credentials`, INI, section
+keyed by `host:port`) is the documented mechanism; an attempt to manage
+that file declaratively was deliberately backed out (see step 0's note on
+`claude-rp`) in favor of just creating it manually.
+
+Verify with `bd dolt show` (not `bd dolt status` - that one's for the
+embedded-mode engine), then `bd ready`/`bd list` and confirm the existing
+issues/epics/history are all present and unchanged.
 
 ## 5. Verify, then decommission the embedded copy
 
-- [ ] Two separate clients see the same records.
-- [ ] A write from one is visible from the other without manual sync.
-- [ ] `bd dolt status` on each client confirms server mode, not embedded.
-- [ ] Only after all of the above: the old `.beads/embeddeddolt/` on
-      whichever machine hosted it can be removed - keep the tarball from
-      step 1 regardless.
+- [x] Two separate clients see the same records - confirmed for `gene` and
+      `claude-rp`.
+- [x] A write from one is visible from the other without manual sync -
+      confirmed: `claude-rp`'s write to `agents-beads-collaboration-3kt`
+      landed in `beads_global` directly (same server, same schema; there's
+      no per-client copy to sync in server mode).
+- [x] `bd dolt show` on each client confirms server mode, not embedded.
+- [ ] Only after leo/charlie/danny/cj/sam/`mr-c` are also migrated (not yet):
+      the old `.beads/embeddeddolt/` on rainbow-planet can be removed - keep
+      the tarball from step 1 regardless.
 
 ## 6. Wire the restic backup into verification
 
