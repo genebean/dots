@@ -86,6 +86,13 @@
       port = 13378;
       openFirewall = true;
     };
+    # LAN-only for now by design, not a security gap to fix later - Scotty
+    # has no built-in authentication at all, so this stays off nginx/443
+    # (shared with internet-facing vhosts) until an auth layer exists.
+    scotty = {
+      port = 9005;
+      openFirewall = true;
+    };
 
     # Firewalled TCP services continued
     rustfs-console = {
