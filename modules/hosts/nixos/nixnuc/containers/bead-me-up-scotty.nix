@@ -21,12 +21,19 @@
 # a mounted `.beads/` workspace - same server-mode metadata.json shape as
 # every other client here. Server mode needs no embedded Dolt data at
 # all, just the connection pointer, so there's nothing to migrate for this
-# one. Gets its own SQL identity (`scotty`) and its own BEADS_ACTOR
-# (`gene` - the human actually using the UI), per dots#825's "every
-# agent/consumer gets its own identity" design. The image has no `git`,
-# so `bd init`/Dolt-remote-sync don't work inside it (confirmed from
-# upstream's own README) - the metadata.json below is written directly,
-# never through a live `bd init` inside the container.
+# one. Authenticates as `gene` directly rather than a dedicated identity -
+# considered a separate `scotty` SQL login (matching dots#825's "every
+# agent/consumer gets its own identity" principle), but every identity
+# already has GRANT ALL PRIVILEGES ON *.*, so there's no actual privilege
+# isolation to gain; the only real tradeoff is credential-rotation
+# independence, and for a single-user LAN-only deployment that wasn't
+# worth a 9th secret. BEADS_ACTOR is `gene` either way - that part was
+# never in question, it's what attributes UI writes to the human using
+# it, a separate concern from which SQL login authenticates the
+# connection. The image has no `git`, so `bd init`/Dolt-remote-sync don't
+# work inside it (confirmed from upstream's own README) - the
+# metadata.json below is written directly, never through a live `bd init`
+# inside the container.
 {
   config,
   inputs,
@@ -94,20 +101,25 @@ let
       dolt_mode = "server";
       dolt_server_host = "dolt-beads.home.technicalissues.us";
       dolt_server_port = 3307;
-      dolt_server_user = "scotty";
+      dolt_server_user = "gene";
       dolt_database = "beads_global";
     }
   );
 in
 {
   sops = {
-    secrets.dolt_beads_scotty_password = {
+    # gene's existing secret, already in use elsewhere (e.g. rainbow-planet's
+    # own `gene` identity) - sops-nix allows the same secret declared in
+    # multiple places as long as each host can already decrypt the file,
+    # which nixnuc already can (other secrets here already come from the
+    # same shared/secrets.yaml).
+    secrets.dolt_beads_gene_password = {
       sopsFile = ../../../../shared/secrets.yaml;
       restartUnits = [ service_unit ];
     };
     templates."scotty-dolt-password-env" = {
       content = ''
-        BEADS_DOLT_PASSWORD=${config.sops.placeholder.dolt_beads_scotty_password}
+        BEADS_DOLT_PASSWORD=${config.sops.placeholder.dolt_beads_gene_password}
       '';
       restartUnits = [ service_unit ];
     };
@@ -159,7 +171,7 @@ in
     environment = {
       BEADS_REPO = "/data";
       BEADS_DOLT_SERVER_TLS = "1";
-      BEADS_DOLT_SERVER_USER = "scotty";
+      BEADS_DOLT_SERVER_USER = "gene";
       BEADS_ACTOR = "gene";
       # No SCOTTY_ALLOWED_HOSTS needed: per upstream's own docs, IP-address
       # access (which is how this is reached for now - no nginx vhost, no
