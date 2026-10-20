@@ -15,12 +15,14 @@ in
   imports = [
     ./hardware-configuration.nix
     ./containers/audiobookshelf.nix
+    ./containers/bead-me-up-scotty.nix
     ./containers/buzz.nix
     ./containers/mountain-mesh-bot-discord.nix
     ./containers/photon.nix
     ./containers/psitransfer.nix
     ./containers/rustfs.nix
     ./cup-collector.nix
+    ./dolt-beads-server.nix
     ./filtered-podcast-feeds.nix
     ./forgejo.nix
     ./monitoring-stack.nix
@@ -123,6 +125,11 @@ in
     # client already uses successfully.
     extraHosts = ''
       192.168.20.190 id.home.technicalissues.us
+      # dolt-beads terminates TLS itself directly (one cert, no nginx/SNI
+      # involved - unlike id.home.technicalissues.us above), so same-host
+      # callers like Scotty can safely go straight to loopback instead of
+      # hairpinning out through the LAN IP for a local connection.
+      127.0.0.1 dolt-beads.home.technicalissues.us
     '';
 
     hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4
@@ -713,6 +720,7 @@ in
         "/orico/immich/library"
         "/orico/jellyfin/data"
         "/orico/jellyfin/staging/downloaded-files"
+        "/var/backup/dolt-beads"
         "/var/backup/postgresql"
       ];
       timerConfig = {

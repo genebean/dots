@@ -35,6 +35,19 @@
       "depNameTemplate": "NousResearch/hermes-agent",
       "datasourceTemplate": "github-tags",
       "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Track Bead Me Up, Scotty's release tag pinned in bead-me-up-scotty.nix - it's a fetchFromGitHub source pin built locally via podman, not a published image, so the generic OCI-image rule above never sees it",
+      "managerFilePatterns": [
+        "/^modules/hosts/nixos/nixnuc/containers/bead-me-up-scotty\\.nix$/"
+      ],
+      "matchStrings": [
+        "scottyRev = \"(?<currentValue>v[0-9.]+)\";"
+      ],
+      "depNameTemplate": "brendan-appstart/bead-me-up-scotty",
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "semver"
     }
   ]
 }
