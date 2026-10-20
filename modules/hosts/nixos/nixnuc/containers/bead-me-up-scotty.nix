@@ -42,6 +42,17 @@
 }:
 let
   port = config.genebean.ports.scotty.port;
+  # This container runs on podman's default bridge network (not
+  # --network=host, unlike buzz.nix - that would collide with
+  # psitransfer's existing use of port 3000), so it's in its own network
+  # namespace: 127.0.0.1 inside the container is the container's own
+  # loopback, not nixnuc's. The extraHosts entry added to nixnuc's own
+  # /etc/hosts for same-host callers doesn't reach into here at all -
+  # confirmed live (connection refused on 127.0.0.1:3307 from inside the
+  # container). --add-host points this container specifically at
+  # nixnuc's real LAN IP instead, which the dolt-beads server (bound to
+  # 0.0.0.0) answers on correctly regardless of network namespace.
+  nixnucLanIp = "192.168.20.190";
 
   # Same package every other client here is actually built against
   # (modules/shared/home/general/default.nix pulls the identical
@@ -131,6 +142,11 @@ in
       # fix for exactly this cross-UID bind-mount scenario (container
       # runs as uid 1001 "nextjs", not whatever uid owns the host path).
       "d ${dataDir} 0750 root root -"
+      # Both the repo root and .beads itself need to be writable: bd
+      # creates a workspace gate lock file (.beads.gate.lock) directly in
+      # the repo root, not just inside .beads/ - confirmed live (soft
+      # "continuing ungated" warning without this).
+      "d ${beadsRepoDir} 0777 root root -"
       "d ${beadsRepoDir}/.beads 0777 root root -"
       "d ${configDir} 0777 root root -"
     ];
@@ -189,6 +205,13 @@ in
     volumes = [
       "${beadsRepoDir}:/data:rw"
       "${configDir}:/home/nextjs/.config/bead-me-up-scotty:rw"
+      # The final runner stage (node:slim) ships no CA bundle at all -
+      # confirmed live: bd's own TLS handshake against dolt-beads failed
+      # with "certificate signed by unknown authority" even though the
+      # exact same chain verifies fine (openssl s_client, verify return
+      # code 0) from a host with a normal trust store. Bind-mount
+      # nixnuc's own bundle in at the path Go's x509 verifier expects.
+      "/etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro"
     ];
     # Reachable via nixnuc's LAN IP directly for now - no nginx vhost, no
     # TLS, no auth. Deliberately scoped this way (not internet-facing:
@@ -200,6 +223,7 @@ in
     extraOptions = [
       "--cap-drop=ALL"
       "--security-opt=no-new-privileges"
+      "--add-host=dolt-beads.home.technicalissues.us:${nixnucLanIp}"
     ];
   };
 }
