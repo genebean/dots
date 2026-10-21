@@ -363,6 +363,63 @@ let
       };
     };
 
+  # `tea logins add` (mkForgejoLoginService below) only registers a login
+  # for tea's own REST-API client - it does nothing for plain `git clone`/
+  # `push` over HTTPS, which several agents' own skills
+  # (file-newspaper-article) actually shell out to directly. Confirmed
+  # live (Danny, 2026-10-21): git config --global --list came back
+  # completely empty - there was never a credential helper here at all,
+  # cron or not; any past successful push was the agent improvising, not
+  # a real mechanism. A separate writeShellScriptBin wrapper (not an
+  # inline `git config --global credential.<url>.helper "!echo
+  # password=$token"`) matters here specifically: git persists whatever
+  # string you hand that option verbatim to ~/.gitconfig, so embedding
+  # $token directly would bake the live secret in plaintext on disk the
+  # moment the setup script's own shell expanded it - this wrapper reads
+  # the secret file fresh every time git actually invokes it instead,
+  # same pattern already proven for Sam's GitHub credential helper.
+  mkForgejoGitCredentialHelper =
+    agentName: agentCfg:
+    lib.optionalAttrs (agentCfg.forgejoLogin != null) (
+      let
+        helper = pkgs.writeShellScriptBin "${agentName}-forgejo-git-credential-helper" ''
+          set -euo pipefail
+          if [ "''${1:-}" != "get" ]; then
+            exit 0
+          fi
+          secret_file=/run/secrets/${agentCfg.forgejoLogin.tokenSecretName}
+          token=$(${pkgs.gnused}/bin/sed -n 's/^FORGEJO_TOKEN=//p' "$secret_file")
+          if [ -z "$token" ]; then
+            token=$(cat "$secret_file")
+          fi
+          # Forgejo/Gitea's documented HTTP token auth doesn't validate
+          # the username field, only the password/token - any non-empty
+          # placeholder works here.
+          echo "username=git"
+          echo "password=$token"
+        '';
+      in
+      {
+        forgejo-git-credential-helper-setup = {
+          description = "Configure ${agentName}'s git credential helper for Forgejo (one-time)";
+          wantedBy = [ "multi-user.target" ];
+          before = [ "hermes-agent.service" ];
+          serviceConfig = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+            User = "hermes";
+            Group = "hermes";
+            Environment = "HOME=/var/lib/hermes";
+          };
+          script = ''
+            set -euo pipefail
+            ${pkgs.git}/bin/git config --global credential.${agentCfg.forgejoLogin.url}.helper \
+              "!${helper}/bin/${agentName}-forgejo-git-credential-helper"
+          '';
+        };
+      }
+    );
+
   mkForgejoLoginService =
     agentCfg:
     lib.optionalAttrs (agentCfg.forgejoLogin != null) {
@@ -738,6 +795,7 @@ let
             systemd = {
               services =
                 mkBeadsSeedService agentName agentCfg
+                // mkForgejoGitCredentialHelper agentName agentCfg
                 // mkForgejoLoginService agentCfg
                 // mkGitCredentialHelper agentName agentCfg
                 // mkGithubAppServices agentCfg
