@@ -144,6 +144,18 @@ in
   # autoupdate label above.
   systemd.timers."podman-auto-update".wantedBy = [ "timers.target" ];
 
+  # pull = "always" means every activation re-pulls from Forgejo's own
+  # registry (git.home.technicalissues.us) - without this ordering, a
+  # generation that restarts both forgejo.service and podman-newspaper.service
+  # together races newspaper's pull against Forgejo still coming back up,
+  # intermittently failing with "502 Bad Gateway" pinging the registry.
+  # Confirmed live 2026-10-21: this raced and failed deploy-rs's activation
+  # wait, triggering an automatic rollback.
+  systemd.services.podman-newspaper = {
+    after = [ "forgejo.service" ];
+    wants = [ "forgejo.service" ];
+  };
+
   virtualisation.oci-containers.containers.newspaper = {
     autoStart = true;
     image = "git.home.technicalissues.us/genebean/newspaper:latest";
