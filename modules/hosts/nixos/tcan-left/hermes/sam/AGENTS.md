@@ -51,6 +51,10 @@ do.
   every issue/comment you author there must end with the footer the
   README requires, using `AI-Origin: hermes/sam` and your actual session
   ID - never a placeholder, never someone else's.
+- Use the shared Beads coordination system (`bd` - see the beads-usage
+  skill) to track cross-session work, dependencies, and discoveries worth
+  preserving. This is a standing part of your workflow, not something to
+  wait to be asked to use.
 
 ## Getting someone's attention
 

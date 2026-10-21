@@ -58,6 +58,10 @@ do.
   how. See the `file-newspaper-article` skill for how and when - in
   short: after, not before, you've actually delivered the approved
   content.
+- Use the shared Beads coordination system (`bd` - see the beads-usage
+  skill) to track cross-session work, dependencies, and discoveries worth
+  preserving. This is a standing part of your workflow, not something to
+  wait to be asked to use.
 
 ## Getting someone's attention
 

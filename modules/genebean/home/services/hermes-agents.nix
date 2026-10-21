@@ -172,10 +172,42 @@ let
           description = "AGENTS.md for this agent.";
         };
 
+        beadsAccess = mkOption {
+          type = types.bool;
+          default = true;
+          description = ''
+            Wires this agent up as its own client of the shared
+            agents-beads-collaboration Dolt/Beads server
+            (dolt-beads.home.technicalissues.us), under its own identity
+            (BEADS_ACTOR/BEADS_DOLT_SERVER_USER = this agent's name).
+            Default true - every fleet agent gets this; set false on a
+            specific agent to opt out. Reuses the already-provisioned
+            dolt_beads_<name>_password secret and SQL identity
+            (agents-beads-collaboration-3kt). Seeds a static
+            metadata.json once (if absent) instead of running a live
+            `bd init` - avoids the known `--global` database-override
+            bug that otherwise bootstraps a throwaway empty database on
+            every fresh init (hit repeatedly during this effort's own
+            rollout).
+          '';
+        };
+
         enableGit = mkOption {
           type = types.bool;
-          default = false;
-          description = "Add pkgs.git to this agent's extraPackages.";
+          default = true;
+          description = ''
+            Add pkgs.git to this agent's extraPackages. Default true -
+            every fleet agent gets this; set false on a specific agent
+            to opt out. Matters because this is the only path that
+            reaches the agent's own real, interactive-shell PATH
+            (/etc/profiles/per-user/hermes/bin) - hermes-agent's own
+            base processPath unconditionally adds git to the hermes-
+            agent.service UNIT's own PATH, but that doesn't propagate
+            to the per-user profile the agent's own shell tool calls
+            actually use (confirmed live, Leo, 2026-10-20: git present
+            in the raw service env, absent from Leo's own `echo
+            $PATH`/`which git`).
+          '';
         };
 
         environment = mkOption {

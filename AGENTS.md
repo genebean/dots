@@ -404,6 +404,10 @@ maintain a second roster.
 4. **Call site** — set `genebean.programs.<name>.enable = true` in `all-gui.nix`,
    a shared module, or a host file. No imports needed.
 
+5. **Regenerate docs** — any new/changed option under `genebean.*` needs
+   `nix run .#update-docs` re-run and `docs/genebean-options.md` committed;
+   see Code Quality Gates below - CI enforces this.
+
 ---
 
 ## Code Quality Gates
@@ -425,6 +429,17 @@ nix run nixpkgs#ruff -- format --check --diff .
 
 Pre-commit hooks enforce all of the above automatically after `pre-commit
 install`. CI (`.github/workflows/validate.yml`) mirrors the same checks.
+
+**After adding or changing any `genebean.*` option** (home, darwin, or nixos
+layer), regenerate the rendered docs and commit the result:
+
+```bash
+nix run .#update-docs   # writes docs/genebean-options.md
+```
+
+CI's `docs` job re-runs this and fails the build if `docs/genebean-
+options.md` doesn't match what's committed - "stale generated docs" is not
+a warning, it's a hard CI failure.
 
 **Also run `nix build .#nixosConfigurations.<hostname>.config.system.build.toplevel`**
 for the affected host before pushing whenever `flake.nix`, `flake.lock`, or a

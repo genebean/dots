@@ -49,6 +49,13 @@ in
       lfs.enable = true;
       package = pkgs.gitFull;
       settings = {
+        # Silences bd's "beads.role is not configured" warning for any bd
+        # invocation under this user, regardless of cwd - beads.role is
+        # otherwise only ever set per-repo (local .git/config), which a bd
+        # call from outside that repo's cwd (e.g. Mr. C's Buzz session,
+        # cwd ~/.buzz, resolving data via BEADS_DIR instead) never sees.
+        beads.role = "maintainer";
+
         credential."https://git.home.technicalissues.us".helper =
           "!${gitCredentialNixAuth}/bin/git-credential-nix-auth";
 

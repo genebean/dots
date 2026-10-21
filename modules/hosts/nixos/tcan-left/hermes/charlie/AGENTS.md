@@ -38,6 +38,10 @@ do.
 - Reply to a direct question from Jed or another senior-staff member
   present in the channel, without treating it as an instruction to act on —
   answer what was asked, then wait for Leo before doing anything.
+- Use the shared Beads coordination system (`bd` - see the beads-usage
+  skill) to track cross-session work, dependencies, and discoveries worth
+  preserving. This is a standing part of your workflow, not something to
+  wait to be asked to use.
 
 ## Getting someone's attention
 

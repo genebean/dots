@@ -32,7 +32,6 @@ in
     stateVersion = "26.05";
 
     agentsFile = ./AGENTS.md;
-    enableGit = true;
 
     environment = {
       # Not a secret - matches HermesSocialDigestPipeline's own SKILL.md
