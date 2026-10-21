@@ -624,19 +624,26 @@ in
             '';
           };
         };
-        "readit.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.wallabag.port}";
-        };
+        # Wallabag taken off the internet (2026-10-21): its Docker Hub image
+        # hasn't been rebuilt since 2025-10-07 and still ships EOL PHP 8.1.32,
+        # which has no fix coming for the php2shell RCEs (CVE-2026-109618 /
+        # CVE-2026-109619) - genebean/dots#685 tracks the Karakeep migration
+        # that replaces it. Still reachable on the LAN at
+        # http://<nixnuc-lan-ip>:${toString config.genebean.ports.wallabag.port}
+        # in the meantime.
+        # "readit.${home_domain}" = {
+        #   listen = [
+        #     {
+        #       inherit (config.genebean.ports.https) port;
+        #       addr = "0.0.0.0";
+        #       ssl = true;
+        #     }
+        #   ];
+        #   enableACME = true;
+        #   acmeRoot = null;
+        #   forceSSL = true;
+        #   locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.wallabag.port}";
+        # };
         # hermes-agent-fleet-plan issue 37: Danny's only path to
         # social-reader-mcp. Its own dedicated port (not the shared
         # genebean.ports.https listener other vhosts use) - the firewall
