@@ -174,8 +174,20 @@ let
 
         enableGit = mkOption {
           type = types.bool;
-          default = false;
-          description = "Add pkgs.git to this agent's extraPackages.";
+          default = true;
+          description = ''
+            Add pkgs.git to this agent's extraPackages. Default true -
+            every fleet agent gets this; set false on a specific agent
+            to opt out. Matters because this is the only path that
+            reaches the agent's own real, interactive-shell PATH
+            (/etc/profiles/per-user/hermes/bin) - hermes-agent's own
+            base processPath unconditionally adds git to the hermes-
+            agent.service UNIT's own PATH, but that doesn't propagate
+            to the per-user profile the agent's own shell tool calls
+            actually use (confirmed live, Leo, 2026-10-20: git present
+            in the raw service env, absent from Leo's own `echo
+            $PATH`/`which git`).
+          '';
         };
 
         environment = mkOption {

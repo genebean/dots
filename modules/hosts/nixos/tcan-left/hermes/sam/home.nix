@@ -30,7 +30,6 @@
     stateVersion = "26.05";
 
     agentsFile = ./AGENTS.md;
-    enableGit = true;
 
     extraPackages = [
       pkgs.gh

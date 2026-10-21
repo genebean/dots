@@ -14,7 +14,6 @@
     stateVersion = "26.05";
 
     agentsFile = ./AGENTS.md;
-    enableGit = true;
 
     forgejoLogin.tokenSecretName = "hermes_cj_forgejo_token";
 
