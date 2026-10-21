@@ -941,22 +941,30 @@ in
   # hosts using the default empty roster never force cfg.
   config = lib.mkMerge (
     (map (name: mkAgentContainer name cfg.${name}) hermesAgentNames)
-    ++ [
+    ++ lib.optional (hermesAgentNames != [ ]) {
       # Every agent's HERMES_HOME - memories, skills (bundled and any
       # seed-once mutable copies), session/cron/auth state - backed up by
       # default, unconditionally. Excludes cache/ and tools/
       # specifically: confirmed live on tcan-left these are large (2.3G
       # alone on one agent) and purely regenerable - downloaded tool
       # binaries and restic's own kind of local cache, not agent state.
-      {
-        services.restic.backups.daily = {
-          paths = map (name: "${cfg.${name}.stateHostPath}/.hermes") hermesAgentNames;
-          exclude = lib.concatMap (name: [
-            "${cfg.${name}.stateHostPath}/.hermes/cache"
-            "${cfg.${name}.stateHostPath}/.hermes/tools"
-          ]) hermesAgentNames;
-        };
-      }
-    ]
+      #
+      # Guarded on a non-empty roster: unconditionally merging this in
+      # for every host (even ones with no hermes agent-names.nix at all)
+      # created an empty services.restic.backups.daily (paths = [],
+      # exclude = []) with no repository/password set - nixpkgs' restic
+      # module trips its own "exactly one of repository/repositoryFile/
+      # environmentFile" assertion the moment that attrset exists at
+      # all, regardless of how empty it is. Confirmed live 2026-10-21:
+      # broke hetznix02 (zero hermes agents) after a nixpkgs bump made
+      # that assertion newly apply here.
+      services.restic.backups.daily = {
+        paths = map (name: "${cfg.${name}.stateHostPath}/.hermes") hermesAgentNames;
+        exclude = lib.concatMap (name: [
+          "${cfg.${name}.stateHostPath}/.hermes/cache"
+          "${cfg.${name}.stateHostPath}/.hermes/tools"
+        ]) hermesAgentNames;
+      };
+    }
   );
 }
