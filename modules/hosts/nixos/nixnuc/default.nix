@@ -199,24 +199,6 @@ in
       '';
       passwordFile = "${config.sops.secrets.gandi_dns_pat.path}";
     };
-    firefly-iii = {
-      enable = true;
-      enableNginx = true;
-      settings.APP_KEY_FILE = "${config.sops.secrets.firefly_app_key.path}";
-      virtualHost = "budget.${home_domain}";
-    };
-    firefly-iii-data-importer = {
-      enable = true;
-      enableNginx = true;
-      settings = {
-        FIREFLY_III_URL = "http://localhost:${toString config.genebean.ports.fireflyiii.port}";
-        VANITY_URL_FILE = "${config.sops.secrets.firefly_vanity_url.path}";
-        FIREFLY_III_ACCESS_TOKEN_FILE = "${config.sops.secrets.firefly_pat_data_import.path}";
-        SIMPLEFIN_TOKEN_FILE = "${config.sops.secrets.firefly_simplefin_token.path}";
-        TZ = "America/New_York";
-      };
-      virtualHost = "budget-importer.${home_domain}";
-    };
     fwupd.enable = true;
     jellyfin = {
       enable = true;
@@ -247,7 +229,7 @@ in
     nextcloud = {
       enable = true;
       hostName = "nextcloud.home.technicalissues.us";
-      package = pkgs.nextcloud33; # Need to manually increment with every major upgrade.
+      package = pkgs.nextcloud34; # Need to manually increment with every major upgrade.
       appstoreEnable = true;
       autoUpdateApps.enable = true;
       config = {
@@ -377,21 +359,6 @@ in
           forceSSL = true;
           locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.atuin.port}";
         };
-        # budget.${home_domain}
-        "${config.services.firefly-iii.virtualHost}".listen = [
-          {
-            inherit (config.genebean.ports.fireflyiii) port;
-            addr = "0.0.0.0";
-            ssl = false;
-          }
-        ];
-        "${config.services.firefly-iii-data-importer.virtualHost}".listen = [
-          {
-            inherit (config.genebean.ports.fireflyiii-importer) port;
-            addr = "0.0.0.0";
-            ssl = false;
-          }
-        ];
         "buzz.${home_domain}" = {
           listen = [
             {
@@ -624,19 +591,26 @@ in
             '';
           };
         };
-        "readit.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.wallabag.port}";
-        };
+        # Wallabag taken off the internet (2026-10-21): its Docker Hub image
+        # hasn't been rebuilt since 2025-10-07 and still ships EOL PHP 8.1.32,
+        # which has no fix coming for the php2shell RCEs (CVE-2026-109618 /
+        # CVE-2026-109619) - genebean/dots#685 tracks the Karakeep migration
+        # that replaces it. Still reachable on the LAN at
+        # http://<nixnuc-lan-ip>:${toString config.genebean.ports.wallabag.port}
+        # in the meantime.
+        # "readit.${home_domain}" = {
+        #   listen = [
+        #     {
+        #       inherit (config.genebean.ports.https) port;
+        #       addr = "0.0.0.0";
+        #       ssl = true;
+        #     }
+        #   ];
+        #   enableACME = true;
+        #   acmeRoot = null;
+        #   forceSSL = true;
+        #   locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.wallabag.port}";
+        # };
         # hermes-agent-fleet-plan issue 37: Danny's only path to
         # social-reader-mcp. Its own dedicated port (not the shared
         # genebean.ports.https listener other vhosts use) - the firewall
@@ -776,31 +750,6 @@ in
     age.keyFile = "${config.users.users.${username}.home}/.config/sops/age/keys.txt";
     defaultSopsFile = ./secrets.yaml;
     secrets = {
-      firefly_app_key = {
-        owner = config.services.firefly-iii.user;
-        restartUnits = [ "nginx.service" ];
-      };
-      firefly_pat_data_import = {
-        owner = config.services.firefly-iii-data-importer.user;
-        restartUnits = [
-          "firefly-iii-data-importer-setup.service"
-          "phpfpm-firefly-iii-data-importer.service"
-        ];
-      };
-      firefly_simplefin_token = {
-        owner = config.services.firefly-iii-data-importer.user;
-        restartUnits = [
-          "firefly-iii-data-importer-setup.service"
-          "phpfpm-firefly-iii-data-importer.service"
-        ];
-      };
-      firefly_vanity_url = {
-        owner = config.services.firefly-iii-data-importer.user;
-        restartUnits = [
-          "firefly-iii-data-importer-setup.service"
-          "phpfpm-firefly-iii-data-importer.service"
-        ];
-      };
       immich_kiosk_basic_auth = {
         owner = config.users.users.nginx.name;
         restartUnits = [ "nginx.service" ];

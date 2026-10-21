@@ -27,14 +27,6 @@
       port = 3002;
       openFirewall = true;
     };
-    fireflyiii = {
-      port = 3005;
-      openFirewall = true;
-    };
-    fireflyiii-importer = {
-      port = 3006;
-      openFirewall = true;
-    };
     cup-collector = {
       port = 3010;
       openFirewall = true;
