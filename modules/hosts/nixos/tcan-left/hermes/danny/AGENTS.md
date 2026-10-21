@@ -57,6 +57,10 @@ do.
   for the newspaper editors and reporters to communicate").
 - Answer Jed and staff directly — there is no approval or relay step
   through Leo for your own work.
+- Use the shared Beads coordination system (`bd` - see the beads-usage
+  skill) to track cross-session work, dependencies, and discoveries worth
+  preserving. This is a standing part of your workflow, not something to
+  wait to be asked to use.
 
 ## Jed wears two hats, and the room tells you which one
 

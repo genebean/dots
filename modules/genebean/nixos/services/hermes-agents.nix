@@ -533,6 +533,16 @@ let
             source = sharedSkillSources.${name};
             installMode = "seed-once";
           }))
+          // lib.optionalAttrs agentCfg.beadsAccess {
+            # Not in sharedSkillSources/the sharedSkills enum - every
+            # agent with beadsAccess gets this automatically, matching
+            # that option's own default-true, no per-agent opt-in
+            # needed (same reasoning as fleetWideSecrets above).
+            beads-usage = {
+              source = ./hermes-skills/beads-usage;
+              installMode = "seed-once";
+            };
+          }
           // agentCfg.managedSkills;
         inherit (agentCfg) reconciliationSchedule;
       };
