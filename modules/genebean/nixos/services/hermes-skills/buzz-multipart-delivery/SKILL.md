@@ -9,6 +9,15 @@ metadata:
   hermes:
     tags: [buzz, publishing, multipart, verification]
     related_skills: [social-report-delivery, daily-social-report-publication]
+required_environment_variables:
+  - name: BUZZ_PRIVATE_KEY
+    prompt: Buzz identity private key
+    help: >-
+      Already provisioned per-agent via this fleet's own
+      hermes_<agent>_buzz_identity secret - should already be set. Declared
+      here so hermes-agent's env-sanitization still passes it through to the
+      `buzz` CLI when this skill runs from a cron/background session, not
+      just an interactive Buzz-platform one (agents-beads-collaboration-12d).
 ---
 
 # Buzz multipart delivery
