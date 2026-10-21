@@ -2509,6 +2509,42 @@ absolute path
 
 
 
+## genebean\.services\.hermesAgents\.\<name>\.beadsAccess
+
+
+
+Wires this agent up as its own client of the shared
+agents-beads-collaboration Dolt/Beads server
+(dolt-beads\.home\.technicalissues\.us), under its own identity
+(BEADS_ACTOR/BEADS_DOLT_SERVER_USER = this agent’s name)\.
+Default true - every fleet agent gets this; set false on a
+specific agent to opt out\. Reuses the already-provisioned
+dolt_beads_\<name>_password secret and SQL identity
+(agents-beads-collaboration-3kt)\. Seeds a static
+metadata\.json once (if absent) instead of running a live
+` bd init ` - avoids the known ` --global ` database-override
+bug that otherwise bootstraps a throwaway empty database on
+every fresh init (hit repeatedly during this effort’s own
+rollout)\.
+
+
+
+*Type:*
+boolean
+
+
+
+*Default:*
+
+```nix
+true
+```
+
+*Declared by:*
+ - [modules/genebean/home/services/hermes-agents\.nix](../modules/genebean/home/services/hermes-agents.nix)
+
+
+
 ## genebean\.services\.hermesAgents\.\<name>\.environment
 
 
@@ -2848,8 +2884,6 @@ string
 
 ## genebean\.services\.hermesAgents\.\<name>\.hermesSettings
 
-
-
 Merged over the shared services\.hermes-agent\.settings defaults\.
 
 
@@ -2871,6 +2905,8 @@ attribute set of anything
 
 
 ## genebean\.services\.hermesAgents\.\<name>\.managedSkills
+
+
 
 Declarative skill materialization\. Each attribute name becomes
 the skill’s directory under HERMES_HOME (skills/\<name>/…),

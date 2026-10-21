@@ -72,6 +72,112 @@ let
   # to, just reached from the outside.
   hermesPkg = inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
+  # Same package every other dolt-beads client in this flake is actually
+  # built against (bead-me-up-scotty.nix, modules/shared/home/general/
+  # default.nix) - nixpkgs-unstable, not the stable channel's older bd.
+  unstablePkgs = import inputs.nixpkgs-unstable { inherit (pkgs.stdenv.hostPlatform) system; };
+  beadsPkg = unstablePkgs.beads;
+
+  # Static per-agent metadata.json, seeded once rather than through a
+  # live `bd init` - same proven approach as bead-me-up-scotty.nix (see
+  # that file's header for why: bd init --global has not reliably
+  # applied --global's beads_global database override, which otherwise
+  # bootstraps a throwaway empty database every time, needing a manual
+  # DROP DATABASE afterward - hit repeatedly during this effort's mr-c
+  # rollout). No dolt_server_port (deprecated fallback field - the
+  # BEADS_DOLT_SERVER_PORT env var below is the non-deprecated
+  # equivalent) and no project_id: bd fills that in itself on first
+  # successful connection when the field is simply absent (only an
+  # actively wrong project_id - the --global bug's actual failure mode -
+  # trips the identity-mismatch check).
+  mkBeadsMetadataFile =
+    agentName:
+    pkgs.writeText "${agentName}-beads-metadata.json" (
+      builtins.toJSON {
+        database = "dolt";
+        backend = "dolt";
+        dolt_mode = "server";
+        dolt_server_host = "dolt-beads.home.technicalissues.us";
+        dolt_server_user = agentName;
+        dolt_database = "beads_global";
+      }
+    );
+
+  mkBeadsSeedService =
+    agentName: agentCfg:
+    lib.optionalAttrs (!agentCfg.beadsAccess) {
+      # Env vars, the secret bind-mount, networking.extraHosts, the beads
+      # package, and this very unit's own definition are all already
+      # gated on beadsAccess and disappear on their own once it's false -
+      # Nix's declarative model handles that for free. What it can't
+      # undo is the data this service itself wrote imperatively while
+      # beadsAccess was true - same reasoning tmpfiles.rules' own `d`
+      # directive never deletes files it once created. This is the
+      # counterpart: runs every activation (not seed's "only if
+      # absent"), removing the directory if still present. Low-risk to
+      # automate - it's just a connection pointer (host/user/database
+      # name), never real coordination data, which lives on the Dolt
+      # server itself, not here.
+      beads-cleanup = {
+        description = "Remove ${agentName}'s Beads workspace data (beadsAccess is false)";
+        wantedBy = [ "multi-user.target" ];
+        before = [ "hermes-agent.service" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+        };
+        script = ''
+          set -euo pipefail
+          rm -rf "${containerStateDir}/beads"
+        '';
+      };
+    }
+    // lib.optionalAttrs agentCfg.beadsAccess {
+      beads-metadata-seed = {
+        description = "Seed ${agentName}'s Beads workspace metadata (only if absent)";
+        wantedBy = [ "multi-user.target" ];
+        before = [ "hermes-agent.service" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+        };
+        script = ''
+          set -euo pipefail
+          beadsRoot="${containerStateDir}/beads"
+          dir="$beadsRoot/.beads"
+          mkdir -p "$dir"
+          # A plain git config --global beads.role doesn't satisfy bd's own
+          # check here - confirmed live (Leo, 2026-10-20): it worked for
+          # gene/claude-rp's main workspace (already a real git repo) but
+          # not for this bare directory. bd's config resolution appears to
+          # require an actual repo to exist before it'll consult config at
+          # all, global included - git init once (idempotent) and set it
+          # locally instead, matching the upstream fix message's own
+          # wording ("git config beads.role maintainer", no --global).
+          #
+          # -c safe.directory=... (not a persisted global safe.directory
+          # add): this service runs as root, but $beadsRoot is hermes-
+          # owned after the chown below runs on any prior invocation -
+          # git's own dubious-ownership check (CVE-2022-24765) then
+          # refuses every git command here except init itself, confirmed
+          # live ("fatal: detected dubious ownership"). A one-shot -c
+          # override needs no $HOME and leaves nothing to clean up later.
+          if [ ! -d "$beadsRoot/.git" ]; then
+            ${pkgs.git}/bin/git -c safe.directory="$beadsRoot" -C "$beadsRoot" init -q
+            ${pkgs.git}/bin/git -c safe.directory="$beadsRoot" -C "$beadsRoot" config beads.role maintainer
+          fi
+          if [ ! -s "$dir/metadata.json" ]; then
+            install -m 0644 ${mkBeadsMetadataFile agentName} "$dir/metadata.json"
+          fi
+          chown -R hermes:hermes "$beadsRoot"
+          # bd's own recommended mode - confirmed live this warns otherwise
+          # (mkdir's default mode, 0755, isn't tightened by anything else
+          # in this path).
+          chmod 700 "$dir"
+        '';
+      };
+    };
+
   # ── Per-agent derivation of the container config ──────────────────────
 
   mkManagedSkillFiles =
@@ -447,7 +553,19 @@ let
           envFileAs = "NEWSPAPER_BASIC_AUTH";
         };
       };
-      allSecrets = fleetWideSecrets // agentCfg.secrets;
+      # Reuses the per-agent secret already created and provisioned on
+      # the dolt-beads server for this effort (agents-beads-
+      # collaboration-3kt) - bare-password value, reshaped into
+      # BEADS_DOLT_PASSWORD=<value> the same way envFileAs handles every
+      # other bare-token secret in this file.
+      beadsSecrets = lib.optionalAttrs agentCfg.beadsAccess {
+        "dolt_beads_${agentName}_password" = {
+          envFileAs = "BEADS_DOLT_PASSWORD";
+          sopsFile = ../../../shared/secrets.yaml;
+          toEnvironmentFile = false;
+        };
+      };
+      allSecrets = fleetWideSecrets // beadsSecrets // agentCfg.secrets;
       envFileSecrets = lib.filterAttrs (_: secretCfg: secretCfg.envFileAs != null) allSecrets;
       envFileTemplateName = secretName: "${agentName}-${secretName}-envfile";
     in
@@ -503,6 +621,17 @@ let
             # none yet.
             environment.etc = seedOnceEtcFiles skillsAgentCfg;
 
+            # tcan-left is a different host from nixnuc (where dolt-beads
+            # actually runs) and this is a separate per-container
+            # filesystem regardless of network-namespace sharing
+            # (privateNetwork = false below just means shared host
+            # networking, not a shared /etc/hosts) - real LAN IP, not
+            # loopback, same reasoning as bead-me-up-scotty.nix's own
+            # --add-host fix.
+            networking.extraHosts = lib.optionalString agentCfg.beadsAccess ''
+              192.168.20.190 dolt-beads.home.technicalissues.us
+            '';
+
             services.hermes-agent = {
               enable = true;
 
@@ -522,6 +651,15 @@ let
                 # same as everything else, not infra plumbing) for usage.
                 NEWSPAPER_URL = "https://newspaper.home.technicalissues.us";
               }
+              // lib.optionalAttrs agentCfg.beadsAccess {
+                BEADS_ACTOR = agentName;
+                BEADS_DIR = "${containerStateDir}/beads/.beads";
+                # Env var, not metadata.json's dolt_server_port field -
+                # that's the deprecated fallback (see mkBeadsMetadataFile).
+                BEADS_DOLT_SERVER_PORT = "3307";
+                BEADS_DOLT_SERVER_TLS = "1";
+                BEADS_DOLT_SERVER_USER = agentName;
+              }
               // agentCfg.environment;
 
               environmentFiles =
@@ -533,6 +671,7 @@ let
               extraPackages = [
                 pkgs.buzz-cli
               ]
+              ++ lib.optional agentCfg.beadsAccess beadsPkg
               ++ lib.optional agentCfg.enableGit pkgs.git
               ++ lib.optional needsTea pkgs.tea
               ++ mkGithubAppWrappers agentCfg
@@ -547,7 +686,28 @@ let
 
               inherit (agentCfg) mcpServers;
 
+              # lib.recursiveUpdate overwrites lists rather than merging
+              # them - if any agent's own hermesSettings ever sets its
+              # own approvals.deny, it replaces this list entirely rather
+              # than adding to it. None of the current 5 agents do; worth
+              # re-checking this comment before any agent ever adds one.
               settings = lib.recursiveUpdate {
+                approvals.deny = lib.optionals agentCfg.beadsAccess [
+                  # hermes-agent's own hardline floor (approvals.deny) -
+                  # enforced unconditionally, before --yolo/approvals.
+                  # mode=off even get consulted. Backs the same three
+                  # rules documented in the beads-usage skill with real
+                  # enforcement instead of just prose: bd init has a
+                  # known --global database-override bug (hit repeatedly
+                  # standing up this fleet), bd edit opens an interactive
+                  # editor and hangs, and --force on update/close exists
+                  # specifically to override another actor's live claim
+                  # or an unsatisfied blocker.
+                  "*bd init*"
+                  "*bd edit*"
+                  "*bd update*--force*"
+                  "*bd close*--force*"
+                ];
                 backend.mode = "none";
                 gateway.platforms.buzz = {
                   enabled = true;
@@ -567,11 +727,12 @@ let
 
             systemd = {
               services =
-                mkForgejoLoginService agentCfg
-                // mkGithubAppServices agentCfg
+                mkBeadsSeedService agentName agentCfg
+                // mkForgejoLoginService agentCfg
                 // mkGitCredentialHelper agentName agentCfg
-                // mkSeedOnceService agentName skillsAgentCfg
+                // mkGithubAppServices agentCfg
                 // mkReconciliationServices agentName skillsAgentCfg
+                // mkSeedOnceService agentName skillsAgentCfg
                 // {
                   hermes-agent.serviceConfig = {
                     ProtectHome = lib.mkForce true;

@@ -172,6 +172,26 @@ let
           description = "AGENTS.md for this agent.";
         };
 
+        beadsAccess = mkOption {
+          type = types.bool;
+          default = true;
+          description = ''
+            Wires this agent up as its own client of the shared
+            agents-beads-collaboration Dolt/Beads server
+            (dolt-beads.home.technicalissues.us), under its own identity
+            (BEADS_ACTOR/BEADS_DOLT_SERVER_USER = this agent's name).
+            Default true - every fleet agent gets this; set false on a
+            specific agent to opt out. Reuses the already-provisioned
+            dolt_beads_<name>_password secret and SQL identity
+            (agents-beads-collaboration-3kt). Seeds a static
+            metadata.json once (if absent) instead of running a live
+            `bd init` - avoids the known `--global` database-override
+            bug that otherwise bootstraps a throwaway empty database on
+            every fresh init (hit repeatedly during this effort's own
+            rollout).
+          '';
+        };
+
         enableGit = mkOption {
           type = types.bool;
           default = true;
