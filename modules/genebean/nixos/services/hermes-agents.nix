@@ -363,6 +363,63 @@ let
       };
     };
 
+  # `tea logins add` (mkForgejoLoginService below) only registers a login
+  # for tea's own REST-API client - it does nothing for plain `git clone`/
+  # `push` over HTTPS, which several agents' own skills
+  # (file-newspaper-article) actually shell out to directly. Confirmed
+  # live (Danny, 2026-10-21): git config --global --list came back
+  # completely empty - there was never a credential helper here at all,
+  # cron or not; any past successful push was the agent improvising, not
+  # a real mechanism. A separate writeShellScriptBin wrapper (not an
+  # inline `git config --global credential.<url>.helper "!echo
+  # password=$token"`) matters here specifically: git persists whatever
+  # string you hand that option verbatim to ~/.gitconfig, so embedding
+  # $token directly would bake the live secret in plaintext on disk the
+  # moment the setup script's own shell expanded it - this wrapper reads
+  # the secret file fresh every time git actually invokes it instead,
+  # same pattern already proven for Sam's GitHub credential helper.
+  mkForgejoGitCredentialHelper =
+    agentName: agentCfg:
+    lib.optionalAttrs (agentCfg.forgejoLogin != null) (
+      let
+        helper = pkgs.writeShellScriptBin "${agentName}-forgejo-git-credential-helper" ''
+          set -euo pipefail
+          if [ "''${1:-}" != "get" ]; then
+            exit 0
+          fi
+          secret_file=/run/secrets/${agentCfg.forgejoLogin.tokenSecretName}
+          token=$(${pkgs.gnused}/bin/sed -n 's/^FORGEJO_TOKEN=//p' "$secret_file")
+          if [ -z "$token" ]; then
+            token=$(cat "$secret_file")
+          fi
+          # Forgejo/Gitea's documented HTTP token auth doesn't validate
+          # the username field, only the password/token - any non-empty
+          # placeholder works here.
+          echo "username=git"
+          echo "password=$token"
+        '';
+      in
+      {
+        forgejo-git-credential-helper-setup = {
+          description = "Configure ${agentName}'s git credential helper for Forgejo (one-time)";
+          wantedBy = [ "multi-user.target" ];
+          before = [ "hermes-agent.service" ];
+          serviceConfig = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+            User = "hermes";
+            Group = "hermes";
+            Environment = "HOME=/var/lib/hermes";
+          };
+          script = ''
+            set -euo pipefail
+            ${pkgs.git}/bin/git config --global credential.${agentCfg.forgejoLogin.url}.helper \
+              "!${helper}/bin/${agentName}-forgejo-git-credential-helper"
+          '';
+        };
+      }
+    );
+
   mkForgejoLoginService =
     agentCfg:
     lib.optionalAttrs (agentCfg.forgejoLogin != null) {
@@ -738,6 +795,7 @@ let
             systemd = {
               services =
                 mkBeadsSeedService agentName agentCfg
+                // mkForgejoGitCredentialHelper agentName agentCfg
                 // mkForgejoLoginService agentCfg
                 // mkGitCredentialHelper agentName agentCfg
                 // mkGithubAppServices agentCfg
@@ -771,6 +829,22 @@ let
             };
 
             time.timeZone = hostTimeZone;
+
+            # Pin the hermes user's uid/gid explicitly rather than leaving
+            # it to hermes-agent's own isSystemUser auto-allocation
+            # (nix/nixosModules.nix, upstream - sets isSystemUser = true
+            # with no uid at all). That allocation isn't guaranteed stable
+            # across rebuilds - it depends on what else is in each
+            # container's final user list - and the forgejo git credential
+            # helper secret above (uid/gid = 999) has to match it exactly
+            # or that secret becomes unreadable again. Confirmed live
+            # 2026-10-21: every agent's hermes user already lands on 999
+            # today; this makes that a declared fact instead of an
+            # incidental one.
+            users = {
+              groups.hermes.gid = 999;
+              users.hermes.uid = 999;
+            };
           };
 
         privateNetwork = false; # outbound-only; never binds a port
@@ -786,10 +860,42 @@ let
         # one shared sops.secrets.<name> with every agent's
         # container@<name>.service in its restartUnits, one decrypted
         # file on the host, bind-mounted read-only into all of them.
-        secrets = lib.mapAttrs (_secretName: secretCfg: {
-          inherit (secretCfg) sopsFile;
-          restartUnits = [ "container@${agentName}.service" ];
-        }) allSecrets;
+        secrets = lib.mapAttrs (
+          secretName: secretCfg:
+          {
+            inherit (secretCfg) sopsFile;
+            restartUnits = [ "container@${agentName}.service" ];
+          }
+          //
+            lib.optionalAttrs
+              (agentCfg.forgejoLogin != null && secretName == agentCfg.forgejoLogin.tokenSecretName)
+              {
+                # Readable by root only otherwise (sops-nix's own default) -
+                # fine for every other secret here, which only ever gets read
+                # by a root-run setup service once. This one is different:
+                # mkForgejoGitCredentialHelper's wrapper script re-reads it on
+                # every single git operation, running as the same user git
+                # itself runs as (hermes) - confirmed live 2026-10-21 that a
+                # root:root 0400 file left the helper silently failing to
+                # read its own token (set -euo pipefail exits it with no
+                # output), which git then treats as "helper declined" and
+                # falls back to an interactive username prompt. uid/gid, not
+                # owner/group: sops-install-secrets resolves owner/group by
+                # NAME on the HOST (tcan-left itself) via a plain NSS lookup
+                # with no numeric-UID fallback - confirmed in its own source
+                # (pkgs/sops-install-secrets/main.go's validateOwner calls
+                # user.Lookup(owner) unconditionally) - and the host has no
+                # "hermes" user at all, only each agent's own container
+                # does. owner = "hermes" failed activation outright ("failed
+                # to lookup user 'hermes': unknown user hermes"). uid/gid
+                # chown by number directly, explicitly documented to apply
+                # "even if the corresponding group doesn't exist" - exactly
+                # this case. Confirmed every agent's own hermes user shares
+                # the same uid/gid (999) across every container on this host.
+                uid = 999;
+                gid = 999;
+              }
+        ) allSecrets;
 
         # One reshaped KEY=value template per envFileAs secret - see that
         # option's own description. Never duplicates the secret's
