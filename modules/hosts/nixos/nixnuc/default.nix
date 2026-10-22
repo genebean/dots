@@ -230,6 +230,12 @@ in
       enable = true;
       hostName = "nextcloud.home.technicalissues.us";
       package = pkgs.nextcloud34; # Need to manually increment with every major upgrade.
+      # Temporary: php2shell fix (CVE-2026-109618 / CVE-2026-109619) pinned
+      # directly via inputs.nixpkgs-php-security (flake.nix) until it lands
+      # on the nixos-26.05 channel our normal pkgs.php84 tracks. Remove
+      # once nixpkgs-php-security is removed.
+      phpPackage =
+        (import inputs.nixpkgs-php-security { inherit (pkgs.stdenv.hostPlatform) system; }).php84;
       appstoreEnable = true;
       autoUpdateApps.enable = true;
       config = {
