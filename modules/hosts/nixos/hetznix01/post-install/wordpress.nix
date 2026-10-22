@@ -144,6 +144,20 @@ in
       };
     };
 
+    # Temporary: php2shell fix (CVE-2026-109618 / CVE-2026-109619) pinned
+    # directly via inputs.nixpkgs-unstable-php-security (flake.nix) until it
+    # lands on nixpkgs-unstable, which WordPress's own unstablePkgs already
+    # tracks above. No services.wordpress.sites.<name>.phpPackage option
+    # exists in this nixpkgs version - override the phpfpm pool the module
+    # generates directly instead (confirmed live: unit name
+    # phpfpm-wordpress-138cubpack.com.service). Remove once
+    # nixpkgs-unstable-php-security is removed.
+    phpfpm.pools."wordpress-138cubpack.com".phpPackage =
+      (import inputs.nixpkgs-unstable-php-security {
+        system = pkgs.stdenv.hostPlatform.system;
+        config.allowUnfree = pkgs.config.allowUnfree;
+      }).php84;
+
     restic.backups.daily.paths = [
       "/var/backup/mysql"
       "/var/lib/wordpress/138cubpack.com/uploads"
