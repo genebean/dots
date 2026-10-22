@@ -863,9 +863,21 @@ let
                 # root:root 0400 file left the helper silently failing to
                 # read its own token (set -euo pipefail exits it with no
                 # output), which git then treats as "helper declined" and
-                # falls back to an interactive username prompt.
-                owner = "hermes";
-                group = "hermes";
+                # falls back to an interactive username prompt. uid/gid, not
+                # owner/group: sops-install-secrets resolves owner/group by
+                # NAME on the HOST (tcan-left itself) via a plain NSS lookup
+                # with no numeric-UID fallback - confirmed in its own source
+                # (pkgs/sops-install-secrets/main.go's validateOwner calls
+                # user.Lookup(owner) unconditionally) - and the host has no
+                # "hermes" user at all, only each agent's own container
+                # does. owner = "hermes" failed activation outright ("failed
+                # to lookup user 'hermes': unknown user hermes"). uid/gid
+                # chown by number directly, explicitly documented to apply
+                # "even if the corresponding group doesn't exist" - exactly
+                # this case. Confirmed every agent's own hermes user shares
+                # the same uid/gid (999) across every container on this host.
+                uid = 999;
+                gid = 999;
               }
         ) allSecrets;
 
