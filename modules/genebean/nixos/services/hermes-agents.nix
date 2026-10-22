@@ -829,6 +829,22 @@ let
             };
 
             time.timeZone = hostTimeZone;
+
+            # Pin the hermes user's uid/gid explicitly rather than leaving
+            # it to hermes-agent's own isSystemUser auto-allocation
+            # (nix/nixosModules.nix, upstream - sets isSystemUser = true
+            # with no uid at all). That allocation isn't guaranteed stable
+            # across rebuilds - it depends on what else is in each
+            # container's final user list - and the forgejo git credential
+            # helper secret above (uid/gid = 999) has to match it exactly
+            # or that secret becomes unreadable again. Confirmed live
+            # 2026-10-21: every agent's hermes user already lands on 999
+            # today; this makes that a declared fact instead of an
+            # incidental one.
+            users = {
+              groups.hermes.gid = 999;
+              users.hermes.uid = 999;
+            };
           };
 
         privateNetwork = false; # outbound-only; never binds a port
