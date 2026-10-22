@@ -53,12 +53,15 @@ jobs:
         id: private-flake
         run: echo "rev=$(jq -r '.nodes[.nodes.root.inputs["private-flake"]].locked.rev' flake.lock)" >> "$GITHUB_OUTPUT"
       - name: Checkout pinned private flake
-        uses: actions/checkout@v7
-        with:
-          repository: genebean/private-flake
-          ref: ${{ steps.private-flake.outputs.rev }}
-          token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
-          path: private-flake
+        env:
+          PRIVATE_FLAKE_REV: ${{ steps.private-flake.outputs.rev }}
+          PRIVATE_FLAKE_TOKEN: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
+        run: |
+          [[ "$PRIVATE_FLAKE_REV" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::private-flake rev is not a 40-char hex SHA"; exit 1; }
+          git -c http.extraHeader="Authorization: token $PRIVATE_FLAKE_TOKEN" \
+            clone https://git.home.technicalissues.us/genebean/private-flake.git private-flake
+          git -C private-flake checkout "$PRIVATE_FLAKE_REV"
+          rm -rf private-flake/.git
       - uses: DeterminateSystems/nix-installer-action@v23
       - name: Check docs/genebean-options.md is current
         run: |
@@ -85,12 +88,15 @@ jobs:
         id: private-flake
         run: echo "rev=$(jq -r '.nodes[.nodes.root.inputs["private-flake"]].locked.rev' flake.lock)" >> "$GITHUB_OUTPUT"
       - name: Checkout pinned private flake
-        uses: actions/checkout@v7
-        with:
-          repository: genebean/private-flake
-          ref: ${{ steps.private-flake.outputs.rev }}
-          token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
-          path: private-flake
+        env:
+          PRIVATE_FLAKE_REV: ${{ steps.private-flake.outputs.rev }}
+          PRIVATE_FLAKE_TOKEN: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
+        run: |
+          [[ "$PRIVATE_FLAKE_REV" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::private-flake rev is not a 40-char hex SHA"; exit 1; }
+          git -c http.extraHeader="Authorization: token $PRIVATE_FLAKE_TOKEN" \
+            clone https://git.home.technicalissues.us/genebean/private-flake.git private-flake
+          git -C private-flake checkout "$PRIVATE_FLAKE_REV"
+          rm -rf private-flake/.git
       - uses: DeterminateSystems/nix-installer-action@v23
       - name: Build NixOS configuration
         run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
@@ -116,12 +122,15 @@ jobs:
         id: private-flake
         run: echo "rev=$(jq -r '.nodes[.nodes.root.inputs["private-flake"]].locked.rev' flake.lock)" >> "$GITHUB_OUTPUT"
       - name: Checkout pinned private flake
-        uses: actions/checkout@v7
-        with:
-          repository: genebean/private-flake
-          ref: ${{ steps.private-flake.outputs.rev }}
-          token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
-          path: private-flake
+        env:
+          PRIVATE_FLAKE_REV: ${{ steps.private-flake.outputs.rev }}
+          PRIVATE_FLAKE_TOKEN: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
+        run: |
+          [[ "$PRIVATE_FLAKE_REV" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::private-flake rev is not a 40-char hex SHA"; exit 1; }
+          git -c http.extraHeader="Authorization: token $PRIVATE_FLAKE_TOKEN" \
+            clone https://git.home.technicalissues.us/genebean/private-flake.git private-flake
+          git -C private-flake checkout "$PRIVATE_FLAKE_REV"
+          rm -rf private-flake/.git
       - uses: DeterminateSystems/nix-installer-action@v23
       - name: Build NixOS configuration
         run: nix build .#nixosConfigurations.${{ matrix.configuration }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
@@ -137,12 +146,15 @@ jobs:
         id: private-flake
         run: echo "rev=$(jq -r '.nodes[.nodes.root.inputs["private-flake"]].locked.rev' flake.lock)" >> "$GITHUB_OUTPUT"
       - name: Checkout pinned private flake
-        uses: actions/checkout@v7
-        with:
-          repository: genebean/private-flake
-          ref: ${{ steps.private-flake.outputs.rev }}
-          token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
-          path: private-flake
+        env:
+          PRIVATE_FLAKE_REV: ${{ steps.private-flake.outputs.rev }}
+          PRIVATE_FLAKE_TOKEN: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
+        run: |
+          [[ "$PRIVATE_FLAKE_REV" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::private-flake rev is not a 40-char hex SHA"; exit 1; }
+          git -c http.extraHeader="Authorization: token $PRIVATE_FLAKE_TOKEN" \
+            clone https://git.home.technicalissues.us/genebean/private-flake.git private-flake
+          git -C private-flake checkout "$PRIVATE_FLAKE_REV"
+          rm -rf private-flake/.git
       - uses: DeterminateSystems/nix-installer-action@v23
       - name: Build Home Manager configuration
         run: nix build .#homeConfigurations.gene-x86_64-linux.activationPackage --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
@@ -157,12 +169,15 @@ jobs:
         id: private-flake
         run: echo "rev=$(jq -r '.nodes[.nodes.root.inputs["private-flake"]].locked.rev' flake.lock)" >> "$GITHUB_OUTPUT"
       - name: Checkout pinned private flake
-        uses: actions/checkout@v7
-        with:
-          repository: genebean/private-flake
-          ref: ${{ steps.private-flake.outputs.rev }}
-          token: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
-          path: private-flake
+        env:
+          PRIVATE_FLAKE_REV: ${{ steps.private-flake.outputs.rev }}
+          PRIVATE_FLAKE_TOKEN: ${{ secrets.CI_PRIVATE_FLAKE_READ }}
+        run: |
+          [[ "$PRIVATE_FLAKE_REV" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::private-flake rev is not a 40-char hex SHA"; exit 1; }
+          git -c http.extraHeader="Authorization: token $PRIVATE_FLAKE_TOKEN" \
+            clone https://git.home.technicalissues.us/genebean/private-flake.git private-flake
+          git -C private-flake checkout "$PRIVATE_FLAKE_REV"
+          rm -rf private-flake/.git
       - uses: DeterminateSystems/nix-installer-action@v23
       - name: Build nix-darwin configuration
         run: nix build .#darwinConfigurations.mightymac-ci.system --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
