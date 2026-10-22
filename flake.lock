@@ -1146,11 +1146,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791163536,
-        "narHash": "sha256-QNVJAjVyEI4KsVwN50LlC9fmy2YouIWjnVJUs3+s8qg=",
+        "lastModified": 1792606044,
+        "narHash": "sha256-ZzX9ybDZxON6sOiGHFCUc9gEtntBBfoywqsU4wFmDpY=",
         "ref": "refs/heads/main",
-        "rev": "52b5cab073e69fe1bec1ae1e37ded2bc3bdab707",
-        "revCount": 32,
+        "rev": "0a2b1dd92647ae1049b46e148b2041047eec2bdf",
+        "revCount": 34,
         "type": "git",
         "url": "https://git.home.technicalissues.us/genebean/private-flake"
       },
