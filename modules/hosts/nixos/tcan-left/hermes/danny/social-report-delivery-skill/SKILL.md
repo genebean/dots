@@ -1,7 +1,7 @@
 ---
 name: social-report-delivery
 description: "Use when manually rerunning or publishing social reports."
-version: 1.1.0
+version: 1.0.0
 ---
 
 # Social Report Delivery
@@ -38,27 +38,12 @@ rerun and delivery boundary.
 6. **Resolve the destination instead of hardcoding it.** For Buzz:
    `buzz --format compact channels search --query <channel-name>`.
    Send file-backed parts in order with
-   `hermes send --to buzz:<channel-id> --file <part-file> --json` - not the
-   bare `buzz` CLI for sending. A cron-triggered run has no
-   `BUZZ_PRIVATE_KEY` in its terminal-tool environment (hermes-agent's own
-   GHSA-rhgp-j443-p4rf scrub only carves out `BUZZ_*` for a session whose
-   platform is literally `buzz`), so `buzz messages send` fails there even
-   with correct credentials configured; `hermes send` reloads
-   `~/.hermes/.env` from disk at its own startup and works in both the cron
-   and manual-rerun case, so use it unconditionally - see
-   `buzz-multipart-delivery` for the full rationale and the 60,000-byte
-   per-part budget (Buzz's real hard limit is 65,536 bytes).
+   `buzz messages send --channel <channel-id> --content - < <part-file>`.
 7. **Verify external state before claiming success.** Read the channel
    back with
    `buzz --format compact messages get --channel <channel-id> --limit <enough>`
-   and match every returned event ID and content section. A `"success":
-   true` send result only proves submission, not visible publication. This
-   readback step has no `hermes`-native equivalent yet, so it still uses
-   the bare `buzz` CLI - it works for a manual rerun (session platform is
-   `buzz`) but not from a cron-triggered run. In that case, report the
-   `message_id` from each send as the strongest available evidence and say
-   plainly that readback wasn't performed, rather than skipping this
-   silently.
+   and match every returned event ID and content section. An accepted
+   send only proves submission, not visible publication.
 8. **Close the request concisely.** State that publication was verified
    and repeat any snapshot caveat; do not duplicate the full report in
    the requesting channel.
