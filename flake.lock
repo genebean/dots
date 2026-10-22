@@ -991,22 +991,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-php-security": {
-      "locked": {
-        "lastModified": 1792593785,
-        "narHash": "sha256-dEQs/r/DSIvSjw5pQro/BAqsUnFNNZ3I/qmFYzatGvc=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "8c259fc0dd1f3ccc1aaf4f9156ab16b7328b5a4f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "8c259fc0dd1f3ccc1aaf4f9156ab16b7328b5a4f",
-        "type": "github"
-      }
-    },
     "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1792506237,
@@ -1057,11 +1041,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1792503283,
-        "narHash": "sha256-vhe2jyvRCgufWPqDuDq1S3t3ypE+ka46IFutV02xKso=",
+        "lastModified": 1792615934,
+        "narHash": "sha256-MlvRfa1O5Cqc2/a+gG+l9TSuowEoCKCmrJ1d9oAVm0I=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "cd4ea8d57de16f4810bc5f14207bac45fbf19f67",
+        "rev": "da6dc0e7b26060f2f71ce3ef7088fb56ee44fa36",
         "type": "github"
       },
       "original": {
@@ -1265,7 +1249,6 @@
         "nixos-images": "nixos-images_2",
         "nixos-raspberrypi": "nixos-raspberrypi",
         "nixpkgs": "nixpkgs_3",
-        "nixpkgs-php-security": "nixpkgs-php-security",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixpkgs-unstable-php-security": "nixpkgs-unstable-php-security",
         "plasma-manager": "plasma-manager",
