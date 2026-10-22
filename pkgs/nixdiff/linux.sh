@@ -90,10 +90,10 @@ else
     new_text=$(jq -r --arg k "$target" '.entries[$k].text' "$sm_etc")
     current_src="/etc/$target"
     [[ -f "$current_src" ]] || current_src="/dev/null"
-    if diff -q "$current_src" <(printf '%s' "$new_text") &>/dev/null; then
+    if diff -q "$current_src" <(printf '%s\n' "$new_text") &>/dev/null; then
       echo "/etc/$target: no change"
     else
-      diff -u "$current_src" <(printf '%s' "$new_text") \
+      diff -u "$current_src" <(printf '%s\n' "$new_text") \
         --label "/etc/$target" --label "/etc/$target" \
         | diff-so-fancy || true
     fi
