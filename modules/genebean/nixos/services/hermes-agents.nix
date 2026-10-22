@@ -844,10 +844,30 @@ let
         # one shared sops.secrets.<name> with every agent's
         # container@<name>.service in its restartUnits, one decrypted
         # file on the host, bind-mounted read-only into all of them.
-        secrets = lib.mapAttrs (_secretName: secretCfg: {
-          inherit (secretCfg) sopsFile;
-          restartUnits = [ "container@${agentName}.service" ];
-        }) allSecrets;
+        secrets = lib.mapAttrs (
+          secretName: secretCfg:
+          {
+            inherit (secretCfg) sopsFile;
+            restartUnits = [ "container@${agentName}.service" ];
+          }
+          //
+            lib.optionalAttrs
+              (agentCfg.forgejoLogin != null && secretName == agentCfg.forgejoLogin.tokenSecretName)
+              {
+                # Readable by root only otherwise (sops-nix's own default) -
+                # fine for every other secret here, which only ever gets read
+                # by a root-run setup service once. This one is different:
+                # mkForgejoGitCredentialHelper's wrapper script re-reads it on
+                # every single git operation, running as the same user git
+                # itself runs as (hermes) - confirmed live 2026-10-21 that a
+                # root:root 0400 file left the helper silently failing to
+                # read its own token (set -euo pipefail exits it with no
+                # output), which git then treats as "helper declined" and
+                # falls back to an interactive username prompt.
+                owner = "hermes";
+                group = "hermes";
+              }
+        ) allSecrets;
 
         # One reshaped KEY=value template per envFileAs secret - see that
         # option's own description. Never duplicates the secret's
