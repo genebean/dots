@@ -56,25 +56,29 @@ in
       # Neither Nextcloud nor Jellyfin ships a fail2ban filter, unlike
       # nginx/postfix/dovecot (bundled with the fail2ban package itself) or
       # WordPress (ships its own via the wp-fail2ban plugin, see
-      # hetznix01/post-install/wordpress.nix). These two are hand-written
-      # against each app's well-documented log format - UNVALIDATED against
-      # this host's actual live logs. Confirm with
-      # `fail2ban-regex /path/to/log /etc/fail2ban/filter.d/<name>.conf`
-      # after deploy before trusting either jail below.
+      # hetznix01/post-install/wordpress.nix). These two are hand-written,
+      # and were validated live on 2026-10-23 (not just eyeballed): a real
+      # failed login was deliberately triggered against each app and
+      # `fail2ban-regex` confirmed a match against the live log line below.
+      # That same check is what caught the live jails silently running
+      # under the systemd/journal backend instead of actually reading
+      # logpath (see backend = polling on each jail, below).
       "fail2ban/filter.d/nextcloud.conf".text = ''
         # Matches Nextcloud's JSON log format (log_type = "file", set in
         # services.nextcloud.settings below) - widely-used community
-        # pattern, not an officially bundled fail2ban filter.
+        # pattern, not an officially bundled fail2ban filter. Confirmed
+        # live against: {"reqId":"...","remoteAddr":"1.2.3.4",...,
+        # "message":"Login failed: 'user' (Remote IP: '1.2.3.4')",...}
         [Definition]
         failregex = ,"remoteAddr":"<HOST>".*Login failed:
       '';
       "fail2ban/filter.d/jellyfin.conf".text = ''
         # Pattern published by Jellyfin's own docs (jellyfin.org/docs/general/
-        # post-install/networking/advanced/fail2ban/) - requires Jellyfin's
-        # Dashboard > Logs > Log Level set to "Information" (auth failures
-        # don't log at the default Error level). This is a one-time manual
-        # step in Jellyfin's own admin UI - not something Nix can set
-        # declaratively, Jellyfin manages this in its own runtime config.
+        # post-install/networking/advanced/fail2ban/). No manual Log Level
+        # step needed, unlike what those docs assume - confirmed live that
+        # this Jellyfin version already defaults to "Information" (no
+        # logging.json override present, only the stock logging.default.json
+        # which already sets MinimumLevel.Default to "Information").
         [Definition]
         failregex = ^.*Authentication request for .* has been denied \(IP: "<HOST>"\)\.$
       '';
@@ -233,14 +237,24 @@ in
       # sshd jail comes enabled by default from the fail2ban package itself;
       # nginx-http-auth/nginx-botsearch jails come from
       # ../../../shared/nixos/fail2ban-nginx.nix (imported above). The two
-      # below use the hand-written, unvalidated filters in environment.etc
-      # above - see the comments there.
+      # below use the hand-written filters in environment.etc above - see
+      # the comments there. Both validated live (2026-10-23): deliberately
+      # triggered a real failed login against each app, confirmed the
+      # resulting log line with `fail2ban-regex`, THEN found the live jails
+      # were silently running under fail2ban's systemd/journal backend
+      # instead of reading logpath at all ("Currently failed: 0" despite a
+      # confirmed regex match) - fail2ban's "auto" backend prefers systemd
+      # whenever it's available, regardless of logpath being set. backend
+      # = polling below forces it to actually tail the file.
       enable = true;
       jails = {
         "nextcloud" = ''
           enabled  = true
           filter   = nextcloud
-          logpath  = /orico/nextcloud/nextcloud.log
+          backend  = polling
+          # Confirmed via live deploy, not guessed from datadir: the real
+          # file is under data/, not directly in datadir.
+          logpath  = /orico/nextcloud/data/nextcloud.log
           maxretry = 5
           findtime = 600
           bantime  = 3600
@@ -248,6 +262,7 @@ in
         "jellyfin" = ''
           enabled  = true
           filter   = jellyfin
+          backend  = polling
           logpath  = /var/lib/jellyfin/log/*.log
           maxretry = 5
           findtime = 600
