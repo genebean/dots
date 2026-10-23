@@ -52,6 +52,33 @@ in
   };
 
   environment = {
+    etc = {
+      # Neither Nextcloud nor Jellyfin ships a fail2ban filter, unlike
+      # nginx/postfix/dovecot (bundled with the fail2ban package itself) or
+      # WordPress (ships its own via the wp-fail2ban plugin, see
+      # hetznix01/post-install/wordpress.nix). These two are hand-written
+      # against each app's well-documented log format - UNVALIDATED against
+      # this host's actual live logs. Confirm with
+      # `fail2ban-regex /path/to/log /etc/fail2ban/filter.d/<name>.conf`
+      # after deploy before trusting either jail below.
+      "fail2ban/filter.d/nextcloud.conf".text = ''
+        # Matches Nextcloud's JSON log format (log_type = "file", set in
+        # services.nextcloud.settings below) - widely-used community
+        # pattern, not an officially bundled fail2ban filter.
+        [Definition]
+        failregex = ,"remoteAddr":"<HOST>".*Login failed:
+      '';
+      "fail2ban/filter.d/jellyfin.conf".text = ''
+        # Pattern published by Jellyfin's own docs (jellyfin.org/docs/general/
+        # post-install/networking/advanced/fail2ban/) - requires Jellyfin's
+        # Dashboard > Logs > Log Level set to "Information" (auth failures
+        # don't log at the default Error level). This is a one-time manual
+        # step in Jellyfin's own admin UI - not something Nix can set
+        # declaratively, Jellyfin manages this in its own runtime config.
+        [Definition]
+        failregex = ^.*Authentication request for .* has been denied \(IP: "<HOST>"\)\.$
+      '';
+    };
     sessionVariables = {
       LIBVA_DRIVER_NAME = "iHD";
     };
@@ -202,10 +229,32 @@ in
       '';
       passwordFile = "${config.sops.secrets.gandi_dns_pat.path}";
     };
-    # sshd jail comes enabled by default from the fail2ban package itself;
-    # nginx-http-auth/nginx-botsearch jails come from
-    # ../../../shared/nixos/fail2ban-nginx.nix (imported above).
-    fail2ban.enable = true;
+    fail2ban = {
+      # sshd jail comes enabled by default from the fail2ban package itself;
+      # nginx-http-auth/nginx-botsearch jails come from
+      # ../../../shared/nixos/fail2ban-nginx.nix (imported above). The two
+      # below use the hand-written, unvalidated filters in environment.etc
+      # above - see the comments there.
+      enable = true;
+      jails = {
+        "nextcloud" = ''
+          enabled  = true
+          filter   = nextcloud
+          logpath  = /orico/nextcloud/nextcloud.log
+          maxretry = 5
+          findtime = 600
+          bantime  = 3600
+        '';
+        "jellyfin" = ''
+          enabled  = true
+          filter   = jellyfin
+          logpath  = /var/lib/jellyfin/log/*.log
+          maxretry = 5
+          findtime = 600
+          bantime  = 3600
+        '';
+      };
+    };
     fwupd.enable = true;
     jellyfin = {
       enable = true;
@@ -304,6 +353,12 @@ in
         # can't hammer it.  Uptime Kuma polls once per minute; 6r/m gives
         # comfortable headroom while still blocking floods.
         limit_req_zone $binary_remote_addr zone=ytdlfin_health:1m rate=6r/m;
+
+        # Mealie has no built-in rate limiting at all on its API (confirmed
+        # from Mealie's own security docs, which explicitly recommend doing
+        # this at the reverse proxy) - no fail2ban filter needed/available,
+        # this covers the same ground at the nginx layer instead.
+        limit_req_zone $binary_remote_addr zone=mealie_login:1m rate=10r/m;
       '';
       virtualHosts = {
         "${home_domain}" = {
@@ -510,7 +565,15 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.mealie.port}";
+          locations = {
+            "/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.mealie.port}";
+            "= /api/auth/token" = {
+              proxyPass = "http://${backend_ip}:${toString config.genebean.ports.mealie.port}/api/auth/token";
+              extraConfig = ''
+                limit_req zone=mealie_login burst=3 nodelay;
+              '';
+            };
+          };
           extraConfig = ''
             client_max_body_size 10M;
           '';
