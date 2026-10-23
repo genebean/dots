@@ -12,6 +12,9 @@
     ./hardware-configuration.nix
     ./post-install
     inputs.private-flake.nixosModules.private.hetznix02
+    ../../../shared/nixos/auditd.nix
+    ../../../shared/nixos/crowdsec.nix
+    ../../../shared/nixos/fail2ban-nginx.nix
   ];
 
   system.stateVersion = "24.05";
@@ -56,6 +59,9 @@
   programs.mtr.enable = true;
 
   services = {
+    # sshd jail comes enabled by default from the fail2ban package itself;
+    # nginx-http-auth/nginx-botsearch jails come from
+    # ../../../shared/nixos/fail2ban-nginx.nix (imported above).
     fail2ban.enable = true;
     logrotate.enable = true;
     udev.extraRules = ''

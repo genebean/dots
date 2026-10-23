@@ -30,6 +30,9 @@ in
     ./ports.nix
     ./social-reader-mcp.nix
     ./zfs-datasets.nix
+    ../../../shared/nixos/auditd.nix
+    ../../../shared/nixos/crowdsec.nix
+    ../../../shared/nixos/fail2ban-nginx.nix
     ../../../shared/nixos/lets-encrypt.nix
   ];
 
@@ -199,6 +202,10 @@ in
       '';
       passwordFile = "${config.sops.secrets.gandi_dns_pat.path}";
     };
+    # sshd jail comes enabled by default from the fail2ban package itself;
+    # nginx-http-auth/nginx-botsearch jails come from
+    # ../../../shared/nixos/fail2ban-nginx.nix (imported above).
+    fail2ban.enable = true;
     fwupd.enable = true;
     jellyfin = {
       enable = true;

@@ -11,6 +11,9 @@
     ./hardware-configuration.nix
     ./ports.nix
     ./post-install
+    ../../../shared/nixos/auditd.nix
+    ../../../shared/nixos/crowdsec.nix
+    ../../../shared/nixos/fail2ban-nginx.nix
   ];
 
   system.stateVersion = "24.05";
@@ -50,7 +53,37 @@
   programs.mtr.enable = true;
 
   services = {
-    fail2ban.enable = true;
+    fail2ban = {
+      enable = true;
+      # sshd jail comes enabled by default from the fail2ban package itself.
+      # nginx-http-auth/nginx-botsearch jails come from
+      # ../../../shared/nixos/fail2ban-nginx.nix (imported above). WordPress
+      # already has its own dedicated jails (post-install/wordpress.nix).
+      # These two cover the mail stack (private-flake's email.nix,
+      # simple-nixos-mailserver - unit names confirmed via `nix eval` against
+      # config.systemd.services, not guessed) which had zero jail coverage
+      # despite fail2ban.enable already being true here.
+      jails = {
+        "postfix" = ''
+          enabled      = true
+          filter       = postfix
+          backend      = systemd
+          journalmatch = _SYSTEMD_UNIT=postfix.service
+          maxretry     = 5
+          findtime     = 600
+          bantime      = 3600
+        '';
+        "dovecot" = ''
+          enabled      = true
+          filter       = dovecot
+          backend      = systemd
+          journalmatch = _SYSTEMD_UNIT=dovecot.service
+          maxretry     = 5
+          findtime     = 600
+          bantime      = 3600
+        '';
+      };
+    };
     logrotate.enable = true;
     ntopng = {
       enable = false;
