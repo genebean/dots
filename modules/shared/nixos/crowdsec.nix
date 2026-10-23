@@ -1,88 +1,58 @@
-{ config, ... }:
 {
-
   ##########################################################################
   #                                                                        #
-  #  CrowdSec, DRY-RUN ONLY - do not flip this to enforcing without       #
-  #  re-reading agents-beads-collaboration-g4f first.                     #
+  #  CrowdSec - DEFERRED, not enabled. A real deploy (not dry-activate -   #
+  #  this class of bug is invisible to dry-activate, which never actually #
+  #  starts services) surfaced three distinct bugs in this nixpkgs        #
+  #  version's crowdsec/crowdsec-firewall-bouncer modules, confirmed live  #
+  #  on nixnuc 2026-10-23, not guessed:                                    #
   #                                                                        #
-  #  The repo owner was burned by CrowdSec years ago: it locked out       #
-  #  legitimate traffic almost immediately. The most likely cause was     #
-  #  the community blocklist - bans made by OTHER people's CrowdSec       #
-  #  installs, pulled in automatically via the Central API, so a noisy    #
-  #  scenario on a stranger's host could ban a shared IP range (VPN       #
-  #  exit, CGNAT, cloud NAT) that affected us too. Two deliberate         #
-  #  decisions below exist specifically to not repeat that:              #
+  #  1. services.crowdsec.localConfig.acquisitions must be set explicitly  #
+  #     or crowdsec reads zero data sources (the evaluator warns about     #
+  #     this itself). Needs splitting the same way fail2ban-nginx.nix's    #
+  #     jails did: nginx's error_log goes to journald (stderr default),    #
+  #     access_log falls back to the real file /var/log/nginx/access.log. #
   #                                                                        #
-  #    1. We never run `cscli capi register`, so this install has no      #
-  #       Central API credentials and never pulls the community          #
-  #       blocklist - only local scenarios (this host's own logs) feed    #
-  #       decisions.                                                      #
-  #    2. `cscli simulation enable` (no scenario argument = global) is    #
-  #       run as part of provisioning below. CrowdSec's own documented    #
-  #       simulation mode marks every decision as simulated; a compliant  #
-  #       bouncer logs what it WOULD have blocked without touching the    #
-  #       firewall. This is the correct place to toggle that - not a      #
-  #       guessed bouncer-level flag.                                     #
+  #  2. crowdsec.service invokes itself with an explicit                   #
+  #     `crowdsec -c <nix-store-path>` flag and never populates            #
+  #     /etc/crowdsec/config.yaml at all (confirmed by reading the actual  #
+  #     pinned module source, not nixpkgs-unstable's current one - this   #
+  #     flake's 26.05 commit predates a module rewrite). But              #
+  #     crowdsec-firewall-bouncer's registerBouncer script - generated     #
+  #     entirely by NixOS, nothing we wrote - calls bare `cscli` with no   #
+  #     -c flag, so it looks for /etc/crowdsec/config.yaml and fails with  #
+  #     "no such file or directory". A real incompatibility between these  #
+  #     two sibling modules on this nixpkgs version. Our own              #
+  #     crowdsec-provision.service hit the identical bug and was fixed by  #
+  #     extracting crowdsec.service's own ExecStart path via              #
+  #     `builtins.match` and passing it to cscli explicitly - the bouncer  #
+  #     register script would need the same treatment, but overriding an  #
+  #     upstream-generated script to do that is fragile; registering the   #
+  #     bouncer manually once via SSH with the explicit -c flag and wiring #
+  #     the resulting key through secrets.apiKeyPath is probably the       #
+  #     cleaner fix.                                                      #
   #                                                                        #
-  #  Collections installed are deliberately narrow (linux, sshd, nginx)   #
-  #  to match what's actually running - add more only alongside whatever  #
-  #  new log source needs it.                                             #
+  #  3. Deeper still: crowdsec.service's OWN ExecStartPre (crowdsec-setup, #
+  #     a script the module generates internally) fails outright:         #
+  #     `level=fatal msg="loading api client: no API client section in    #
+  #     configuration"`. services.crowdsec.settings.lapi.credentialsFile   #
+  #     (which feeds api.client.credentials_path) is apparently required   #
+  #     but was never set - this module does not appear to bootstrap a    #
+  #     working local-API machine registration out of the box the way     #
+  #     fail2ban's bundled sshd jail "just works". This is the blocking    #
+  #     issue - #1 and #2 are fixable; this one needs real investigation   #
+  #     into what services.crowdsec.settings.lapi/api.server actually     #
+  #     need to be set to for a single-host, local-only install to start   #
+  #     at all.                                                           #
   #                                                                        #
-  #  Decisions/alerts from this dry-run live only in CrowdSec's local      #
-  #  SQLite DB (`cscli decisions list` / `cscli alerts list`) until the   #
-  #  planned star1 observability stack (Tempo/Loki) exists to ship them   #
-  #  somewhere durable. Tracked in agents-beads-collaboration-g4f.        #
+  #  A crash-looping crowdsec.service was live on nixnuc briefly during    #
+  #  this investigation (auto-restarting every ~10s) - stopped manually,   #
+  #  not left running. Tracked in agents-beads-collaboration-g4f with the  #
+  #  CrowdSec rollout's dry-run gating condition (community blocklist      #
+  #  off, simulation mode on) - that condition still applies whenever      #
+  #  this is picked back up, on top of fixing bugs 1-3 above.             #
   #                                                                        #
   ##########################################################################
 
-  services.crowdsec = {
-    enable = true;
-
-    # Without this, crowdsec starts but reads nothing - confirmed by the
-    # evaluator's own warning ("CrowdSec will not look for any data
-    # source") the first time this module was added without it. Split the
-    # same way the fail2ban-nginx.nix jails had to be, for the same
-    # confirmed reason: nginx's error_log defaults to "stderr" (journald),
-    # while its access_log has no override and falls back to the real file
-    # at /var/log/nginx/access.log.
-    localConfig.acquisitions = [
-      {
-        source = "journalctl";
-        journalctl_filter = [ "_SYSTEMD_UNIT=sshd.service" ];
-        labels.type = "syslog";
-      }
-      {
-        source = "journalctl";
-        journalctl_filter = [ "_SYSTEMD_UNIT=nginx.service" ];
-        labels.type = "nginx";
-      }
-      {
-        filenames = [ "/var/log/nginx/access.log" ];
-        labels.type = "nginx";
-      }
-    ];
-  };
-
-  services.crowdsec-firewall-bouncer = {
-    enable = true;
-    registerBouncer.enable = true;
-  };
-
-  systemd.services.crowdsec-provision = {
-    description = "Install CrowdSec hub collections and enable global simulation (dry-run) mode";
-    after = [ "crowdsec.service" ];
-    wants = [ "crowdsec.service" ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    # All three cscli calls are idempotent - safe to re-run every boot.
-    script = ''
-      ${config.services.crowdsec.package}/bin/cscli hub update
-      ${config.services.crowdsec.package}/bin/cscli collections install crowdsecurity/linux crowdsecurity/sshd crowdsecurity/nginx
-      ${config.services.crowdsec.package}/bin/cscli simulation enable
-    '';
-  };
+  services.crowdsec.enable = false;
 }
