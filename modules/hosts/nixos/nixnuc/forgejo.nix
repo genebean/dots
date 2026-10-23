@@ -81,7 +81,15 @@
           LANDING_PAGE = "explore";
           ROOT_URL = "https://git.home.technicalissues.us/";
         };
-        service.DISABLE_REGISTRATION = true;
+        # Native brute-force lockout (confirmed via Forgejo's own docs - no
+        # fail2ban filter exists or is needed for Forgejo; this is better
+        # anyway since it doesn't depend on log scraping at all). Previously
+        # unset, meaning this ran on whatever Forgejo's own default is.
+        service = {
+          DISABLE_REGISTRATION = true;
+          LOCKOUT_DURATION = "30m";
+          MAX_FAILED_ATTEMPTS = 5;
+        };
         session.COOKIE_SECURE = true;
       };
       stateDir = "/orico/forgejo";
