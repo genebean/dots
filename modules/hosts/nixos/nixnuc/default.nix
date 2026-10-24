@@ -32,6 +32,7 @@ in
     ./zfs-datasets.nix
     ../../../shared/nixos/auditd.nix
     ../../../shared/nixos/crowdsec.nix
+    ../../../shared/nixos/multiverse.nix
     ../../../shared/nixos/fail2ban-nginx.nix
     ../../../shared/nixos/lets-encrypt.nix
   ];
