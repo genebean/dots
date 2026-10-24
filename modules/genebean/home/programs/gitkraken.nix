@@ -20,9 +20,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = lib.mkIf (pkgs.stdenv.hostPlatform.isLinux && cfg.linuxInstallMethod == "nixpkgs") [
-      pkgs.gitkraken
-    ];
+    # pkgs.gitkraken has no aarch64-linux build upstream - narrower than
+    # isLinux for exactly that reason, not a nixpkgs packaging gap.
+    home.packages =
+      lib.mkIf (pkgs.stdenv.hostPlatform.system == "x86_64-linux" && cfg.linuxInstallMethod == "nixpkgs")
+        [
+          pkgs.gitkraken
+        ];
 
     programs.git.settings.aliases.kraken =
       "!gitkraken -p $(cd \"\${1:-.}\" && git rev-parse --show-toplevel)";

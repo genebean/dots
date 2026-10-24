@@ -56,6 +56,8 @@ in
           };
         }
 
+        inputs.nixpkgs-multiverse.darwinModules.default
+        { multiverse.enable = true; } # package-version pinning - see flake.nix's nixpkgs-multiverse input
         inputs.self.darwinModules.genebean
         ../modules/hosts/darwin # system-wide stuff
         ../modules/hosts/darwin/${hostname} # host specific stuff
