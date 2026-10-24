@@ -80,9 +80,8 @@ mightymac can't build `x86_64-linux` at all (no local builder for it). Run
 `nix flake check` separately beforehand instead - it validates the same
 things without attempting to build anything locally that can't be.
 
-Scope: all NixOS hosts plus `mightymac`. `AirPuppet`/`Blue-Rock` and
-home-manager-only hosts stay on their existing `darwin-rebuild`/`home-manager
-switch` workflows.
+Scope: all NixOS hosts plus `mightymac`. Home-manager-only hosts stay on
+their existing `darwin-rebuild`/`home-manager switch` workflows.
 
 ## Formatting and CI
 

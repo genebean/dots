@@ -255,15 +255,6 @@
 
       # Darwin (macOS) hosts
       darwinConfigurations = {
-        AirPuppet = localLib.mkDarwinHost {
-          system = "x86_64-darwin";
-          hostname = "AirPuppet";
-        };
-        Blue-Rock = localLib.mkDarwinHost {
-          system = "x86_64-darwin";
-          hostname = "Blue-Rock";
-          username = "gene.liverman";
-        };
         mightymac = localLib.mkDarwinHost {
           hostname = "mightymac";
           username = "gene.liverman";
@@ -289,6 +280,15 @@
           additionalModules = [
             inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p52
           ];
+          # includeDisplayLink's `? true` default in bigboy/default.nix is
+          # never actually honored here - confirmed via --show-trace: the
+          # module system's specialArgs injection requires a custom arg
+          # name (anything outside config/lib/pkgs/options) to be provided
+          # explicitly via specialArgs/_module.args, Nix-level function
+          # defaults notwithstanding. bigboy-ci already works around this
+          # by setting it to false below; the real host needs the same
+          # explicit treatment, just true instead.
+          additionalSpecialArgs.includeDisplayLink = true;
         };
         # CI validates the complete host closure except DisplayLink, whose
         # upstream source requires manual EULA acceptance and cannot be fetched

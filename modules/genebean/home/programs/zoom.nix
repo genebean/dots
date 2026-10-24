@@ -19,7 +19,11 @@ in
     };
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
+    # zoom-us has no aarch64-linux build upstream (confirmed: pkgs.zoom-us
+    # throws "not available on the requested hostPlatform" there) - this is
+    # narrower than a plain isLinux check for exactly that reason, not just
+    # a nixpkgs packaging gap.
     home.packages = lib.mkIf (cfg.linuxInstallMethod == "nixpkgs") [
       pkgs.zoom-us
     ];

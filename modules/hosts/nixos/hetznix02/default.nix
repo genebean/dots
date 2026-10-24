@@ -14,7 +14,6 @@
     inputs.private-flake.nixosModules.private.hetznix02
     ../../../shared/nixos/auditd.nix
     ../../../shared/nixos/crowdsec.nix
-    ../../../shared/nixos/multiverse.nix
     ../../../shared/nixos/fail2ban-nginx.nix
   ];
 
