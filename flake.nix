@@ -43,6 +43,17 @@
     # picks up the fix on nixpkgs-unstable on its own.
     nixpkgs-unstable-php-security.url = "github:NixOS/nixpkgs/c53532a938651ed45ebef072c8da6e74256e7072";
 
+    # Pins individual packages to an exact version by resolving against
+    # nixpkgs' full history, instead of a dedicated flake input per pin (the
+    # nixpkgs-unstable-php-security pattern above). Only useful for a
+    # version that has already shipped on some nixpkgs channel - confirmed
+    # directly via `mvs query versions` that it can't help with the PHP pin
+    # above specifically, since that fix is still master-only and hasn't
+    # promoted to any channel yet. modules/shared/nixos/multiverse.nix just
+    # enables it; no pins set yet - ready for the next package-version pin
+    # (e.g. the Node.js CVE work) once it needs one.
+    nixpkgs-multiverse.url = "github:fzakaria/nixpkgs-multiverse";
+
     compose2nix = {
       url = "github:aksiksi/compose2nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -244,15 +255,6 @@
 
       # Darwin (macOS) hosts
       darwinConfigurations = {
-        AirPuppet = localLib.mkDarwinHost {
-          system = "x86_64-darwin";
-          hostname = "AirPuppet";
-        };
-        Blue-Rock = localLib.mkDarwinHost {
-          system = "x86_64-darwin";
-          hostname = "Blue-Rock";
-          username = "gene.liverman";
-        };
         mightymac = localLib.mkDarwinHost {
           hostname = "mightymac";
           username = "gene.liverman";
@@ -278,6 +280,15 @@
           additionalModules = [
             inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p52
           ];
+          # includeDisplayLink's `? true` default in bigboy/default.nix is
+          # never actually honored here - confirmed via --show-trace: the
+          # module system's specialArgs injection requires a custom arg
+          # name (anything outside config/lib/pkgs/options) to be provided
+          # explicitly via specialArgs/_module.args, Nix-level function
+          # defaults notwithstanding. bigboy-ci already works around this
+          # by setting it to false below; the real host needs the same
+          # explicit treatment, just true instead.
+          additionalSpecialArgs.includeDisplayLink = true;
         };
         # CI validates the complete host closure except DisplayLink, whose
         # upstream source requires manual EULA acceptance and cannot be fetched
