@@ -1008,33 +1008,17 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1792506237,
-        "narHash": "sha256-Q/8KLB6jNfpaUN1HAedE/u/Et9feE/zYSsutBLKrCFk=",
+        "lastModified": 1792782095,
+        "narHash": "sha256-KtL+p7f7jY34cO5Mt0/hUZNE3spnINk7hwpYxM2XLC4=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "5adc50831c259f87faeb09ddf930d43597197473",
+        "rev": "901c54c08bdc20e00c2b3c73716b97497b1b3c74",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
         "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-unstable-php-security": {
-      "locked": {
-        "lastModified": 1792594136,
-        "narHash": "sha256-UVMKNe7NK7C9ESawQ1GkVo+ibK7VKwxURKgVyWr9Yxo=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "c53532a938651ed45ebef072c8da6e74256e7072",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "c53532a938651ed45ebef072c8da6e74256e7072",
         "type": "github"
       }
     },
@@ -1266,7 +1250,6 @@
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-multiverse": "nixpkgs-multiverse",
         "nixpkgs-unstable": "nixpkgs-unstable",
-        "nixpkgs-unstable-php-security": "nixpkgs-unstable-php-security",
         "plasma-manager": "plasma-manager",
         "private-flake": "private-flake",
         "simple-nixos-mailserver": "simple-nixos-mailserver",
