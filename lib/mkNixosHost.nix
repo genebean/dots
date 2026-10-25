@@ -60,6 +60,8 @@ in
 
               inputs.genebean-neovim.homeManagerModules.default
               inputs.nix-flatpak.homeManagerModules.nix-flatpak
+              inputs.nixpkgs-multiverse.homeManagerModules.default
+              { multiverse.enable = true; } # package-version pinning - see flake.nix's nixpkgs-multiverse input
               inputs.plasma-manager.homeModules.plasma-manager
               inputs.private-flake.homeManagerModules.private.git
               (inputs.private-flake.homeManagerModules.private.${hostname} or { })
