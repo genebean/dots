@@ -12,7 +12,9 @@ in
     enable = lib.mkEnableOption "Angry IP Scanner network scanner";
   };
 
-  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
+    # pkgs.angryipscanner has no aarch64-linux build upstream - narrower
+    # than isLinux for exactly that reason, not a nixpkgs packaging gap.
     home.packages = [ pkgs.angryipscanner ];
   };
 }

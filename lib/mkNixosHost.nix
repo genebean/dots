@@ -60,6 +60,8 @@ in
 
               inputs.genebean-neovim.homeManagerModules.default
               inputs.nix-flatpak.homeManagerModules.nix-flatpak
+              inputs.nixpkgs-multiverse.homeManagerModules.default
+              { multiverse.enable = true; } # package-version pinning - see flake.nix's nixpkgs-multiverse input
               inputs.plasma-manager.homeModules.plasma-manager
               inputs.private-flake.homeManagerModules.private.git
               (inputs.private-flake.homeManagerModules.private.${hostname} or { })
@@ -74,6 +76,8 @@ in
         }
 
         inputs.nix-flatpak.nixosModules.nix-flatpak
+        inputs.nixpkgs-multiverse.nixosModules.default
+        { multiverse.enable = true; } # package-version pinning - see flake.nix's nixpkgs-multiverse input
         inputs.private-flake.nixosModules.private.ssh-keys
         inputs.self.nixosModules.genebean
         inputs.sops-nix.nixosModules.sops # system wide secrets management

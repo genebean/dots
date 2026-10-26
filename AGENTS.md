@@ -82,7 +82,6 @@ modules/
 | hetznix02 | NixOS | aarch64 | Hetzner VPS, build host for Raspberry Pi's |
 | kiosk-entryway | NixOS | x86_64 | Lenovo Q190, headless kiosk, WiFi only (`wlp3s0`) |
 | kiosk-gene-desk | NixOS | aarch64 | Raspberry Pi 4, headless kiosk, WiFi only (`wlan0`) |
-| AirPuppet / Blue-Rock | macOS | x86_64 | nix-darwin managed |
 | mightymac | macOS | aarch64 | nix-darwin managed |
 | rainbow-planet | home-manager only | x86_64 | Ubuntu, old NixOS config currently commented out in flake |
 
