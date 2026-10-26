@@ -976,6 +976,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-brotli-security": {
+      "locked": {
+        "lastModified": 1792974510,
+        "narHash": "sha256-MD/M4ttnGIxF5CtHUngc8GrARO7fPG6pyatbdHrbUl4=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "edaaba4db7c1544fe3a3e23e89d4681f4e47aba4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "edaaba4db7c1544fe3a3e23e89d4681f4e47aba4",
+        "type": "github"
+      }
+    },
     "nixpkgs-lib": {
       "locked": {
         "lastModified": 1790477367,
@@ -1248,6 +1264,7 @@
         "nixos-images": "nixos-images_2",
         "nixos-raspberrypi": "nixos-raspberrypi",
         "nixpkgs": "nixpkgs_3",
+        "nixpkgs-brotli-security": "nixpkgs-brotli-security",
         "nixpkgs-multiverse": "nixpkgs-multiverse",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "plasma-manager": "plasma-manager",

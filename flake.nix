@@ -38,6 +38,27 @@
     # 26.05 channel and nixpkgs-unstable - see that file for why.
     nixpkgs-multiverse.url = "github:fzakaria/nixpkgs-multiverse";
 
+    # Temporary: pinned directly at a staging-next-26.05 commit carrying the
+    # CVE-2026-111497 fix (Brotli decoder out-of-bounds write, aka Node2Shell/
+    # HTTP2Shell/Broccoli2Shell - https://nodejs.org/en/blog/vulnerability/
+    # october-2026-security-releases). Fixed upstream in nixpkgs `staging` on
+    # 2026-10-21/22 (brotli 1.2.0 -> 1.2.1; nodejs_24 24.21.0 -> 24.22.1) and
+    # backported to `staging-next-26.05` the same days, but as of 2026-10-26
+    # neither fix has promoted to nixos-26.05, nixpkgs-unstable, or even
+    # master yet - confirmed directly against each branch's
+    # pkgs/by-name/br/brotli/package.nix and pkgs/development/web/nodejs/
+    # v24.nix, not just search.nixos.org, which lags further still.
+    # nixpkgs-multiverse can't stand in for this: its revision index only
+    # covers nixos-unstable channel bumps, and this fix hasn't reached one.
+    # multiverse.pins.brotli would throw "no revision provides brotli 1.2.1"
+    # until it does. Used to override nodejs fleet-wide (modules/shared/home/
+    # general/default.nix) - see that file for why mcp-nixos's own brotli
+    # exposure (same CVE, pulled in transitively via its python deps) is
+    # tracked separately rather than patched the same way here. Remove once
+    # a plain `nix flake update` picks up both fixes on nixos-26.05 and
+    # nixpkgs-unstable on its own.
+    nixpkgs-brotli-security.url = "github:NixOS/nixpkgs/edaaba4db7c1544fe3a3e23e89d4681f4e47aba4";
+
     compose2nix = {
       url = "github:aksiksi/compose2nix";
       inputs.nixpkgs.follows = "nixpkgs";

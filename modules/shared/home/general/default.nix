@@ -63,7 +63,12 @@
       nil
       nix-search
       nix-zsh-completions
-      nodejs
+      # Temporary: CVE-2026-111497 (Brotli decoder OOB write, aka Node2Shell/
+      # HTTP2Shell) security pin - nixpkgs' own nodejs_24 is still 24.21.0 on
+      # both nixos-26.05 and nixpkgs-unstable; see flake.nix's
+      # nixpkgs-brotli-security input for the fix commit and promotion
+      # status. Remove once that promotes and plain `nodejs` is patched.
+      (import inputs.nixpkgs-brotli-security { inherit (pkgs.stdenv.hostPlatform) system; }).nodejs_24
       nurl
       nvd
       nixfmt-tree
