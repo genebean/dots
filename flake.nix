@@ -244,15 +244,6 @@
 
       # Darwin (macOS) hosts
       darwinConfigurations = {
-        AirPuppet = localLib.mkDarwinHost {
-          system = "x86_64-darwin";
-          hostname = "AirPuppet";
-        };
-        Blue-Rock = localLib.mkDarwinHost {
-          system = "x86_64-darwin";
-          hostname = "Blue-Rock";
-          username = "gene.liverman";
-        };
         mightymac = localLib.mkDarwinHost {
           hostname = "mightymac";
           username = "gene.liverman";

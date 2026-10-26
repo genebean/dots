@@ -7,7 +7,7 @@
       fastConnection,
       remoteBuild,
       darwin ? false,
-      sshUser ? "gene", # mkDarwinHost defaults to "gene" too, but some darwin hosts (mightymac, Blue-Rock) override username to "gene.liverman" - pass that through explicitly for those nodes
+      sshUser ? "gene", # mkDarwinHost defaults to "gene" too, but mightymac overrides username to "gene.liverman" - pass that through explicitly for that node
     }:
     {
       inherit hostname sshUser;
