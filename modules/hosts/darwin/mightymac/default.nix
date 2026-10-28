@@ -160,9 +160,21 @@
     #      coreutils at /run/current-system/sw/bin/rm, not /bin/rm.
     #      That symlink's path is stable across generations (only its
     #      target changes), so it's safe to hardcode here.
+    #   3. `sudo MAS_NO_AUTO_INDEX=1 /run/current-system/sw/bin/mas update
+    #      --force <app-id>` - what mas 6 re-executes itself as when
+    #      `brew bundle --upgrade` (homebrew.onActivation.upgrade) finds an
+    #      outdated masApps entry. It runs inside the already-root activation
+    #      as gene.liverman with no TTY, so without this rule it dies with
+    #      "a password is required", the Homebrew step fails, and deploy-rs
+    #      rolls the whole deploy back. Command line captured with `ps`
+    #      while `mas upgrade <id>` sat at its password prompt. SETENV is
+    #      required because the command line sets MAS_NO_AUTO_INDEX=1 and
+    #      sudo rejects that otherwise. Scoped to `update --force`, not
+    #      every mas subcommand.
     sudo.extraConfig = ''
       gene.liverman ALL=(root) NOPASSWD: /nix/store/*/activate-rs *
       gene.liverman ALL=(root) NOPASSWD: /run/current-system/sw/bin/rm /tmp/deploy-rs-canary-*
+      gene.liverman ALL=(root) NOPASSWD:SETENV: /run/current-system/sw/bin/mas update --force *
     '';
   };
 }
