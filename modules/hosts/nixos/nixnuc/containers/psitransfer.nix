@@ -21,7 +21,7 @@ in
   virtualisation.oci-containers.containers = {
     "psitransfer" = {
       autoStart = true;
-      image = "psitrax/psitransfer:v2.4.4";
+      image = "psitrax/psitransfer:v2.4.5";
       environmentFiles = [ psitransfer_dot_env ];
       ports = [ "${toString config.genebean.ports.psitransfer.port}:3000" ];
       volumes = [
