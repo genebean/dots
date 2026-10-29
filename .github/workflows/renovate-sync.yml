@@ -1,0 +1,113 @@
+# Keeps derived files in step with Renovate's regex-manager bumps.
+#
+# Two customManagers in .github/renovate.json edit a version string directly
+# and know nothing about the files derived from it:
+#   - hermes-agent's release tag in flake.nix  -> flake.lock must be re-locked
+#   - bead-me-up-scotty's scottyRev            -> its fetchFromGitHub sha256
+# These used to be Renovate postUpgradeTasks, but allowedCommands is a
+# self-hosted-only setting and this repo runs on the Mend-hosted app, which
+# blocks arbitrary post-upgrade commands. The same fix now runs here and is
+# pushed onto the Renovate branch as github-actions[bot]; the shared Renovate
+# preset (genebean/.github renovate-base.json) lists that author in
+# gitIgnoredAuthors so Renovate does not treat the branch as hand-edited.
+#
+# Safety: pull_request_target runs with secrets, so the job only acts on
+# same-repository branches opened by renovate[bot]. The write token is exposed
+# only to the final commit-and-push step, and nothing from the PR is built.
+
+name: Sync Renovate derived files
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths:
+      - flake.nix
+      - modules/hosts/nixos/nixnuc/containers/bead-me-up-scotty.nix
+
+permissions:
+  contents: read
+
+concurrency:
+  group: renovate-sync-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: sync flake.lock and Scotty hash
+    if: >-
+      github.event.pull_request.user.login == 'renovate[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      startsWith(github.event.pull_request.head.ref, 'renovate/')
+    runs-on: ubuntu-latest
+    steps:
+      # Pinned to the exact head commit rather than the branch name; if
+      # Renovate force-pushes meanwhile, the final push is rejected instead
+      # of overwriting anything.
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: DeterminateSystems/nix-installer-action@v23
+
+      # Re-lock only when flake.nix's hermes-agent tag differs from the one
+      # recorded in flake.lock. `--update-input` fetches just that input; it
+      # does not need the private flake.
+      - name: Sync hermes-agent in flake.lock
+        run: |
+          set -euo pipefail
+
+          wanted="$(sed -n 's|.*url = "github:NousResearch/hermes-agent/\(v[0-9.]*\)";.*|\1|p' flake.nix)"
+          locked="$(jq -r '.nodes[.nodes.root.inputs["hermes-agent"]].original.ref // ""' flake.lock)"
+          if [[ -z "$wanted" ]]; then
+            echo "hermes-agent tag not found in flake.nix; nothing to sync"
+            exit 0
+          fi
+          if [[ "$wanted" == "$locked" ]]; then
+            echo "flake.lock already tracks hermes-agent $wanted"
+            exit 0
+          fi
+          bash scripts/renovate-sync-flake-lock-input.sh hermes-agent
+
+      # Recompute the fixed-output hash whenever the PR changed scottyRev.
+      - name: Sync Bead Me Up, Scotty source hash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+
+          file=modules/hosts/nixos/nixnuc/containers/bead-me-up-scotty.nix
+          if ! git diff "$BASE_SHA"...HEAD -- "$file" | grep -qE '^\+[[:space:]]*scottyRev ='; then
+            echo "scottyRev unchanged by this pull request"
+            exit 0
+          fi
+          rev="$(sed -n 's|^[[:space:]]*scottyRev = "\(v[0-9.]*\)";.*|\1|p' "$file")"
+          if [[ -z "$rev" ]]; then
+            echo "::error::could not read scottyRev from $file"
+            exit 1
+          fi
+          bash scripts/renovate-sync-scotty-hash.sh "$rev"
+
+      - name: Detect changes
+        id: changes
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push synced files
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PUSH_TOKEN: ${{ secrets.CI_FLAKE_UPDATES }}
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- flake.lock modules/hosts/nixos/nixnuc/containers/bead-me-up-scotty.nix
+          git commit -m "chore: sync derived files with Renovate bump"
+          git push "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${HEAD_REF}"
