@@ -76,8 +76,9 @@ let
   # datasource, customManagers entry in .github/renovate.json) - the
   # built-in nix manager only follows git refs/commits, not tags, same
   # situation as hermes-agent's flake-input pin. A Renovate-proposed rev
-  # bump will NOT update the sha256 below automatically; fix the hash
-  # (build will fail with the correct one in the error) before merging.
+  # bump does not touch the sha256 below by itself; the "Sync Renovate
+  # derived files" workflow (.github/workflows/renovate-sync.yml) recomputes
+  # it and pushes a follow-up commit to the Renovate branch.
   scottyRev = "v0.3.2";
   scottySrc = pkgs.fetchFromGitHub {
     owner = "brendan-appstart";
