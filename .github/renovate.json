@@ -13,24 +13,6 @@
       "description": "hermes-agent tags a canary build on every push to its release branches - never propose those as an upgrade, only numbered releases",
       "matchDepNames": ["NousResearch/hermes-agent"],
       "allowedVersions": "!/\\+canary\\./"
-    },
-    {
-      "description": "Sync flake.lock in the same commit when hermes-agent's release tag is bumped - its regex customManager edits flake.nix directly and has no way to invoke nix itself, unlike Renovate's built-in nix manager (which handles flake.lock via its own lockFileMaintenance delegation to `nix`)",
-      "matchDepNames": ["NousResearch/hermes-agent"],
-      "postUpgradeTasks": {
-        "commands": ["bash scripts/renovate-sync-flake-lock-input.sh hermes-agent"],
-        "fileFilters": ["flake.lock"],
-        "executionMode": "update"
-      }
-    },
-    {
-      "description": "Sync the fixed-output sha256 in the same commit when Bead Me Up, Scotty's tag is bumped - a stale hash here hard-fails the next build (fetchFromGitHub content no longer matches the pin), not just silent drift",
-      "matchDepNames": ["brendan-appstart/bead-me-up-scotty"],
-      "postUpgradeTasks": {
-        "commands": ["bash scripts/renovate-sync-scotty-hash.sh {{{newVersion}}}"],
-        "fileFilters": ["modules/hosts/nixos/nixnuc/containers/bead-me-up-scotty.nix"],
-        "executionMode": "update"
-      }
     }
   ],
   "customManagers": [

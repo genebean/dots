@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Renovate postUpgradeTask companion for bead-me-up-scotty.nix's scottyRev
+# Run by .github/workflows/renovate-sync.yml for bead-me-up-scotty.nix's scottyRev
 # customManager. Unlike a flake input, scottyRev feeds a plain fetchFromGitHub
 # with its own sha256 pinned alongside it (modules/hosts/nixos/nixnuc/
 # containers/bead-me-up-scotty.nix) - a regex-only version bump leaves that

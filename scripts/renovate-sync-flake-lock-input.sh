@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Renovate postUpgradeTask companion for any customManager that bumps a flake
+# Run by .github/workflows/renovate-sync.yml for any customManager that bumps a flake
 # input's version/ref directly in flake.nix via regex (not Renovate's
 # built-in nix manager - that one re-locks automatically via its own
 # lockFileMaintenance delegation to `nix`). A regex manager only edits the
