@@ -3,7 +3,12 @@
 # (git.home.technicalissues.us/genebean/newspaper:latest) - this file only
 # declares the running container plus the deploy-trigger webhook CI calls as
 # its last step. No Nix-built image, no repo content, lives here.
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   serviceName = config.virtualisation.oci-containers.containers.newspaper.serviceName;
 
@@ -144,16 +149,40 @@ in
   # autoupdate label above.
   systemd.timers."podman-auto-update".wantedBy = [ "timers.target" ];
 
-  # pull = "always" means every activation re-pulls from Forgejo's own
-  # registry (git.home.technicalissues.us) - without this ordering, a
-  # generation that restarts both forgejo.service and podman-newspaper.service
-  # together races newspaper's pull against Forgejo still coming back up,
-  # intermittently failing with "502 Bad Gateway" pinging the registry.
-  # Confirmed live 2026-10-21: this raced and failed deploy-rs's activation
-  # wait, triggering an automatic rollback.
-  systemd.services.podman-newspaper = {
-    after = [ "forgejo.service" ];
-    wants = [ "forgejo.service" ];
+  systemd.services = {
+    # oauth2-proxy does OIDC discovery against PocketID (via nginx) at startup
+    # and exits if it gets anything but a 200. A deploy that restarts nginx and
+    # pocket-id in the same batch gets "502 Bad Gateway" for the 2-6 seconds
+    # they take to come back (pocket-id logs "Started" ~4s before it listens),
+    # and the stock unit (Restart=always, RestartSec=100ms) burns through its
+    # 5-starts-in-10s limit in under a second. Even when it recovers on its own,
+    # switch-to-configuration counts a unit that is auto-restarting after a
+    # failed exit as failed, so deploy-rs rolls the whole deploy back.
+    # Confirmed live 2026-11-07. Ordering alone is not enough since "Started"
+    # is not "listening", so the start itself waits until discovery works.
+    oauth2-proxy.serviceConfig = {
+      ExecStartPre = lib.concatStringsSep " " [
+        "${pkgs.curl}/bin/curl"
+        "--silent --show-error --fail --output /dev/null"
+        "--max-time 5 --retry 60 --retry-delay 1 --retry-max-time 60 --retry-all-errors"
+        "${config.services.pocket-id.settings.APP_URL}/.well-known/openid-configuration"
+      ];
+      # Backstop for a crash after discovery succeeded: back off instead of
+      # tripping the start limit and staying down until someone notices.
+      RestartSec = "10s";
+    };
+
+    # pull = "always" means every activation re-pulls from Forgejo's own
+    # registry (git.home.technicalissues.us) - without this ordering, a
+    # generation that restarts both forgejo.service and podman-newspaper.service
+    # together races newspaper's pull against Forgejo still coming back up,
+    # intermittently failing with "502 Bad Gateway" pinging the registry.
+    # Confirmed live 2026-10-21: this raced and failed deploy-rs's activation
+    # wait, triggering an automatic rollback.
+    podman-newspaper = {
+      after = [ "forgejo.service" ];
+      wants = [ "forgejo.service" ];
+    };
   };
 
   virtualisation.oci-containers.containers.newspaper = {
