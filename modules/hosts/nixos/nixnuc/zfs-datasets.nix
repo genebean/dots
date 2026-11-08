@@ -17,6 +17,8 @@
       "nextcloud-setup.service"
       "pinchflat.service"
       "postgresql.service"
+      # Explicit because DefaultDependencies is off (see unitConfig below)
+      "shutdown.target"
     ]
     # Dynamically include every OCI container's systemd service unit so new
     # containers are automatically covered without editing this file.
@@ -26,6 +28,17 @@
       builtins.attrValues config.virtualisation.oci-containers.containers
     );
     after = [ "zfs-import-orico.service" ];
+    conflicts = [ "shutdown.target" ];
+    # This unit has to run in early boot: the legacy ZFS mounts listed in
+    # `before` belong to local-fs.target, which sysinit.target waits for. A
+    # normal service is implicitly After=sysinit.target, which closes the loop
+    # (sysinit -> local-fs -> mount -> this unit -> sysinit). systemd breaks
+    # that at boot, but switch-to-configuration cannot: any deploy that
+    # restarts sysinit-reactivation.target (e.g. a rebuilt systemd) fails with
+    # "Failed to start sysinit.target: Transaction order is cyclic" and
+    # deploy-rs rolls back. These are the same dependency settings NixOS uses
+    # for its own zfs-import-<pool> units.
+    unitConfig.DefaultDependencies = false;
     script =
       let
         zfs = "${pkgs.zfs}/bin/zfs";
