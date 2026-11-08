@@ -85,7 +85,7 @@ def get_episode_date(item):
 
         # ISO 8601
         try:
-            return datetime.fromisoformat(raw.replace("Z", "+00:00")).date()
+            return datetime.fromisoformat(raw).date()
         except ValueError:
             pass
 
