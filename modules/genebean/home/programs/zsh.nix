@@ -160,7 +160,7 @@ in
         }
         # ─── HM-only (non-NixOS Linux) ────────────────────────────────────────
         // lib.optionalAttrs genebeanLib.isHMOnly {
-          nixup = "nix run --accept-flake-config ~/repos/dots#system-manager -- switch --sudo --flake ~/repos/dots#${username}-${system} && home-manager switch --flake ~/repos/dots#${username}-${system} --option accept-flake-config true && exec zsh";
+          nixup = "nix run --accept-flake-config ~/repos/dots#system-manager -- switch --sudo --nix-option accept-flake-config true --flake ~/repos/dots#${username}-${system} && home-manager switch --flake ~/repos/dots#${username}-${system} --option accept-flake-config true && exec zsh";
         };
     };
   };

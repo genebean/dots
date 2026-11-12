@@ -77,6 +77,7 @@ else
 
   # system-manager diff — stderr (progress logs) flows to terminal; stdout is the store path
   sm_result=$(nix run --accept-flake-config ~/repos/dots#system-manager -- build \
+    --nix-option accept-flake-config true \
     --flake ".#$(whoami)-$(uname -m)-linux")
 
   echo ""
