@@ -79,12 +79,12 @@ let
   # bump does not touch the sha256 below by itself; the "Sync Renovate
   # derived files" workflow (.github/workflows/renovate-sync.yml) recomputes
   # it and pushes a follow-up commit to the Renovate branch.
-  scottyRev = "v0.3.2";
+  scottyRev = "v0.4.0";
   scottySrc = pkgs.fetchFromGitHub {
     owner = "brendan-appstart";
     repo = "bead-me-up-scotty";
     rev = scottyRev;
-    sha256 = "0nvx2j3hfhdcc6fn2wsapmppfbrypdjzb3hax0ixk1fhpr9ccz45";
+    sha256 = "sha256-vD5wobxk0ltNSTKGdFIbkR7OTLFu+5Z+zc2H5BWGy7c=";
   };
   # bd's own BD_VERSION default in the Dockerfile (1.1.0) predates the
   # schema migrations (up to v66) this server's beads_global already
