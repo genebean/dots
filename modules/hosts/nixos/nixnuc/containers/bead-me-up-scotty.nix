@@ -84,7 +84,7 @@ let
     owner = "brendan-appstart";
     repo = "bead-me-up-scotty";
     rev = scottyRev;
-    sha256 = "0nvx2j3hfhdcc6fn2wsapmppfbrypdjzb3hax0ixk1fhpr9ccz45";
+    sha256 = "sha256-vD5wobxk0ltNSTKGdFIbkR7OTLFu+5Z+zc2H5BWGy7c=";
   };
   # bd's own BD_VERSION default in the Dockerfile (1.1.0) predates the
   # schema migrations (up to v66) this server's beads_global already
