@@ -4,7 +4,7 @@ cd ~/repos/dots
 source /etc/os-release
 
 if [[ "${ID:-}" == "nixos" ]]; then
-  nixos-rebuild build --flake .
+  nixos-rebuild build --flake . --option accept-flake-config true
 
   echo ""
   echo "=== Package changes ==="
@@ -76,7 +76,7 @@ else
   # Home Manager only
 
   # system-manager diff — stderr (progress logs) flows to terminal; stdout is the store path
-  sm_result=$(nix run ~/repos/dots#system-manager -- build \
+  sm_result=$(nix run --accept-flake-config ~/repos/dots#system-manager -- build \
     --flake ".#$(whoami)-$(uname -m)-linux")
 
   echo ""
@@ -161,7 +161,7 @@ else
     fi
   fi
 
-  home-manager build --flake ".#$(whoami)-$(uname -m)-linux"
+  home-manager build --flake ".#$(whoami)-$(uname -m)-linux" --option accept-flake-config true
 
   echo ""
   echo "=== Package changes ==="

@@ -137,8 +137,10 @@ in
         }
         # ─── Darwin ───────────────────────────────────────────────────────────
         // lib.optionalAttrs genebeanLib.isDarwin {
+          # sudo strips NIX_CONFIG, so accept-flake-config is passed explicitly
+          # (also set system-wide, but that only applies after the first switch)
           currentwifi = "networksetup -getairportnetwork en0 |cut -d ':' -f2- | cut -d ' ' -f2-";
-          nixup = "sudo darwin-rebuild switch --flake ~/repos/dots && exec zsh";
+          nixup = "sudo darwin-rebuild switch --flake ~/repos/dots --option accept-flake-config true && exec zsh";
           uwgconnect = "networksetup -setairportnetwork en0 SecureWest";
           uwgforget = "networksetup -removepreferredwirelessnetwork en0 SecureWest";
           ykey = "pkill -9 gpg-agent && zsh -ic 'ssh-add -L'; exec zsh";
@@ -149,8 +151,8 @@ in
         }
         # ─── NixOS ────────────────────────────────────────────────────────────
         // lib.optionalAttrs genebeanLib.isNixOS {
-          nixboot = "sudo nixos-rebuild boot --flake ~/repos/dots && echo 'Time to reboot!'";
-          nixup = "sudo nixos-rebuild switch --flake ~/repos/dots && exec zsh";
+          nixboot = "sudo nixos-rebuild boot --flake ~/repos/dots --option accept-flake-config true && echo 'Time to reboot!'";
+          nixup = "sudo nixos-rebuild switch --flake ~/repos/dots --option accept-flake-config true && exec zsh";
           nixroutes = "cd ~/repos/dots && echo '=== Current Routes ===' && ip route show && ip -6 route show && echo '' && echo '=== New Build Routes ===' && nix eval --json '.#nixosConfigurations.${hostname}.config.systemd.network.networks.\"10-wan\".routes'";
           uwgconnect = "nmcli dev wifi connect SecureWest password";
           uwgforget = "nmcli connection delete SecureWest";
@@ -158,7 +160,7 @@ in
         }
         # ─── HM-only (non-NixOS Linux) ────────────────────────────────────────
         // lib.optionalAttrs genebeanLib.isHMOnly {
-          nixup = "nix run ~/repos/dots#system-manager -- switch --sudo --flake ~/repos/dots#${username}-${system} && home-manager switch --flake ~/repos/dots#${username}-${system} && exec zsh";
+          nixup = "nix run --accept-flake-config ~/repos/dots#system-manager -- switch --sudo --flake ~/repos/dots#${username}-${system} && home-manager switch --flake ~/repos/dots#${username}-${system} --option accept-flake-config true && exec zsh";
         };
     };
   };

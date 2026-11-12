@@ -72,6 +72,9 @@
 
   nix = {
     settings = {
+      # Trust this flake's own nixConfig (extra caches) without prompting; sudo
+      # strips NIX_CONFIG so the env var route does not work for root builds.
+      accept-flake-config = true;
       bash-prompt-prefix = "(nix:$name)\040";
       build-users-group = "nixbld";
       download-buffer-size = 524288000;
