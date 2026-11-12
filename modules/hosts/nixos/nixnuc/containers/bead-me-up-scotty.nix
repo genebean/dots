@@ -79,7 +79,7 @@ let
   # bump does not touch the sha256 below by itself; the "Sync Renovate
   # derived files" workflow (.github/workflows/renovate-sync.yml) recomputes
   # it and pushes a follow-up commit to the Renovate branch.
-  scottyRev = "v0.3.2";
+  scottyRev = "v0.4.0";
   scottySrc = pkgs.fetchFromGitHub {
     owner = "brendan-appstart";
     repo = "bead-me-up-scotty";
