@@ -13,7 +13,8 @@ mas outdated || true
 
 echo ""
 echo "Building Darwin system..."
-sudo darwin-rebuild build --flake .
+# sudo strips NIX_CONFIG, so the flag has to be explicit
+sudo darwin-rebuild build --flake . --option accept-flake-config true
 
 echo ""
 echo "=== Package changes ==="

@@ -4,7 +4,7 @@ cd ~/repos/dots
 source /etc/os-release
 
 if [[ "${ID:-}" == "nixos" ]]; then
-  nixos-rebuild build --flake .
+  nixos-rebuild build --flake . --option accept-flake-config true
 
   echo ""
   echo "=== Package changes ==="
@@ -76,7 +76,8 @@ else
   # Home Manager only
 
   # system-manager diff — stderr (progress logs) flows to terminal; stdout is the store path
-  sm_result=$(nix run ~/repos/dots#system-manager -- build \
+  sm_result=$(nix run --accept-flake-config ~/repos/dots#system-manager -- build \
+    --nix-option accept-flake-config true \
     --flake ".#$(whoami)-$(uname -m)-linux")
 
   echo ""
@@ -86,14 +87,23 @@ else
   if [[ ${#sm_targets[@]} -eq 0 ]]; then
     echo "(no text-mode /etc files managed)"
   fi
+  # Some system-manager-managed files (e.g. /etc/sudoers.d/system-manager) are
+  # root-only readable, so fall back to sudo when the current user can't read them.
+  _current_etc_content() {
+    local f="/etc/$1"
+    if [[ -r "$f" ]]; then
+      cat "$f" 2>/dev/null
+    elif [[ -f "$f" ]]; then
+      sudo cat "$f" 2>/dev/null
+    fi
+  }
+
   for target in "${sm_targets[@]}"; do
     new_text=$(jq -r --arg k "$target" '.entries[$k].text' "$sm_etc")
-    current_src="/etc/$target"
-    [[ -f "$current_src" ]] || current_src="/dev/null"
-    if diff -q "$current_src" <(printf '%s\n' "$new_text") &>/dev/null; then
+    if diff -q <(_current_etc_content "$target") <(printf '%s\n' "$new_text") &>/dev/null; then
       echo "/etc/$target: no change"
     else
-      diff -u "$current_src" <(printf '%s\n' "$new_text") \
+      diff -u <(_current_etc_content "$target") <(printf '%s\n' "$new_text") \
         --label "/etc/$target" --label "/etc/$target" \
         | diff-so-fancy || true
     fi
@@ -161,7 +171,7 @@ else
     fi
   fi
 
-  home-manager build --flake ".#$(whoami)-$(uname -m)-linux"
+  home-manager build --flake ".#$(whoami)-$(uname -m)-linux" --option accept-flake-config true
 
   echo ""
   echo "=== Package changes ==="

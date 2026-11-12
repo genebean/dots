@@ -51,6 +51,7 @@
   networking.hostName = "${hostname}";
 
   nix.settings = {
+    accept-flake-config = true;
     allowed-users = [ "${username}" ];
     download-buffer-size = 524288000;
     experimental-features = [
