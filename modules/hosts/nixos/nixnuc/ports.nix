@@ -58,10 +58,6 @@
       port = 8001;
       openFirewall = true;
     };
-    wallabag = {
-      port = 8090;
-      openFirewall = true;
-    };
     pocketbase = {
       port = 8091;
       openFirewall = true;
