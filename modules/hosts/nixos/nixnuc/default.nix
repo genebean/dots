@@ -25,6 +25,7 @@ in
     ./dolt-beads-server.nix
     ./filtered-podcast-feeds.nix
     ./forgejo.nix
+    ./karakeep.nix
     ./monitoring-stack.nix
     ./newspaper.nix
     ./ports.nix
@@ -538,6 +539,25 @@ in
             send_timeout       600s;
           '';
         };
+        "karakeep.${home_domain}" = {
+          listen = [
+            {
+              inherit (config.genebean.ports.https) port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:${toString config.genebean.ports.karakeep.port}";
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 100M;
+          '';
+        };
         "jellyfin.${home_domain}" = {
           listen = [
             {
@@ -676,26 +696,6 @@ in
             '';
           };
         };
-        # Wallabag taken off the internet (2026-10-21): its Docker Hub image
-        # hasn't been rebuilt since 2025-10-07 and still ships EOL PHP 8.1.32,
-        # which has no fix coming for the php2shell RCEs (CVE-2026-109618 /
-        # CVE-2026-109619) - genebean/dots#685 tracks the Karakeep migration
-        # that replaces it. Still reachable on the LAN at
-        # http://<nixnuc-lan-ip>:${toString config.genebean.ports.wallabag.port}
-        # in the meantime.
-        # "readit.${home_domain}" = {
-        #   listen = [
-        #     {
-        #       inherit (config.genebean.ports.https) port;
-        #       addr = "0.0.0.0";
-        #       ssl = true;
-        #     }
-        #   ];
-        #   enableACME = true;
-        #   acmeRoot = null;
-        #   forceSSL = true;
-        #   locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.wallabag.port}";
-        # };
         # hermes-agent-fleet-plan issue 37: Danny's only path to
         # social-reader-mcp. Its own dedicated port (not the shared
         # genebean.ports.https listener other vhosts use) - the firewall
@@ -775,7 +775,6 @@ in
       paths = [
         config.services.mealie.settings.DATA_DIR
         config.services.nextcloud.home
-        "${config.users.users.${username}.home}/compose-files/wallabag"
         "/orico/immich/library"
         "/orico/jellyfin/data"
         "/orico/jellyfin/staging/downloaded-files"
@@ -835,6 +834,13 @@ in
     age.keyFile = "${config.users.users.${username}.home}/.config/sops/age/keys.txt";
     defaultSopsFile = ./secrets.yaml;
     secrets = {
+      karakeep_env = {
+        owner = "karakeep";
+        restartUnits = [
+          "karakeep-web.service"
+          "karakeep-workers.service"
+        ];
+      };
       immich_kiosk_basic_auth = {
         owner = config.users.users.nginx.name;
         restartUnits = [ "nginx.service" ];

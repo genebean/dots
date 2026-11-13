@@ -27,6 +27,10 @@
       port = 3002;
       openFirewall = true;
     };
+    karakeep = {
+      port = 3003;
+      openFirewall = true;
+    };
     cup-collector = {
       port = 3010;
       openFirewall = true;
@@ -52,10 +56,6 @@
     };
     tube-archivist = {
       port = 8001;
-      openFirewall = true;
-    };
-    wallabag = {
-      port = 8090;
       openFirewall = true;
     };
     pocketbase = {
