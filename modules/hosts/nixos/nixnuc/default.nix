@@ -25,6 +25,7 @@ in
     ./dolt-beads-server.nix
     ./filtered-podcast-feeds.nix
     ./forgejo.nix
+    ./karakeep.nix
     ./monitoring-stack.nix
     ./newspaper.nix
     ./ports.nix
@@ -538,6 +539,25 @@ in
             send_timeout       600s;
           '';
         };
+        "karakeep.${home_domain}" = {
+          listen = [
+            {
+              inherit (config.genebean.ports.https) port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:${toString config.genebean.ports.karakeep.port}";
+            proxyWebsockets = true;
+          };
+          extraConfig = ''
+            client_max_body_size 100M;
+          '';
+        };
         "jellyfin.${home_domain}" = {
           listen = [
             {
@@ -835,6 +855,13 @@ in
     age.keyFile = "${config.users.users.${username}.home}/.config/sops/age/keys.txt";
     defaultSopsFile = ./secrets.yaml;
     secrets = {
+      karakeep_env = {
+        owner = "karakeep";
+        restartUnits = [
+          "karakeep-web.service"
+          "karakeep-workers.service"
+        ];
+      };
       immich_kiosk_basic_auth = {
         owner = config.users.users.nginx.name;
         restartUnits = [ "nginx.service" ];
