@@ -102,6 +102,12 @@ in
     nginx.virtualHosts = {
       # Extend the nginx virtual host that the WordPress module creates.
       #
+      # http2 = false below is a stopgap for CVE-2026-123633 / CVE-2026-123007
+      # (both require HTTP/2) until nixpkgs ships a patched nginx (>=1.30.7 /
+      # 1.31.9 - fixed on master via nixpkgs PR #589961, not yet on
+      # nixos-26.05/nixos-unstable as of 2026-11-18). Remove once the pinned
+      # nixpkgs picks up the fix.
+      #
       # SSL/TLS NOTE: cert issuance uses the Gandi DNS challenge (lets-encrypt.nix).
       # The cert cannot issue until 138cubpack.com is transferred to Gandi nameservers.
       # Until then nginx uses a self-signed placeholder and HTTPS shows a browser
@@ -112,6 +118,7 @@ in
         enableACME = true;
         acmeRoot = null; # DNS challenge via Gandi — no webroot needed
         forceSSL = true;
+        http2 = false;
         extraConfig = ''
           client_max_body_size 50M;
         '';
@@ -136,6 +143,7 @@ in
         enableACME = true;
         acmeRoot = null;
         forceSSL = true;
+        http2 = false;
         # Mirror the root, extraConfig (contains `index index.php;`), and locations
         # from the primary vhost so the two stay in sync automatically.
         root = config.services.nginx.virtualHosts."138cubpack.com".root;

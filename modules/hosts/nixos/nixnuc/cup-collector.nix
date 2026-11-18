@@ -32,6 +32,11 @@ in
         config.services.cupCollector.dataDir
       ];
     };
+
+    # http2 = false: see the stopgap comment above default.nix's nginx
+    # virtualHosts block (CVE-2026-123633 / CVE-2026-123007). cupCollector
+    # creates this vhost itself, so it isn't covered by that block's edits.
+    nginx.virtualHosts."cups.${home_domain}".http2 = false;
   };
 
   sops = {
