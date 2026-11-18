@@ -35,6 +35,11 @@ in
       }
       add_header Strict-Transport-Security $hsts_header;
     '';
+    # http2 = false below is a stopgap for CVE-2026-123633 / CVE-2026-123007
+    # (both require HTTP/2) until nixpkgs ships a patched nginx (>=1.30.7 /
+    # 1.31.9 - fixed on master via nixpkgs PR #589961, not yet on
+    # nixos-26.05/nixos-unstable as of 2026-11-18). Remove once the pinned
+    # nixpkgs picks up the fix.
     virtualHosts = {
       "${domain}" = {
         serverAliases = [
@@ -43,6 +48,7 @@ in
         default = true;
         enableACME = true;
         forceSSL = true;
+        http2 = false;
         root = "/etc/nginx-littlelinks";
         locations = {
           "/.well-known/lnurlp/genebean" = {

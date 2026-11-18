@@ -376,6 +376,11 @@ in
         # this covers the same ground at the nginx layer instead.
         limit_req_zone $binary_remote_addr zone=mealie_login:1m rate=10r/m;
       '';
+      # http2 = false below is a stopgap for CVE-2026-123633 / CVE-2026-123007
+      # (both require HTTP/2) until nixpkgs ships a patched nginx (>=1.30.7 /
+      # 1.31.9 - fixed on master via nixpkgs PR #589961, not yet on
+      # nixos-26.05/nixos-unstable as of 2026-11-18). Remove once the pinned
+      # nixpkgs picks up the fix.
       virtualHosts = {
         "${home_domain}" = {
           default = true;
@@ -392,6 +397,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           locations."/" = {
             return = "200 '<h1>Hello world ;)</h1>'";
             extraConfig = ''
@@ -417,6 +423,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           locations."/".proxyWebsockets = true;
           locations."/".proxyPass =
             "http://${backend_ip}:${toString config.genebean.ports.audiobookshelf.port}";
@@ -435,6 +442,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.atuin.port}";
         };
         "buzz.${home_domain}" = {
@@ -448,6 +456,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           locations = {
             "/" = {
               proxyPass = "http://${backend_ip}:${toString config.genebean.ports.buzz-relay.port}";
@@ -474,6 +483,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.forgejo.port}";
           extraConfig = ''
             client_max_body_size 0;
@@ -490,6 +500,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.pocket-id.port}";
           extraConfig = ''
             proxy_busy_buffers_size   512k;
@@ -508,6 +519,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.immich.port}";
           locations."/".proxyWebsockets = true;
           extraConfig = ''
@@ -528,6 +540,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           basicAuthFile = config.sops.secrets.immich_kiosk_basic_auth.path;
           locations."/".proxyPass =
             "http://${backend_ip}:${toString config.genebean.ports.immich-kiosk.port}";
@@ -550,6 +563,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           locations."/" = {
             proxyPass = "http://127.0.0.1:${toString config.genebean.ports.karakeep.port}";
             proxyWebsockets = true;
@@ -569,6 +583,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           locations = {
             "/" = {
               proxyPass = "http://${backend_ip}:${toString config.genebean.ports.jellyfin.port}";
@@ -600,6 +615,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           locations = {
             "/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.mealie.port}";
             "= /api/auth/token" = {
@@ -624,6 +640,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           locations = {
             "/grafana/".proxyPass =
               "http://${backend_ip}:${toString config.genebean.ports.grafana.port}/grafana/";
@@ -645,6 +662,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           locations = {
             # `satisfy any;` - either passes: basicAuthFile (Hermes agents,
             # which can't do an interactive OIDC login) OR the PocketID
@@ -675,6 +693,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
         };
         "podcasts.${home_domain}" = {
           listen = [
@@ -687,6 +706,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           basicAuthFile = config.sops.secrets.filtered_podcast_feeds_basic_auth.path;
           locations."/feeds/" = {
             alias = "/var/lib/filtered-podcast-feeds/";
@@ -713,6 +733,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           locations."/mcp".proxyPass =
             "http://${backend_ip}:${toString config.genebean.ports.social-reader-mcp.port}/mcp";
         };
@@ -727,6 +748,7 @@ in
           enableACME = true;
           acmeRoot = null;
           forceSSL = true;
+          http2 = false;
           locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.ytdlfin.port}";
           locations."= /health" = {
             proxyPass = "http://${backend_ip}:${toString config.genebean.ports.ytdlfin.port}";

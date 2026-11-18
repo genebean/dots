@@ -52,6 +52,11 @@ in
         proxy_pass ${private_btc}:${toString config.genebean.ports.lnd.port};
       }
     '';
+    # http2 = false below is a stopgap for CVE-2026-123633 / CVE-2026-123007
+    # (both require HTTP/2) until nixpkgs ships a patched nginx (>=1.30.7 /
+    # 1.31.9 - fixed on master via nixpkgs PR #589961, not yet on
+    # nixos-26.05/nixos-unstable as of 2026-11-18). Remove once the pinned
+    # nixpkgs picks up the fix.
     virtualHosts = {
       "hetznix01.${domain}" = {
         serverAliases = [
@@ -63,6 +68,7 @@ in
         enableACME = true;
         acmeRoot = null;
         forceSSL = true;
+        http2 = false;
         locations = {
           "/" = {
             return = "301 https://beanbag.technicalissues.us";
@@ -111,6 +117,7 @@ in
         enableACME = true;
         acmeRoot = null;
         forceSSL = true;
+        http2 = false;
         # Other settings come from services.dawarich.configureNginx
         # The client_max_body_size setting is need to allow for large GeoJSON files
         # such as those exported from a containerized version of Dawarich.
@@ -154,6 +161,7 @@ in
         enableACME = true;
         acmeRoot = null;
         forceSSL = true;
+        http2 = false;
         extraConfig = ''
           client_max_body_size 0;
         '';
@@ -175,12 +183,14 @@ in
         enableACME = true;
         acmeRoot = null;
         forceSSL = true;
+        http2 = false;
         locations."/".return = "301 https://beanbag.technicalissues.us";
       };
       "stats.${domain}" = {
         enableACME = true;
         acmeRoot = null;
         forceSSL = true;
+        http2 = false;
         locations."/".proxyPass = "http://127.0.0.1:${toString config.genebean.ports.plausible.port}";
         locations."/".proxyWebsockets = true;
         extraConfig = ''
@@ -195,6 +205,7 @@ in
         enableACME = true;
         acmeRoot = null;
         forceSSL = true;
+        http2 = false;
         locations."/".proxyWebsockets = true;
         locations."/".proxyPass = "http://127.0.0.1:${toString config.genebean.ports.uptime-kuma.port}";
       };
