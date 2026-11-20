@@ -17,6 +17,7 @@ in
     ./containers/audiobookshelf.nix
     ./containers/bead-me-up-scotty.nix
     ./containers/buzz.nix
+    ./containers/gitdeck.nix
     ./containers/mountain-mesh-bot-discord.nix
     ./containers/photon.nix
     ./containers/psitransfer.nix
@@ -802,6 +803,7 @@ in
         "/orico/jellyfin/staging/downloaded-files"
         "/var/backup/dolt-beads"
         "/var/backup/postgresql"
+        "/var/lib/gitdeck/data"
       ];
       timerConfig = {
         OnCalendar = restic_backup_time;

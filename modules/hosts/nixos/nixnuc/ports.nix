@@ -66,6 +66,11 @@
       port = 8384;
       openFirewall = true;
     };
+    # Bound to nixnuc's LAN address; tailnet clients use the existing subnet route.
+    gitdeck = {
+      port = 8765;
+      openFirewall = true;
+    };
     atuin = {
       port = 8888;
       openFirewall = true;
