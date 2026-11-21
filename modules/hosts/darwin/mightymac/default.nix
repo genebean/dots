@@ -82,7 +82,6 @@
       "adr-tools"
       "container"
       "gnupg"
-      "i2cssh"
       "lima"
       "opentofu"
       "pinentry-mac"

@@ -118,6 +118,9 @@ in
           biv = "bundle install --path=vendor/bundle";
           bottom = "echo 'To run bottom, the command is btm'";
           ce = "code-exploration";
+          cwtfix = ''
+            git -C "''${PWD%/.claude/worktrees/*}" worktree repair "$PWD"
+          '';
           dots = "cd ~/repos/dots";
           gbc = ''
             git branch --merged | command grep -vE "^(\*|\s*(main|master|develop|production|qa)\s*$)" | command xargs -n 1 git branch -d
