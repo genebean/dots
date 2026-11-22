@@ -97,6 +97,12 @@ in
     settings = {
       simulation.simulation = true;
 
+      # Explicit rather than relying on the module's own identical
+      # "127.0.0.1:8080" default, so this port is registered (and so any
+      # future collision on one of this module's hosts is caught by
+      # reading modules/genebean/nixos/ports.nix, not by `ss` on the host).
+      config.api.server.listen_uri = "127.0.0.1:${toString config.genebean.ports.crowdsec-lapi.port}";
+
       # Without this, crowdsec starts but reads nothing - confirmed by the
       # evaluator's own warning the first time this module was added
       # without it. Split the same way fail2ban-nginx.nix's jails had to
