@@ -17,6 +17,7 @@ in
     ./containers/audiobookshelf.nix
     ./containers/bead-me-up-scotty.nix
     ./containers/buzz.nix
+    ./containers/gitdeck.nix
     ./containers/mountain-mesh-bot-discord.nix
     ./containers/photon.nix
     ./containers/psitransfer.nix
@@ -197,6 +198,9 @@ in
   };
 
   genebean.services.dnclient.enable = true;
+  # Public GitHub OAuth App Client ID. The access token stays in Gitdeck's
+  # persistent data volume after Device Flow sign-in.
+  genebean.gitdeck.githubClientId = "Iv23liyEFHlh7RaanbfK";
 
   # List services that you want to enable:
   services = {
@@ -802,6 +806,7 @@ in
         "/orico/jellyfin/staging/downloaded-files"
         "/var/backup/dolt-beads"
         "/var/backup/postgresql"
+        "/var/lib/gitdeck/data"
       ];
       timerConfig = {
         OnCalendar = restic_backup_time;
