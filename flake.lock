@@ -78,16 +78,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1791510889,
-        "narHash": "sha256-mTVqlvc7h/i8DAMOe1Y1hQg+oV+MBWdm/DSD0y28dJQ=",
+        "lastModified": 1795308742,
+        "narHash": "sha256-lu8rQOnISnk4VXsLx+97iSrFR5JqYxGjeoYBsggrwSA=",
         "owner": "genebean",
         "repo": "cup-collector",
-        "rev": "8644db4cba03e37c32ab6c052010a27c95c93737",
+        "rev": "766c6ba57353cca6e05c3853913088696020eb08",
         "type": "github"
       },
       "original": {
         "owner": "genebean",
-        "ref": "v1.1.4",
+        "ref": "v1.1.5",
         "repo": "cup-collector",
         "type": "github"
       }
@@ -320,11 +320,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1731533236,
-        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "lastModified": 1794427683,
+        "narHash": "sha256-o7ey9gEilsxaifqJWnBDlYSKbNWYQYtKwDyXeZU2kaU=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "rev": "cd489559845d81f673a12885576016c65cbe9363",
         "type": "github"
       },
       "original": {
@@ -1324,11 +1324,11 @@
     },
     "systems": {
       "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "lastModified": 1791244623,
+        "narHash": "sha256-uuanbkFk8a313Zfrxdcz8Us/yQtaxNnKJtX8v0ZPpd8=",
         "owner": "nix-systems",
         "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "rev": "d36eeed142f88b5a636f2e3856a53c61654cf29b",
         "type": "github"
       },
       "original": {
