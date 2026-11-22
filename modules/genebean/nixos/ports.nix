@@ -49,6 +49,13 @@
     photon = {
       port = 2322;
     };
+    # modules/shared/nixos/crowdsec.nix's own default (used on nixnuc,
+    # hetznix01, hetznix02) - referenced from there rather than left as an
+    # undocumented upstream default, so other services on those hosts can
+    # avoid colliding with it.
+    crowdsec-lapi = {
+      port = 8080;
+    };
     # Standard defaults for prometheus exporters, used on all monitored hosts.
     node-exporter = {
       port = 9100;
