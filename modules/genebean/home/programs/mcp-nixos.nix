@@ -1,6 +1,8 @@
 {
   config,
   lib,
+  inputs,
+  pkgs,
   ...
 }:
 let
@@ -18,12 +20,9 @@ in
     # test suite doesn't compile against mightymac's newer Apple SDK
     # libc++, and mcp-nixos's own test suite has an unrelated flaky
     # assertion against a randomly-picked /nix/store file. Sourcing it from
-    # nixpkgs-unstable directly dodged that, but nixpkgs-unstable later
-    # broke it a different way (python3.14-fastmcp-slim marked broken) when
-    # it advanced to pick up an unrelated fix. Pinning the exact
-    # known-good published version via nixpkgs-multiverse sidesteps both
-    # channels' churn instead of chasing either one.
-    multiverse.pins.mcp-nixos = "3.0.1";
-    home.packages = [ config.multiverse.pinned.mcp-nixos ];
+    # nixpkgs-unstable instead dodges that.
+    home.packages = [
+      (import inputs.nixpkgs-unstable { inherit (pkgs.stdenv.hostPlatform) system; }).mcp-nixos
+    ];
   };
 }

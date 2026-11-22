@@ -32,13 +32,21 @@
     # doesn't carry over to the installed system on its own. Without this,
     # a future kernel update could leave this host unable to mount its own
     # bcachefs root on reboot.
+    #
+    # kernelPackages is pinned to linuxPackages_latest (7.3) rather than the
+    # default (6.18) kernel: 6.18's latest point release collides with new
+    # VFS inode-state accessor functions landing in linux/fs.h, which breaks
+    # the bcachefs-tools DKMS module (NixOS/nixpkgs issue 591440, filed
+    # upstream, unresolved as of this commit). 6.16/6.17/6.19 are EOL'd out
+    # of the nixpkgs tree entirely, so 7.3 - confirmed building the module
+    # cleanly with the main nixpkgs' current bcachefs-tools - is the only
+    # other kernel line available. Superseded an earlier commit that pinned
+    # a whole separate, frozen nixpkgs revision for this instead; prefer
+    # this one going forward since it stays on the main nixpkgs input.
+    kernelPackages = pkgs.linuxPackages_latest;
     extraModulePackages = [ config.boot.kernelPackages.bcachefs ];
     supportedFilesystems = [ "bcachefs" ];
   };
-
-  environment.systemPackages = with pkgs; [
-    bcachefs-tools
-  ];
 
   networking = {
     # No social-reader-mcp hosts entry here on the bare host - only
