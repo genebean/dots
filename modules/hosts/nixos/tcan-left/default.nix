@@ -4,9 +4,18 @@
   config,
   lib,
   pkgs,
+  inputs,
   username,
   ...
 }:
+let
+  # NixOS/nixpkgs issue 591440 - see flake.nix's nixpkgs-tcan-left-bcachefs
+  # input for why this is pinned instead of using the main nixpkgs input's
+  # pkgs.linuxPackages_6_18/pkgs.bcachefs-tools directly.
+  bcachefsPkgs = import inputs.nixpkgs-tcan-left-bcachefs {
+    inherit (pkgs.stdenv.hostPlatform) system;
+  };
+in
 {
   imports = [
     ./disk-config.nix
@@ -32,13 +41,22 @@
     # doesn't carry over to the installed system on its own. Without this,
     # a future kernel update could leave this host unable to mount its own
     # bcachefs root on reboot.
+    #
+    # kernelPackages and bcachefs.package both come from bcachefsPkgs (see
+    # the `let` above), not the main nixpkgs input - NixOS/nixpkgs issue
+    # 591440. Both need to move together: nixos/modules/tasks/filesystems/
+    # bcachefs.nix builds its own out-of-tree module from
+    # `boot.kernelPackages.callPackage boot.bcachefs.package.kernelModule`,
+    # so leaving boot.bcachefs.package on the main nixpkgs' (newer)
+    # bcachefs-tools would pair it with this pinned (older) kernel instead -
+    # an untested combination - and would also pull a second, mismatched
+    # bcachefs-tools into the system closure via boot.bcachefs.package's own
+    # default (system.fsPackages, services.udev.packages, systemd.packages).
+    kernelPackages = bcachefsPkgs.linuxPackages_6_18;
     extraModulePackages = [ config.boot.kernelPackages.bcachefs ];
     supportedFilesystems = [ "bcachefs" ];
+    bcachefs.package = bcachefsPkgs.bcachefs-tools;
   };
-
-  environment.systemPackages = with pkgs; [
-    bcachefs-tools
-  ];
 
   networking = {
     # No social-reader-mcp hosts entry here on the bare host - only

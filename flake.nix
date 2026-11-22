@@ -26,6 +26,17 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
+    # tcan-left only: the out-of-tree bcachefs-tools DKMS module fails to
+    # build against every kernel current nixpkgs can offer (NixOS/nixpkgs
+    # issue 591440 - 6.16/6.17/6.19 are EOL'd out of the tree and 6.18's
+    # latest point release collides with new VFS inode-state accessors).
+    # Pinned to the exact commit tcan-left is already booted from
+    # (kernel 6.18.50 + bcachefs-tools 1.39.4, confirmed building cleanly),
+    # so boot.kernelPackages and bcachefs-tools there don't move with the
+    # main nixpkgs input. Remove once nixpkgs issue 591440 is fixed upstream
+    # and tcan-left builds again off the main nixpkgs input.
+    nixpkgs-tcan-left-bcachefs.url = "github:NixOS/nixpkgs/6aefcda9401be8acc2b74244fb3b37520ea1f0a8";
+
     # Pins individual packages to an exact version by resolving against
     # nixpkgs' full history, instead of a dedicated flake input per pin (the
     # now-removed nixpkgs-unstable-php-security pattern this replaced for
