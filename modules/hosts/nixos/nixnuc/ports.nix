@@ -66,6 +66,10 @@
       port = 8384;
       openFirewall = true;
     };
+    gitdeck = {
+      port = 8765;
+      openFirewall = true;
+    };
     atuin = {
       port = 8888;
       openFirewall = true;
