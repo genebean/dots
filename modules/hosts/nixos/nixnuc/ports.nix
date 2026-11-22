@@ -155,6 +155,12 @@
     cadvisor = {
       port = 8081;
     };
+    # Not 8080 (atticd's own upstream default) - that's crowdsec's LAPI
+    # port on this host, registered fleet-wide in
+    # modules/genebean/nixos/ports.nix as crowdsec-lapi.
+    attic = {
+      port = 8082;
+    };
     jellyfin = {
       port = 8096;
     };

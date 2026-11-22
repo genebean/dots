@@ -14,6 +14,7 @@ in
 {
   imports = [
     ./hardware-configuration.nix
+    ./attic.nix
     ./containers/audiobookshelf.nix
     ./containers/bead-me-up-scotty.nix
     ./containers/buzz.nix
@@ -428,6 +429,19 @@ in
             client_max_body_size 0;
           '';
         };
+        "attic.${home_domain}" = {
+          listen = [
+            {
+              inherit (config.genebean.ports.https) port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.attic.port}";
+        };
         "atuin.${home_domain}" = {
           listen = [
             {
@@ -839,6 +853,9 @@ in
     age.keyFile = "${config.users.users.${username}.home}/.config/sops/age/keys.txt";
     defaultSopsFile = ./secrets.yaml;
     secrets = {
+      attic_rs256_secret = {
+        restartUnits = [ "atticd.service" ];
+      };
       karakeep_env = {
         owner = "karakeep";
         restartUnits = [
