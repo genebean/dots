@@ -1,4 +1,5 @@
 {
+  config,
   hostname,
   lib,
   pkgs,
@@ -58,8 +59,16 @@
       "flakes"
       "nix-command"
     ];
+    # Auth for the self-hosted Attic cache (genebean/dots#677) - the
+    # substituter URL/key live in modules/genebean/data/nix-caches.nix
+    # like every other cache. System-level, not home-manager's own
+    # nix.settings, since home-manager's sops module isn't imported for
+    # NixOS hosts (only Darwin/the standalone host have that).
+    netrc-file = config.sops.secrets."attic-netrc".path;
     trusted-users = [ "${username}" ];
   };
+
+  sops.secrets."attic-netrc".sopsFile = ../../shared/secrets.yaml;
 
   programs = {
     bandwhich.enable = true;

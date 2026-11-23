@@ -10,7 +10,6 @@
       "var-lib-postgresql.mount"
       "var-lib-postgresql-16-pg_wal.mount"
       # NixOS services with orico state dirs
-      "atticd.service"
       "dolt-beads.service"
       "forgejo.service"
       "immich-server.service"
@@ -44,7 +43,6 @@
       let
         zfs = "${pkgs.zfs}/bin/zfs";
         datasets = [
-          "orico/attic"
           "orico/audiobookshelf"
           "orico/dolt-beads"
           "orico/forgejo"

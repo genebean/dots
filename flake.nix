@@ -4,20 +4,18 @@
   # when consumed as inputs rather than run directly.
   nixConfig = {
     extra-substituters = [
-      # nixos-raspberrypi: pre-built vendor kernel/firmware for kiosk-gene-desk
-      "https://nixos-raspberrypi.cachix.org"
-      # numtide/system-manager
-      "https://cache.numtide.com"
-      # home-manager, disko, impermanence, nixos-anywhere, plasma-manager
-      "https://nix-community.cachix.org"
-      # mic92/sops-nix
-      "https://cache.thalheim.io"
+      "https://attic.home.technicalissues.us/genebean" # genebean/dots#677 - self-hosted, private; also needs netrc-file auth, see modules/shared/home/general/default.nix
+      "https://cache.numtide.com" # numtide/system-manager
+      "https://cache.thalheim.io" # mic92/sops-nix
+      "https://nix-community.cachix.org" # home-manager, disko, impermanence, nixos-anywhere, plasma-manager
+      "https://nixos-raspberrypi.cachix.org" # nixos-raspberrypi: pre-built vendor kernel/firmware for kiosk-gene-desk
     ];
     extra-trusted-public-keys = [
-      "nixos-raspberrypi.cachix.org-1:4iMO9LXa8BqhU+Rpg6LQKiGa2lsNh/j2oiYLNOQ5sPI="
+      "cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc="
+      "genebean:bS9FNZbGEXaJzMJzN5eEva28eCKqDlRC61uC8NdWWL4="
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc="
+      "nixos-raspberrypi.cachix.org-1:4iMO9LXa8BqhU+Rpg6LQKiGa2lsNh/j2oiYLNOQ5sPI="
     ];
   };
   inputs = {
