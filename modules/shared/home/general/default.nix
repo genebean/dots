@@ -27,6 +27,7 @@
 
   home = {
     packages = with pkgs; [
+      attic-client
       awscli2
       btop
       bundix

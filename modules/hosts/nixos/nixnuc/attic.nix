@@ -3,23 +3,21 @@
 # own hosts can all pull/push from one place instead of every one of them
 # rebuilding the same closures independently.
 #
-# Storage and the sqlite database are pointed directly at orico/attic's own
-# natural ZFS mountpoint (/orico/attic), not redirected there via a
-# fileSystems "/var/lib/atticd" entry - that first approach hung nixnuc on
-# 2026-11-22: ZFS's own automount and the generated var-lib-atticd.mount
-# unit both tried to mount the same dataset at once (one at its natural
-# /orico/attic path, one at /var/lib/atticd), and neither won cleanly.
-# mountpoint=legacy + a fileSystems redirect is only how this host handles
-# the services that have NO option to point their state dir elsewhere
-# (audiobookshelf, postgresql) - everywhere else (forgejo, dolt-beads,
-# jellyfin, ...), the service's own path option just points straight at
-# the dataset's natural mountpoint instead, which is what atticd's
-# settings.storage.path/settings.database.url being configurable options
-# lets it do too.
+# Storage and the sqlite database are pointed directly at /attic, a
+# dedicated ext4 partition on its own NVMe disk (hardware-configuration.nix)
+# - not the orico ZFS pool. orico's slower member (a USB3.0 mirror disk)
+# bottlenecked real pushes to sub-1MB/s, badly enough to make it
+# unusable in practice (confirmed live, not assumed). bcachefs (matching
+# tcan-left) was the first choice, but ruled out here specifically:
+# nixnuc also needs ZFS for orico, and the only kernel line that avoids
+# the bcachefs-tools/kernel-6.18 incompatibility (NixOS/nixpkgs issue
+# 591440) is linuxPackages_latest, which breaks ZFS's own kernel module
+# instead (confirmed: zfs_2_4.meta.broken is true there). No kernel in
+# this nixpkgs revision supports both at once.
 { config, pkgs, ... }:
 let
   home_domain = "home.technicalissues.us";
-  dataDir = "/orico/attic";
+  dataDir = "/attic";
 in
 {
   services.atticd = {
@@ -34,7 +32,7 @@ in
       database.url = "sqlite://${dataDir}/server.db?mode=rwc";
       # Not keeping much history here - just whatever's currently in use
       # across the fleet and CI, not a long-term archive.
-      garbage-collection.default-retention-period = "14 days";
+      garbage-collection.default-retention-period = "32 days";
       # Loopback-only - nginx (same host) is the only consumer, matching
       # every other internal-only nixnuc service's backend_ip = 127.0.0.1.
       listen = "127.0.0.1:${toString config.genebean.ports.attic.port}";
@@ -46,17 +44,18 @@ in
   };
 
   systemd.services.atticd = {
-    after = [ "zfs-create-orico-datasets.service" ];
-    requires = [ "zfs-create-orico-datasets.service" ];
+    # attic.mount is systemd's auto-generated unit for the /attic
+    # fileSystems entry (hardware-configuration.nix).
+    after = [ "attic.mount" ];
+    requires = [ "attic.mount" ];
     serviceConfig = {
-      # The orico/attic dataset is created root-owned by
-      # zfs-create-orico-datasets.service - chown it to atticd's own
-      # DynamicUser every start, since nothing else does. The "+" prefix
-      # runs this one command with full privileges, exempt from the
-      # module's own ProtectSystem/ProtectHome/etc below; systemd's
-      # dynamic-user NSS registration still resolves the "atticd" name for
-      # the duration of this unit's own start, same as any of its other
-      # Exec* lines.
+      # /attic is a bare ext4 mount, root-owned by default - chown it to
+      # atticd's own DynamicUser every start, since nothing else does.
+      # The "+" prefix runs this one command with full privileges, exempt
+      # from the module's own ProtectSystem/ProtectHome/etc below;
+      # systemd's dynamic-user NSS registration still resolves the
+      # "atticd" name for the duration of this unit's own start, same as
+      # any of its other Exec* lines.
       ExecStartPre = "+${pkgs.coreutils}/bin/install -d -o atticd -g atticd -m 0750 ${dataDir}";
       ReadWritePaths = [ dataDir ];
     };

@@ -63,6 +63,28 @@ jobs:
           git -C private-flake checkout "$PRIVATE_FLAKE_REV"
           rm -rf private-flake/.git
       - uses: DeterminateSystems/nix-installer-action@v23
+      # flake.nix's own nixConfig already declares the Attic substituter and
+      # its public key - accept-flake-config (set job-wide above) is what
+      # makes CI trust that, so this only needs to add the auth netrc knows
+      # nothing about (the cache is private).
+      - name: Configure Attic cache (pull)
+        env:
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+        run: |
+          # secrets can't be referenced in `if:` directly - checking here
+          # instead lets callers/forks without the secret build unaffected.
+          if [ -z "$ATTIC_TOKEN" ]; then
+            echo "No ATTIC_TOKEN secret - skipping Attic pull config."
+            exit 0
+          fi
+          echo "machine attic.home.technicalissues.us password $ATTIC_TOKEN" > "$HOME/.netrc"
+          chmod 600 "$HOME/.netrc"
+          {
+            echo "NIX_CONFIG<<ATTIC_NIX_CONFIG_EOF"
+            echo "accept-flake-config = true"
+            echo "netrc-file = $HOME/.netrc"
+            echo "ATTIC_NIX_CONFIG_EOF"
+          } >> "$GITHUB_ENV"
       - name: Check docs/genebean-options.md is current
         run: |
           nix run .#update-docs --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
@@ -98,8 +120,36 @@ jobs:
           git -C private-flake checkout "$PRIVATE_FLAKE_REV"
           rm -rf private-flake/.git
       - uses: DeterminateSystems/nix-installer-action@v23
+      - name: Configure Attic cache (pull)
+        env:
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+        run: |
+          # secrets can't be referenced in `if:` directly - checking here
+          # instead lets callers/forks without the secret build unaffected.
+          if [ -z "$ATTIC_TOKEN" ]; then
+            echo "No ATTIC_TOKEN secret - skipping Attic pull config."
+            exit 0
+          fi
+          echo "machine attic.home.technicalissues.us password $ATTIC_TOKEN" > "$HOME/.netrc"
+          chmod 600 "$HOME/.netrc"
+          {
+            echo "NIX_CONFIG<<ATTIC_NIX_CONFIG_EOF"
+            echo "accept-flake-config = true"
+            echo "netrc-file = $HOME/.netrc"
+            echo "ATTIC_NIX_CONFIG_EOF"
+          } >> "$GITHUB_ENV"
       - name: Build NixOS configuration
         run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+      - name: Push to Attic
+        env:
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+        run: |
+          if [ -z "$ATTIC_TOKEN" ]; then
+            echo "No ATTIC_TOKEN secret - skipping Attic push."
+            exit 0
+          fi
+          nix run nixpkgs#attic-client -- login genebean https://attic.home.technicalissues.us "$ATTIC_TOKEN" --set-default
+          nix run nixpkgs#attic-client -- push genebean ./result
 
   extended-nixos:
     name: Build ${{ matrix.host }} (full sweep)
@@ -132,8 +182,36 @@ jobs:
           git -C private-flake checkout "$PRIVATE_FLAKE_REV"
           rm -rf private-flake/.git
       - uses: DeterminateSystems/nix-installer-action@v23
+      - name: Configure Attic cache (pull)
+        env:
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+        run: |
+          # secrets can't be referenced in `if:` directly - checking here
+          # instead lets callers/forks without the secret build unaffected.
+          if [ -z "$ATTIC_TOKEN" ]; then
+            echo "No ATTIC_TOKEN secret - skipping Attic pull config."
+            exit 0
+          fi
+          echo "machine attic.home.technicalissues.us password $ATTIC_TOKEN" > "$HOME/.netrc"
+          chmod 600 "$HOME/.netrc"
+          {
+            echo "NIX_CONFIG<<ATTIC_NIX_CONFIG_EOF"
+            echo "accept-flake-config = true"
+            echo "netrc-file = $HOME/.netrc"
+            echo "ATTIC_NIX_CONFIG_EOF"
+          } >> "$GITHUB_ENV"
       - name: Build NixOS configuration
         run: nix build .#nixosConfigurations.${{ matrix.configuration }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+      - name: Push to Attic
+        env:
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+        run: |
+          if [ -z "$ATTIC_TOKEN" ]; then
+            echo "No ATTIC_TOKEN secret - skipping Attic push."
+            exit 0
+          fi
+          nix run nixpkgs#attic-client -- login genebean https://attic.home.technicalissues.us "$ATTIC_TOKEN" --set-default
+          nix run nixpkgs#attic-client -- push genebean ./result
 
   home-manager:
     name: Build Home Manager (x86_64 Linux)
@@ -156,8 +234,36 @@ jobs:
           git -C private-flake checkout "$PRIVATE_FLAKE_REV"
           rm -rf private-flake/.git
       - uses: DeterminateSystems/nix-installer-action@v23
+      - name: Configure Attic cache (pull)
+        env:
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+        run: |
+          # secrets can't be referenced in `if:` directly - checking here
+          # instead lets callers/forks without the secret build unaffected.
+          if [ -z "$ATTIC_TOKEN" ]; then
+            echo "No ATTIC_TOKEN secret - skipping Attic pull config."
+            exit 0
+          fi
+          echo "machine attic.home.technicalissues.us password $ATTIC_TOKEN" > "$HOME/.netrc"
+          chmod 600 "$HOME/.netrc"
+          {
+            echo "NIX_CONFIG<<ATTIC_NIX_CONFIG_EOF"
+            echo "accept-flake-config = true"
+            echo "netrc-file = $HOME/.netrc"
+            echo "ATTIC_NIX_CONFIG_EOF"
+          } >> "$GITHUB_ENV"
       - name: Build Home Manager configuration
         run: nix build .#homeConfigurations.gene-x86_64-linux.activationPackage --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+      - name: Push to Attic
+        env:
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+        run: |
+          if [ -z "$ATTIC_TOKEN" ]; then
+            echo "No ATTIC_TOKEN secret - skipping Attic push."
+            exit 0
+          fi
+          nix run nixpkgs#attic-client -- login genebean https://attic.home.technicalissues.us "$ATTIC_TOKEN" --set-default
+          nix run nixpkgs#attic-client -- push genebean ./result
 
   mightymac:
     name: Build mightymac (Apple Silicon)
@@ -179,5 +285,33 @@ jobs:
           git -C private-flake checkout "$PRIVATE_FLAKE_REV"
           rm -rf private-flake/.git
       - uses: DeterminateSystems/nix-installer-action@v23
+      - name: Configure Attic cache (pull)
+        env:
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+        run: |
+          # secrets can't be referenced in `if:` directly - checking here
+          # instead lets callers/forks without the secret build unaffected.
+          if [ -z "$ATTIC_TOKEN" ]; then
+            echo "No ATTIC_TOKEN secret - skipping Attic pull config."
+            exit 0
+          fi
+          echo "machine attic.home.technicalissues.us password $ATTIC_TOKEN" > "$HOME/.netrc"
+          chmod 600 "$HOME/.netrc"
+          {
+            echo "NIX_CONFIG<<ATTIC_NIX_CONFIG_EOF"
+            echo "accept-flake-config = true"
+            echo "netrc-file = $HOME/.netrc"
+            echo "ATTIC_NIX_CONFIG_EOF"
+          } >> "$GITHUB_ENV"
       - name: Build nix-darwin configuration
         run: nix build .#darwinConfigurations.mightymac-ci.system --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+      - name: Push to Attic
+        env:
+          ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
+        run: |
+          if [ -z "$ATTIC_TOKEN" ]; then
+            echo "No ATTIC_TOKEN secret - skipping Attic push."
+            exit 0
+          fi
+          nix run nixpkgs#attic-client -- login genebean https://attic.home.technicalissues.us "$ATTIC_TOKEN" --set-default
+          nix run nixpkgs#attic-client -- push genebean ./result

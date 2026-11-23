@@ -161,12 +161,17 @@ in
     # verification entirely), but the LAN IP is the same path every real
     # client already uses successfully.
     extraHosts = ''
-      192.168.20.190 id.home.technicalissues.us
+      # Forgejo's own Actions runner jobs push to Attic via its public
+      # hostname despite running on this same host - same nginx/SNI-on-
+      # loopback problem as id.home.technicalissues.us below, same fix.
+      192.168.20.190 attic.home.technicalissues.us
       # dolt-beads terminates TLS itself directly (one cert, no nginx/SNI
-      # involved - unlike id.home.technicalissues.us above), so same-host
-      # callers like Scotty can safely go straight to loopback instead of
-      # hairpinning out through the LAN IP for a local connection.
+      # involved, unlike the nginx-fronted entries in this list), so
+      # same-host callers like Scotty can safely go straight to loopback
+      # instead of hairpinning out through the LAN IP for a local
+      # connection.
       127.0.0.1 dolt-beads.home.technicalissues.us
+      192.168.20.190 id.home.technicalissues.us
     '';
 
     hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4
@@ -441,6 +446,11 @@ in
           acmeRoot = null;
           forceSSL = true;
           locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.attic.port}";
+          # Pushing anything past nginx's 1 MiB default body-size limit
+          # 413s - confirmed live pushing gitkraken (a large closure).
+          extraConfig = ''
+            client_max_body_size 0;
+          '';
         };
         "atuin.${home_domain}" = {
           listen = [

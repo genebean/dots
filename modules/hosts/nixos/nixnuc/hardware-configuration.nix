@@ -40,6 +40,15 @@
       fsType = "vfat";
     };
 
+    # Dedicated NVMe partition, not the orico ZFS pool - that pool's slower
+    # member (a USB3.0 mirror disk) bottlenecked Attic's own pushes to
+    # sub-1MB/s, badly enough to make it unusable in practice (confirmed
+    # live, not assumed).
+    "/attic" = {
+      device = "/dev/disk/by-uuid/c683d941-632d-49d9-9162-93ae0ac99c3b";
+      fsType = "ext4";
+    };
+
     "/var/lib/audiobookshelf" = {
       device = "orico/audiobookshelf";
       fsType = "zfs";
@@ -55,12 +64,6 @@
       fsType = "zfs";
     };
   };
-
-  # Second disk inside case
-  #fileSystems."/var/lib/postgresql" =
-  #  { device = "/dev/disk/by-uuid/7351c15f-1b9f-4e12-853b-ebf5cc425530";
-  #    fsType = "ext4";
-  #  };
 
   swapDevices = [ ];
 
