@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  lib,
   pkgs,
   ...
 }:
@@ -21,7 +22,9 @@
       vim.enable = true;
     };
     services = {
-      tailscale.enable = true;
+      # mkDefault so DMZ-facing hosts (e.g. pigate) can cleanly opt out with
+      # a plain `enable = false` instead of needing lib.mkForce.
+      tailscale.enable = lib.mkDefault true;
     };
   };
 

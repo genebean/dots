@@ -96,14 +96,20 @@ jobs:
   nixos:
     name: Build ${{ matrix.host }}
     needs: [validate, docs]
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
-        host:
-          - nixnuc
-          - hetznix01
-          - tcan-left
+        include:
+          - host: nixnuc
+            runner: ubuntu-latest
+          - host: hetznix01
+            runner: ubuntu-latest
+          - host: tcan-left
+            runner: ubuntu-latest
+          # aarch64 - needs an arm runner, same as hetznix02 below.
+          - host: pigate
+            runner: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v7
       - name: Read pinned private flake revision
