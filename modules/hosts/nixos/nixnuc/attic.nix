@@ -75,8 +75,15 @@ in
       # from the module's own ProtectSystem/ProtectHome/etc below;
       # systemd's dynamic-user NSS registration still resolves the
       # "atticd" name for the duration of this unit's own start, same as
-      # any of its other Exec* lines.
-      ExecStartPre = "+${pkgs.coreutils}/bin/install -d -o atticd -g atticd -m 0750 ${dataDir}";
+      # any of its other Exec* lines. Mode 0751, not 0750: postgres (a
+      # different, static UID, not in atticd's dynamic group) needs to
+      # traverse into /attic to reach its own tablespace subdirectory
+      # below - confirmed live that 0750 blocked it entirely with
+      # "Permission denied" on CREATE TABLESPACE, before postgres ever got
+      # to check that subdirectory's own (still-restrictive) permissions.
+      # The extra +x is traversal-only, not read - atticd's actual files
+      # (storage/, server.db*) keep their own tighter permissions.
+      ExecStartPre = "+${pkgs.coreutils}/bin/install -d -o atticd -g atticd -m 0751 ${dataDir}";
       ReadWritePaths = [ dataDir ];
     };
   };
