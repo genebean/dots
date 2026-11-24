@@ -39,11 +39,13 @@
     };
 
     cup-collector = {
-      # Temporary local override while modules/hosts/nixos/nixnuc/cup-collector.nix
-      # depends on the as-yet-unreleased enableACME/forceSSL options (PR not
-      # merged/tagged yet) - revert to a github:genebean/cup-collector/vX.Y.Z
-      # tag once that lands.
-      url = "git+file:///home/gene/repos/cup-collector";
+      # Pinned to a commit, not a vX.Y.Z tag like usual: ebfd286 is the
+      # merge of genebean/cup-collector#255 (enableACME/forceSSL options,
+      # used by modules/hosts/nixos/nixnuc/cup-collector.nix), merged to
+      # main but not yet cut into a release tag. Revert to a normal
+      # github:genebean/cup-collector/vX.Y.Z tag once one exists that
+      # includes this commit.
+      url = "github:genebean/cup-collector/ebfd286f5c9c2315b568b3c3c8123b2473b541b7";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
