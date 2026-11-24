@@ -916,18 +916,30 @@ in
       after = [ "postgresql.service" ];
     };
     # Attic's dedicated tablespace (attic.nix) needs to exist, owned by
-    # postgres, before Postgres starts - same ordering problem/fix as
-    # atticd's own ExecStartPre for /attic itself, except this is a
-    # subdirectory Postgres owns, not atticd.
+    # postgres, before Postgres starts. Confirmed live: an ExecStartPre on
+    # postgresql.service itself does NOT work for this, even "+"-prefixed -
+    # systemd builds a unit's ReadWritePaths bind-mounts as part of
+    # constructing its namespace, which happens before ANY ExecStartPre
+    # runs, so a path that only gets created by that same unit's own
+    # ExecStartPre can never exist in time. This crashed postgresql.service
+    # itself (226/NAMESPACE, then start-limit-hit) and took Nextcloud's
+    # update-db check down with it. systemd.tmpfiles.rules runs as its own
+    # independent step (systemd-tmpfiles-setup.service, reprocessed on
+    # every activation), fully outside postgresql.service's namespace, so
+    # the directory already exists by the time ReadWritePaths needs it.
     postgresql = {
-      after = [ "attic.mount" ];
+      after = [
+        "attic.mount"
+        "systemd-tmpfiles-setup.service"
+      ];
       requires = [ "attic.mount" ];
-      serviceConfig = {
-        ExecStartPre = "+${pkgs.coreutils}/bin/install -d -o postgres -g postgres -m 0700 /attic/postgresql-tablespace";
-        ReadWritePaths = [ "/attic/postgresql-tablespace" ];
-      };
+      serviceConfig.ReadWritePaths = [ "/attic/postgresql-tablespace" ];
     };
   };
+
+  systemd.tmpfiles.rules = [
+    "d /attic/postgresql-tablespace 0700 postgres postgres - -"
+  ];
 
   users.users.${username} = {
     isNormalUser = true;

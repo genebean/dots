@@ -58,6 +58,15 @@
       port = 8001;
       openFirewall = true;
     };
+    # Not 8080 (atticd's own upstream default) - that's crowdsec's LAPI
+    # port on this host, registered fleet-wide in
+    # modules/genebean/nixos/ports.nix as crowdsec-lapi. Firewalled (not
+    # internal-only) since pigate now proxies to this over the services
+    # VLAN rather than nginx being co-located on this host.
+    attic = {
+      port = 8082;
+      openFirewall = true;
+    };
     pocketbase = {
       port = 8091;
       openFirewall = true;
@@ -154,12 +163,6 @@
     };
     cadvisor = {
       port = 8081;
-    };
-    # Not 8080 (atticd's own upstream default) - that's crowdsec's LAPI
-    # port on this host, registered fleet-wide in
-    # modules/genebean/nixos/ports.nix as crowdsec-lapi.
-    attic = {
-      port = 8082;
     };
     jellyfin = {
       port = 8096;

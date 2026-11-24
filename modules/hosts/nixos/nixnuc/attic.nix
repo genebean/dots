@@ -53,9 +53,10 @@ in
       # Not keeping much history here - just whatever's currently in use
       # across the fleet and CI, not a long-term archive.
       garbage-collection.default-retention-period = "32 days";
-      # Loopback-only - nginx (same host) is the only consumer, matching
-      # every other internal-only nixnuc service's backend_ip = 127.0.0.1.
-      listen = "127.0.0.1:${toString config.genebean.ports.attic.port}";
+      # All interfaces, matching how the rest of the fleet's internal-only
+      # services already bind - nginx moved to pigate, reaching this over
+      # the services VLAN instead of loopback.
+      listen = "0.0.0.0:${toString config.genebean.ports.attic.port}";
       storage = {
         path = "${dataDir}/storage";
         type = "local";
