@@ -387,6 +387,26 @@ in
             };
           };
         };
+        # cup-collector keeps its own embedded nginx/locations (nixnuc's
+        # cup-collector.nix overrides just its listen/ACME to plain HTTP on
+        # the services VLAN) - this is the same proxy-to-nixnuc's-own-nginx
+        # pattern as nextcloud/podcasts below, not a direct app-port proxy.
+        "cups.${home_domain}" = {
+          listen = [
+            {
+              inherit (config.genebean.ports.https) port;
+              addr = "0.0.0.0";
+              ssl = true;
+            }
+          ];
+          enableACME = true;
+          acmeRoot = null;
+          forceSSL = true;
+          locations."/".proxyPass = "http://${backend_ip}:80";
+          extraConfig = ''
+            client_max_body_size 0;
+          '';
+        };
         "git.${home_domain}" = {
           listen = [
             {
