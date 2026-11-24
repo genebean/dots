@@ -39,7 +39,11 @@
     };
 
     cup-collector = {
-      url = "github:genebean/cup-collector/v1.1.5";
+      # Temporary local override while modules/hosts/nixos/nixnuc/cup-collector.nix
+      # depends on the as-yet-unreleased enableACME/forceSSL options (PR not
+      # merged/tagged yet) - revert to a github:genebean/cup-collector/vX.Y.Z
+      # tag once that lands.
+      url = "git+file:///home/gene/repos/cup-collector";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

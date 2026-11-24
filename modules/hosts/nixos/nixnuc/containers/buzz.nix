@@ -8,10 +8,11 @@
 #
 # --network=host: lets the relay reach nixnuc's existing Postgres cluster
 # and RustFS over plain loopback TCP exactly like a native process would —
-# no podman-bridge-to-host complexity. Every port the relay's own env vars
-# bind to is explicitly loopback-only (127.0.0.1); the public endpoint is
-# nginx reverse-proxying in front (see default.nix's virtualHosts) — nothing
-# is forwarded to the internet on nixnuc except 80/443 regardless.
+# no podman-bridge-to-host complexity. BUZZ_S3_ENDPOINT (RustFS, same host)
+# stays loopback-only, but BUZZ_BIND_ADDR/BUZZ_PAIR_RELAY_BIND_ADDR bind to
+# all interfaces - pigate (the DMZ reverse-proxy host) reaches these over
+# the services VLAN now, not nginx co-located on this host (ports.nix also
+# has openFirewall = true for both, scoped by this host's normal firewall).
 #
 # No separate member-reconciliation service: per upstream's own NOSTR.md, the
 # relay bootstraps RELAY_OWNER_PUBKEY as the owner automatically on startup —
@@ -45,7 +46,7 @@ in
     environment = {
       BUZZ_ALLOW_NIP_OA_AUTH = "true";
       BUZZ_AUTO_MIGRATE = "true";
-      BUZZ_BIND_ADDR = "127.0.0.1:${toString config.genebean.ports.buzz-relay.port}";
+      BUZZ_BIND_ADDR = "0.0.0.0:${toString config.genebean.ports.buzz-relay.port}";
       BUZZ_GIT_CONFORMANCE_PROBE = "true";
       BUZZ_GIT_REPO_PATH = "/data/git";
       BUZZ_HEALTH_PORT = toString config.genebean.ports.buzz-health.port;
@@ -98,7 +99,7 @@ in
     autoStart = true;
     entrypoint = "/usr/local/bin/buzz-pair-relay";
     environment = {
-      BUZZ_PAIR_RELAY_BIND_ADDR = "127.0.0.1:${toString config.genebean.ports.buzz-pair-relay.port}";
+      BUZZ_PAIR_RELAY_BIND_ADDR = "0.0.0.0:${toString config.genebean.ports.buzz-pair-relay.port}";
     };
     extraOptions = [
       "--network=host"

@@ -15,6 +15,14 @@
       port = 445;
       openFirewall = true;
     };
+    pocket-id = {
+      port = 1411;
+      openFirewall = true;
+    };
+    immich = {
+      port = 2283;
+      openFirewall = true;
+    };
     psitransfer = {
       port = 3000;
       openFirewall = true;
@@ -39,6 +47,10 @@
       port = 3030;
       openFirewall = true;
     };
+    buzz-relay = {
+      port = 3033;
+      openFirewall = true;
+    };
     youtarr = {
       port = 3087;
       openFirewall = true;
@@ -58,6 +70,13 @@
       port = 8001;
       openFirewall = true;
     };
+    # Shares port 8001 with tube-archivist above - pre-existing, not
+    # introduced by this change. Only one is actually bound at a time on
+    # this host; left as found rather than renumbered speculatively.
+    ytdlfin = {
+      port = 8001;
+      openFirewall = true;
+    };
     # Not 8080 (atticd's own upstream default) - that's crowdsec's LAPI
     # port on this host, registered fleet-wide in
     # modules/genebean/nixos/ports.nix as crowdsec-lapi. Firewalled (not
@@ -71,8 +90,16 @@
       port = 8091;
       openFirewall = true;
     };
+    jellyfin = {
+      port = 8096;
+      openFirewall = true;
+    };
     syncthing-gui = {
       port = 8384;
+      openFirewall = true;
+    };
+    victoriametrics = {
+      port = 8428;
       openFirewall = true;
     };
     gitdeck = {
@@ -91,6 +118,10 @@
       port = 13378;
       openFirewall = true;
     };
+    mealie = {
+      port = 9000;
+      openFirewall = true;
+    };
     # LAN-only for now by design, not a security gap to fix later - Scotty
     # has no built-in authentication at all, so this stays off nginx/443
     # (shared with internet-facing vhosts) until an auth layer exists.
@@ -100,20 +131,26 @@
     };
 
     # Firewalled TCP services continued
+    # pigate's buzz vhost proxies /pair here directly over the services
+    # VLAN now, not through nginx co-located on this host.
+    buzz-pair-relay = {
+      port = 5000;
+      openFirewall = true;
+    };
     rustfs-console = {
       port = 9011;
       openFirewall = true;
     };
 
-    # Loopback-only: reached via nginx's /pair location on the buzz vhost,
-    # same pattern as buzz-relay itself.
-    buzz-pair-relay = {
-      port = 5000;
-    };
     # NOT openFirewall (that would open it fleet-wide) - restricted to
     # tcan-left (192.168.20.191) only, via a dedicated iptables rule in
-    # this host's own default.nix, not the generic allowlist. See
-    # dots#760 for generalizing this pattern once there's a second case.
+    # this host's own default.nix, not the generic allowlist. LAN-only by
+    # design (never internet-facing), so it stays on this host rather than
+    # going through pigate's DMZ edge - that would require routing
+    # tcan-left's LAN traffic through a new LAN->DMZ firewall rule for no
+    # benefit, since this was never part of the internet-facing attack
+    # surface pigate exists to protect. See dots#760 for generalizing this
+    # pattern once there's a second case.
     social-reader-mcp-https = {
       port = 8443;
     };
@@ -148,31 +185,15 @@
       port = 9104;
     };
 
-    # Internal-only TCP services (proxied via nginx, not firewalled)
-    pocket-id = {
-      port = 1411;
-    };
-    immich = {
-      port = 2283;
-    };
-    buzz-relay = {
-      port = 3033;
-    };
-    ytdlfin = {
-      port = 8001;
-    };
+    # Internal-only TCP services (same-host consumers only - nothing pigate
+    # needs to reach over the services VLAN).
+    # cadvisor: scraped by victoriametrics, same host, no other consumer.
     cadvisor = {
       port = 8081;
     };
-    jellyfin = {
-      port = 8096;
-    };
-    victoriametrics = {
-      port = 8428;
-    };
-    mealie = {
-      port = 9000;
-    };
+    # newspaper: pigate reaches this via nixnuc's own trimmed nginx on port
+    # 80 (Host-header routing), not this port directly - see default.nix's
+    # "newspaper.${home_domain}" vhost.
     newspaper = {
       port = 9002;
     };

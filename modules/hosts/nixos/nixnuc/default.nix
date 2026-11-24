@@ -34,8 +34,12 @@ in
     ./social-reader-mcp.nix
     ./zfs-datasets.nix
     ../../../shared/nixos/auditd.nix
-    ../../../shared/nixos/crowdsec.nix
-    ../../../shared/nixos/fail2ban-nginx.nix
+    # Still needed here: cup-collector.nix and dolt-beads-server.nix each
+    # issue their own direct ACME cert (not via nginx at all), relying on
+    # this module's security.acme.defaults. Only the nginx-fronted public
+    # vhosts' ACME moved to pigate - crowdsec.nix and fail2ban-nginx.nix
+    # did NOT come back, since those existed only to protect a publicly-
+    # reachable nginx, which this host no longer has.
     ../../../shared/nixos/lets-encrypt.nix
   ];
 
@@ -126,6 +130,14 @@ in
   };
 
   networking = {
+    # http/https stay openFirewall=true fleet-wide (modules/genebean/nixos/
+    # ports.nix) even though the public, internet-facing vhosts all moved
+    # to pigate - nginx's main listener on this host now binds only to the
+    # services-VLAN IP, so the open 80/443 here is inert. Not worth
+    # overriding the shared default just for this. social-reader-mcp-https
+    # below is the one exception still bound to 0.0.0.0, same as before
+    # this whole migration - it was never part of pigate's internet-facing
+    # attack surface to begin with (see ports.nix).
     firewall = {
       allowedTCPPorts = lib.pipe config.genebean.ports [
         builtins.attrValues
@@ -152,26 +164,15 @@ in
       '';
     };
 
-    # oauth2-proxy's OIDC discovery call (newspaper.nix) was hitting
-    # PocketID via its public hostname despite both running on this same
-    # host - fine most of the time via hairpin NAT, but not guaranteed, and
-    # unnecessary for a same-host call. Pin it to this host's own LAN IP
-    # instead of 127.0.0.1 - confirmed live that nginx does NOT route SNI
-    # correctly on loopback (serves the wrong vhost's cert, breaking TLS
-    # verification entirely), but the LAN IP is the same path every real
-    # client already uses successfully.
+    # nginx (and the SNI-on-loopback problem it caused for same-host
+    # callers) moved to pigate - the attic.*/id.* workaround entries that
+    # used to live here no longer apply.
     extraHosts = ''
-      # Forgejo's own Actions runner jobs push to Attic via its public
-      # hostname despite running on this same host - same nginx/SNI-on-
-      # loopback problem as id.home.technicalissues.us below, same fix.
-      192.168.20.190 attic.home.technicalissues.us
       # dolt-beads terminates TLS itself directly (one cert, no nginx/SNI
-      # involved, unlike the nginx-fronted entries in this list), so
-      # same-host callers like Scotty can safely go straight to loopback
-      # instead of hairpinning out through the LAN IP for a local
-      # connection.
+      # involved), so same-host callers like Scotty can safely go straight
+      # to loopback instead of hairpinning out through the LAN IP for a
+      # local connection.
       127.0.0.1 dolt-beads.home.technicalissues.us
-      192.168.20.190 id.home.technicalissues.us
     '';
 
     hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4
@@ -179,20 +180,38 @@ in
     useDHCP = false;
     networkmanager.enable = false;
     useNetworkd = true;
+    # "services" zone for pigate (the DMZ reverse-proxy host) to reach this
+    # host's backend apps - replaces an earlier, abandoned vlan23 attempt
+    # that used this same 192.168.23.x address space for something else.
     vlans = {
-      vlan23 = {
-        id = 23;
+      vlan2332 = {
+        id = 2332;
         interface = "eno1";
       };
     };
     interfaces = {
       eno1.useDHCP = true;
-      vlan23.ipv4.addresses = [
-        {
-          address = "192.168.23.21";
-          prefixLength = 24;
-        }
-      ];
+      vlan2332.ipv4 = {
+        addresses = [
+          {
+            address = "192.168.23.130";
+            prefixLength = 25;
+          }
+        ];
+        # Explicit route for the wider 192.168.23.0/24 block via this
+        # VLAN's gateway, not just pigate's own /30 - without it, replies
+        # to pigate (or anything else later carved out of this same /24)
+        # would go out this host's main LAN default route instead, an
+        # asymmetric path the UniFi's stateful zone firewall would drop as
+        # an unrecognized return packet.
+        routes = [
+          {
+            address = "192.168.23.0";
+            prefixLength = 24;
+            via = "192.168.23.129";
+          }
+        ];
+      };
     };
   };
 
@@ -212,7 +231,10 @@ in
   services = {
     atuin = {
       enable = true;
-      host = "127.0.0.1";
+      # All interfaces, matching the rest of the fleet's internal-only
+      # services (and attic.nix's same fix) - nginx moved to pigate,
+      # reaching this over the services VLAN instead of loopback.
+      host = "0.0.0.0";
       maxHistoryLength = 2000000000;
     };
     avahi = {
@@ -361,318 +383,57 @@ in
         "profile.enabled" = true;
       };
     };
+    # Trimmed to exactly the vhosts that either can't become a plain
+    # proxy_pass from pigate to an app port, or never belonged on the DMZ
+    # edge in the first place:
+    #   - nextcloud: services.nextcloud.nginx assumes a co-located php-fpm
+    #     socket.
+    #   - newspaper: oauth2-proxy's own nginx integration injects
+    #     auth_request config into a vhost on this same host (newspaper.nix).
+    #   - podcasts: serves static files straight off this host's local disk.
+    #   - social-reader-mcp: LAN-only, IP-restricted to tcan-left, never
+    #     internet-facing - no reason to route it through pigate at all.
+    # The first three are plain HTTP on the services-VLAN IP only, since
+    # pigate already terminated client-facing TLS before that hop.
+    # social-reader-mcp keeps its own direct ACME/SSL on 0.0.0.0, exactly
+    # as before this migration - hence recommendedTlsSettings staying on
+    # below. Every other public vhost (the TLS-terminating, ACME-covered,
+    # CrowdSec/fail2ban-protected ones) now lives on pigate instead.
     nginx = {
       enable = true;
       recommendedGzipSettings = true;
       recommendedOptimisation = true;
       recommendedProxySettings = true;
-      recommendedTlsSettings = true;
+      recommendedTlsSettings = true; # needed for social-reader-mcp's own ACME/SSL vhost below
       appendHttpConfig = ''
-        # Add HSTS header with preloading to HTTPS requests.
-        # Adding this header to HTTP requests is discouraged
-        map $scheme $hsts_header {
-            https   "max-age=31536000;";
-        }
-        add_header Strict-Transport-Security $hsts_header;
-
-        # Rate-limit the ytdlfin health endpoint so unauthenticated bots
-        # can't hammer it.  Uptime Kuma polls once per minute; 6r/m gives
-        # comfortable headroom while still blocking floods.
-        limit_req_zone $binary_remote_addr zone=ytdlfin_health:1m rate=6r/m;
-
-        # Mealie has no built-in rate limiting at all on its API (confirmed
-        # from Mealie's own security docs, which explicitly recommend doing
-        # this at the reverse proxy) - no fail2ban filter needed/available,
-        # this covers the same ground at the nginx layer instead.
-        limit_req_zone $binary_remote_addr zone=mealie_login:1m rate=10r/m;
+        # pigate is the only path into this nginx (see
+        # modules/hosts/nixos/pigate/default.nix's proxy_pass to
+        # ${backend_ip}:80) - trust its X-Forwarded-For so $remote_addr
+        # here reflects the real client, not pigate itself. Without this,
+        # every request would appear to originate from pigate: Nextcloud's
+        # own access log (and the nextcloud fail2ban jail above, which
+        # greps that log for remoteAddr) would never see the real
+        # attacker, and could end up trying to ban pigate instead.
+        set_real_ip_from 192.168.23.2;
+        real_ip_header X-Forwarded-For;
+        real_ip_recursive on;
       '';
       virtualHosts = {
-        "${home_domain}" = {
-          default = true;
-          serverAliases = [
-            "nix-tester.${home_domain}"
-          ];
+        "nextcloud.${home_domain}" = {
           listen = [
             {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
+              addr = "192.168.23.130";
+              port = 80;
             }
           ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations."/" = {
-            return = "200 '<h1>Hello world ;)</h1>'";
-            extraConfig = ''
-              add_header Content-Type text/html;
-            '';
-          };
-          locations."/server_status" = {
-            extraConfig = ''
-              stub_status;
-              allow 127.0.0.1;
-              deny all;
-            '';
-          };
-        };
-        "ab.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations."/".proxyWebsockets = true;
-          locations."/".proxyPass =
-            "http://${backend_ip}:${toString config.genebean.ports.audiobookshelf.port}";
-          extraConfig = ''
-            client_max_body_size 0;
-          '';
-        };
-        "attic.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.attic.port}";
-          # Pushing anything past nginx's 1 MiB default body-size limit
-          # 413s - confirmed live pushing gitkraken (a large closure).
-          extraConfig = ''
-            client_max_body_size 0;
-          '';
-        };
-        "atuin.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.atuin.port}";
-        };
-        "buzz.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations = {
-            "/" = {
-              proxyPass = "http://${backend_ip}:${toString config.genebean.ports.buzz-relay.port}";
-              proxyWebsockets = true;
-            };
-            # Device pairing (NIP-AB): a separate binary/process from the main
-            # relay (buzz.nix's buzz-pair-relay container), not buzz-relay
-            # itself. Desktop/mobile clients derive this path from the main
-            # relay's own NIP-11 supported_nips list advertising 43.
-            "/pair" = {
-              proxyPass = "http://${backend_ip}:${toString config.genebean.ports.buzz-pair-relay.port}";
-              proxyWebsockets = true;
-            };
-          };
-        };
-        "git.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.forgejo.port}";
-          extraConfig = ''
-            client_max_body_size 0;
-          '';
-        };
-        "id.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.pocket-id.port}";
-          extraConfig = ''
-            proxy_busy_buffers_size   512k;
-            proxy_buffers           4 512k;
-            proxy_buffer_size         256k;
-          '';
-        };
-        "immich.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.immich.port}";
-          locations."/".proxyWebsockets = true;
-          extraConfig = ''
-            client_max_body_size 0;
-            proxy_read_timeout 600s;
-            proxy_send_timeout 600s;
-            send_timeout       600s;
-          '';
-        };
-        "immich-kiosk.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          basicAuthFile = config.sops.secrets.immich_kiosk_basic_auth.path;
-          locations."/".proxyPass =
-            "http://${backend_ip}:${toString config.genebean.ports.immich-kiosk.port}";
-          locations."/".proxyWebsockets = true;
-          extraConfig = ''
-            client_max_body_size 0;
-            proxy_read_timeout 600s;
-            proxy_send_timeout 600s;
-            send_timeout       600s;
-          '';
-        };
-        "karakeep.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations."/" = {
-            proxyPass = "http://127.0.0.1:${toString config.genebean.ports.karakeep.port}";
-            proxyWebsockets = true;
-          };
-          extraConfig = ''
-            client_max_body_size 100M;
-          '';
-        };
-        "jellyfin.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations = {
-            "/" = {
-              proxyPass = "http://${backend_ip}:${toString config.genebean.ports.jellyfin.port}";
-              extraConfig = ''
-                proxy_buffering off;
-                proxy_set_header X-Forwarded-Protocol $scheme;
-              '';
-            };
-            "/socket" = {
-              proxyPass = "http://${backend_ip}:${toString config.genebean.ports.jellyfin.port}";
-              proxyWebsockets = true;
-              extraConfig = ''
-                proxy_set_header X-Forwarded-Protocol $scheme;
-              '';
-            };
-          };
-          extraConfig = ''
-            client_max_body_size 20M;
-          '';
-        };
-        "mealie.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations = {
-            "/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.mealie.port}";
-            "= /api/auth/token" = {
-              proxyPass = "http://${backend_ip}:${toString config.genebean.ports.mealie.port}/api/auth/token";
-              extraConfig = ''
-                limit_req zone=mealie_login burst=3 nodelay;
-              '';
-            };
-          };
-          extraConfig = ''
-            client_max_body_size 10M;
-          '';
-        };
-        "monitoring.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations = {
-            "/grafana/".proxyPass =
-              "http://${backend_ip}:${toString config.genebean.ports.grafana.port}/grafana/";
-            "/remotewrite" = {
-              basicAuthFile = config.sops.secrets.nginx_basic_auth.path;
-              proxyPass = "http://127.0.0.1:${toString config.genebean.ports.victoriametrics.port}/api/v1/write";
-              proxyWebsockets = true;
-            };
-          };
         };
         "newspaper.${home_domain}" = {
           listen = [
             {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
+              addr = "192.168.23.130";
+              port = 80;
             }
           ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
           locations = {
             # `satisfy any;` - either passes: basicAuthFile (Hermes agents,
             # which can't do an interactive OIDC login) OR the PocketID
@@ -699,22 +460,13 @@ in
             };
           };
         };
-        "nextcloud.${home_domain}" = {
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-        };
         "podcasts.${home_domain}" = {
           listen = [
             {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
+              addr = "192.168.23.130";
+              port = 80;
             }
           ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
           basicAuthFile = config.sops.secrets.filtered_podcast_feeds_basic_auth.path;
           locations."/feeds/" = {
             alias = "/var/lib/filtered-podcast-feeds/";
@@ -726,10 +478,12 @@ in
         };
         # hermes-agent-fleet-plan issue 37: Danny's only path to
         # social-reader-mcp. Its own dedicated port (not the shared
-        # genebean.ports.https listener other vhosts use) - the firewall
-        # rule below restricts TCP/8443 to tcan-left specifically, and
-        # mixing that with the fleet-wide-reachable 443 vhosts would make
-        # the restriction easy to lose track of later.
+        # genebean.ports.https listener other vhosts used to use) - the
+        # firewall rule above restricts TCP/8443 to tcan-left specifically,
+        # and mixing that with the fleet-wide-reachable 443 vhosts would
+        # make the restriction easy to lose track of later. Stays on this
+        # host, not pigate - it's LAN-only by design, never part of the
+        # internet-facing surface pigate exists to protect.
         "social-reader-mcp.${home_domain}" = {
           listen = [
             {
@@ -743,25 +497,6 @@ in
           forceSSL = true;
           locations."/mcp".proxyPass =
             "http://${backend_ip}:${toString config.genebean.ports.social-reader-mcp.port}/mcp";
-        };
-        "ytdlfin.${home_domain}" = {
-          listen = [
-            {
-              inherit (config.genebean.ports.https) port;
-              addr = "0.0.0.0";
-              ssl = true;
-            }
-          ];
-          enableACME = true;
-          acmeRoot = null;
-          forceSSL = true;
-          locations."/".proxyPass = "http://${backend_ip}:${toString config.genebean.ports.ytdlfin.port}";
-          locations."= /health" = {
-            proxyPass = "http://${backend_ip}:${toString config.genebean.ports.ytdlfin.port}";
-            extraConfig = ''
-              limit_req zone=ytdlfin_health burst=3 nodelay;
-            '';
-          };
         };
       };
     };
@@ -871,16 +606,16 @@ in
       attic_rs256_secret = {
         restartUnits = [ "atticd.service" ];
       };
+      # sopsFile for this comes from lets-encrypt.nix (still imported here
+      # for cup-collector.nix/dolt-beads-server.nix's own direct ACME
+      # certs) - just adding ddclient to the restart list.
+      gandi_dns_pat.restartUnits = [ "ddclient.service" ];
       karakeep_env = {
         owner = "karakeep";
         restartUnits = [
           "karakeep-web.service"
           "karakeep-workers.service"
         ];
-      };
-      immich_kiosk_basic_auth = {
-        owner = config.users.users.nginx.name;
-        restartUnits = [ "nginx.service" ];
       };
       local_private_env = {
         owner = "${username}";
@@ -891,10 +626,6 @@ in
         restartUnits = [ "mealie.service" ];
       };
       nextcloud_admin_pass.owner = config.users.users.nextcloud.name;
-      nginx_basic_auth = {
-        owner = "nginx";
-        restartUnits = [ "nginx.service" ];
-      };
       pocketid_encryption_key = {
         restartUnits = [ "pocket-id.service" ];
       };

@@ -9,8 +9,23 @@ let
 in
 {
   services = {
+    # This vhost's own ACME/TLS are disabled below (enableACME/forceSSL) -
+    # that was fine when nginx lived on nixnuc, but pigate is the public
+    # edge now. Keep cup-collector's own locations/extraConfig (merged in
+    # from its module untouched) but redirect this vhost to plain HTTP on
+    # the services VLAN, matching nextcloud/podcasts/newspaper - pigate's
+    # own "cups.${home_domain}" vhost (pigate's default.nix) owns the real
+    # public ACME cert and proxies here by Host header.
+    nginx.virtualHosts."cups.${home_domain}".listen = [
+      {
+        addr = "192.168.23.130";
+        port = 80;
+      }
+    ];
     cupCollector = {
       enable = true;
+      enableACME = false;
+      forceSSL = false;
       # dataDir = "/var/lib/cup-collector";
       domain = "cups.${home_domain}";
       envFile = config.sops.secrets.cup_collector_env.path;
