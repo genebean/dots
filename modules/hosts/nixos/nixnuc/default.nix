@@ -791,6 +791,11 @@ in
     postgresql = {
       enable = true;
       package = pkgs.postgresql_16;
+      # Peer-authenticated (no password - see attic.nix's database.url),
+      # matching the default "local all all peer" pg_hba rule. atticd
+      # connects over the unix socket as its own OS user, which NixOS's
+      # ensureUsers never deletes if this is removed later.
+      ensureUsers = [ { name = "atticd"; } ];
     };
     postgresqlBackup = {
       enable = true;
@@ -909,6 +914,18 @@ in
     "nextcloud-setup" = {
       requires = [ "postgresql.service" ];
       after = [ "postgresql.service" ];
+    };
+    # Attic's dedicated tablespace (attic.nix) needs to exist, owned by
+    # postgres, before Postgres starts - same ordering problem/fix as
+    # atticd's own ExecStartPre for /attic itself, except this is a
+    # subdirectory Postgres owns, not atticd.
+    postgresql = {
+      after = [ "attic.mount" ];
+      requires = [ "attic.mount" ];
+      serviceConfig = {
+        ExecStartPre = "+${pkgs.coreutils}/bin/install -d -o postgres -g postgres -m 0700 /attic/postgresql-tablespace";
+        ReadWritePaths = [ "/attic/postgresql-tablespace" ];
+      };
     };
   };
 
