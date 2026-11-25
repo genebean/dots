@@ -67,3 +67,16 @@ exist yet. Then, on nixnuc:
 5. Once you're confident it's healthy (a day or two of real traffic with
    no errors), there's nothing left to clean up - step 3 already removed
    the old sqlite files.
+
+## Update: tablespace (and pg_wal) paths are now version-suffixed
+
+The tablespace directory was later renamed from `/attic/postgresql-tablespace`
+to `/attic/postgresql-tablespace-16`, and `pg_wal` relocated to
+`/attic/postgresql-wal-16/pg_wal` (see `default.nix`'s `postgresql.service`
+override) - both suffixed with the major version to match PGDATA's own
+`/var/lib/postgresql/16` convention. This matters for the next major-version
+upgrade (pg 18): WAL has no internal version-namespacing the way tablespaces
+do (each tablespace gets its own `PG_<majorversion>_<catalogversion>`
+subdirectory), so reusing an unversioned WAL path across two clusters during
+an upgrade would be unsafe. When upgrading, create fresh `-<newversion>`
+directories rather than reusing these.

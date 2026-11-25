@@ -8,7 +8,6 @@
       # Legacy ZFS mount units (datasets must exist before mount happens)
       "var-lib-audiobookshelf.mount"
       "var-lib-postgresql.mount"
-      "var-lib-postgresql-16-pg_wal.mount"
       # NixOS services with orico state dirs
       "dolt-beads.service"
       "forgejo.service"
@@ -53,7 +52,6 @@
           "orico/photon"
           "orico/pinchflat"
           "orico/postgresql-data"
-          "orico/postgresql-wal-16"
           "orico/psitransfer"
           "orico/rustfs"
         ];

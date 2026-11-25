@@ -59,10 +59,16 @@
       fsType = "zfs";
     };
 
-    "/var/lib/postgresql/16/pg_wal" = {
-      device = "orico/postgresql-wal-16";
-      fsType = "zfs";
-    };
+    # pg_wal used to be its own zfs dataset here (orico/postgresql-wal-16),
+    # but that put every commit's fsync on the slow orico USB3.0 mirror
+    # regardless of which tablespace the table data itself lived in -
+    # confirmed via metrics (sdb/sdc pinned at 75-98% I/O busy for ~39
+    # minutes during a 5-way concurrent Attic push). pg_wal is now a plain
+    # symlink from /var/lib/postgresql/16/pg_wal to /attic/postgresql-wal/pg_wal
+    # on the NVMe (see nixnuc/default.nix's tmpfiles rule + ReadWritePaths
+    # for that directory). The orico/postgresql-wal-16 dataset itself is
+    # still there, empty and unmounted - not destroyed, in case anything
+    # needs to be re-checked.
   };
 
   swapDevices = [ ];
