@@ -173,6 +173,21 @@ in
       # to loopback instead of hairpinning out through the LAN IP for a
       # local connection.
       127.0.0.1 dolt-beads.home.technicalissues.us
+
+      # id.* has two valid DNS answers - the UniFi's local-DNS override
+      # (pigate's DMZ address) and the real public IP - and which one wins
+      # depends on which resolver answers first. Server-to-server OIDC
+      # calls nixnuc makes to itself (Grafana's token exchange, oauth2-proxy's
+      # discovery and token exchange for newspaper, cup-collector, etc.)
+      # raced this and intermittently hung for ~20s before failing, which
+      # cascaded into login failures. Pinning this here removes the race -
+      # pigate already terminates TLS for id.* and proxies to pocket-id
+      # correctly, so this just makes nixnuc's own calls deterministically
+      # use the same already-working path a browser would. Requires a
+      # narrow Services->DMZ firewall allow on the UniFi for nixnuc->pigate
+      # on 443 (not previously needed, since nixnuc never had to reach
+      # pigate directly before).
+      192.168.23.2 id.home.technicalissues.us
     '';
 
     hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4
