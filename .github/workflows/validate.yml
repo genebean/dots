@@ -96,14 +96,20 @@ jobs:
   nixos:
     name: Build ${{ matrix.host }}
     needs: [validate, docs]
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
-        host:
-          - nixnuc
-          - hetznix01
-          - tcan-left
+        include:
+          - host: nixnuc
+            runner: ubuntu-latest
+          - host: hetznix01
+            runner: ubuntu-latest
+          - host: tcan-left
+            runner: ubuntu-latest
+          # aarch64 - needs an arm runner, same as hetznix02 below.
+          - host: pigate
+            runner: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v7
       - name: Read pinned private flake revision
@@ -139,8 +145,13 @@ jobs:
             echo "ATTIC_NIX_CONFIG_EOF"
           } >> "$GITHUB_ENV"
       - name: Build NixOS configuration
-        run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+        run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake --fallback
+      # Best-effort cache warming, not validation - a transient failure here
+      # (attic.home.technicalissues.us flakiness, an upstream IP-reputation
+      # block on the runner's own egress IP, etc.) must never fail a PR that
+      # otherwise built fine.
       - name: Push to Attic
+        continue-on-error: true
         env:
           ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
         run: |
@@ -201,8 +212,13 @@ jobs:
             echo "ATTIC_NIX_CONFIG_EOF"
           } >> "$GITHUB_ENV"
       - name: Build NixOS configuration
-        run: nix build .#nixosConfigurations.${{ matrix.configuration }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+        run: nix build .#nixosConfigurations.${{ matrix.configuration }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake --fallback
+      # Best-effort cache warming, not validation - a transient failure here
+      # (attic.home.technicalissues.us flakiness, an upstream IP-reputation
+      # block on the runner's own egress IP, etc.) must never fail a PR that
+      # otherwise built fine.
       - name: Push to Attic
+        continue-on-error: true
         env:
           ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
         run: |
@@ -253,8 +269,13 @@ jobs:
             echo "ATTIC_NIX_CONFIG_EOF"
           } >> "$GITHUB_ENV"
       - name: Build Home Manager configuration
-        run: nix build .#homeConfigurations.gene-x86_64-linux.activationPackage --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+        run: nix build .#homeConfigurations.gene-x86_64-linux.activationPackage --override-input private-flake path:$GITHUB_WORKSPACE/private-flake --fallback
+      # Best-effort cache warming, not validation - a transient failure here
+      # (attic.home.technicalissues.us flakiness, an upstream IP-reputation
+      # block on the runner's own egress IP, etc.) must never fail a PR that
+      # otherwise built fine.
       - name: Push to Attic
+        continue-on-error: true
         env:
           ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
         run: |
@@ -304,8 +325,13 @@ jobs:
             echo "ATTIC_NIX_CONFIG_EOF"
           } >> "$GITHUB_ENV"
       - name: Build nix-darwin configuration
-        run: nix build .#darwinConfigurations.mightymac-ci.system --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+        run: nix build .#darwinConfigurations.mightymac-ci.system --override-input private-flake path:$GITHUB_WORKSPACE/private-flake --fallback
+      # Best-effort cache warming, not validation - a transient failure here
+      # (attic.home.technicalissues.us flakiness, an upstream IP-reputation
+      # block on the runner's own egress IP, etc.) must never fail a PR that
+      # otherwise built fine.
       - name: Push to Attic
+        continue-on-error: true
         env:
           ATTIC_TOKEN: ${{ secrets.ATTIC_TOKEN }}
         run: |

@@ -39,7 +39,13 @@
     };
 
     cup-collector = {
-      url = "github:genebean/cup-collector/v1.1.5";
+      # Pinned to a commit, not a vX.Y.Z tag like usual: ebfd286 is the
+      # merge of genebean/cup-collector#255 (enableACME/forceSSL options,
+      # used by modules/hosts/nixos/nixnuc/cup-collector.nix), merged to
+      # main but not yet cut into a release tag. Revert to a normal
+      # github:genebean/cup-collector/vX.Y.Z tag once one exists that
+      # includes this commit.
+      url = "github:genebean/cup-collector/ebfd286f5c9c2315b568b3c3c8123b2473b541b7";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -164,7 +170,6 @@
     # Private flake for sensitive configs
     private-flake = {
       url = "git+https://git.home.technicalissues.us/genebean/private-flake";
-      #url = "github:genebean/private-flake";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         simple-nixos-mailserver.follows = "simple-nixos-mailserver";
@@ -326,6 +331,22 @@
             inputs.ytdlfin.nixosModules.default
           ];
         };
+        # DMZ reverse-proxy/edge host, split off of nixnuc - headless, no
+        # impermanence (that's kiosk-gene-desk's use case, not a gateway's)
+        # and no display-vc4/private-flake-kiosk modules.
+        pigate = localLib.mkNixosHost {
+          system = "aarch64-linux";
+          hostname = "pigate";
+          additionalModules = [
+            inputs.nixos-raspberrypi.lib.inject-overlays
+            inputs.nixos-raspberrypi.nixosModules.nixpkgs-rpi
+            inputs.nixos-raspberrypi.nixosModules.raspberry-pi-4.base
+            inputs.nixos-raspberrypi.nixosModules.trusted-nix-caches
+          ];
+          additionalSpecialArgs = {
+            inherit (inputs) nixos-raspberrypi;
+          };
+        };
         # This machines is currently running Ubuntu and
         # configured with home-manager only.
         #
@@ -400,6 +421,21 @@
           fastConnection = true;
           remoteBuild = true;
         };
+        pigate =
+          (localLib.mkDeployNode {
+            hostname = "pigate"; # looked up against nixosConfigurations.pigate below
+            system = "aarch64-linux";
+            fastConnection = true;
+            remoteBuild = true;
+          })
+          // {
+            # mkDeployNode's hostname doc comment assumes Tailscale MagicDNS
+            # resolution - pigate deliberately has no Tailscale, so "pigate"
+            # itself isn't resolvable. Override just the SSH target to the
+            # static DMZ IP; the nixosConfigurations lookup above already
+            # happened correctly against the string "pigate".
+            hostname = "192.168.23.2";
+          };
         star1 = localLib.mkDeployNode {
           hostname = "star1";
           system = "x86_64-linux";

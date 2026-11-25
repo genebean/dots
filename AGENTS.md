@@ -143,10 +143,16 @@ To only build the closure without activating (useful for checking before committ
 nix build .#nixosConfigurations.<hostname>.config.system.build.toplevel
 ```
 
-### Build SD card image (kiosk-gene-desk)
+### Build Raspberry Pi installer image (bootstrap media for nixos-anywhere)
+
+Stale as of this edit: there is no `kiosk-gene-desk-sdImage` package attribute
+anymore. The current approach is a generic RPi4 installer image, flashed once
+and used to `nixos-anywhere` the real per-host config onto the target - not a
+per-host image build. See README.md's "Host Bootstrapping" section for the
+full procedure.
 
 ```bash
-nix build .#packages.aarch64-linux.kiosk-gene-desk-sdImage
+nix build .#rpi4-installer
 ```
 
 ---

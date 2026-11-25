@@ -78,17 +78,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1795308742,
-        "narHash": "sha256-lu8rQOnISnk4VXsLx+97iSrFR5JqYxGjeoYBsggrwSA=",
+        "lastModified": 1795559766,
+        "narHash": "sha256-qt1+vvANdE08C8tOMaoACNYTEVjm6rVSiWN3OaTyg0s=",
         "owner": "genebean",
         "repo": "cup-collector",
-        "rev": "766c6ba57353cca6e05c3853913088696020eb08",
+        "rev": "ebfd286f5c9c2315b568b3c3c8123b2473b541b7",
         "type": "github"
       },
       "original": {
         "owner": "genebean",
-        "ref": "v1.1.5",
         "repo": "cup-collector",
+        "rev": "ebfd286f5c9c2315b568b3c3c8123b2473b541b7",
         "type": "github"
       }
     },
@@ -1120,11 +1120,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792606044,
-        "narHash": "sha256-ZzX9ybDZxON6sOiGHFCUc9gEtntBBfoywqsU4wFmDpY=",
+        "lastModified": 1795488872,
+        "narHash": "sha256-k5nQLpHgGmaHixCQH7ReBTs1TcK5xHztNpj8iof/jmU=",
         "ref": "refs/heads/main",
-        "rev": "0a2b1dd92647ae1049b46e148b2041047eec2bdf",
-        "revCount": 34,
+        "rev": "0fc081228ea67a5708124751f8800db6be2d51f3",
+        "revCount": 37,
         "type": "git",
         "url": "https://git.home.technicalissues.us/genebean/private-flake"
       },

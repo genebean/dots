@@ -5,6 +5,7 @@ keys:
   - &system_hetznix02 age180w4c04kga07097u0us6d72aslnv2523hx64x8fzgzu4tccrxuyqa50hpm
   - &system_kiosk_gene_desk age1an6t5f0rr6h55rzsv5ejycxju72rp46jka840fwvupwfk65jegrq7hmkl9
   - &system_nixnuc age1g24zhwvgenpc4wqejt63thvgd4rn5x9n7nnwwme7dm83nfqpp93se2vmq4
+  - &system_pigate age1ylvq64pup6q6t5gsayhndgrv2n2e44aet2xgmsak69c03fuxns3qgfvga7
   - &system_rainbow_planet age1ueus0ucmvqhgkw3vyc8zxaq0qjc84cfrcuqpheppem68s4a2vq0qw376yc
   - &system_star1 age1hz8260n3dsyrg0rpk4zes0dc3skqsvy6t8lhv9zfsvzr6tze2a6stmn2z5
   - &system_tcan_left age1ntd82pwe5svs45awmttagtxz6lm6fv748x94znxrltaeulpr0sgqlsjjmx
@@ -31,6 +32,10 @@ creation_rules:
     key_groups:
       - age:
           - *system_nixnuc
+  - path_regex: pigate/secrets.yaml$
+    key_groups:
+      - age:
+          - *system_pigate
   - path_regex: rainbow-planet/secrets.yaml$
     key_groups:
       - age:
@@ -63,6 +68,7 @@ creation_rules:
           - *system_hetznix02
           - *system_kiosk_gene_desk
           - *system_nixnuc
+          - *system_pigate
           - *system_rainbow_planet
           - *system_star1
           - *system_tcan_left

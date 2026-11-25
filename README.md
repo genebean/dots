@@ -380,8 +380,53 @@ This is the verified, current procedure - confirmed end-to-end while onboarding
    ```bash
    nix run nixpkgs#ssh-to-age -- -private-key -i nixos-anywhere-extras-<hostname>/etc/ssh/ssh_host_ed25519_key > /tmp/<hostname>-age-key.txt
    SOPS_AGE_KEY_FILE=/tmp/<hostname>-age-key.txt sops modules/hosts/nixos/<hostname>/secrets.yaml
+   ```
+   **Also seed this same key at `sops.age.keyFile`'s path in `--extra-files`
+   before removing the temp copy** - every host's `default.nix` sets
+   `sops.age.keyFile = "~/.config/sops/age/keys.txt"`, and
+   `sops-install-secrets` treats that path being configured-but-missing as
+   a **fatal** activation error even when the `sshKeyPaths` fallback
+   (`modules/hosts/nixos/default.nix`) would otherwise succeed on its own -
+   confirmed live on pigate's first install attempt: both `setupSecrets`
+   and `setupSecretsForUsers` failed outright, silently skipping every
+   declared secret including the user's own password hash (console login
+   then fails with no password ever having been set). Skipping this step
+   is not a smaller, safer default - it's a guaranteed activation failure:
+   ```bash
+   mkdir -p nixos-anywhere-extras-<hostname>/home/<username>/.config/sops/age
+   cp /tmp/<hostname>-age-key.txt nixos-anywhere-extras-<hostname>/home/<username>/.config/sops/age/keys.txt
+   chmod 600 nixos-anywhere-extras-<hostname>/home/<username>/.config/sops/age/keys.txt
    rm /tmp/<hostname>-age-key.txt
    ```
+   **This creates a second problem you must also fix**: `--extra-files`
+   copies run as root, early, before NixOS's own home-directory creation -
+   so `/home/<username>`, `.config`, `.config/sops`, and `.config/sops/age`
+   all get created as root:root in the process. Normal home-directory
+   creation does not fix ownership of a directory that already exists, so
+   this breaks anything the user writes under `~/.config` afterward (atuin,
+   etc.) with `Permission denied`. Confirmed live on pigate - and confirmed
+   that a `systemd.tmpfiles.rules` `z` fix does **not** work around it:
+   `systemd-tmpfiles` has a hardcoded "unsafe path transition" refusal (a
+   gene-owned parent directory with a root-owned child looks like a
+   symlink-attack vector) with no override flag, so the rule just silently
+   never applies - don't waste time on that approach, it was tried and
+   confirmed to do nothing:
+   ```
+   Detected unsafe path transition /home/gene (owned by gene) -> /home/gene/.config (owned by root) during canonicalization...
+   ```
+   The actual fix is a one-time manual chown after first boot, once SSH
+   access works:
+   ```bash
+   ssh <username>@<hostname> "sudo chown -R ${username}:users /home/${username}/.config"
+   ```
+   (This is a different root cause than `kiosk-gene-desk/persistence.nix`'s
+   own similar-looking comments about impermanence's directory creation
+   racing the same way - that one's tmpfiles-based fix evidently avoids
+   triggering this specific refusal, perhaps because impermanence's bind-
+   mount setup doesn't produce the same user-owned-parent/root-owned-child
+   mismatch. Don't assume tmpfiles rules are a working mitigation for this
+   exact failure mode just because that file uses them for something
+   superficially similar.)
 
 10. **Register authorized SSH keys** for your user. `private-flake` is a
    separate, private companion repo (already cloned at
@@ -407,16 +452,27 @@ This is the verified, current procedure - confirmed end-to-end while onboarding
     this in place through the actual install and verification (step 15),
     not just until the branch is pushed. Only once the host is up and
     verified working: merge `private-flake`'s PR, revert `flake.nix`'s
-    `private-flake.url` back to `"github:genebean/private-flake"`, re-lock
+    `private-flake.url` back to
+    `"git+https://git.home.technicalissues.us/genebean/private-flake"`
+    (private-flake is hosted on Forgejo, not GitHub), re-lock
     against that real merged commit, and open `dots`'s own PR.
 
-13. **Pre-authorize a throwaway key** so install doesn't need password auth.
-    `<console-password>` is the root password from step 2:
-    ```bash
-    ssh-keygen -t ed25519 -N "" -C "bootstrap" -f /tmp/bootstrap-key
-    SSHPASS='<console-password>' sshpass -e ssh root@<installer-ip> \
-      "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys" < /tmp/bootstrap-key.pub
-    ```
+13. **Pre-authorize a key** so install doesn't need password auth -
+    `nixos-anywhere`'s own SSH calls are non-interactive and can't satisfy a
+    password prompt. Two ways to do this; either works:
+    - **Simpler, confirmed working (pigate)**: run `ssh-copy-id
+      root@<installer-ip>` yourself, interactively, typing the console
+      password from step 2 when prompted. Puts your own public key on the
+      installer, so `nixos-anywhere` needs no `-i` flag at all - it just
+      uses your normal SSH identity.
+    - **Throwaway key** (if `ssh-copy-id` isn't available, or you'd just
+      rather generate a disposable one):
+      `<console-password>` is the root password from step 2:
+      ```bash
+      ssh-keygen -t ed25519 -N "" -C "bootstrap" -f /tmp/bootstrap-key
+      SSHPASS='<console-password>' sshpass -e ssh root@<installer-ip> \
+        "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys" < /tmp/bootstrap-key.pub
+      ```
 
 14. **Install.** Make sure no earlier attempt against this same host is still
     running in the background first (see Notes) - then:
@@ -425,9 +481,10 @@ This is the verified, current procedure - confirmed end-to-end while onboarding
       --flake .#<hostname> \
       --extra-files ./nixos-anywhere-extras-<hostname> \
       --phases disko,install,reboot \
-      -i /tmp/bootstrap-key \
       root@<installer-ip>
     ```
+    Add `-i /tmp/bootstrap-key` only if you went the throwaway-key route
+    above.
 
 15. **Verify**: SSH in as your normal user once it reboots, confirm
     `systemctl status tailscaled-autoconnect`, and that `tailscale status`
