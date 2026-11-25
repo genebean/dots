@@ -41,6 +41,18 @@ in
     kernel.sysctl."net.ipv4.ip_forward" = 0; # pigate is not a router itself
   };
 
+  # Confirmed live: nginx got OOM-killed repeatedly (0B swap existing, a
+  # burst of concurrent CI pushes through its proxy_pass to attic was
+  # enough to tip it over) - no real disk swap device though, to keep the
+  # same SD card write endurance concern as boot.tmp.useTmpfs above. zram
+  # (RAM-only compressed swap) gives OOM headroom without touching the SD
+  # card at all - zswap would need a real disk-backed swap device behind
+  # it, which this host deliberately doesn't have.
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+  };
+
   environment.systemPackages = with pkgs; [
     libraspberrypi
     raspberrypi-eeprom
@@ -262,6 +274,19 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       appendHttpConfig = ''
+        # nginx's default buffers the entire client request body in memory
+        # (or a temp file) before forwarding it upstream - expensive under
+        # concurrent load for anything that receives large uploads (attic's
+        # own chunk pushes, but also any vhost here handling photo/video
+        # uploads - immich, immich-kiosk, nextcloud, audiobookshelf,
+        # cup-collector's cups vhost). Confirmed live: this contributed to
+        # nginx getting OOM-killed under a burst of concurrent CI pushes.
+        # Off globally streams the body straight through instead - the
+        # tradeoff (nginx can't transparently retry a failed upstream after
+        # streaming has started) doesn't matter here since every vhost has
+        # exactly one upstream, not a load-balanced pool.
+        proxy_request_buffering off;
+
         # Add HSTS header with preloading to HTTPS requests.
         # Adding this header to HTTP requests is discouraged
         map $scheme $hsts_header {
