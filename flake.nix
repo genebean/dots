@@ -39,13 +39,15 @@
     };
 
     cup-collector = {
-      # Pinned to a commit, not a vX.Y.Z tag like usual: ebfd286 is the
-      # merge of genebean/cup-collector#255 (enableACME/forceSSL options,
-      # used by modules/hosts/nixos/nixnuc/cup-collector.nix), merged to
+      # Pinned to a commit, not a vX.Y.Z tag like usual: 924eb10 is the
+      # merge of genebean/cup-collector#257 (pin OIDC checks to
+      # [pkce, state] - fixes pocket-id rejecting every sign-in with
+      # invalid_state, see nixnuc/default.nix's extraHosts comment for
+      # the related DNS-race issue this surfaced alongside), merged to
       # main but not yet cut into a release tag. Revert to a normal
       # github:genebean/cup-collector/vX.Y.Z tag once one exists that
       # includes this commit.
-      url = "github:genebean/cup-collector/ebfd286f5c9c2315b568b3c3c8123b2473b541b7";
+      url = "github:genebean/cup-collector/924eb109023c255631ed21501cdbb3db3b672758";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
