@@ -145,7 +145,7 @@ jobs:
             echo "ATTIC_NIX_CONFIG_EOF"
           } >> "$GITHUB_ENV"
       - name: Build NixOS configuration
-        run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+        run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake --fallback
       # Best-effort cache warming, not validation - a transient failure here
       # (attic.home.technicalissues.us flakiness, an upstream IP-reputation
       # block on the runner's own egress IP, etc.) must never fail a PR that
@@ -212,7 +212,7 @@ jobs:
             echo "ATTIC_NIX_CONFIG_EOF"
           } >> "$GITHUB_ENV"
       - name: Build NixOS configuration
-        run: nix build .#nixosConfigurations.${{ matrix.configuration }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+        run: nix build .#nixosConfigurations.${{ matrix.configuration }}.config.system.build.toplevel --override-input private-flake path:$GITHUB_WORKSPACE/private-flake --fallback
       # Best-effort cache warming, not validation - a transient failure here
       # (attic.home.technicalissues.us flakiness, an upstream IP-reputation
       # block on the runner's own egress IP, etc.) must never fail a PR that
@@ -269,7 +269,7 @@ jobs:
             echo "ATTIC_NIX_CONFIG_EOF"
           } >> "$GITHUB_ENV"
       - name: Build Home Manager configuration
-        run: nix build .#homeConfigurations.gene-x86_64-linux.activationPackage --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+        run: nix build .#homeConfigurations.gene-x86_64-linux.activationPackage --override-input private-flake path:$GITHUB_WORKSPACE/private-flake --fallback
       # Best-effort cache warming, not validation - a transient failure here
       # (attic.home.technicalissues.us flakiness, an upstream IP-reputation
       # block on the runner's own egress IP, etc.) must never fail a PR that
@@ -325,7 +325,7 @@ jobs:
             echo "ATTIC_NIX_CONFIG_EOF"
           } >> "$GITHUB_ENV"
       - name: Build nix-darwin configuration
-        run: nix build .#darwinConfigurations.mightymac-ci.system --override-input private-flake path:$GITHUB_WORKSPACE/private-flake
+        run: nix build .#darwinConfigurations.mightymac-ci.system --override-input private-flake path:$GITHUB_WORKSPACE/private-flake --fallback
       # Best-effort cache warming, not validation - a transient failure here
       # (attic.home.technicalissues.us flakiness, an upstream IP-reputation
       # block on the runner's own egress IP, etc.) must never fail a PR that
