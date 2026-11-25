@@ -41,6 +41,18 @@ in
     kernel.sysctl."net.ipv4.ip_forward" = 0; # pigate is not a router itself
   };
 
+  # Confirmed live: nginx got OOM-killed repeatedly (0B swap existing, a
+  # burst of concurrent CI pushes through its proxy_pass to attic was
+  # enough to tip it over) - no real disk swap device though, to keep the
+  # same SD card write endurance concern as boot.tmp.useTmpfs above. zram
+  # (RAM-only compressed swap) gives OOM headroom without touching the SD
+  # card at all - zswap would need a real disk-backed swap device behind
+  # it, which this host deliberately doesn't have.
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+  };
+
   environment.systemPackages = with pkgs; [
     libraspberrypi
     raspberrypi-eeprom
@@ -262,6 +274,19 @@ in
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
       appendHttpConfig = ''
+        # nginx's default buffers the entire client request body in memory
+        # (or a temp file) before forwarding it upstream - expensive under
+        # concurrent load for anything that receives large uploads (attic's
+        # own chunk pushes, but also any vhost here handling photo/video
+        # uploads - immich, immich-kiosk, nextcloud, audiobookshelf,
+        # cup-collector's cups vhost). Confirmed live: this contributed to
+        # nginx getting OOM-killed under a burst of concurrent CI pushes.
+        # Off globally streams the body straight through instead - the
+        # tradeoff (nginx can't transparently retry a failed upstream after
+        # streaming has started) doesn't matter here since every vhost has
+        # exactly one upstream, not a load-balanced pool.
+        proxy_request_buffering off;
+
         # Add HSTS header with preloading to HTTPS requests.
         # Adding this header to HTTP requests is discouraged
         map $scheme $hsts_header {
@@ -663,11 +688,17 @@ in
 
   ##########################################################################
   #                                                                        #
-  #  Resource limits / OOM protection. This is a single-purpose,          #
-  #  internet-facing Pi 4 with modest RAM - a flood or a runaway nginx     #
-  #  worker shouldn't be able to take down SSH management access along    #
-  #  with it. Deliberately NOT touching crowdsec-firewall-bouncer's own    #
-  #  sandboxing here: it genuinely needs CAP_NET_ADMIN/CAP_NET_RAW to      #
+  #  OOM preference, not a hard resource cap. This Pi has 4G and nginx     #
+  #  is this host's entire job - a hard MemoryMax here was actively        #
+  #  counterproductive: confirmed live, nginx got cgroup-OOM-killed at     #
+  #  ~512M under a burst of legitimate concurrent traffic (CI pushes),     #
+  #  well short of what the host can actually offer it. Letting nginx     #
+  #  use however much real memory it needs (zram swap above gives it      #
+  #  more headroom too) while still preferring it as the sacrifice over   #
+  #  sshd/crowdsec/fail2ban in a genuine system-wide OOM event is what     #
+  #  OOMScoreAdjust alone does, without the artificial ceiling.           #
+  #  Deliberately NOT touching crowdsec-firewall-bouncer's own sandboxing #
+  #  here: it genuinely needs CAP_NET_ADMIN/CAP_NET_RAW to                #
   #  manage nftables, and over-sandboxing it would just break it. The     #
   #  tmpfs `size=` caps above (fileSystems."/var/lib/fail2ban" etc.) are   #
   #  already a resource bound in their own right - a flood that fills     #
@@ -676,7 +707,6 @@ in
   ##########################################################################
   systemd.services = {
     nginx.serviceConfig = {
-      MemoryMax = "512M";
       # Let nginx be the first thing killed under memory pressure, not
       # sshd/crowdsec/fail2ban below - it's the most replaceable (systemd
       # restarts it) and the most likely to be the actual source of
