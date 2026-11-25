@@ -665,7 +665,14 @@ in
       ];
       requires = [ "attic.mount" ];
       serviceConfig.ReadWritePaths = [
-        "/attic/postgresql-tablespace"
+        # Suffixed with the major version (matching PGDATA's own
+        # /var/lib/postgresql/16 convention) so a future pg_upgrade can't
+        # collide with or ambiguously reuse these paths - WAL segments have
+        # no internal version-namespacing the way tablespaces do (postgres
+        # gives each tablespace its own PG_<majorversion>_<catalogversion>
+        # subdirectory), so an unversioned shared WAL path would be unsafe
+        # to reuse across a major-version upgrade.
+        "/attic/postgresql-tablespace-16"
         # pg_wal lives on the slow ZFS `orico` mirror by default
         # (PGDATA's own filesystem), which bottlenecks every commit's
         # fsync regardless of which tablespace the table data itself
@@ -675,14 +682,14 @@ in
         # standard Postgres technique for an existing, already-initdb'd
         # cluster) as a one-time manual step; this directory just needs
         # to exist with the right ownership before Postgres starts.
-        "/attic/postgresql-wal"
+        "/attic/postgresql-wal-16"
       ];
     };
   };
 
   systemd.tmpfiles.rules = [
-    "d /attic/postgresql-tablespace 0700 postgres postgres - -"
-    "d /attic/postgresql-wal 0700 postgres postgres - -"
+    "d /attic/postgresql-tablespace-16 0700 postgres postgres - -"
+    "d /attic/postgresql-wal-16 0700 postgres postgres - -"
   ];
 
   users.users.${username} = {
