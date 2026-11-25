@@ -664,12 +664,25 @@ in
         "systemd-tmpfiles-setup.service"
       ];
       requires = [ "attic.mount" ];
-      serviceConfig.ReadWritePaths = [ "/attic/postgresql-tablespace" ];
+      serviceConfig.ReadWritePaths = [
+        "/attic/postgresql-tablespace"
+        # pg_wal lives on the slow ZFS `orico` mirror by default
+        # (PGDATA's own filesystem), which bottlenecks every commit's
+        # fsync regardless of which tablespace the table data itself
+        # is on. Confirmed via metrics: sdb/sdc sat at 75-98% I/O busy
+        # for ~39 minutes during a 5-way concurrent CI push while the
+        # NVMe sat idle. pg_wal is relocated here via symlink (the
+        # standard Postgres technique for an existing, already-initdb'd
+        # cluster) as a one-time manual step; this directory just needs
+        # to exist with the right ownership before Postgres starts.
+        "/attic/postgresql-wal"
+      ];
     };
   };
 
   systemd.tmpfiles.rules = [
     "d /attic/postgresql-tablespace 0700 postgres postgres - -"
+    "d /attic/postgresql-wal 0700 postgres postgres - -"
   ];
 
   users.users.${username} = {
