@@ -415,6 +415,51 @@ maintain a second roster.
 
 ---
 
+## Sorting Conventions
+
+Sorted/alphabetical, always, with a small set of positional exceptions. None
+of this is enforced by `nix fmt`/deadnix/statix - it's a manual-review
+discipline, so check placement *before* writing an edit (where does this key
+sort? does its parent path already appear elsewhere in this block?), not as
+a cleanup pass after. The recurring failure mode is appending a new key
+wherever is narratively convenient mid-edit - end of the list, or next to
+whatever's currently being touched - instead of its correct position on the
+first pass.
+
+**Nix attrset keys**: alphabetical, except three keys that come first, in
+this order, when present:
+
+1. `imports` - always the very first key in the attrset.
+2. `stateVersion` (`system.stateVersion` / `home.stateVersion`) - immediately
+   after `imports`.
+3. `enable` - immediately after those, first among the remaining keys.
+4. `extraConfig` in an nginx `virtualHosts.<vhost>` block - always last,
+   after everything else in that block (not sorted into alphabetical
+   position). Scoped to that one nginx context, not a general exception.
+
+Everything else sorts alphabetically. For a multi-segment statement sitting
+as a top-level key (e.g. `systemd.services.vector.serviceConfig.EnvironmentFile
+= ...;` alongside `services` or `sops`), sort by the first segment only
+(`systemd`), not the full dotted path.
+
+Fold multiple assignments to the same parent attrset into one block rather
+than repeating the parent path - `systemd.services = { foo = { ... }; bar =
+{ ... }; };`, not two separate `systemd.services.foo = { ... };` and
+`systemd.services.bar = { ... };` statements. Same for `sops.secrets` /
+`sops.templates`: one `sops = { secrets = ...; templates = ...; };`, not
+separate top-level `sops.secrets.x = ...;` statements scattered through the
+file.
+
+**NixOS `services = { ... }` blocks**: sort the service keys alphabetically
+(`fail2ban`, `mysql`, `mysqlBackup`, `nginx`, `restic`, `wordpress`).
+
+**README/doc bullet lists**: alphabetical, not insertion order, and not
+mirroring another file's ordering (e.g. don't copy `.pre-commit-config.yaml`'s
+hook execution order for a tools list in a README). Insert new entries in
+correct alphabetical position, not appended at the end.
+
+---
+
 ## Code Quality Gates
 
 Before pushing any `.nix` change:
