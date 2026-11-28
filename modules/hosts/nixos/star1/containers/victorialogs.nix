@@ -45,11 +45,6 @@
 # password in three forms for three different consumers).
 { config, lib, ... }:
 let
-  # UDM SE, VLAN 2331 - both the gateway and this network's DNS service.
-  # One binding, not two separately-written literals, so the container's
-  # networking config below can't have its gateway and nameserver drift
-  # out of sync with each other.
-  gatewayAddress = "192.168.23.97";
   # Captured by closure, not referenced inside the container's own module
   # evaluation below - containers.<name>.config is a separate, mostly-bare
   # NixOS module tree that doesn't inherit the host's genebean.ports
@@ -93,16 +88,9 @@ in
     };
 
     config = _: {
-      system.stateVersion = "26.05";
+      imports = [ ./common.nix ];
 
       networking = {
-        # networkd requires the interface a default route attaches to be
-        # named explicitly - the plain-string form is a script-based-
-        # networking-only shorthand.
-        defaultGateway = {
-          address = gatewayAddress;
-          interface = "eth0";
-        };
         firewall.allowedTCPPorts = [ port ];
         interfaces.eth0.ipv4.addresses = [
           {
@@ -110,28 +98,13 @@ in
             prefixLength = 27;
           }
         ];
-        # Same UDM SE as the gateway above - it's also this network's
-        # DNS service, and resolved has nothing to fall back to otherwise
-        # (no DHCP to learn a resolver from, useHostResolvConf is off).
-        nameservers = [ gatewayAddress ];
-        useDHCP = false;
-        # Container defaults to inheriting the host's resolv.conf for
-        # convenience, which systemd-resolved (enabled below) can't
-        # coexist with - resolved manages its own.
-        useHostResolvConf = false;
-        useNetworkd = true;
       };
 
-      services = {
-        resolved.enable = true;
-        timesyncd.enable = true;
-
-        victorialogs = {
-          enable = true;
-          basicAuthPasswordFile = "/run/secrets/logshipper_victorialogs_pw";
-          basicAuthUsername = "logshipper";
-          listenAddress = ":${toString port}";
-        };
+      services.victorialogs = {
+        enable = true;
+        basicAuthPasswordFile = "/run/secrets/logshipper_victorialogs_pw";
+        basicAuthUsername = "logshipper";
+        listenAddress = ":${toString port}";
       };
 
       # See bindMounts' /var/lib/victorialogs comment above for why

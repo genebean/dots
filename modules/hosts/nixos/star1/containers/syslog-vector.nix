@@ -31,7 +31,6 @@
 # just the interface.
 { config, ... }:
 let
-  gatewayAddress = "192.168.23.97"; # UDM SE, VLAN 2331
   syslogPort = 514;
   # star1-victorialogs' address (containers/victorialogs.nix) - hardcoded
   # here rather than threaded through, same as pigate's own
@@ -66,36 +65,22 @@ in
             config.services.vector.settings;
       in
       {
-        system.stateVersion = "26.05";
+        imports = [ ./common.nix ];
 
         networking = {
-          defaultGateway = {
-            address = gatewayAddress;
-            interface = "eth0";
-          };
           firewall = {
             allowedTCPPorts = [ syslogPort ];
             allowedUDPPorts = [ syslogPort ];
           };
-          # "eth0", not nspawn's own "host0" - confirmed against nixos-
-          # containers.nix's containerInit script (see
-          # containers/victorialogs.nix's own comment on this).
           interfaces.eth0.ipv4.addresses = [
             {
               address = "192.168.23.99"; # next address after victorialogs' .98
               prefixLength = 27;
             }
           ];
-          nameservers = [ gatewayAddress ];
-          useDHCP = false;
-          useHostResolvConf = false;
-          useNetworkd = true;
         };
 
         services = {
-          resolved.enable = true;
-          timesyncd.enable = true;
-
           vector = {
             enable = true;
 
