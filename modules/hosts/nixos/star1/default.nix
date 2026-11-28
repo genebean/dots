@@ -120,6 +120,18 @@
   services = {
     fail2ban.enable = true;
     fwupd.enable = true;
+    # Fleet-wide default (modules/hosts/nixos/default.nix) runs on every
+    # interface it finds - restricted here to the two real physical NICs
+    # only. Without this it'd also chatter on br-observe and both
+    # containers' veths, which have no switch port on the other end to
+    # report to and would just add noise to the UniFi topology view.
+    # -I can only be given once (confirmed live: a second -I fails with
+    # "-I can only be used once" and crash-loops the unit) - one flag,
+    # comma-separated pattern, not a repeated flag per interface.
+    lldpd.extraArgs = [
+      "-I"
+      "enp2s0,enp3s0"
+    ];
     logrotate.enable = true;
     resolved.enable = true;
     # autodetect (default true) covers the NVMe root disk too - modern

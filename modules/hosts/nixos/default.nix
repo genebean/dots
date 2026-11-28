@@ -78,6 +78,12 @@
   security.sudo.wheelNeedsPassword = false;
 
   services = {
+    # Fleet-wide so every host shows up correctly in the UniFi controller's
+    # topology map - without it, a connected host is just an unlabeled
+    # client as far as the switch/controller can tell. Hosts with bridges
+    # or container veths (currently just star1) restrict which interfaces
+    # it actually runs on via extraArgs - see that host's own override.
+    lldpd.enable = true;
     openssh.enable = true;
   };
 
