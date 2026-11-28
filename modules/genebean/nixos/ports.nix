@@ -31,7 +31,9 @@
   # Ports known fleet-wide: either universal (ssh/http/https) or referenced
   # by multiple hosts (e.g. hetznix01 references photon to configure Dawarich).
   # openFirewall is false by default; each host's ports.nix sets it to true
-  # for the ports that host actually exposes.
+  # for the ports that host actually exposes. Entries within each section
+  # (universal protocols / singleton cross-host services / pigate's nixnuc
+  # proxy targets) are sorted by port number in ascending order.
   config.genebean.ports = {
     ssh = {
       port = 22;

@@ -1,11 +1,8 @@
-# Entries within each section are sorted by port number in ascending order.
+# Entries within each section are sorted by port number in ascending
+# order, except the fleet-wide-registered section below, which has no
+# local port number to sort by and is sorted alphabetically instead.
 {
   config.genebean.ports = {
-    # Override global photon default: open the firewall on this host
-    photon = {
-      openFirewall = true;
-    };
-
     # Firewalled TCP services
     smb-netbios-session = {
       port = 139;
@@ -15,37 +12,12 @@
       port = 445;
       openFirewall = true;
     };
-    # pocket-id/immich/immich-kiosk/grafana/karakeep/forgejo/buzz-relay ports
-    # are registered fleet-wide in modules/genebean/nixos/ports.nix (pigate
-    # proxies to each over the services VLAN) - only overriding openFirewall
-    # here, where they're actually bound.
-    pocket-id = {
-      openFirewall = true;
-    };
-    immich = {
-      openFirewall = true;
-    };
     psitransfer = {
       port = 3000;
       openFirewall = true;
     };
-    immich-kiosk = {
-      openFirewall = true;
-    };
-    grafana = {
-      openFirewall = true;
-    };
-    karakeep = {
-      openFirewall = true;
-    };
     cup-collector = {
       port = 3010;
-      openFirewall = true;
-    };
-    forgejo = {
-      openFirewall = true;
-    };
-    buzz-relay = {
       openFirewall = true;
     };
     youtarr = {
@@ -67,51 +39,20 @@
       port = 8001;
       openFirewall = true;
     };
-    # Shares port 8001 with tube-archivist above - pre-existing, not
-    # introduced by this change. Only one is actually bound at a time on
-    # this host; left as found rather than renumbered speculatively.
-    # Port registered fleet-wide (pigate proxies to it over the services VLAN).
-    ytdlfin = {
-      openFirewall = true;
-    };
-    # Not 8080 (atticd's own upstream default) - that's crowdsec's LAPI
-    # port on this host, registered fleet-wide in
-    # modules/genebean/nixos/ports.nix as crowdsec-lapi. Firewalled (not
-    # internal-only) since pigate now proxies to this over the services
-    # VLAN rather than nginx being co-located on this host. Port number
-    # itself also lives fleet-wide for the same cross-host reason.
-    attic = {
-      openFirewall = true;
-    };
     pocketbase = {
       port = 8091;
-      openFirewall = true;
-    };
-    jellyfin = {
       openFirewall = true;
     };
     syncthing-gui = {
       port = 8384;
       openFirewall = true;
     };
-    victoriametrics = {
-      openFirewall = true;
-    };
     gitdeck = {
       port = 8765;
       openFirewall = true;
     };
-    atuin = {
-      openFirewall = true;
-    };
     pinchflat = {
       port = 8945;
-      openFirewall = true;
-    };
-    audiobookshelf = {
-      openFirewall = true;
-    };
-    mealie = {
       openFirewall = true;
     };
     # LAN-only for now by design, not a security gap to fix later - Scotty
@@ -121,16 +62,73 @@
       port = 9005;
       openFirewall = true;
     };
+    rustfs-console = {
+      port = 9011;
+      openFirewall = true;
+    };
 
-    # Firewalled TCP services continued
+    # Firewalled TCP services, port registered fleet-wide in
+    # modules/genebean/nixos/ports.nix (another host either runs the
+    # service and/or pigate proxies to it over the services VLAN) - only
+    # overriding openFirewall here, where it's actually bound. No local
+    # port number to sort these by, so they're alphabetical instead.
+    attic = {
+      # Not 8080 (atticd's own upstream default) - that's crowdsec's LAPI
+      # port on this host, registered fleet-wide as crowdsec-lapi.
+      # Firewalled (not internal-only) since pigate now proxies to this
+      # over the services VLAN rather than nginx being co-located here.
+      openFirewall = true;
+    };
+    atuin = {
+      openFirewall = true;
+    };
+    audiobookshelf = {
+      openFirewall = true;
+    };
     # pigate's buzz vhost proxies /pair here directly over the services
-    # VLAN now, not through nginx co-located on this host. Port number
-    # registered fleet-wide for that reason.
+    # VLAN, not through nginx co-located on this host.
     buzz-pair-relay = {
       openFirewall = true;
     };
-    rustfs-console = {
-      port = 9011;
+    buzz-relay = {
+      openFirewall = true;
+    };
+    forgejo = {
+      openFirewall = true;
+    };
+    grafana = {
+      openFirewall = true;
+    };
+    immich = {
+      openFirewall = true;
+    };
+    immich-kiosk = {
+      openFirewall = true;
+    };
+    jellyfin = {
+      openFirewall = true;
+    };
+    karakeep = {
+      openFirewall = true;
+    };
+    mealie = {
+      openFirewall = true;
+    };
+    # Override of the global default (modules/genebean/nixos/ports.nix) -
+    # open the firewall on this host specifically.
+    photon = {
+      openFirewall = true;
+    };
+    pocket-id = {
+      openFirewall = true;
+    };
+    victoriametrics = {
+      openFirewall = true;
+    };
+    # Shares port 8001 with tube-archivist above - pre-existing, not
+    # introduced by this change. Only one is actually bound at a time on
+    # this host; left as found rather than renumbered speculatively.
+    ytdlfin = {
       openFirewall = true;
     };
 
