@@ -69,6 +69,15 @@ modules/
 .claude/skills/              — project-specific Claude Code skills (committed)
 ```
 
+A host's own directory (`modules/hosts/nixos/<hostname>/`, `darwin/<hostname>/`) is private to
+that host - never import a file from a *different* host's directory (e.g. one host's `default.nix`
+reaching into `../other-host/ports.nix`). Cross-importing like this couples hosts in a way that's
+easy to lose track of - a value one host depends on can change or disappear because of an edit
+made while looking only at the other host. When two hosts need the same value: promote it to a
+shared location (`modules/genebean/nixos/ports.nix` for ports, `modules/shared/nixos/` for modules)
+if it's genuinely fleet-wide, or declare it independently (duplicated) in each host's own file if
+it isn't. See Port Registry below for the concrete port-number case.
+
 ---
 
 ## Host Inventory
@@ -246,6 +255,10 @@ inherit (config.genebean.ports.grafana) port;
 When adding a service that other hosts need to know about (e.g. a shared API
 endpoint referenced across hosts), declare it in the shared registry. When
 adding a service local to one host, declare it in that host's `ports.nix`.
+Never have one host's module import another host's `ports.nix` (or any other
+file in another host's directory) to reach a port number - if it's needed by
+more than one host, that's the signal to promote it to the shared registry
+instead.
 
 ---
 
@@ -412,6 +425,51 @@ maintain a second roster.
 5. **Regenerate docs** — any new/changed option under `genebean.*` needs
    `nix run .#update-docs` re-run and `docs/genebean-options.md` committed;
    see Code Quality Gates below - CI enforces this.
+
+---
+
+## Sorting Conventions
+
+Sorted/alphabetical, always, with a small set of positional exceptions. None
+of this is enforced by `nix fmt`/deadnix/statix - it's a manual-review
+discipline, so check placement *before* writing an edit (where does this key
+sort? does its parent path already appear elsewhere in this block?), not as
+a cleanup pass after. The recurring failure mode is appending a new key
+wherever is narratively convenient mid-edit - end of the list, or next to
+whatever's currently being touched - instead of its correct position on the
+first pass.
+
+**Nix attrset keys**: alphabetical, except three keys that come first, in
+this order, when present:
+
+1. `imports` - always the very first key in the attrset.
+2. `stateVersion` (`system.stateVersion` / `home.stateVersion`) - immediately
+   after `imports`.
+3. `enable` - immediately after those, first among the remaining keys.
+4. `extraConfig` in an nginx `virtualHosts.<vhost>` block - always last,
+   after everything else in that block (not sorted into alphabetical
+   position). Scoped to that one nginx context, not a general exception.
+
+Everything else sorts alphabetically. For a multi-segment statement sitting
+as a top-level key (e.g. `systemd.services.vector.serviceConfig.EnvironmentFile
+= ...;` alongside `services` or `sops`), sort by the first segment only
+(`systemd`), not the full dotted path.
+
+Fold multiple assignments to the same parent attrset into one block rather
+than repeating the parent path - `systemd.services = { foo = { ... }; bar =
+{ ... }; };`, not two separate `systemd.services.foo = { ... };` and
+`systemd.services.bar = { ... };` statements. Same for `sops.secrets` /
+`sops.templates`: one `sops = { secrets = ...; templates = ...; };`, not
+separate top-level `sops.secrets.x = ...;` statements scattered through the
+file.
+
+**NixOS `services = { ... }` blocks**: sort the service keys alphabetically
+(`fail2ban`, `mysql`, `mysqlBackup`, `nginx`, `restic`, `wordpress`).
+
+**README/doc bullet lists**: alphabetical, not insertion order, and not
+mirroring another file's ordering (e.g. don't copy `.pre-commit-config.yaml`'s
+hook execution order for a tools list in a README). Insert new entries in
+correct alphabetical position, not appended at the end.
 
 ---
 

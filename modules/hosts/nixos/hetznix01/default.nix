@@ -14,6 +14,7 @@
     ../../../shared/nixos/auditd.nix
     ../../../shared/nixos/crowdsec.nix
     ../../../shared/nixos/fail2ban-nginx.nix
+    ../../../shared/nixos/log-shipping.nix
   ];
 
   system.stateVersion = "24.05";

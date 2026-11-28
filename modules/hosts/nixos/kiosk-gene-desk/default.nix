@@ -8,6 +8,7 @@
   imports = [
     ./disko.nix
     ./persistence.nix
+    ../../../shared/nixos/log-shipping.nix
   ];
 
   system.stateVersion = "24.11";
@@ -52,6 +53,14 @@
       builders-use-substitutes = true
     '';
   };
+
+  # This host's own vector agent (log-shipping.nix) ships over this
+  # host's own network - the public hostname's hairpin NAT path back
+  # through the UniFi doesn't work reliably for on-prem callers, same
+  # reasoning as nixnuc/id.home.technicalissues.us.
+  networking.extraHosts = ''
+    192.168.23.2 monitoring.home.technicalissues.us
+  '';
 
   # Not part of genebean.kiosk-hardware: nixpkgs.overlays helps construct
   # `pkgs` itself, so gating it behind a home-manager-sourced cfg.enable

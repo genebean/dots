@@ -202,8 +202,9 @@ in
     grafana = {
       enable = true;
 
-      # Install VictoriaMetrics plugin declaratively
+      # Install VictoriaMetrics/VictoriaLogs plugins declaratively
       declarativePlugins = [
+        pkgs.grafanaPlugins.victoriametrics-logs-datasource
         pkgs.grafanaPlugins.victoriametrics-metrics-datasource
       ];
 
@@ -222,6 +223,20 @@ in
             url = "http://127.0.0.1:${toString config.genebean.ports.victoriametrics.port}";
             isDefault = true;
             uid = "VictoriaMetrics"; # Set explicit UID for use in alert rules
+          }
+          {
+            name = "VictoriaLogs";
+            type = "victoriametrics-logs-datasource";
+            access = "proxy";
+            # star1's victorialogs container, on its own observability VLAN -
+            # same credential and basic-auth username ("logshipper") the
+            # fleet's vector agents already authenticate with (see
+            # log-shipping.nix / star1's containers/victorialogs.nix).
+            url = "http://192.168.23.98:${toString config.genebean.ports.victorialogs.port}";
+            basicAuth = true;
+            basicAuthUser = "logshipper";
+            secureJsonData.basicAuthPassword = "$__file{${config.sops.secrets.logshipper_victorialogs_pw.path}}";
+            uid = "VictoriaLogs";
           }
         ];
       };
@@ -373,6 +388,11 @@ in
       uptimekuma_grafana_api_key = {
         owner = "vmagent";
         restartUnits = [ "vmagent.service" ];
+        sopsFile = ../../../shared/secrets.yaml;
+      };
+      logshipper_victorialogs_pw = {
+        owner = "grafana";
+        restartUnits = [ "grafana.service" ];
         sopsFile = ../../../shared/secrets.yaml;
       };
     };

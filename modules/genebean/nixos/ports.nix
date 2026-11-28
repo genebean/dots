@@ -63,5 +63,59 @@
     nginx-exporter = {
       port = 9113;
     };
+    # star1's victorialogs container (star1/containers/victorialogs.nix) -
+    # referenced by pigate's /logsink proxy and nixnuc's Grafana datasource,
+    # so it lives here rather than any one host's own ports.nix.
+    victorialogs = {
+      port = 9428;
+    };
+    # nixnuc services that pigate proxies to over the services VLAN -
+    # nixnuc/ports.nix sets openFirewall = true for each of these (it's the
+    # one that actually binds them); pigate only needs the port number.
+    pocket-id = {
+      port = 1411;
+    };
+    immich = {
+      port = 2283;
+    };
+    immich-kiosk = {
+      port = 3001;
+    };
+    grafana = {
+      port = 3002;
+    };
+    karakeep = {
+      port = 3003;
+    };
+    forgejo = {
+      port = 3030;
+    };
+    buzz-relay = {
+      port = 3033;
+    };
+    buzz-pair-relay = {
+      port = 5000;
+    };
+    ytdlfin = {
+      port = 8001;
+    };
+    attic = {
+      port = 8082;
+    };
+    jellyfin = {
+      port = 8096;
+    };
+    victoriametrics = {
+      port = 8428;
+    };
+    atuin = {
+      port = 8888;
+    };
+    mealie = {
+      port = 9000;
+    };
+    audiobookshelf = {
+      port = 13378;
+    };
   };
 }

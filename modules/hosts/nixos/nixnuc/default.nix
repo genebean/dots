@@ -13,7 +13,6 @@ let
 in
 {
   imports = [
-    ./hardware-configuration.nix
     ./attic.nix
     ./containers/audiobookshelf.nix
     ./containers/bead-me-up-scotty.nix
@@ -27,6 +26,7 @@ in
     ./dolt-beads-server.nix
     ./filtered-podcast-feeds.nix
     ./forgejo.nix
+    ./hardware-configuration.nix
     ./karakeep.nix
     ./monitoring-stack.nix
     ./newspaper.nix
@@ -34,13 +34,18 @@ in
     ./social-reader-mcp.nix
     ./zfs-datasets.nix
     ../../../shared/nixos/auditd.nix
-    # Still needed here: cup-collector.nix and dolt-beads-server.nix each
-    # issue their own direct ACME cert (not via nginx at all), relying on
-    # this module's security.acme.defaults. Only the nginx-fronted public
-    # vhosts' ACME moved to pigate - crowdsec.nix and fail2ban-nginx.nix
-    # did NOT come back, since those existed only to protect a publicly-
-    # reachable nginx, which this host no longer has.
+    # Re-added: dropped in c2a3b53 on the assumption this host's nginx was
+    # no longer publicly reachable at all, but several vhosts (nextcloud,
+    # newspaper, podcasts, cups) are still proxied here from pigate's
+    # public edge - this nginx is reachable by the internet, just
+    # indirectly. fail2ban-nginx.nix did NOT come back - not asked for,
+    # and a separate decision from this one.
+    ../../../shared/nixos/crowdsec.nix
+    # cup-collector.nix and dolt-beads-server.nix issue their own direct
+    # ACME cert (not via nginx at all), relying on this module's
+    # security.acme.defaults.
     ../../../shared/nixos/lets-encrypt.nix
+    ../../../shared/nixos/log-shipping.nix
   ];
 
   system.stateVersion = "23.11";
@@ -188,6 +193,14 @@ in
       # on 443 (not previously needed, since nixnuc never had to reach
       # pigate directly before).
       192.168.23.2 id.home.technicalissues.us
+
+      # Same reasoning as id.* above: monitoring.* has two valid DNS
+      # answers (the UniFi's local-DNS override and the real public IP),
+      # and this host's own vector agent (log-shipping.nix) depends on
+      # reliably landing on pigate's DMZ address rather than racing a
+      # hairpin NAT round-trip back through the public IP, which doesn't
+      # work reliably for on-prem callers.
+      192.168.23.2 monitoring.home.technicalissues.us
     '';
 
     hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4

@@ -12,6 +12,7 @@
     ./disk-config.nix
     ./hardware-configuration.nix
     ./monitoring.nix
+    ../../../shared/nixos/log-shipping.nix
   ];
 
   system.stateVersion = "26.05";
@@ -54,6 +55,15 @@
     # talks to the MCP, so that's the only place that needs it.
     # privateNetwork=false shares the network namespace, not /etc/hosts,
     # which is per-container (hermes-agent-fleet-plan issue 37/40).
+    #
+    # monitoring.* does need one here though: this host's own vector
+    # agent (log-shipping.nix) ships over the bare host's network, not a
+    # container's, and the public hostname's hairpin NAT path back
+    # through the UniFi doesn't work reliably for on-prem callers - same
+    # reasoning as nixnuc/id.home.technicalissues.us.
+    extraHosts = ''
+      192.168.23.2 monitoring.home.technicalissues.us
+    '';
 
     firewall = {
       allowedTCPPorts = lib.pipe config.genebean.ports [
