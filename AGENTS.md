@@ -466,6 +466,21 @@ file.
 **NixOS `services = { ... }` blocks**: sort the service keys alphabetically
 (`fail2ban`, `mysql`, `mysqlBackup`, `nginx`, `restic`, `wordpress`).
 
+**`ports.nix` files** (both `modules/genebean/nixos/ports.nix` and each
+host's own `modules/hosts/nixos/<hostname>/ports.nix`) are the one deliberate
+exception to alphabetical: entries are grouped by category (e.g. "Firewalled
+TCP services", "UDP services" - see the file for the actual categories) and
+sorted by **port number ascending** within each category, not alphabetically
+by service name. Keep new entries in one category rather than starting a
+second "continued" section for the same category further down the file.
+
+When a host's entry no longer carries its own `port = N;` line because the
+number now lives in the shared registry (`modules/genebean/nixos/ports.nix`)
+and only `openFirewall` is set locally, sorting by number is impractical -
+there's no number left in the file to sort by. Put these in their own
+section within the category (e.g. "Firewalled TCP services, port registered
+fleet-wide") and sort that section **alphabetically by name** instead.
+
 **README/doc bullet lists**: alphabetical, not insertion order, and not
 mirroring another file's ordering (e.g. don't copy `.pre-commit-config.yaml`'s
 hook execution order for a tools list in a README). Insert new entries in
