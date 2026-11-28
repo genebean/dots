@@ -336,7 +336,6 @@ in
       enable = true;
       openFirewall = true;
     };
-    lldpd.enable = true;
     mealie = {
       enable = true;
       credentialsFile = config.sops.secrets.mealie.path;
