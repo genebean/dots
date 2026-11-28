@@ -6,6 +6,27 @@
 # vhost). Every host goes through pigate uniformly, including star1
 # itself - no direct-to-container shortcut for anything, one access path
 # to reason about.
+#
+# On hosts running nginx, also ships its access log. journald only ever
+# gets nginx's error_log (nginx's own default of "stderr", captured by the
+# nginx.service unit) - access_log has no override on any vhost in this
+# fleet, so it stays on nginx's compiled-in default of a real file,
+# /var/log/nginx/access.log, which journald never sees. A `file` source
+# reads that (and any other *.log nginx writes under the same directory,
+# e.g. hetznix01's per-vhost stats.*.log) directly. Gated on
+# services.nginx.enable rather than split into its own file, so this
+# module stays the one place that answers "how do this host's logs get
+# shipped" regardless of what the host runs.
+#
+# Drops CrowdSec's own LAPI access-log chatter (its bouncers polling
+# /v1/decisions/stream and /v1/heartbeat every few seconds) before it
+# reaches the sink - confirmed live on nixnuc that this is pure noise, at
+# the same log level as everything else crowdsec.service writes, with no
+# way to separate it from real alert/decision lines (also journald-
+# captured, module=db, already shipped with no code needed) except by
+# filtering on message content. Applied unconditionally, not gated on
+# crowdsec being present - the condition only ever matches crowdsec.
+# service's own lines, so it's a no-op on hosts without it.
 {
   config,
   lib,
@@ -13,6 +34,7 @@
   ...
 }:
 let
+  hasNginx = config.services.nginx.enable;
   home_domain = "home.technicalissues.us";
   # Same literal settings vector's own module would generate into the Nix
   # store itself (services.vector's ExecStart does this internally too) -
@@ -43,7 +65,7 @@ in
         # healthcheck probe - without this, vector marks the sink
         # permanently unhealthy at startup even though real POSTs work fine.
         healthcheck.enabled = false;
-        inputs = [ "journald" ];
+        inputs = [ "drop_crowdsec_lapi_noise" ] ++ lib.optionals hasNginx [ "nginx_access" ];
         type = "http";
         # Field names and _stream_fields match VictoriaLogs' own vector
         # ingestion docs example exactly:
@@ -51,7 +73,43 @@ in
         uri = "https://monitoring.${home_domain}/logsink?_stream_fields=host,_SYSTEMD_UNIT&_msg_field=message&_time_field=timestamp";
       };
 
-      sources.journald.type = "journald";
+      sources = {
+        journald.type = "journald";
+      }
+      // lib.optionalAttrs hasNginx {
+        nginx_access_raw = {
+          include = [ "/var/log/nginx/*.log" ];
+          type = "file";
+        };
+      };
+
+      transforms = {
+        drop_crowdsec_lapi_noise = {
+          condition = ''
+            !( ._SYSTEMD_UNIT == "crowdsec.service" && contains(string!(.message), "module=lapi") )
+          '';
+          inputs = [ "journald" ];
+          type = "filter";
+        };
+      }
+      // lib.optionalAttrs hasNginx {
+        # The file source above has no host/_SYSTEMD_UNIT fields the way
+        # journald's does (vector's journald source carries both natively) -
+        # without this remap, these lines would stream into VictoriaLogs
+        # under blank values for the sink's _stream_fields and be
+        # indistinguishable from each other across the whole fleet.
+        # "nginx-access" (not the real unit name "nginx.service") keeps this
+        # stream distinct from nginx's own error-log lines, which already
+        # arrive via journald under the real unit name.
+        nginx_access = {
+          inputs = [ "nginx_access_raw" ];
+          source = ''
+            .host = get_hostname!()
+            ._SYSTEMD_UNIT = "nginx-access"
+          '';
+          type = "remap";
+        };
+      };
     };
 
     # The sink's auth.password above is written as a literal
@@ -101,5 +159,12 @@ in
       ${pkgs.bash}/bin/bash -c '${pkgs.gettext}/bin/envsubst < ${vectorConfigTemplate} > /run/vector/vector-rendered.toml && exec ${lib.getExe config.services.vector.package} --config /run/vector/vector-rendered.toml --graceful-shutdown-limit-secs ${toString config.services.vector.gracefulShutdownLimitSecs}'
     '';
     RuntimeDirectory = "vector";
+  }
+  // lib.optionalAttrs hasNginx {
+    # /var/log/nginx is LogsDirectoryMode 0750, group "nginx" (nginx's own
+    # NixOS module) - vector's DynamicUser has no access to it otherwise;
+    # journaldAccess's own SupplementaryGroups = "systemd-journal" doesn't
+    # cover this, it's a different group for a different purpose.
+    SupplementaryGroups = [ "nginx" ];
   };
 }
