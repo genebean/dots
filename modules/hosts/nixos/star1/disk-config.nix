@@ -12,40 +12,69 @@
 # No separate swap partition - zramSwap.nix handles memory pressure,
 # consistent with tcan-left.
 #
-# The two TEAM 1.9TB SATA drives are a mirrored ZFS pool ("storage", not
-# "rpool" - that name means *root* pool by ZFS convention, which this isn't;
-# not host-prefixed either, since unlike nixnuc's "orico" - named after an
-# external enclosure brand - these are plain internal bays). Provisioned as
-# part of this same base install, not a fast-follow: the owner wants the
-# base setup to cover the entire physical hardware stack in one pass. No
-# datasets pre-created here - those get added (via a small systemd oneshot,
-# same shape as nixnuc's zfs-datasets.nix) once this host is actually
-# assigned a role.
+# The two TEAM 1.9TB SATA drives are a second bcachefs filesystem
+# ("storage", not "rpool" - that name means *root* pool by ZFS convention,
+# which this isn't; not host-prefixed either, since unlike nixnuc's "orico"
+# - named after an external enclosure brand - these are plain internal
+# bays), replicated across both devices (--replicas=2) for the same
+# single-drive-failure tolerance a ZFS mirror gave. Originally a mirrored
+# ZFS pool - switched to bcachefs because zfs and the out-of-tree bcachefs
+# DKMS module (see default.nix's kernelPackages comment) want different
+# kernel lines, and running both on one host isn't possible. No data to
+# preserve on the old pool, so this was a straight reformat, not a
+# migration. No subvolumes pre-created here - more get added (via a small
+# systemd oneshot, same shape as nixnuc's zfs-datasets.nix) once this
+# host's observability role is further along.
 {
   disko.devices = {
+    bcachefs_filesystems = {
+      main = {
+        extraFormatArgs = [ "--compression=zstd" ];
+        subvolumes = {
+          "subvolumes/nix" = {
+            mountpoint = "/nix";
+          };
+          "subvolumes/root" = {
+            mountpoint = "/";
+          };
+          "subvolumes/var-lib" = {
+            mountpoint = "/var/lib";
+          };
+        };
+        type = "bcachefs_filesystem";
+      };
+
+      storage = {
+        extraFormatArgs = [
+          "--compression=zstd"
+          "--replicas=2"
+        ];
+        subvolumes = {
+          "subvolumes/storage" = {
+            mountpoint = "/storage";
+          };
+        };
+        type = "bcachefs_filesystem";
+      };
+    };
+
     disk = {
       disk1 = {
-        device = "/dev/disk/by-id/nvme-TS128GMTE110S_G986528553";
-        type = "disk";
         content = {
-          type = "gpt";
           partitions = {
             esp = {
+              content = {
+                format = "vfat";
+                mountOptions = [ "umask=0077" ];
+                mountpoint = "/boot";
+                type = "filesystem";
+              };
               name = "ESP";
               size = "1G";
               type = "EF00";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot";
-                mountOptions = [ "umask=0077" ];
-              };
             };
             root = {
-              name = "root";
-              size = "100%";
               content = {
-                type = "bcachefs";
                 filesystem = "main";
                 # disko always emits `--label=${label}` to `bcachefs format`
                 # regardless of device count; a genuinely empty `--label=`
@@ -53,66 +82,49 @@
                 # Invalid argument (os error 22)" - a non-empty label is
                 # required even for a single-disk filesystem.
                 label = "main.disk1";
+                type = "bcachefs";
               };
+              name = "root";
+              size = "100%";
             };
           };
+          type = "gpt";
         };
+        device = "/dev/disk/by-id/nvme-TS128GMTE110S_G986528553";
+        type = "disk";
       };
 
       disk2 = {
+        content = {
+          partitions.storage = {
+            content = {
+              filesystem = "storage";
+              label = "storage.disk2";
+              type = "bcachefs";
+            };
+            size = "100%";
+          };
+          type = "gpt";
+        };
         device = "/dev/disk/by-id/ata-TEAM_T2532TB_TPBF2401240030201870";
         type = "disk";
-        content = {
-          type = "gpt";
-          partitions.zfs = {
-            size = "100%";
-            content = {
-              type = "zfs";
-              pool = "storage";
-            };
-          };
-        };
       };
 
       disk3 = {
+        content = {
+          partitions.storage = {
+            content = {
+              filesystem = "storage";
+              label = "storage.disk3";
+              type = "bcachefs";
+            };
+            size = "100%";
+          };
+          type = "gpt";
+        };
         device = "/dev/disk/by-id/ata-TEAM_T2532TB_TPBF2401240030200343";
         type = "disk";
-        content = {
-          type = "gpt";
-          partitions.zfs = {
-            size = "100%";
-            content = {
-              type = "zfs";
-              pool = "storage";
-            };
-          };
-        };
       };
-    };
-
-    bcachefs_filesystems.main = {
-      type = "bcachefs_filesystem";
-      extraFormatArgs = [ "--compression=zstd" ];
-      subvolumes = {
-        "subvolumes/root" = {
-          mountpoint = "/";
-        };
-        "subvolumes/nix" = {
-          mountpoint = "/nix";
-        };
-        "subvolumes/var-lib" = {
-          mountpoint = "/var/lib";
-        };
-      };
-    };
-
-    zpool.storage = {
-      type = "zpool";
-      mode = "mirror";
-      rootFsOptions = {
-        compression = "zstd";
-      };
-      mountpoint = "/storage";
     };
   };
 }
