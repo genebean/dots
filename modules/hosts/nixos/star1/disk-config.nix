@@ -25,6 +25,7 @@
 # migration. No subvolumes pre-created beyond the one below - more get
 # added (via a small systemd oneshot, same shape as nixnuc's
 # zfs-datasets.nix) once this host's observability role is further along.
+{ lib, ... }:
 {
   disko.devices = {
     bcachefs_filesystems = {
@@ -134,5 +135,21 @@
         type = "disk";
       };
     };
+  };
+
+  # disko's bcachefs_filesystem type hardcodes neededForBoot = true on
+  # every mounted subvolume (lib/types/bcachefs_filesystem.nix) - unlike
+  # the zpool type this "storage" filesystem used to use, which never set
+  # this at all. Without these overrides, a problem assembling this
+  # bulk-storage filesystem (both drives, not just one - replicas=2
+  # tolerates a single failed device) would now block star1 from booting
+  # at all, same as if root itself failed to mount. Neither mountpoint is
+  # needed for the system to come up, so neither should be able to stop
+  # it from doing so. These are regular NixOS option overrides, evaluated
+  # on every build/boot same as disko.devices above - not something that
+  # only takes effect during an explicit disko provisioning run.
+  fileSystems = {
+    "/storage".neededForBoot = lib.mkForce false;
+    "/storage/victorialogs".neededForBoot = lib.mkForce false;
   };
 }

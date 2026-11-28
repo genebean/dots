@@ -52,20 +52,6 @@
     bcachefs-tools
   ];
 
-  # disko's bcachefs_filesystem type hardcodes neededForBoot = true on
-  # every mounted subvolume (lib/types/bcachefs_filesystem.nix) - unlike
-  # the zpool type disk-config.nix's "storage" filesystem used to use,
-  # which never set this at all. Without these overrides, a problem
-  # assembling this bulk-storage filesystem (both drives, not just one -
-  # replicas=2 tolerates a single failed device) would now block star1
-  # from booting at all, same as if root itself failed to mount. Neither
-  # mountpoint is needed for the system to come up, so neither should be
-  # able to stop it from doing so.
-  fileSystems = {
-    "/storage".neededForBoot = lib.mkForce false;
-    "/storage/victorialogs".neededForBoot = lib.mkForce false;
-  };
-
   # VLAN 2331 ("observability" in UniFi) - 192.168.23.96/27, UDM SE at .97.
   # Carries the containers backing star1's observability/AI-gateway stack
   # (VictoriaLogs first; VictoriaMetrics/Grafana, Tempo, LiteLLM to follow).
