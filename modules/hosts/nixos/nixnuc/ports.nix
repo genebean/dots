@@ -15,12 +15,14 @@
       port = 445;
       openFirewall = true;
     };
+    # pocket-id/immich/immich-kiosk/grafana/karakeep/forgejo/buzz-relay ports
+    # are registered fleet-wide in modules/genebean/nixos/ports.nix (pigate
+    # proxies to each over the services VLAN) - only overriding openFirewall
+    # here, where they're actually bound.
     pocket-id = {
-      port = 1411;
       openFirewall = true;
     };
     immich = {
-      port = 2283;
       openFirewall = true;
     };
     psitransfer = {
@@ -28,15 +30,12 @@
       openFirewall = true;
     };
     immich-kiosk = {
-      port = 3001;
       openFirewall = true;
     };
     grafana = {
-      port = 3002;
       openFirewall = true;
     };
     karakeep = {
-      port = 3003;
       openFirewall = true;
     };
     cup-collector = {
@@ -44,11 +43,9 @@
       openFirewall = true;
     };
     forgejo = {
-      port = 3030;
       openFirewall = true;
     };
     buzz-relay = {
-      port = 3033;
       openFirewall = true;
     };
     youtarr = {
@@ -73,17 +70,17 @@
     # Shares port 8001 with tube-archivist above - pre-existing, not
     # introduced by this change. Only one is actually bound at a time on
     # this host; left as found rather than renumbered speculatively.
+    # Port registered fleet-wide (pigate proxies to it over the services VLAN).
     ytdlfin = {
-      port = 8001;
       openFirewall = true;
     };
     # Not 8080 (atticd's own upstream default) - that's crowdsec's LAPI
     # port on this host, registered fleet-wide in
     # modules/genebean/nixos/ports.nix as crowdsec-lapi. Firewalled (not
     # internal-only) since pigate now proxies to this over the services
-    # VLAN rather than nginx being co-located on this host.
+    # VLAN rather than nginx being co-located on this host. Port number
+    # itself also lives fleet-wide for the same cross-host reason.
     attic = {
-      port = 8082;
       openFirewall = true;
     };
     pocketbase = {
@@ -91,7 +88,6 @@
       openFirewall = true;
     };
     jellyfin = {
-      port = 8096;
       openFirewall = true;
     };
     syncthing-gui = {
@@ -99,7 +95,6 @@
       openFirewall = true;
     };
     victoriametrics = {
-      port = 8428;
       openFirewall = true;
     };
     gitdeck = {
@@ -107,7 +102,6 @@
       openFirewall = true;
     };
     atuin = {
-      port = 8888;
       openFirewall = true;
     };
     pinchflat = {
@@ -115,11 +109,9 @@
       openFirewall = true;
     };
     audiobookshelf = {
-      port = 13378;
       openFirewall = true;
     };
     mealie = {
-      port = 9000;
       openFirewall = true;
     };
     # LAN-only for now by design, not a security gap to fix later - Scotty
@@ -132,9 +124,9 @@
 
     # Firewalled TCP services continued
     # pigate's buzz vhost proxies /pair here directly over the services
-    # VLAN now, not through nginx co-located on this host.
+    # VLAN now, not through nginx co-located on this host. Port number
+    # registered fleet-wide for that reason.
     buzz-pair-relay = {
-      port = 5000;
       openFirewall = true;
     };
     rustfs-console = {

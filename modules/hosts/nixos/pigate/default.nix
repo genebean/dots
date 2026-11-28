@@ -23,10 +23,6 @@ in
 {
   imports = [
     ./disko.nix
-    # nixnuc's backend app ports (audiobookshelf, jellyfin, immich, ...) -
-    # imported directly rather than duplicating every port number here or
-    # promoting this host-pair-only table to the fleet-wide registry.
-    ../nixnuc/ports.nix
     ../../../shared/nixos/crowdsec.nix
     ../../../shared/nixos/fail2ban-nginx.nix
     ../../../shared/nixos/lets-encrypt.nix

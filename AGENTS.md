@@ -69,6 +69,15 @@ modules/
 .claude/skills/              — project-specific Claude Code skills (committed)
 ```
 
+A host's own directory (`modules/hosts/nixos/<hostname>/`, `darwin/<hostname>/`) is private to
+that host - never import a file from a *different* host's directory (e.g. one host's `default.nix`
+reaching into `../other-host/ports.nix`). Cross-importing like this couples hosts in a way that's
+easy to lose track of - a value one host depends on can change or disappear because of an edit
+made while looking only at the other host. When two hosts need the same value: promote it to a
+shared location (`modules/genebean/nixos/ports.nix` for ports, `modules/shared/nixos/` for modules)
+if it's genuinely fleet-wide, or declare it independently (duplicated) in each host's own file if
+it isn't. See Port Registry below for the concrete port-number case.
+
 ---
 
 ## Host Inventory
@@ -246,6 +255,10 @@ inherit (config.genebean.ports.grafana) port;
 When adding a service that other hosts need to know about (e.g. a shared API
 endpoint referenced across hosts), declare it in the shared registry. When
 adding a service local to one host, declare it in that host's `ports.nix`.
+Never have one host's module import another host's `ports.nix` (or any other
+file in another host's directory) to reach a port number - if it's needed by
+more than one host, that's the signal to promote it to the shared registry
+instead.
 
 ---
 
