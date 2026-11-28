@@ -22,9 +22,9 @@
 # DKMS module (see default.nix's kernelPackages comment) want different
 # kernel lines, and running both on one host isn't possible. No data to
 # preserve on the old pool, so this was a straight reformat, not a
-# migration. No subvolumes pre-created here - more get added (via a small
-# systemd oneshot, same shape as nixnuc's zfs-datasets.nix) once this
-# host's observability role is further along.
+# migration. No subvolumes pre-created beyond the one below - more get
+# added (via a small systemd oneshot, same shape as nixnuc's
+# zfs-datasets.nix) once this host's observability role is further along.
 {
   disko.devices = {
     bcachefs_filesystems = {
@@ -52,6 +52,14 @@
         subvolumes = {
           "subvolumes/storage" = {
             mountpoint = "/storage";
+          };
+          # victorialogs' actual data dir, bind-mounted into the
+          # star1-victorialogs container at /var/lib/victorialogs
+          # (containers/victorialogs.nix) - off the small NVMe root and
+          # onto the replicated bulk storage instead, same reasoning as a
+          # dedicated ZFS dataset would have given it.
+          "subvolumes/victorialogs" = {
+            mountpoint = "/storage/victorialogs";
           };
         };
         type = "bcachefs_filesystem";

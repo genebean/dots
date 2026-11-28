@@ -63,5 +63,11 @@
     nginx-exporter = {
       port = 9113;
     };
+    # star1's victorialogs container (star1/containers/victorialogs.nix) -
+    # referenced by pigate's /logsink proxy and nixnuc's Grafana datasource,
+    # so it lives here rather than any one host's own ports.nix.
+    victorialogs = {
+      port = 9428;
+    };
   };
 }

@@ -6,13 +6,19 @@
   ...
 }:
 let
-  home_domain = "home.technicalissues.us";
   # nixnuc's services-VLAN IP - where every backend app this host proxies
   # to actually listens. Not nixnuc's general LAN IP: that's a deliberate
   # segmentation choice (see modules/hosts/nixos/nixnuc/default.nix's
   # vlan2332 interface) so DMZ-originated traffic never touches the
   # trusted LAN directly, only this narrower UniFi-firewalled zone.
   backend_ip = "192.168.23.130";
+  home_domain = "home.technicalissues.us";
+  # star1's victorialogs container, on its own "observability" VLAN
+  # (2331, 192.168.23.96/27, UDM SE at .97) rather than nixnuc's services
+  # VLAN above - same "only pigate may reach this" reachability model,
+  # but kept on a separate VLAN since it's a different trust domain on a
+  # different physical host (see star1/default.nix's networking block).
+  star1_victorialogs_ip = "192.168.23.98";
 in
 {
   imports = [
@@ -24,6 +30,7 @@ in
     ../../../shared/nixos/crowdsec.nix
     ../../../shared/nixos/fail2ban-nginx.nix
     ../../../shared/nixos/lets-encrypt.nix
+    ../../../shared/nixos/log-shipping.nix
   ];
 
   system.stateVersion = "26.05";
@@ -596,6 +603,20 @@ in
           locations = {
             "/grafana/".proxyPass =
               "http://${backend_ip}:${toString config.genebean.ports.grafana.port}/grafana/";
+            # Logs-ingestion path for the fleet's vector agents - mirrors
+            # /remotewrite's shape exactly, just proxying to star1's
+            # victorialogs container instead of nixnuc's VictoriaMetrics.
+            # Its own dedicated basicAuthFile, a fully separate secret
+            # from nginx_basic_auth below (not a second line in that same
+            # htpasswd file) - it lives in modules/shared/secrets.yaml
+            # instead of this host's own secrets.yaml purely so it could
+            # be added without a dots checkout on pigate at the time. The
+            # matching plaintext vector agents authenticate with is that
+            # same shared file's logshipper_env.
+            "/logsink" = {
+              basicAuthFile = config.sops.secrets.logshipper_nginx_basic_auth.path;
+              proxyPass = "http://${star1_victorialogs_ip}:${toString config.genebean.ports.victorialogs.port}/insert/jsonline";
+            };
             # The fleet's existing metrics-ingestion path: other hosts'
             # vmagents push here (over Tailscale, unchanged by this move).
             # pigate's own metrics do NOT go through this - see
@@ -799,6 +820,11 @@ in
       local_private_env = {
         owner = "${username}";
         path = "${config.users.users.${username}.home}/.private-env";
+      };
+      logshipper_nginx_basic_auth = {
+        owner = config.users.users.nginx.name;
+        restartUnits = [ "nginx.service" ];
+        sopsFile = ../../../shared/secrets.yaml;
       };
       nginx_basic_auth = {
         owner = config.users.users.nginx.name;

@@ -7,9 +7,12 @@
 }:
 {
   imports = [
+    ./containers/syslog-vector.nix
+    ./containers/victorialogs.nix
     ./disk-config.nix
     ./hardware-configuration.nix
     ./monitoring.nix
+    ../../../shared/nixos/log-shipping.nix
   ];
 
   system.stateVersion = "26.05";
@@ -52,15 +55,48 @@
   # disko's bcachefs_filesystem type hardcodes neededForBoot = true on
   # every mounted subvolume (lib/types/bcachefs_filesystem.nix) - unlike
   # the zpool type disk-config.nix's "storage" filesystem used to use,
-  # which never set this at all. Without this override, a problem
+  # which never set this at all. Without these overrides, a problem
   # assembling this bulk-storage filesystem (both drives, not just one -
   # replicas=2 tolerates a single failed device) would now block star1
-  # from booting at all, same as if root itself failed to mount. /storage
-  # isn't needed for the system to come up, so it shouldn't be able to
-  # stop it from doing so.
-  fileSystems."/storage".neededForBoot = lib.mkForce false;
+  # from booting at all, same as if root itself failed to mount. Neither
+  # mountpoint is needed for the system to come up, so neither should be
+  # able to stop it from doing so.
+  fileSystems = {
+    "/storage".neededForBoot = lib.mkForce false;
+    "/storage/victorialogs".neededForBoot = lib.mkForce false;
+  };
 
+  # VLAN 2331 ("observability" in UniFi) - 192.168.23.96/27, UDM SE at .97.
+  # Carries the containers backing star1's observability/AI-gateway stack
+  # (VictoriaLogs first; VictoriaMetrics/Grafana, Tempo, LiteLLM to follow).
+  # Kept separate from nixnuc's existing services VLAN on purpose: same
+  # "only pigate may reach this" reachability model, but a different trust
+  # domain on a different physical host - sharing one VLAN would let
+  # same-VLAN traffic between the two hosts skip the UDM's inter-VLAN
+  # firewall entirely (plain L2, no router hop), losing the second
+  # enforcement layer behind each container's own nftables rules.
+  #
+  # Rides enp2s0's sibling 2.5G port (enp3s0) as the VLAN's untagged/access
+  # port - the switch port it's plugged into is configured for VLAN 2331
+  # untagged, so no 802.1Q tagging is needed on the host side at all
+  # (no vlans.* config, unlike a trunked port). Keeps this VLAN's traffic
+  # on its own physical NIC entirely, separate from enp2s0's own untagged
+  # management traffic.
+  #
+  # No IP assigned to the bridge itself - nothing on star1's own host
+  # network namespace needs to originate traffic on this VLAN today (star1
+  # ships its own journal through pigate's /logsink like every other host,
+  # not directly to the container). Only the containers attached via
+  # hostBridge below get addresses here.
   networking = {
+    bridges.br-observe.interfaces = [ "enp3s0" ];
+    # This host's own vector agent (log-shipping.nix) ships over this
+    # host's own network, not a container's - the public hostname's
+    # hairpin NAT path back through the UniFi doesn't work reliably for
+    # on-prem callers, same reasoning as nixnuc/id.home.technicalissues.us.
+    extraHosts = ''
+      192.168.23.2 monitoring.home.technicalissues.us
+    '';
     firewall = {
       allowedTCPPorts = lib.pipe config.genebean.ports [
         builtins.attrValues
@@ -76,9 +112,18 @@
 
     hostId = "e88c847d"; # head -c4 /dev/urandom | od -A none -t x4
 
-    # Only active NIC at install time (confirmed via `ip -brief link` on
-    # the live installer) - wlan0 (RTL8852BE) exists but was DOWN/unused.
-    interfaces.enp2s0.useDHCP = true;
+    interfaces = {
+      # networking.bridges only generates a .network file for each member
+      # interface (telling it to join the bridge) - not for the bridge
+      # device itself, so without this it stays unmanaged by networkd and
+      # never comes up, silently failing to forward anything between
+      # enp3s0 and the containers attached via hostBridge. No address
+      # needed - this just gets it managed and brought up.
+      br-observe.useDHCP = false;
+      # Only active NIC at install time (confirmed via `ip -brief link` on
+      # the live installer) - wlan0 (RTL8852BE) exists but was DOWN/unused.
+      enp2s0.useDHCP = true;
+    };
     networkmanager.enable = false;
     useDHCP = false;
     useNetworkd = true;

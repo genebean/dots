@@ -13,7 +13,6 @@ let
 in
 {
   imports = [
-    ./hardware-configuration.nix
     ./attic.nix
     ./containers/audiobookshelf.nix
     ./containers/bead-me-up-scotty.nix
@@ -27,6 +26,7 @@ in
     ./dolt-beads-server.nix
     ./filtered-podcast-feeds.nix
     ./forgejo.nix
+    ./hardware-configuration.nix
     ./karakeep.nix
     ./monitoring-stack.nix
     ./newspaper.nix
@@ -41,6 +41,7 @@ in
     # did NOT come back, since those existed only to protect a publicly-
     # reachable nginx, which this host no longer has.
     ../../../shared/nixos/lets-encrypt.nix
+    ../../../shared/nixos/log-shipping.nix
   ];
 
   system.stateVersion = "23.11";
@@ -188,6 +189,14 @@ in
       # on 443 (not previously needed, since nixnuc never had to reach
       # pigate directly before).
       192.168.23.2 id.home.technicalissues.us
+
+      # Same reasoning as id.* above: monitoring.* has two valid DNS
+      # answers (the UniFi's local-DNS override and the real public IP),
+      # and this host's own vector agent (log-shipping.nix) depends on
+      # reliably landing on pigate's DMZ address rather than racing a
+      # hairpin NAT round-trip back through the public IP, which doesn't
+      # work reliably for on-prem callers.
+      192.168.23.2 monitoring.home.technicalissues.us
     '';
 
     hostId = "c5826b45"; # head -c4 /dev/urandom | od -A none -t x4
